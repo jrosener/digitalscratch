@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Digital-Scratch :: Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Digital-Scratch Development" />
+    <meta name="author" content="Julien Rosener" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="index.html">Digital-Scratch</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="index.html"><i class="icon-home icon-white"></i> Home</a></li>
+              <li><a href="concept.html"><i class="icon-tasks icon-white"></i> Concept</a></li>
+              <li><a href="demo.html"><i class="icon-headphones icon-white"></i> Demo</a></li>
+              <li class="active"><a href="development.html"><i class="icon-wrench icon-white"></i> Development</a></li>
+              <li><a href="license.html"><i class="icon-file icon-white"></i> License</a></li>
+              <li><a href="download.html"><i class="icon-download-alt icon-white"></i> Download</a></li>
+              <li><a href="contact.html"><i class="icon-envelope icon-white"></i> Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <!-- Title panel -->
+      <div class="hero-unit">
+        <div class="row">
+          <div class="span3">
+            <img src="img/digitalscratch-icon.png" class="img-rounded"></img>
+          </div>
+          <div class="span7">
+            <h1>Digital-Scratch</h1>
+            <hr />
+            <h3>Get the source code!</h3>
+          </div>
+        </div>
+      </div>
+      <!-- Content panel -->
+      <div class="row">
+        <div class="span6">
+          <h2>Get source code</h2>
+          <h5>Anonymous:</h5>
+          <ul>
+            <li><strong>libdigitalscratch</strong>: svn checkout svn://svn.gna.org/svn/dscratch/trunk</li>
+            <li><strong>digitalscratch</strong>: svn checkout svn://svn.gna.org/svn/dscratch/players/digital-scratch-player</li>
+          </ul>
+          <h5>With an account (username) created on 
+          <a href="http://www.gna.org">Gna!</a> and member of dscratch project:</h5>
+          <ul>
+            <li><strong>libdigitalscratch</strong>: svn checkout svn+ssh://[username]@svn.gna.org/svn/dscratch/trunk</li>
+            <li><strong>digitalscratch</strong>: svn checkout svn+ssh://[username]@svn.gna.org/svn/dscratch/players/digital-scratch-player</li>
+          </ul>
+        </div>
+        <div class="span6">
+          <h2>Browse source code</h2>
+          <ul>
+            <li><strong>libdigitalscratch</strong>: <a href="http://svn.gna.org/viewcvs/dscratch/trunk/">http://svn.gna.org/viewcvs/dscratch/trunk/</a></li>
+            <li><strong>digitalscratch</strong>: <a href="http://svn.gna.org/viewcvs/dscratch/players/digital-scratch-player">http://svn.gna.org/viewcvs/dscratch/players/digital-scratch-player</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span6">
+          <h2>Software dependencies</h2>
+          <p>
+            <strong>libdigitalscratch</strong> (motion detection) is based on: 
+            <ul>
+              <li>
+                <a href="http://qt.nokia.com/">Qt 4.x</a>
+              </li>
+            </ul>
+          </p>
+          <p>
+            <strong>digitalscratch</strong> (audio player) is based on: 
+            <ul>
+              <li><a href="http://qt.nokia.com/">Qt 4.x</a></li>
+              <li><a href="http://www.mpg123.de">mpg123</a></li>
+              <li><a href="http://flac.sourceforge.net">FLAC</a></li>
+              <li><a href="http://www.mega-nerd.com/SRC/">Sample rate library</a></li>
+              <li><a href="http://jackaudio.org/">JACK</a></li>
+            </ul>
+          </p>
+        </div>
+        <div class="span6">
+          <h2>Design documents</h2>
+          <ul>
+            <li>UML diagram about DJing domain: <a href="./documentation/digital-scratch-uml-domain_model.png">digital-scratch-uml-domain_model.png</a></li>
+            <li>UML class diagram: <a href="./documentation/digital-scratch-uml-detailed_model.png">digital-scratch-uml-detailed_model.png</a></li>
+            <li>Sequence UML diagram (high-level): <a href="./documentation/digital-scratch-uml-sequence_diagram.png">digital-scratch-uml-sequence_diagram.png</a></li>
+          </ul>
+        </div>
+      </div>
+      <h2>Reports, discussions, slides</h2>
+      <ul>
+        <li>First ideas, written for <a href="http://www.utbm.fr">UTBM</a> (french): <a href="./documentation/tx5x-rosener-cahier-des-charges.pdf">cahier-des-charges.pdf</a></li>
+        <li>Timecode conception, never created (french): <a href="./documentation/tx5x-rosener-timecode.pdf">timecode.pdf</a></li>
+        <li>Documentation about CRC control (french): <a href="./documentation/tx5x-rosener-controle-crc.pdf">controle-crc.pdf</a></li>
+        <li>Other "product" similar to digital-scratch (french): <a href="./documentation/tx5x-rosener-mix-digital-produits-existants.pdf">mix-digital-produits-existants.pdf</a></li>
+        <li>Report for the <a href="http://www.utbm.fr">UTBM</a> project (french): <a href="./documentation/tx5x-rosener-rapport-digital-scratch-21_06_2004.pdf">rapport-digital-scratch-21_06_2004.pdf</a></li>
+        <li>Slides (french): <a href="./documentation/tx5x-rosener-soutenance-digital-scratch-21_06_2004.pdf">soutenance-digital-scratch-21_06_2004.pdf</a></li>
+        <li>Slides (english): <a href="./documentation/20070207-dscratch_presentation/20070207-dscratch-presentation.pdf">20070207-dscratch-presentation.pdf</a></li>
+      </ul>
+      <hr />
+      <!-- Footer panel -->
+      <footer>
+        <p>Digital-Scratch, a free vinyl disc emulation software. <a href="http://www.digital-scratch.org">http://www.digital-scratch.org</a></p>
+      </footer>
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

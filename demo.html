@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Digital-Scratch :: Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Digital-Scratch Demo" />
+    <meta name="author" content="Julien Rosener" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="index.html">Digital-Scratch</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="index.html"><i class="icon-home icon-white"></i> Home</a></li>
+              <li><a href="concept.html"><i class="icon-tasks icon-white"></i> Concept</a></li>
+              <li class="active"><a href="demo.html"><i class="icon-headphones icon-white"></i> Demo</a></li>
+              <li><a href="development.html"><i class="icon-wrench icon-white"></i> Development</a></li>
+              <li><a href="license.html"><i class="icon-file icon-white"></i> License</a></li>
+              <li><a href="download.html"><i class="icon-download-alt icon-white"></i> Download</a></li>
+              <li><a href="contact.html"><i class="icon-envelope icon-white"></i> Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <!-- Title panel -->
+      <div class="hero-unit">
+        <div class="row">
+          <div class="span3">
+            <img src="img/digitalscratch-icon.png" class="img-rounded"></img>
+          </div>
+          <div class="span7">
+            <h1>Digital-Scratch</h1>
+            <hr />
+            <h3>For playing digital DJ sets.</h3>
+          </div>
+        </div>
+      </div>
+      <!-- Content panel -->
+      <div class="row">
+        <div class="span8">
+          <h2>Video - Digital-Scratch 1.0.0</h2>
+          <p>This is a demo DJ mix which is a litte bit more than half an hour long. It shows basic functionalities of the software: loading track, playing forward/backward, changing speed, jumping in track, playing with a basic sample player.</p>
+          <p><iframe src="http://player.vimeo.com/video/25677699?title=0&amp;byline=0&amp;portrait=0&amp;color=80ceff" width="580" height="326" frameborder="0"></iframe></p>
+        </div>
+        <div class="span4">
+          <h2>Audio</h2>
+          <p>You can also find an audio only version of this mix: 
+          <div>
+            <object width="300" height="300">
+              <param name="movie" value="http://www.mixcloud.com/media/swf/player/mixcloudLoader.swf?feed=http%3A%2F%2Fwww.mixcloud.com%2Fjulienr%2Fdigitalscratch-100-demo-mix%2F&amp;embed_uuid=aa927e0d-dfad-45ef-b1c0-1a142ec21b37&amp;embed_type=widget_standard"></param>
+              <param name="allowFullScreen" value="true"></param>
+              <param name="allowscriptaccess" value="always"></param>
+              <embed src="http://www.mixcloud.com/media/swf/player/mixcloudLoader.swf?feed=http%3A%2F%2Fwww.mixcloud.com%2Fjulienr%2Fdigitalscratch-100-demo-mix%2F&amp;embed_uuid=aa927e0d-dfad-45ef-b1c0-1a142ec21b37&amp;embed_type=widget_standard" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="300" height="300"></embed>
+            </object>
+            <div style="clear:both; height:3px;"></div>
+            <p style="display:block; font-size:12px; font-family:Helvetica, Arial, sans-serif; margin:0; padding: 3px 4px; color:#999;">
+              <a href="http://www.mixcloud.com/julienr/digitalscratch-100-demo-mix/#utm_source=widget&amp;utm_medium=web&amp;utm_campaign=base_links&amp;utm_term=resource_link" target="_blank" style="color:#02a0c7; font-weight:bold;">Digitalscratch 1.0.0 demo mix</a>
+              <span>by</span>
+              <a href="http://www.mixcloud.com/julienr/#utm_source=widget&amp;utm_medium=web&amp;utm_campaign=base_links&amp;utm_term=profile_link" target="_blank" style="color:#02a0c7; font-weight:bold;">Julienr</a>
+              <span>on</span>
+              <a href="http://www.mixcloud.com/#utm_source=widget&amp;utm_medium=web&amp;utm_campaign=base_links&amp;utm_term=homepage_link" target="_blank" style="color:#02a0c7; font-weight:bold;">Mixcloud</a>
+            </p>
+            <div style="clear:both; height:3px;"></div>
+          </div></p>
+        </div>
+      </div>
+      <h2>Screenshots - Digital Scratch 1.1.0</h2>
+      <p>This is the main window composed by: 
+      <ul>
+        <li>2 players (deck1/deck2) which can play tracks of max 15 min, waveform can be clicked to jump in tracks, a cue point can be set</li>
+        <li>2 samples players, they can play 4 tracks (limited to 1 min) at the same time, playback is not affected by motion detection</li>
+        <li>a file explorer, root directory has to be defined in configuration dialog</li>
+        <li>help for keyboard shortcuts, could be defined in configuration file</li>
+      </ul>
+      <p>
+        <a href="screenshots/screenshot-main.png" class="light"><img src="screenshots/screenshot-main-small.png" alt="Digital Scratch 1.1.0 - Main window" /></a>
+      </p></p>
+      <p>This is the config dialog: 
+      <p>
+        <a href="screenshots/screenshot-config_motion.png" class="light"><img src="screenshots/screenshot-config_motion.png" alt="Digital Scratch 1.1.0 - Config dialog (motion detection)" /></a>
+      </p>
+      <p>
+        <a href="screenshots/screenshot-config_player.png" class="light"><img src="screenshots/screenshot-config_player.png" alt="Digital Scratch 1.1.0 - Config dialog (player)" /></a>
+      </p></p>
+      <p>This is a sample JACK configuration (on ESI U46DJ sound card): 
+      <p>
+        <a href="screenshots/screenshot-jack.png" class="light"><img src="screenshots/screenshot-jack.png" alt="Digital Scratch - ESI U46DJ Jack connections" /></a>
+      </p>
+      <p>
+        <a href="screenshots/screenshot-jack_config.png" class="light"><img src="screenshots/screenshot-jack_config.png" alt="Digital Scratch - ESI U46DJ Jack configuration" /></a>
+      </p></p>
+      <hr />
+      <!-- Footer panel -->
+      <footer>
+        <p>Digital-Scratch, a free vinyl disc emulation software. <a href="http://www.digital-scratch.org">http://www.digital-scratch.org</a></p>
+      </footer>
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.6.1.js"></script>
+    <script type="text/javascript" src="js/jquery.lightbox-0.5.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/jquery.lightbox-0.5.css" media="screen" />
+    <script type="text/javascript">
+      function agrandirimage() {
+        image.height="30"
+      }
+      function reduireimage() {
+        image.height="15"
+      }
+      $(function() {
+        $('.light').lightBox();
+      });</script>
+  </body>
+</html>

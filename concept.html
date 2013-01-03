@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Digital-Scratch :: Concept</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Digital-Scratch Concept" />
+    <meta name="author" content="Julien Rosener" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="index.html">Digital-Scratch</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="index.html"><i class="icon-home icon-white"></i> Home</a></li>
+              <li class="active"><a href="concept.html"><i class="icon-tasks icon-white"></i> Concept</a></li>
+              <li><a href="demo.html"><i class="icon-headphones icon-white"></i> Demo</a></li>
+              <li><a href="development.html"><i class="icon-wrench icon-white"></i> Development</a></li>
+              <li><a href="license.html"><i class="icon-file icon-white"></i> License</a></li>
+              <li><a href="download.html"><i class="icon-download-alt icon-white"></i> Download</a></li>
+              <li><a href="contact.html"><i class="icon-envelope icon-white"></i> Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <!-- Title panel -->
+      <div class="hero-unit">
+        <div class="row">
+          <div class="span3">
+            <img src="img/digitalscratch-icon.png" class="img-rounded"></img>
+          </div>
+          <div class="span7">
+            <h1>Digital-Scratch</h1>
+            <hr />
+            <h3>Control digital tracks playback with vinyl turntables on GNU/Linux.</h3>
+          </div>
+        </div>
+      </div>
+      <!-- Content panel -->
+      <div class="row">
+        <div class="span8">
+          <h2>DJ mix setup</h2>
+          <p>You have to play a "timecoded" vinyl disc such as the <a href="http://serato.com/scratchlive">Serato Scratch Live</a> record. Then, instead of connecting your turntable to your mixer, connect it to the line input of a sound card. And finally, connect the sound card output to the mixer.</p>
+          <p>Load a tune on left or right deck of Digital-Scratch player and start your turntable. When you are changing speed and direction on the turntable, the digital track is played accordingly.</p>
+          <p>Since Digital Scratch supports <a href="http://jackaudio.org/">JACK</a> as sound card "driver", you have to run Digital Scratch on a properly configured JACK environment. For a 2 turntables DJ set you need 2 available virtual stereo inputs and outputs in JACK.</p>
+          <p><img class="img-polaroid" src="img/concept-digital-scratch.png" alt="Digital-scratch concept" /></p>
+        </div>
+        <div class="span4">
+          <h2>Supported records</h2>
+          <p>
+            <ul>
+              <li><a href="http://serato.com/scratchlive">Serato Scratch Live</a> (CV02)</li>
+              <li><a href="http://en.wikipedia.org/wiki/Final_Scratch">Final Scratch</a> (Standard 2.0)</li>
+              <li><a href="http://www.mixvibes.com"> Mixvibes DVS</a></li>
+            </ul>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span8">
+          <h2>Software components</h2>
+          <p>The core motion detection is done by an SDK built as a shared library (libdigitalscratch). It can be integrated with various kind of controllable software player.</p>
+          <p>Digital-Scratch also provides a player (digitalscratch) which uses the library. This player is able to play one or two tracks. The playback parameters (speed and direction) could be changed in real time. It also provides a simplistic file explorer used to select tracks to play.</p>
+        </div>
+        <div class="span4">
+          <h2>Features</h2>
+          <p>
+            <ul>
+              <li>Speed and direction detection.</li>
+              <li><a href="http://en.wikipedia.org/wiki/MP3">Mp3</a> and <a href="http://en.wikipedia.org/wiki/Flac">Flac</a> files player.</li>
+              <li><a href="http://jackaudio.org/">JACK</a> sound server integration.</li>
+              <li>Sample player.</li>
+              <li>File browser.</li>
+            </ul>
+          </p>
+        </div>
+      </div>
+      <hr />
+      <!-- Footer panel -->
+      <footer>
+        <p>Digital-Scratch, a free vinyl disc emulation software. <a href="http://www.digital-scratch.org">http://www.digital-scratch.org</a></p>
+      </footer>
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
