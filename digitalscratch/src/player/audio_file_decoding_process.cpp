@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------( audio_file_decoding_process.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2012                                                   */
+/*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/

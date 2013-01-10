@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------( gui.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2012                                                   */
+/*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -299,12 +299,12 @@ Gui::show_about_window()
     QLabel *description = new QLabel(tr("A vinyl emulation software."));
     description->setAlignment(Qt::AlignHCenter);
 
-    QLabel *credit = new QLabel(tr("Copyright (C) 2003-2012 Julien Rosener"));
+    QLabel *credit = new QLabel(tr("Copyright (C) 2003-2013 Julien Rosener"));
     credit->setAlignment(Qt::AlignHCenter);
 
     QLabel *license = new QLabel(tr("This program is free software; you can redistribute it and/or modify <br/> \
                                      it under the terms of the GNU General Public License as published by <br/> \
-                                     the Free Software Foundation; either version 2 of the License, or <br/> \
+                                     the Free Software Foundation; either version 3 of the License, or <br/> \
                                      (at your option) any later version.<br/><br/>"));
     license->setTextFormat(Qt::RichText);
 

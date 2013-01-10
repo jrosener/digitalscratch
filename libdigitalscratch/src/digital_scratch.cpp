@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------------------( digital_scratch.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2012                                                   */
+/*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
