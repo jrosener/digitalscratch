@@ -1,0 +1,20 @@
+# Compiled source #
+###################
+debug/
+release/
+*.o
+*.so
+*.so.*
+digitalscratch
+
+# Qt user project #
+###################
+*.pro.user
+
+# Makefiles       #
+###################
+Makefile*
+
+# Edited backup files #
+#######################
+*~
