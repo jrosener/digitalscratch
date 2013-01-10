@@ -949,7 +949,7 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Create main window.
-    this->window->setWindowTitle(tr("Digital-scratch"));
+    this->window->setWindowTitle(tr("Digital-scratch") + " " + QString(STR(VERSION)));
     this->window->setMinimumSize(800, 480);
     if (this->nb_decks > 1)
     {
