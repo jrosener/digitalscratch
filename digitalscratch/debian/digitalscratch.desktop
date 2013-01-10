@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Digital Scratch
+Comment=A digital DJ player controlled by vinyl turntable
+Exec=digitalscratch
+Terminal=false
+Icon=digitalscratch-icon_2decks.svg
+Type=Application
+Categories=AudioVideo;Audio;

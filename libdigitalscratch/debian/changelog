@@ -1,0 +1,23 @@
+libdigitalscratch (1.1.0-0ubuntu1) quantal; urgency=low
+
+  * added MixVibes and Final Scratch vinyl support (speed/direction only)
+  * added API functions to get default configurations values
+  * source code license switched from GPL V2 to GPL V3 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 13 Dec 2012 18:07:02 +0100
+
+libdigitalscratch (1.0.0-0ubuntu1) lucid; urgency=low
+
+  * First stable version
+   - renamed project to Digital Scratch Library (libdigitalscratch)
+   - refactored vinyl disc type
+   - simplified volume management
+   - removed build system based on autotools, switched to qmake
+   - added few settings getter/setter in API
+   - disabled position detection (not properly working for the moment)
+   - built ubuntu 10.10/11.04 and Debian stable packages
+   - removed completely internal capture management
+   - cleanup source structure
+   - support Serato Scratch Live CV02 vinyl disc
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 10 May 2011 16:32:31 +0200

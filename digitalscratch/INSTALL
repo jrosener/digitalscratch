@@ -1,0 +1,56 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                          Digital Scratch Player                            */
+/*                An audio file player driven by vinyl turntable              */
+/*                                                                            */
+/*                                                                            */
+/*============================================================================*/
+
+
+-- Building requirements -------------------------------------------------------
+
+[GNU/Linux]
+- GCC (g++-4.x):           http://gcc.gnu.org
+- Qt SDK (qt4.x):          http://qt.nokia.com/downloads
+- mpg123 library:          http://www.mpg123.de
+- FLAC library:            http://flac.sourceforge.net
+- Digital Scratch library: http://www.digital-scratch.org
+- Sample rate library:     http://www.mega-nerd.com/SRC/
+- JACK library:            http://jackaudio.org/
+
+[Ubuntu 12.10]
+- build-essential
+- qt4-sdk (only qt4-dev-tools is mandatory)
+- libmpg123-dev
+- libjack-jackd2-dev
+- libsamplerate0-dev
+- libflac-dev
+- libdigitalscratch-dev
+
+[MS Windows]
+- TODO
+
+
+-- Build -----------------------------------------------------------------------
+
+[GNU/Linux]
+- qmake
+- make
+- sudo make install
+
+[MS Windows]
+- TODO
+
+
+-- Playing requirements --------------------------------------------------------
+
+- Jack audio server: http://jackaudio.org/
+- QJackCtl Jack GUI: http://qjackctl.sourceforge.net/
+
+
+-- Play ------------------------------------------------------------------------
+
+[GNU/Linux]
+- qjackctl
+- digitalscratch

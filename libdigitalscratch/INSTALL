@@ -1,0 +1,34 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                          Digital Scratch Library                           */
+/*                   A motion detector for vinyl turntable                    */
+/*                                                                            */
+/*                                                                            */
+/*============================================================================*/
+
+
+
+-- Building requirements ----------------------------------------------------------------
+
+[GNU/Linux]
+- GCC (g++-4.x): http://gcc.gnu.org/
+- Qt SDK (qt4.x): http://qt.nokia.com/downloads
+
+[Ubuntu 11.04]
+- build-essential
+- qt-sdk (only qt4-dev-tools is mandatory)
+
+[MS Windows]
+- TODO
+
+
+-- Build -----------------------------------------------------------------------
+
+[GNU/Linux]
+- qmake
+- make
+- make install
+
+[MS Windows]
+- TODO

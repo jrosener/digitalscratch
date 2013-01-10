@@ -1,0 +1,39 @@
+/*===================================================================*/
+/*                                                                   */
+/*                                                                   */
+/*                         Digital Scratch System                    */
+/*                                  Tests                            */
+/*                                                                   */
+/*                                                                   */
+/*===================================================================*/
+
+-- Requirements -------------------------------------------------------
+
+- gcc (compile with g++-4.x)
+- make, automake, autoconf, libtool
+- lib digital-scratch
+- lib Boost.test
+
+For Ubuntu 7.10 Gutsy:
+    - see packages in INSTALL in digital-scratch directory
+    - libboost-test-dev
+
+For Ubuntu 9.04 Jaunty:
+    - see packages in digital-scratch/documentation
+    - libboost-test-dev
+
+-- Build --------------------------------------------------------------
+
+To build digital-scratch-test :
+    - ./generate_configure_script.sh if you want to re-create configure
+      script
+    - ./configure
+    - make clean all
+
+-- Usage --------------------------------------------------------------
+
+make check
+or make check-quiet
+or make check-log
+or make check-random
+

@@ -1,0 +1,25 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                          Digital Scratch Library                           */
+/*                   A motion detector for vinyl turntable                    */
+/*                                                                            */
+/*                                                                            */
+/*============================================================================*/
+
+
+Digital Scratch library is designed to analyze motion on vinyl turntable. It
+requires usage of a specific timecoded vinyl disc.
+
+Input: signal coming from turntable playing a timecoded vinyl disc.
+Output: motion parameters (speed, direction, needle position).
+
+A common usage would be to drive an audio player. As a result a DJ is able to
+mix digital audio files using regular vinyl turntables.
+
+Digital-scratch library is under GNU/GPL3 licence.
+
+
+More informations on : http://www.digital-scratch.org
+
+Author : Julien Rosener <julien.rosener@digital-scratch.org>

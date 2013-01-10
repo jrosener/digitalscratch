@@ -1,0 +1,18 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                          Digital Scratch Library                           */
+/*                   A motion detector for vinyl turntable                    */
+/*                                                                            */
+/*                                                                            */
+/*============================================================================*/
+
+-- Author ----------------------------------------------------------------------
+Julien Rosener <julien.rosener@digital-scratch.org>
+
+-- Thanks ----------------------------------------------------------------------
+Thomas Petazzoni:      Debian and Ubuntu packages.
+Mixxx developers team: http://mixxx.sourceforge.net/contact.php
+
+-- Web -------------------------------------------------------------------------
+http://www.digital-scratch.org

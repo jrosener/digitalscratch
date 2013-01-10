@@ -1,0 +1,36 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                          Digital Scratch Player                            */
+/*                An audio file player driven by vinyl turntable              */
+/*                                                                            */
+/*                                                                            */
+/*============================================================================*/
+
+digitalscratch-1.1.0:
+  * cue point support:
+     - one cue point could be set per deck
+     - playback could be restarted from cue point
+  * refactored keyboard shortcuts:
+     - shortcuts are defined in config file (help area dynamically updated)
+     - space key is the default shortcut to switch playback selection
+     - shortcuts now trigger actions on selected playback
+  * configuration:
+     - added vinyl type as preference
+  * graphics:
+     - selected playback is highlighted
+     - moving mouse over a playback area highlight it
+     - switched application icon from png to svg
+  * license:
+     - switched from GPL V2 to GPL V3
+
+digitalscratch-1.0.0:
+  * First Digital Scratch player release, features:
+     - read mp3 and flac files
+     - speed and direction driven by libdigitalscratch
+     - sound timestretched using libsamplerate
+     - tracks waveform visual
+     - work with 1 or 2 turntables
+     - jack integration
+     - support Serato Scratch Live CV02 vinyl disc
+
