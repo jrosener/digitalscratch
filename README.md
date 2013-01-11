@@ -37,7 +37,17 @@ Build
 --------------
 
 ### Ubuntu 12.10 (quantal)
+    # Install build tools
     sudo apt-get install build-essential qt4-sdk libmpg123-dev libjack-jackd2-dev libsamplerate0-dev libflac-dev
+    
+    # Compile and install libdigitalscratch
+    cd libdigitalscratch
+    qmake
+    make
+    sudo make install
+    
+    # Compile and install digitalscratch player
+    cd ../digitalscratch
     qmake
     make
     sudo make install
