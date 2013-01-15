@@ -49,6 +49,7 @@ Config_dialog::Config_dialog(QWidget              *parent,
 {
     this->settings = in_settings;
 
+    // Init motion detection parameters widgets.
     this->base_dir_path                      = new QLineEdit();
     this->extreme_min                        = new QLineEdit();
     this->max_nb_buffer                      = new QLineEdit();
@@ -58,12 +59,28 @@ Config_dialog::Config_dialog(QWidget              *parent,
     this->max_nb_speed_for_stability         = new QLineEdit();
     this->nb_cycle_before_changing_direction = new QLineEdit();
     this->low_pass_filter_max_speed_usage    = new QLineEdit();
+
+    // Init keyboard shortcuts widgets.
+    this->kb_switch_playback          = new QLineEdit();
+    this->kb_load_track_on_deck       = new QLineEdit();
+    this->kb_play_begin_track_on_deck = new QLineEdit();
+    this->kb_set_cue_point_on_deck    = new QLineEdit();
+    this->kb_play_cue_point_on_deck   = new QLineEdit();
+    this->kb_collapse_browse          = new QLineEdit();
+    this->kb_load_track_on_sampler1   = new QLineEdit();
+    this->kb_load_track_on_sampler2   = new QLineEdit();
+    this->kb_load_track_on_sampler3   = new QLineEdit();
+    this->kb_load_track_on_sampler4   = new QLineEdit();
+
+    // Init gui style selection widget.
     this->gui_style_select = new QComboBox();
     QList<QString> *available_gui_styles = this->settings->get_available_gui_styles();
     for (int i = 0; i < available_gui_styles->size(); i++)
     {
         this->gui_style_select->addItem(available_gui_styles->at(i));
     }
+
+    // Init vinyl type selection widget.
     this->vinyl_type_select = new QComboBox();
     QList<QString> *available_vinyl_types = this->settings->get_available_vinyl_types();
     for (int i = 0; i < available_vinyl_types->size(); i++)
@@ -138,6 +155,18 @@ Config_dialog::accept()
     this->settings->set_nb_cycle_before_changing_direction(this->nb_cycle_before_changing_direction->text().toInt());
     this->settings->set_low_pass_filter_max_speed_usage(this->low_pass_filter_max_speed_usage->text().toFloat());
 
+    // Set keyboard shortcuts.
+    this->settings->set_keyboard_shortcut(KB_SWITCH_PLAYBACK,          this->kb_switch_playback->text());
+    this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK,       this->kb_load_track_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK, this->kb_play_begin_track_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK,    this->kb_set_cue_point_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK,   this->kb_play_cue_point_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_COLLAPSE_BROWSER,         this->kb_collapse_browse->text());
+    this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1,   this->kb_load_track_on_sampler1->text());
+    this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2,   this->kb_load_track_on_sampler2->text());
+    this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3,   this->kb_load_track_on_sampler3->text());
+    this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4,   this->kb_load_track_on_sampler4->text());
+
     // Close window.
     this->done(QDialog::Accepted);
 }
@@ -150,7 +179,7 @@ Config_dialog::reject()
 }
 
 int
-Config_dialog::show_config_dialog()
+Config_dialog::show()
 {
     // Create dialog.
     this->setWindowTitle(tr("Configuration"));
@@ -158,7 +187,9 @@ Config_dialog::show_config_dialog()
     // Set window icon
     this->setWindowIcon(QIcon(ICON));
 
+    //
     // Player tab: base directory to browse.
+    //
     QLabel *base_dir_label = new QLabel(tr("Base music directory: "));
     this->base_dir_path->setMinimumWidth(300);
     QPushButton *base_dir_button = new QPushButton(tr("Browse..."));
@@ -242,10 +273,66 @@ Config_dialog::show_config_dialog()
     QWidget *motion_detect_tab = new QWidget();
     motion_detect_tab->setLayout(motion_detect_layout);
 
+
+    //
+    // Keyboard shortcuts tab.
+    //
+    QGridLayout *shortcuts_layout = new QGridLayout();
+
+    QLabel *kb_switch_playback_label = new QLabel(tr("Switch playback"));
+    shortcuts_layout->addWidget(kb_switch_playback_label, 1, 0);
+    shortcuts_layout->addWidget(this->kb_switch_playback, 1, 1);
+
+    QLabel *kb_load_track_on_deck_label = new QLabel(tr("Load track"));
+    shortcuts_layout->addWidget(kb_load_track_on_deck_label, 2, 0);
+    shortcuts_layout->addWidget(this->kb_load_track_on_deck, 2, 1);
+
+    QLabel *kb_play_begin_track_on_deck_label = new QLabel(tr("Restart track"));
+    shortcuts_layout->addWidget(kb_play_begin_track_on_deck_label, 3, 0);
+    shortcuts_layout->addWidget(this->kb_play_begin_track_on_deck, 3, 1);
+
+    QLabel *kb_set_cue_point_on_deck_label = new QLabel(tr("Set cue point"));
+    shortcuts_layout->addWidget(kb_set_cue_point_on_deck_label, 4, 0);
+    shortcuts_layout->addWidget(this->kb_set_cue_point_on_deck, 4, 1);
+
+    QLabel *kb_play_cue_point_on_deck_label = new QLabel(tr("Play from cue point"));
+    shortcuts_layout->addWidget(kb_play_cue_point_on_deck_label, 5, 0);
+    shortcuts_layout->addWidget(this->kb_play_cue_point_on_deck, 5, 1);
+
+    QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"));
+    shortcuts_layout->addWidget(kb_collapse_browse_label, 1, 2);
+    shortcuts_layout->addWidget(this->kb_collapse_browse, 1, 3);
+
+    QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"));
+    shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 2, 2);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 2, 3);
+
+    QLabel *kb_load_track_on_sampler2_label = new QLabel(tr("Load track on sampler 2"));
+    shortcuts_layout->addWidget(kb_load_track_on_sampler2_label, 3, 2);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler2, 3, 3);
+
+    QLabel *kb_load_track_on_sampler3_label = new QLabel(tr("Load track on sampler 3"));
+    shortcuts_layout->addWidget(kb_load_track_on_sampler3_label, 4, 2);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler3, 4, 3);
+
+    QLabel *kb_load_track_on_sampler4_label = new QLabel(tr("Load track on sampler 4"));
+    shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 5, 2);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 5, 3);
+
+    QWidget *shortcuts_tab = new QWidget();
+    shortcuts_tab->setLayout(shortcuts_layout);
+
+
+
+    //
+    // Main window.
+    //
+
     // Create 3 tabs: player, sound card and motion detection.
     QTabWidget *tabs = new QTabWidget();
     tabs->insertTab(0, player_tab, tr("Player"));
     tabs->insertTab(1, motion_detect_tab, tr("Motion detection"));
+    tabs->insertTab(2, shortcuts_tab, tr("Shortcuts"));
 
     // 2 buttons: OK and Cancel.
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
@@ -274,6 +361,17 @@ Config_dialog::show_config_dialog()
     this->max_nb_speed_for_stability->setText((new QString)->setNum(this->settings->get_max_nb_speed_for_stability()));
     this->nb_cycle_before_changing_direction->setText((new QString)->setNum(this->settings->get_nb_cycle_before_changing_direction()));
     this->low_pass_filter_max_speed_usage->setText((new QString)->setNum(this->settings->get_low_pass_filter_max_speed_usage(), 'f', 3));
+
+    this->kb_switch_playback->setText(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
+    this->kb_load_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK));
+    this->kb_play_begin_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
+    this->kb_set_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK));
+    this->kb_play_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+    this->kb_collapse_browse->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
+    this->kb_load_track_on_sampler1->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1));
+    this->kb_load_track_on_sampler2->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2));
+    this->kb_load_track_on_sampler3->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3));
+    this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
 
     return this->exec();
 }

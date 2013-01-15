@@ -38,7 +38,7 @@
 
 using namespace std;
 
-#define APPLICATION_NAME      "digital-scratch-player"
+#define APPLICATION_NAME      "digitalscratch"
 
 #define BASE_DIR_PATH_CFG     "player/base_dir_path"
 #define BASE_DIR_PATH_DEFAULT "/home"

@@ -63,13 +63,23 @@ class Config_dialog : public QDialog
     QLineEdit            *max_nb_speed_for_stability;
     QLineEdit            *nb_cycle_before_changing_direction;
     QLineEdit            *low_pass_filter_max_speed_usage;
+    QLineEdit            *kb_switch_playback;
+    QLineEdit            *kb_load_track_on_deck;
+    QLineEdit            *kb_play_begin_track_on_deck;
+    QLineEdit            *kb_set_cue_point_on_deck;
+    QLineEdit            *kb_play_cue_point_on_deck;
+    QLineEdit            *kb_collapse_browse;
+    QLineEdit            *kb_load_track_on_sampler1;
+    QLineEdit            *kb_load_track_on_sampler2;
+    QLineEdit            *kb_load_track_on_sampler3;
+    QLineEdit            *kb_load_track_on_sampler4;
     Application_settings *settings;
 
  public:
     Config_dialog(QWidget              *parent,
                   Application_settings *in_settings);
     virtual ~Config_dialog();
-    int show_config_dialog();
+    int show();
 
  private:
     void accept();

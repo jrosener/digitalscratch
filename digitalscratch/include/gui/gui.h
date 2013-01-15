@@ -40,6 +40,7 @@
 #include <QGraphicsView>
 #include <QString>
 #include <QFileSystemModel>
+#include <QShortcut>
 #include "config_dialog.h"
 #include "audio_track.h"
 #include "audio_file_decoding_process.h"
@@ -272,7 +273,7 @@ class Gui : QObject
     QGraphicsView                 *deck2_view;
     QGraphicsScene                *deck1_scene;
     QWidget                       *window;
-    Config_dialog                 *config;
+    Config_dialog                 *config_dialog;
     QString                        window_style;
     QTreeView                     *file_browser;
     QDialog                       *about_dialog;
@@ -302,6 +303,16 @@ class Gui : QObject
     QFileSystemModel              *file_system_model;
     int                           *dscratch_ids;
     Application_settings          *settings;
+    QShortcut                     *shortcut_switch_playback;
+    QShortcut                     *shortcut_collapse_browser;
+    QShortcut                     *shortcut_load_audio_file;
+    QShortcut                     *shortcut_go_to_begin;
+    QShortcut                     *shortcut_set_cue_point;
+    QShortcut                     *shortcut_go_to_cue_point;
+    QShortcut                     *shortcut_load_sample_file_1;
+    QShortcut                     *shortcut_load_sample_file_2;
+    QShortcut                     *shortcut_load_sample_file_3;
+    QShortcut                     *shortcut_load_sample_file_4;
 
  public:
     Gui(Application_settings           *in_settings,

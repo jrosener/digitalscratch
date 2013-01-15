@@ -122,7 +122,19 @@ Gui::Gui(Application_settings           *in_settings,
     this->decks_remaining_time[1] = new Remaining_time();
 
     // Init config dialog.
-    this->config = NULL;
+    this->config_dialog = NULL;
+
+    // Init shortcuts.
+    this->shortcut_switch_playback    = new QShortcut(this->window);
+    this->shortcut_collapse_browser   = new QShortcut(this->file_browser);
+    this->shortcut_load_audio_file    = new QShortcut(this->file_browser);
+    this->shortcut_go_to_begin        = new QShortcut(this->window);
+    this->shortcut_set_cue_point      = new QShortcut(this->window);
+    this->shortcut_go_to_cue_point    = new QShortcut(this->window);
+    this->shortcut_load_sample_file_1 = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_2 = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
 
     // Apply application settings.
     if (this->apply_application_settings() != true)
@@ -149,7 +161,7 @@ Gui::~Gui()
 
     // Cleanup.
     delete this->file_browser;
-    delete this->config;
+    delete this->config_dialog;
     delete this->file_system_model;
     delete this->window;
     delete [] this->decks_remaining_time;
@@ -216,6 +228,18 @@ Gui::apply_application_settings()
         }
     }
 
+    // Change shortcuts.
+    this->shortcut_switch_playback->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK)));
+    this->shortcut_collapse_browser->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)));
+    this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
+    this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
+    this->shortcut_set_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)));
+    this->shortcut_go_to_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK)));
+    this->shortcut_load_sample_file_1->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)));
+    this->shortcut_load_sample_file_2->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)));
+    this->shortcut_load_sample_file_3->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)));
+    this->shortcut_load_sample_file_4->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4)));
+
     qDebug() << "Gui::apply_application_settings done.";
 
     return true;
@@ -227,15 +251,15 @@ Gui::show_config_window()
     qDebug() << "Gui::show_config_window...";
 
     // Create a configuration dialog.
-    if (this->config != NULL)
+    if (this->config_dialog != NULL)
     {
-        delete this->config;
+        delete this->config_dialog;
     }
-    this->config = new Config_dialog(this->window,
+    this->config_dialog = new Config_dialog(this->window,
                                      this->settings);
 
     // Apply application settings if dialog is closed by OK.
-    if (this->config->show_config_dialog() == QDialog::Accepted)
+    if (this->config_dialog->show() == QDialog::Accepted)
     {
         if (this->apply_application_settings() != true)
         {
@@ -652,9 +676,8 @@ Gui::create_main_window()
     // Deck and sampler selection.
     ////////////////////////////////////////////////////////////////////////////
 
-    // Create keyboard shortcut to switch selection of decks/samplers.
-    QShortcut* shortcut_select_deck = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK)), this->window);
-    QObject::connect(shortcut_select_deck, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
+    // Connect keyboard shortcut to switch selection of decks/samplers.
+    QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
 
     // Create mouse action to select deck/sampler.
     QObject::connect(this->deck1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
@@ -708,23 +731,17 @@ Gui::create_main_window()
     this->file_browser->header()->hide();
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // Create a keyboard shortcut that collapse tree.
-    QShortcut* shortcut = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)), this->file_browser);
-    QObject::connect(shortcut, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
+    // Connect the keyboard shortcut that collapse tree.
+    QObject::connect(this->shortcut_collapse_browser, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
 
-    // Create keyboard shortcuts to start decoding process on selected file.
-    QShortcut* shortcut_load_audio_file = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)), this->file_browser);
-    QObject::connect(shortcut_load_audio_file, SIGNAL(activated()), this, SLOT(run_audio_file_decoding_process()));
+    // Connect the keyboard shortcut to start decoding process on selected file.
+    QObject::connect(this->shortcut_load_audio_file, SIGNAL(activated()), this, SLOT(run_audio_file_decoding_process()));
 
-    // Create keyboard shortcuts to start decoding for the sampler.
-    QShortcut* shortcut_load_sample_file_1 = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)), this->file_browser);
-    QShortcut* shortcut_load_sample_file_2 = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)), this->file_browser);
-    QShortcut* shortcut_load_sample_file_3 = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)), this->file_browser);
-    QShortcut* shortcut_load_sample_file_4 = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4)), this->file_browser);
-    QObject::connect(shortcut_load_sample_file_1, SIGNAL(activated()), this, SLOT(run_sample_1_decoding_process()));
-    QObject::connect(shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
-    QObject::connect(shortcut_load_sample_file_3, SIGNAL(activated()), this, SLOT(run_sample_3_decoding_process()));
-    QObject::connect(shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
+    // Connect keyboard shortcuts to start decoding for the sampler.
+    QObject::connect(this->shortcut_load_sample_file_1, SIGNAL(activated()), this, SLOT(run_sample_1_decoding_process()));
+    QObject::connect(this->shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
+    QObject::connect(this->shortcut_load_sample_file_3, SIGNAL(activated()), this, SLOT(run_sample_3_decoding_process()));
+    QObject::connect(this->shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
 
 
     // Create layout and group box for file browser.
@@ -932,16 +949,13 @@ Gui::create_main_window()
                      this,                 SLOT(deck2_jump_to_position(float)));
 
     // Keyboard shortcut to go back to the beginning of the track.
-    QShortcut* deck_shortcut_go_to_begin = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)), this->window);
-    QObject::connect(deck_shortcut_go_to_begin, SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
+    QObject::connect(this->shortcut_go_to_begin, SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
 
     // Keyboard shortcut to set a cue point.
-    QShortcut* deck_shortcut_set_cue_point = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)), this->window);
-    QObject::connect(deck_shortcut_set_cue_point, SIGNAL(activated()), this, SLOT(deck_set_cue_point()));
+    QObject::connect(this->shortcut_set_cue_point, SIGNAL(activated()), this, SLOT(deck_set_cue_point()));
 
     // Keyboard shortcut to play from a cue point.
-    QShortcut* deck_shortcut_go_to_cue_point = new QShortcut(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK)), this->window);
-    QObject::connect(deck_shortcut_go_to_cue_point, SIGNAL(activated()), this, SLOT(deck_go_to_cue_point()));
+    QObject::connect(this->shortcut_go_to_cue_point, SIGNAL(activated()), this, SLOT(deck_go_to_cue_point()));
 
 
     ////////////////////////////////////////////////////////////////////////////
