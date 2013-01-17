@@ -34,12 +34,13 @@
 #include <QDialog>
 #include <QTabWidget>
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QLabel>
 #include <QGridLayout>
 #include <QSettings>
+#include <QPushButton>
+#include <QtDebug>
 #include "config_dialog.h"
 #include <digital_scratch_api.h>
 #include <iostream>
@@ -61,16 +62,16 @@ Config_dialog::Config_dialog(QWidget              *parent,
     this->low_pass_filter_max_speed_usage    = new QLineEdit();
 
     // Init keyboard shortcuts widgets.
-    this->kb_switch_playback          = new QLineEdit();
-    this->kb_load_track_on_deck       = new QLineEdit();
-    this->kb_play_begin_track_on_deck = new QLineEdit();
-    this->kb_set_cue_point_on_deck    = new QLineEdit();
-    this->kb_play_cue_point_on_deck   = new QLineEdit();
-    this->kb_collapse_browse          = new QLineEdit();
-    this->kb_load_track_on_sampler1   = new QLineEdit();
-    this->kb_load_track_on_sampler2   = new QLineEdit();
-    this->kb_load_track_on_sampler3   = new QLineEdit();
-    this->kb_load_track_on_sampler4   = new QLineEdit();
+    this->kb_switch_playback          = new ShortcutQLabel();
+    this->kb_load_track_on_deck       = new ShortcutQLabel();
+    this->kb_play_begin_track_on_deck = new ShortcutQLabel();
+    this->kb_set_cue_point_on_deck    = new ShortcutQLabel();
+    this->kb_play_cue_point_on_deck   = new ShortcutQLabel();
+    this->kb_collapse_browse          = new ShortcutQLabel();
+    this->kb_load_track_on_sampler1   = new ShortcutQLabel();
+    this->kb_load_track_on_sampler2   = new ShortcutQLabel();
+    this->kb_load_track_on_sampler3   = new ShortcutQLabel();
+    this->kb_load_track_on_sampler4   = new ShortcutQLabel();
 
     // Init gui style selection widget.
     this->gui_style_select = new QComboBox();
@@ -103,6 +104,18 @@ Config_dialog::~Config_dialog()
     delete this->max_nb_speed_for_stability;
     delete this->nb_cycle_before_changing_direction;
     delete this->low_pass_filter_max_speed_usage;
+
+    delete this->kb_switch_playback;
+    delete this->kb_load_track_on_deck;
+    delete this->kb_play_begin_track_on_deck;
+    delete this->kb_set_cue_point_on_deck;
+    delete this->kb_play_cue_point_on_deck;
+    delete this->kb_collapse_browse;
+    delete this->kb_load_track_on_sampler1;
+    delete this->kb_load_track_on_sampler2;
+    delete this->kb_load_track_on_sampler3;
+    delete this->kb_load_track_on_sampler4;
+
     delete this->gui_style_select;
 
     return;
@@ -374,4 +387,93 @@ Config_dialog::show()
     this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
 
     return this->exec();
+}
+
+ShortcutQLabel::ShortcutQLabel() : QLabel()
+{
+    qDebug() << "ShortcutQLabel::ShortcutQLabel: create object...";
+
+    this->ready_to_capture = false;
+
+    qDebug() << "ShortcutQLabel::ShortcutQLabel: create object done.";
+
+    return;
+}
+
+ShortcutQLabel::~ShortcutQLabel()
+{
+    qDebug() << "ShortcutQLabel::ShortcutQLabel: delete object...";
+
+    qDebug() << "ShortcutQLabel::ShortcutQLabel: delete object done.";
+
+    return;
+}
+
+void
+ShortcutQLabel::mousePressEvent(QMouseEvent *in_mouse_event)
+
+{
+    qDebug() << "ShortcutQLabel::mousePressEvent: x=" << in_mouse_event->x() << "  capturing keyboard... ";
+
+    // Store current text to get it back if cancel.
+    this->old_text = this->text();
+
+    // Ask to press a key.
+    this->setText(tr("Press a key or Esc to cancel"));
+
+    // Capture keyboard.
+    this->ready_to_capture = true;
+    this->grabKeyboard();
+}
+
+
+void
+ShortcutQLabel::keyPressEvent(QKeyEvent *in_key_event)
+{
+    if (this->ready_to_capture == true)
+    {
+        int keyInt = in_key_event->key();
+        Qt::Key key = static_cast<Qt::Key>(keyInt);
+
+        if (key == Qt::Key_Escape)
+        {
+            // Stop capture.
+            this->ready_to_capture = false;
+            this->releaseKeyboard();
+            qDebug() << "ShortcutQLabel::keyPressEvent: keyboard capture done";
+
+            // Keep previous shortcut.
+            this->setText(this->old_text);
+        }
+        else
+        {
+            if (key != Qt::Key_unknown &&
+                key != Qt::Key_Control &&
+                key != Qt::Key_Shift &&
+                key != Qt::Key_Alt &&
+                key != Qt::Key_Meta)
+            {
+                // check for a combination of user clicks
+                Qt::KeyboardModifiers modifiers = in_key_event->modifiers();
+                if(modifiers & Qt::ShiftModifier)
+                    keyInt += Qt::SHIFT;
+                if(modifiers & Qt::ControlModifier)
+                    keyInt += Qt::CTRL;
+                if(modifiers & Qt::AltModifier)
+                    keyInt += Qt::ALT;
+                if(modifiers & Qt::MetaModifier)
+                    keyInt += Qt::META;
+
+                qDebug() << "ShortcutQLabel::keyPressEvent: Keysequence:" << QKeySequence(keyInt).toString(QKeySequence::NativeText);
+
+                // Stop capture.
+                this->ready_to_capture = false;
+                this->releaseKeyboard();
+                qDebug() << "ShortcutQLabel::keyPressEvent: keyboard capture done";
+
+                // Set new shortcut.
+                this->setText(QKeySequence(keyInt).toString(QKeySequence::NativeText));
+            }
+        }
+    }
 }

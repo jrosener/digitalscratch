@@ -92,8 +92,8 @@ Audio_track::get_samples()
 unsigned int
 Audio_track::get_end_of_samples()
 {
-    qDebug() << "Audio_track::get_end_of_samples...";
-    qDebug() << "Audio_track::get_end_of_samples done.";
+//    qDebug() << "Audio_track::get_end_of_samples...";
+//    qDebug() << "Audio_track::get_end_of_samples done.";
 
     return this->end_of_samples;
 }
@@ -125,8 +125,8 @@ Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
 unsigned int
 Audio_track::get_max_nb_samples()
 {
-    qDebug() << "Audio_track::get_max_nb_samples...";
-    qDebug() << "Audio_track::get_max_nb_samples done.";
+//    qDebug() << "Audio_track::get_max_nb_samples...";
+//    qDebug() << "Audio_track::get_max_nb_samples done.";
 
     return this->max_nb_samples;
 }

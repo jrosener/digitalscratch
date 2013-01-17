@@ -39,11 +39,33 @@
 #include <QString>
 #include <QCloseEvent>
 #include <QWidget>
+#include <QLabel>
 #include "application_settings.h"
 
 #define ICON PIXMAPS_PATH "/digitalscratch-icon.png"
 
 using namespace std;
+
+class ShortcutQLabel : public QLabel
+{
+    Q_OBJECT
+
+ public:
+    ShortcutQLabel();
+    virtual ~ShortcutQLabel();
+
+ private:
+    bool    ready_to_capture;
+    QString old_text;
+
+ signals:
+    void clicked();
+
+ protected:
+    void mousePressEvent(QMouseEvent *in_mouse_event);
+    void keyPressEvent(QKeyEvent *in_key_event);
+    //bool event(QEvent *e);
+};
 
 class Config_dialog : public QDialog
 {
@@ -63,16 +85,16 @@ class Config_dialog : public QDialog
     QLineEdit            *max_nb_speed_for_stability;
     QLineEdit            *nb_cycle_before_changing_direction;
     QLineEdit            *low_pass_filter_max_speed_usage;
-    QLineEdit            *kb_switch_playback;
-    QLineEdit            *kb_load_track_on_deck;
-    QLineEdit            *kb_play_begin_track_on_deck;
-    QLineEdit            *kb_set_cue_point_on_deck;
-    QLineEdit            *kb_play_cue_point_on_deck;
-    QLineEdit            *kb_collapse_browse;
-    QLineEdit            *kb_load_track_on_sampler1;
-    QLineEdit            *kb_load_track_on_sampler2;
-    QLineEdit            *kb_load_track_on_sampler3;
-    QLineEdit            *kb_load_track_on_sampler4;
+    ShortcutQLabel       *kb_switch_playback;
+    ShortcutQLabel       *kb_load_track_on_deck;
+    ShortcutQLabel       *kb_play_begin_track_on_deck;
+    ShortcutQLabel       *kb_set_cue_point_on_deck;
+    ShortcutQLabel       *kb_play_cue_point_on_deck;
+    ShortcutQLabel       *kb_collapse_browse;
+    ShortcutQLabel       *kb_load_track_on_sampler1;
+    ShortcutQLabel       *kb_load_track_on_sampler2;
+    ShortcutQLabel       *kb_load_track_on_sampler3;
+    ShortcutQLabel       *kb_load_track_on_sampler4;
     Application_settings *settings;
 
  public:
