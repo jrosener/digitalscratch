@@ -7,6 +7,8 @@ release/
 *.so.*
 digitalscratch
 !digitalscratch/
+*-Debug/
+*-Release/
 
 # Qt user project #
 ###################

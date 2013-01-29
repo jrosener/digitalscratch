@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <iterator>
 
 using namespace std;
 
@@ -283,7 +284,7 @@ void Coded_vinyl::delete_total_input_samples()
 }
 
 void Coded_vinyl::add_new_input_samples(vector<float> &input_samples_1,
-                                                vector<float> &input_samples_2)
+                                        vector<float> &input_samples_2)
 {
     // Check if total_input_samples tables are large enough.
     if (this->total_input_samples_1.capacity()
@@ -301,7 +302,7 @@ void Coded_vinyl::add_new_input_samples(vector<float> &input_samples_1,
 }
 
 void Coded_vinyl::channels_extreme_list_fill(vector<float> &input_samples_1,
-                                                     vector<float> &input_samples_2)
+                                             vector<float> &input_samples_2)
 {
     // remove old extremes from left and right lists
     this->remove_old_extremes_from_lists();

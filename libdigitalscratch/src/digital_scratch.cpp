@@ -33,6 +33,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
+#include <iterator>
 
 using namespace std;
 

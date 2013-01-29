@@ -33,6 +33,7 @@
 #include "application_settings.h"
 #include "digital_scratch_api.h"
 #include <iostream>
+#include <QDir>
 
 Application_settings::Application_settings()
 {
@@ -65,7 +66,7 @@ Application_settings::init_settings()
     //
 
     if (this->settings->contains(BASE_DIR_PATH_CFG) == false) {
-        this->settings->setValue(BASE_DIR_PATH_CFG, BASE_DIR_PATH_DEFAULT);
+        this->settings->setValue(BASE_DIR_PATH_CFG, QDir::homePath());
     }
     if (this->settings->contains(GUI_STYLE_CFG) == false) {
         this->settings->setValue(GUI_STYLE_CFG, GUI_STYLE_DEFAULT);

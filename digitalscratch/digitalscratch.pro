@@ -7,8 +7,14 @@ DEFINES += VERSION=$${VERSION}
 
 ##############################
 # Paths
-PIXMAPS_PATH = $${PREFIX}/share/pixmaps
-BIN_PATH = $${PREFIX}/bin
+unix {
+    PIXMAPS_PATH = $${PREFIX}/share/pixmaps
+    BIN_PATH = $${PREFIX}/bin
+}
+win32 {
+    PIXMAPS_PATH = pixmaps
+    BIN_PATH = .
+}
 DEFINES += PIXMAPS_PATH=\\"\"$$PIXMAPS_PATH\\"\"
 
 # Installation paths and files.
@@ -58,29 +64,56 @@ SOURCES += src/main.cpp \
 
 #############################
 # External libraries for audio decoding
-LIBS += -lmpg123 -lFLAC
+win32 {
+    LIBS += -L$$PWD/win-external/mpg123/lib/ -llibmpg123
+    INCLUDEPATH += $$PWD/win-external/mpg123/include
+    DEPENDPATH += $$PWD/win-external/mpg123/include
+}
+unix {
+    LIBS += -lmpg123
+}
+win32 {
+    LIBS += -L$$PWD/win-external/flac-1.2.1-devel-win/lib/ -llibFLAC
+    INCLUDEPATH += $$PWD/win-external/flac-1.2.1-devel-win/include
+    DEPENDPATH += $$PWD/win-external/flac-1.2.1-devel-win/include
+}
+unix {
+    LIBS += -lFLAC
+}
 #############################
 
 #############################
 # Digital-scratch library
-LIBS += -ldigitalscratch
+win32 {
+    LIBS += -L$$PWD/win-external/libdigitalscratch/lib/ -ldigitalscratch1
+    INCLUDEPATH += $$PWD/win-external/libdigitalscratch/include
+    DEPENDPATH += $$PWD/win-external/libdigitalscratch/include
+}
+unix {
+    LIBS += -ldigitalscratch
+}
 #############################
 
 #############################
 # Lib sample rate
-LIBS += -lsamplerate
+win32 {
+    LIBS += -L$$PWD/win-external/samplerate-0.1.8/lib/ -llibsamplerate-0
+    INCLUDEPATH += $$PWD/win-external/samplerate-0.1.8/include
+    DEPENDPATH += $$PWD/win-external/samplerate-0.1.8/include
+}
+unix {
+    LIBS += -lsamplerate
+}
 #############################
 
 #############################
-# Libmpg123
-# FIXME: looks like it does not link properly on Ubuntu 64 bits
-#        with this option enabled.
-#DEFINES += _FILE_OFFSET_BITS=64
-#############################
-
-#############################
-# Jack
+# Jack lib
 DEFINES += USE_JACK
+win32 {
+    LIBS += -L$$PWD/win-external/jack-1.9.9/lib/ -llibjack
+    INCLUDEPATH += $$PWD/win-external/jack-1.9.9/includes
+    DEPENDPATH += $$PWD/win-external/jack-1.9.9/includes
+}
 unix {
     LIBS += -ljack -lpthread -lrt
 }
@@ -101,6 +134,38 @@ else {
 # Enable multi-threading support for QT
 CONFIG += qt thread
 #############################
+
+############################
+# Copy necessary files to run on windows
+win32 {
+    DLLS = \
+        $${PWD}/win-external/mpg123/lib/libmpg123.dll \
+        $${PWD}/win-external/flac-1.2.1-devel-win/lib/libFLAC.dll \
+        $${PWD}/win-external/libdigitalscratch/lib/digitalscratch1.dll \
+        $${PWD}/win-external/samplerate-0.1.8/lib/libsamplerate-0.dll \
+        $${PWD}/win-external/jack-1.9.9/lib/libjack.dll
+    DESTDIR_WIN = $${DESTDIR}
+    CONFIG(debug, debug|release) {
+        DESTDIR_WIN += debug
+        DLLS += %QTDIR%/bin/QtCored4.dll \
+                %QTDIR%/bin/QtGuid4.dll
+    } else {
+        DESTDIR_WIN += release
+        DLLS += %QTDIR%/bin/QtCore4.dll \
+                %QTDIR%/bin/QtGui4.dll
+    }
+    DLLS ~= s,/,\\,g
+    DESTDIR_WIN ~= s,/,\\,g
+    for(FILE, DLLS){
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_WIN}) $$escape_expand(\\n\\t)
+    }
+
+    # Copy pixmaps
+    DIR = $${PWD}\\$${PIXMAPS_PATH}
+    DIR ~= s,/,\\,g
+    QMAKE_POST_LINK += xcopy /y /e $$quote($${DIR}) $$quote($${DESTDIR_WIN}\\$${PIXMAPS_PATH}\\) $$escape_expand(\\n\\t)
+}
+############################
 
 OTHER_FILES += \
     TODO \

@@ -41,7 +41,6 @@ using namespace std;
 #define APPLICATION_NAME      "digitalscratch"
 
 #define BASE_DIR_PATH_CFG     "player/base_dir_path"
-#define BASE_DIR_PATH_DEFAULT "/home"
 
 #define GUI_STYLE_CFG         "player/gui_style_select"
 #define GUI_STYLE_DEFAULT     "no style"

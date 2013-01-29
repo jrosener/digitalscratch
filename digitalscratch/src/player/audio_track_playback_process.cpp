@@ -650,7 +650,7 @@ Audio_track_playback_process::change_position(unsigned short int  in_deck_index,
 
     // If difference is big then jump to the needle position,
     // else modify speed to catch again the needle position.
-    if (fabs(diff) > POSITION_MIN_DISTANCE_TO_JUMP)
+    if (fabsl(diff) > POSITION_MIN_DISTANCE_TO_JUMP)
     {
         // We jump.
         this->current_samples[in_deck_index] = vinyl_pos;
