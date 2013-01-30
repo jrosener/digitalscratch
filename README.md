@@ -24,10 +24,10 @@ Digital-Scratch also provides a player which uses the library: _digitalscratch_.
 ### Software dependencies
 
 _libdigitalscratch_ (motion detection) is based on:
-* [Qt 4.x](http://qt.digia.com/)
+* [Qt 4.x](http://qt-project.org)
 
 _digitalscratch_ (audio player) is based on:
-* [Qt 4.x](http://qt.digia.com/)
+* [Qt 4.x](http://qt-project.org)
 * [mpg123](http://www.mpg123.de/)
 * [FLAC](http://flac.sourceforge.net/)
 * [Sample rate library](http://www.mega-nerd.com/SRC/)

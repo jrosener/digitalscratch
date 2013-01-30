@@ -13,7 +13,7 @@
 
 [GNU/Linux]
 - GCC (g++-4.x): http://gcc.gnu.org/
-- Qt SDK (qt4.x): http://qt.nokia.com/downloads
+- Qt SDK (qt4.x): http://qt-project.org
 
 [Ubuntu 11.04]
 - build-essential

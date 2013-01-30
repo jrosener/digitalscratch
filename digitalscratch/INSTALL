@@ -12,7 +12,7 @@
 
 [GNU/Linux]
 - GCC (g++-4.x):           http://gcc.gnu.org
-- Qt SDK (qt4.x):          http://qt.nokia.com/downloads
+- Qt SDK (qt4.x):          http://qt-project.org
 - mpg123 library:          http://www.mpg123.de
 - FLAC library:            http://flac.sourceforge.net
 - Digital Scratch library: http://www.digital-scratch.org
