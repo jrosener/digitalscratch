@@ -115,6 +115,7 @@ Config_dialog::~Config_dialog()
     delete this->kb_load_track_on_sampler2;
     delete this->kb_load_track_on_sampler3;
     delete this->kb_load_track_on_sampler4;
+    delete this->shortcut_reset_to_default;
 
     delete this->gui_style_select;
 
@@ -137,6 +138,21 @@ Config_dialog::show_browse_window()
     }
 
     return true;
+}
+
+void Config_dialog::reset_shortcuts()
+{
+    // Reset all keyboard shortcuts to their default values.
+    this->kb_switch_playback->setText(KB_SWITCH_PLAYBACK_DEFAULT);
+    this->kb_load_track_on_deck->setText(KB_LOAD_TRACK_ON_DECK_DEFAULT);
+    this->kb_play_begin_track_on_deck->setText(KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
+    this->kb_set_cue_point_on_deck->setText(KB_SET_CUE_POINT_ON_DECK_DEFAULT);
+    this->kb_play_cue_point_on_deck->setText(KB_PLAY_CUE_POINT_ON_DECK_DEFAULT);
+    this->kb_collapse_browse->setText(KB_COLLAPSE_BROWSER_DEFAULT);
+    this->kb_load_track_on_sampler1->setText(KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
+    this->kb_load_track_on_sampler2->setText(KB_LOAD_TRACK_ON_SAMPLER2_DEFAULT);
+    this->kb_load_track_on_sampler3->setText(KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT);
+    this->kb_load_track_on_sampler4->setText(KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
 }
 
 void
@@ -313,28 +329,38 @@ Config_dialog::show()
     shortcuts_layout->addWidget(this->kb_play_cue_point_on_deck, 5, 1);
 
     QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"));
-    shortcuts_layout->addWidget(kb_collapse_browse_label, 1, 2);
-    shortcuts_layout->addWidget(this->kb_collapse_browse, 1, 3);
+    shortcuts_layout->addWidget(kb_collapse_browse_label, 1, 3);
+    shortcuts_layout->addWidget(this->kb_collapse_browse, 1, 4);
 
     QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"));
-    shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 2, 2);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 2, 3);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 2, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 2, 4);
 
     QLabel *kb_load_track_on_sampler2_label = new QLabel(tr("Load track on sampler 2"));
-    shortcuts_layout->addWidget(kb_load_track_on_sampler2_label, 3, 2);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler2, 3, 3);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler2_label, 3, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler2, 3, 4);
 
     QLabel *kb_load_track_on_sampler3_label = new QLabel(tr("Load track on sampler 3"));
-    shortcuts_layout->addWidget(kb_load_track_on_sampler3_label, 4, 2);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler3, 4, 3);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler3_label, 4, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler3, 4, 4);
 
     QLabel *kb_load_track_on_sampler4_label = new QLabel(tr("Load track on sampler 4"));
-    shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 5, 2);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 5, 3);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 5, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 5, 4);
+
+    shortcuts_layout->setColumnStretch(0, 10);
+    shortcuts_layout->setColumnStretch(1, 15);
+    shortcuts_layout->setColumnStretch(2, 10);
+    shortcuts_layout->setColumnStretch(3, 10);
+    shortcuts_layout->setColumnStretch(4, 15);
+
+    this->shortcut_reset_to_default = new QPushButton();
+    this->shortcut_reset_to_default->setText(tr("Reset to default"));
+    shortcuts_layout->addWidget(this->shortcut_reset_to_default, 6, 0);
+    QObject::connect(this->shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
 
     QWidget *shortcuts_tab = new QWidget();
     shortcuts_tab->setLayout(shortcuts_layout);
-
 
 
     //

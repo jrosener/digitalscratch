@@ -99,6 +99,7 @@ class Config_dialog : public QDialog
     ShortcutQLabel       *kb_load_track_on_sampler2;
     ShortcutQLabel       *kb_load_track_on_sampler3;
     ShortcutQLabel       *kb_load_track_on_sampler4;
+    QPushButton          *shortcut_reset_to_default;
     Application_settings *settings;
 
  public:
@@ -114,6 +115,7 @@ class Config_dialog : public QDialog
 
  private slots:
     bool show_browse_window();
+    void reset_shortcuts();
 };
 
 #endif /* CONFIG_DIALOG_H_ */
