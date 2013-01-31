@@ -222,6 +222,15 @@ using namespace std;
                                border:        1px solid gray;\
                                border-radius: 1px;\
                            }\
+                           ShortcutQLabel\
+                           {\
+                               border:        1px solid gray;\
+                               border-radius: 1px;\
+                           }\
+                           ShortcutQLabel:hover\
+                           {\
+                               border: 2px solid gray;\
+                           }\
                           "
 
 class PlaybackQGroupBox : public QGroupBox

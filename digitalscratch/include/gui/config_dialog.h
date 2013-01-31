@@ -55,8 +55,13 @@ class ShortcutQLabel : public QLabel
     virtual ~ShortcutQLabel();
 
  private:
-    bool    ready_to_capture;
+    bool    capturing;
     QString old_text;
+
+ private:
+    void start_capture();
+    void cancel_capture();
+    void finish_capture(int in_key);
 
  signals:
     void clicked();
@@ -64,7 +69,6 @@ class ShortcutQLabel : public QLabel
  protected:
     void mousePressEvent(QMouseEvent *in_mouse_event);
     void keyPressEvent(QKeyEvent *in_key_event);
-    //bool event(QEvent *e);
 };
 
 class Config_dialog : public QDialog

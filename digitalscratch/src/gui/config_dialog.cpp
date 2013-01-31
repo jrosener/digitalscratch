@@ -386,6 +386,9 @@ Config_dialog::show()
     this->kb_load_track_on_sampler3->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3));
     this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
 
+    // Cancel any key capture if user click somewhere in the window.
+
+
     return this->exec();
 }
 
@@ -393,7 +396,7 @@ ShortcutQLabel::ShortcutQLabel() : QLabel()
 {
     qDebug() << "ShortcutQLabel::ShortcutQLabel: create object...";
 
-    this->ready_to_capture = false;
+    this->capturing = false;
 
     qDebug() << "ShortcutQLabel::ShortcutQLabel: create object done.";
 
@@ -410,11 +413,8 @@ ShortcutQLabel::~ShortcutQLabel()
 }
 
 void
-ShortcutQLabel::mousePressEvent(QMouseEvent *in_mouse_event)
-
+ShortcutQLabel::start_capture()
 {
-    qDebug() << "ShortcutQLabel::mousePressEvent: x=" << in_mouse_event->x() << "  capturing keyboard... ";
-
     // Store current text to get it back if cancel.
     this->old_text = this->text();
 
@@ -422,28 +422,75 @@ ShortcutQLabel::mousePressEvent(QMouseEvent *in_mouse_event)
     this->setText(tr("Press a key or Esc to cancel"));
 
     // Capture keyboard.
-    this->ready_to_capture = true;
+    this->capturing = true;
     this->grabKeyboard();
+    this->grabMouse();
+
+    qDebug() << "ShortcutQLabel::start_capture: capturing keyboard... ";
+
+    return;
+}
+
+void
+ShortcutQLabel::cancel_capture()
+{
+    this->capturing = false;
+    this->releaseKeyboard();
+    this->releaseMouse();
+
+    // Keep previous shortcut.
+    this->setText(this->old_text);
+
+    qDebug() << "ShortcutQLabel::cancel_capture: keyboard capture canceled";
+
+    return;
+}
+
+void
+ShortcutQLabel::finish_capture(int in_key)
+{
+    this->capturing = false;
+    this->releaseKeyboard();
+    this->releaseMouse();
+
+    // Set new shortcut.
+    this->setText(QKeySequence(in_key).toString(QKeySequence::NativeText));
+
+    qDebug() << "ShortcutQLabel::cancel_capture: keyboard capture done with " << QKeySequence(in_key).toString(QKeySequence::NativeText);
+
+    return;
+}
+
+void
+ShortcutQLabel::mousePressEvent(QMouseEvent *in_mouse_event)
+
+{
+    qDebug() << "ShortcutQLabel::mousePressEvent: x=" << in_mouse_event->x() << "  capturing keyboard... ";
+
+    if (this->capturing == false)
+    {
+        this->start_capture();
+    }
+    else
+    {
+        // Was capturing, user clicked some where, so cancel capture.
+        this->cancel_capture();
+    }
 }
 
 
 void
 ShortcutQLabel::keyPressEvent(QKeyEvent *in_key_event)
 {
-    if (this->ready_to_capture == true)
+    if (this->capturing == true)
     {
         int keyInt = in_key_event->key();
         Qt::Key key = static_cast<Qt::Key>(keyInt);
 
         if (key == Qt::Key_Escape)
         {
-            // Stop capture.
-            this->ready_to_capture = false;
-            this->releaseKeyboard();
-            qDebug() << "ShortcutQLabel::keyPressEvent: keyboard capture done";
-
-            // Keep previous shortcut.
-            this->setText(this->old_text);
+            // Cancel capture.
+            this->cancel_capture();
         }
         else
         {
@@ -466,13 +513,8 @@ ShortcutQLabel::keyPressEvent(QKeyEvent *in_key_event)
 
                 qDebug() << "ShortcutQLabel::keyPressEvent: Keysequence:" << QKeySequence(keyInt).toString(QKeySequence::NativeText);
 
-                // Stop capture.
-                this->ready_to_capture = false;
-                this->releaseKeyboard();
-                qDebug() << "ShortcutQLabel::keyPressEvent: keyboard capture done";
-
-                // Set new shortcut.
-                this->setText(QKeySequence(keyInt).toString(QKeySequence::NativeText));
+                // Stop capture and show key sequence.
+                this->finish_capture(keyInt);
             }
         }
     }
