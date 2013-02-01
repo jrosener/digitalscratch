@@ -51,30 +51,28 @@ Config_dialog::Config_dialog(QWidget              *parent,
     this->settings = in_settings;
 
     // Init motion detection parameters widgets.
-    this->base_dir_path                      = new QLineEdit();
-    this->extreme_min                        = new QLineEdit();
-    this->max_nb_buffer                      = new QLineEdit();
-    this->max_buffer_coeff                   = new QLineEdit();
-    this->max_speed_diff                     = new QLineEdit();
-    this->slow_speed_algo_usage              = new QLineEdit();
-    this->max_nb_speed_for_stability         = new QLineEdit();
-    this->nb_cycle_before_changing_direction = new QLineEdit();
-    this->low_pass_filter_max_speed_usage    = new QLineEdit();
+    this->base_dir_path                      = new QLineEdit(this);
+    this->extreme_min                        = new QLineEdit(this);
+    this->max_speed_diff                     = new QLineEdit(this);
+    this->slow_speed_algo_usage              = new QLineEdit(this);
+    this->max_nb_speed_for_stability         = new QLineEdit(this);
+    this->nb_cycle_before_changing_direction = new QLineEdit(this);
+    this->low_pass_filter_max_speed_usage    = new QLineEdit(this);
 
     // Init keyboard shortcuts widgets.
-    this->kb_switch_playback          = new ShortcutQLabel();
-    this->kb_load_track_on_deck       = new ShortcutQLabel();
-    this->kb_play_begin_track_on_deck = new ShortcutQLabel();
-    this->kb_set_cue_point_on_deck    = new ShortcutQLabel();
-    this->kb_play_cue_point_on_deck   = new ShortcutQLabel();
-    this->kb_collapse_browse          = new ShortcutQLabel();
-    this->kb_load_track_on_sampler1   = new ShortcutQLabel();
-    this->kb_load_track_on_sampler2   = new ShortcutQLabel();
-    this->kb_load_track_on_sampler3   = new ShortcutQLabel();
-    this->kb_load_track_on_sampler4   = new ShortcutQLabel();
+    this->kb_switch_playback          = new ShortcutQLabel(this);
+    this->kb_load_track_on_deck       = new ShortcutQLabel(this);
+    this->kb_play_begin_track_on_deck = new ShortcutQLabel(this);
+    this->kb_set_cue_point_on_deck    = new ShortcutQLabel(this);
+    this->kb_play_cue_point_on_deck   = new ShortcutQLabel(this);
+    this->kb_collapse_browse          = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler1   = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler2   = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler3   = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler4   = new ShortcutQLabel(this);
 
     // Init gui style selection widget.
-    this->gui_style_select = new QComboBox();
+    this->gui_style_select = new QComboBox(this);
     QList<QString> *available_gui_styles = this->settings->get_available_gui_styles();
     for (int i = 0; i < available_gui_styles->size(); i++)
     {
@@ -82,7 +80,7 @@ Config_dialog::Config_dialog(QWidget              *parent,
     }
 
     // Init vinyl type selection widget.
-    this->vinyl_type_select = new QComboBox();
+    this->vinyl_type_select = new QComboBox(this);
     QList<QString> *available_vinyl_types = this->settings->get_available_vinyl_types();
     for (int i = 0; i < available_vinyl_types->size(); i++)
     {
@@ -94,31 +92,6 @@ Config_dialog::Config_dialog(QWidget              *parent,
 
 Config_dialog::~Config_dialog()
 {
-    delete this->base_dir_path;
-    delete this->vinyl_type_select;
-    delete this->extreme_min;
-    delete this->max_nb_buffer;
-    delete this->max_buffer_coeff;
-    delete this->max_speed_diff;
-    delete this->slow_speed_algo_usage;
-    delete this->max_nb_speed_for_stability;
-    delete this->nb_cycle_before_changing_direction;
-    delete this->low_pass_filter_max_speed_usage;
-
-    delete this->kb_switch_playback;
-    delete this->kb_load_track_on_deck;
-    delete this->kb_play_begin_track_on_deck;
-    delete this->kb_set_cue_point_on_deck;
-    delete this->kb_play_cue_point_on_deck;
-    delete this->kb_collapse_browse;
-    delete this->kb_load_track_on_sampler1;
-    delete this->kb_load_track_on_sampler2;
-    delete this->kb_load_track_on_sampler3;
-    delete this->kb_load_track_on_sampler4;
-    delete this->shortcut_reset_to_default;
-
-    delete this->gui_style_select;
-
     return;
 }
 
@@ -176,8 +149,6 @@ Config_dialog::accept()
 
     // Set motion detection settings (check range).
     this->settings->set_extreme_min(this->extreme_min->text().toFloat());
-    this->settings->set_max_nb_buffer(this->max_nb_buffer->text().toInt());
-    this->settings->set_max_buffer_coeff(this->max_buffer_coeff->text().toInt());
     this->settings->set_max_speed_diff(this->max_speed_diff->text().toFloat());
     this->settings->set_slow_speed_algo_usage(this->slow_speed_algo_usage->text().toFloat());
     this->settings->set_max_nb_speed_for_stability(this->max_nb_speed_for_stability->text().toInt());
@@ -219,132 +190,110 @@ Config_dialog::show()
     //
     // Player tab: base directory to browse.
     //
-    QLabel *base_dir_label = new QLabel(tr("Base music directory: "));
+    QLabel *base_dir_label = new QLabel(tr("Base music directory: "), this);
     this->base_dir_path->setMinimumWidth(300);
-    QPushButton *base_dir_button = new QPushButton(tr("Browse..."));
+    QPushButton *base_dir_button = new QPushButton(tr("Browse..."), this);
     QObject::connect(base_dir_button, SIGNAL(clicked()), this, SLOT(show_browse_window()));
 
     // Player tab: select GUI style.
-    QLabel *gui_style_label = new QLabel(tr("GUI style: "));
+    QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
 
     // Player tab: setup layout.
-    QGridLayout *player_tab_layout = new QGridLayout();
+    QGridLayout *player_tab_layout = new QGridLayout(this);
     player_tab_layout->addWidget(base_dir_label,      0, 0);
     player_tab_layout->addWidget(this->base_dir_path, 0, 1);
     player_tab_layout->addWidget(base_dir_button,     0, 2);
     player_tab_layout->addWidget(gui_style_label,     1, 0);
     player_tab_layout->addWidget(this->gui_style_select,    1, 1);
-    QWidget *player_tab = new QWidget();
+    QWidget *player_tab = new QWidget(this);
     player_tab->setLayout(player_tab_layout);
 
 
     //
     // Motion detection tab: provide coded vinyl configuration parameters.
     //
-    QGridLayout *motion_detect_layout = new QGridLayout();
+    QGridLayout *motion_detect_layout = new QGridLayout(this);
 
-    QLabel *vinyl_type_label = new QLabel(tr("Vinyl type: "));
+    QLabel *vinyl_type_label = new QLabel(tr("Vinyl type: "), this);
     motion_detect_layout->addWidget(vinyl_type_label,        0, 0);
     motion_detect_layout->addWidget(this->vinyl_type_select, 0, 1);
 
-    QLabel *extreme_min_label = new QLabel(tr("Minimal detected signal: ]0.0,1.0["));
+    QLabel *extreme_min_label = new QLabel(tr("Minimal detected signal: ]0.0,1.0["), this);
     this->extreme_min->setMinimumWidth(300);
     motion_detect_layout->addWidget(extreme_min_label, 1, 0);
     motion_detect_layout->addWidget(this->extreme_min, 1, 1);
 
-    QLabel *low_pass_filter_max_speed_usage_label = new QLabel(tr("Enable low pass filter on recorded timecode under this speed: ]0.0,2.0["));
+    QLabel *low_pass_filter_max_speed_usage_label = new QLabel(tr("Enable low pass filter on recorded timecode under this speed: ]0.0,2.0["), this);
     this->low_pass_filter_max_speed_usage->setMinimumWidth(300);
     motion_detect_layout->addWidget(low_pass_filter_max_speed_usage_label, 2, 0);
     motion_detect_layout->addWidget(this->low_pass_filter_max_speed_usage, 2, 1);
 
-    // TODO: it seems that changing these value does not affect quality of signal detection, check it.
-    //QLabel *max_nb_buffer_label = new QLabel(tr("Maximum number of buffers used to get the speed: ]0,100["));
-    //this->max_nb_buffer->setMinimumWidth(300);
-    //motion_detect_layout->addWidget(max_nb_buffer_label, 1, 0);
-    //motion_detect_layout->addWidget(this->max_nb_buffer, 1, 1);
-
-    //QLabel *max_buffer_coeff_label = new QLabel(tr("Maximum number of buffers of recorded datas queued: ]0,100["));
-    //this->max_buffer_coeff->setMinimumWidth(300);
-    //motion_detect_layout->addWidget(max_buffer_coeff_label, 2, 0);
-    //motion_detect_layout->addWidget(this->max_buffer_coeff, 2, 1);
-
-    QLabel *max_speed_diff_label = new QLabel(tr("Maximum speed difference allowed beetween 2 speeds: ]0.0,1.0["));
+    QLabel *max_speed_diff_label = new QLabel(tr("Maximum speed difference allowed beetween 2 speeds: ]0.0,1.0["), this);
     this->max_speed_diff->setMinimumWidth(300);
     motion_detect_layout->addWidget(max_speed_diff_label, 3, 0);
     motion_detect_layout->addWidget(this->max_speed_diff, 3, 1);
 
-    QLabel *slow_speed_algo_usage_label = new QLabel(tr("Enable slow speed algo if speed is under this value: ]0.0,1.0["));
+    QLabel *slow_speed_algo_usage_label = new QLabel(tr("Enable slow speed algo if speed is under this value: ]0.0,1.0["), this);
     this->slow_speed_algo_usage->setMinimumWidth(300);
     motion_detect_layout->addWidget(slow_speed_algo_usage_label, 4, 0);
     motion_detect_layout->addWidget(this->slow_speed_algo_usage, 4, 1);
 
-    QLabel *max_nb_speed_for_stability_label = new QLabel(tr("Maximum number of speeds used by speed stability algo: ]0,100["));
+    QLabel *max_nb_speed_for_stability_label = new QLabel(tr("Maximum number of speeds used by speed stability algo: ]0,100["), this);
     this->max_nb_speed_for_stability->setMinimumWidth(300);
     motion_detect_layout->addWidget(max_nb_speed_for_stability_label, 5, 0);
     motion_detect_layout->addWidget(this->max_nb_speed_for_stability, 5, 1);
 
-    QLabel *nb_cycle_before_changing_direction_label = new QLabel(tr("Number of cycles used to keep old direction before switching to new one: ]0,100["));
+    QLabel *nb_cycle_before_changing_direction_label = new QLabel(tr("Number of cycles used to keep old direction before switching to new one: ]0,100["), this);
     this->nb_cycle_before_changing_direction->setMinimumWidth(300);
     motion_detect_layout->addWidget(nb_cycle_before_changing_direction_label, 6, 0);
     motion_detect_layout->addWidget(this->nb_cycle_before_changing_direction, 6, 1);
 
-    // TODO: replace that by speed volume cut value which has to first be moved to digital-scratch library.
-    //QLabel *progressive_volume_coeff_label = new QLabel(tr("Coefficient used to play with volume progressive algo: ]0.0,10000.0["));
-    //this->progressive_volume_coeff->setMinimumWidth(300);
-    //motion_detect_layout->addWidget(progressive_volume_coeff_label, 6, 0);
-    //motion_detect_layout->addWidget(this->progressive_volume_coeff, 6, 1);
-
-    //QLabel *full_volume_amplitude_label = new QLabel(tr("Maximum amplitude volume: ]0.0,100.0[ (100.0 or 1.0 ?)"));
-    //this->full_volume_amplitude->setMinimumWidth(300);
-    //motion_detect_layout->addWidget(full_volume_amplitude_label, 7, 0);
-    //motion_detect_layout->addWidget(this->full_volume_amplitude, 7, 1);
-
-    QWidget *motion_detect_tab = new QWidget();
+    QWidget *motion_detect_tab = new QWidget(this);
     motion_detect_tab->setLayout(motion_detect_layout);
 
 
     //
     // Keyboard shortcuts tab.
     //
-    QGridLayout *shortcuts_layout = new QGridLayout();
+    QGridLayout *shortcuts_layout = new QGridLayout(this);
 
-    QLabel *kb_switch_playback_label = new QLabel(tr("Switch playback"));
+    QLabel *kb_switch_playback_label = new QLabel(tr("Switch playback"), this);
     shortcuts_layout->addWidget(kb_switch_playback_label, 1, 0);
     shortcuts_layout->addWidget(this->kb_switch_playback, 1, 1);
 
-    QLabel *kb_load_track_on_deck_label = new QLabel(tr("Load track"));
+    QLabel *kb_load_track_on_deck_label = new QLabel(tr("Load track"), this);
     shortcuts_layout->addWidget(kb_load_track_on_deck_label, 2, 0);
     shortcuts_layout->addWidget(this->kb_load_track_on_deck, 2, 1);
 
-    QLabel *kb_play_begin_track_on_deck_label = new QLabel(tr("Restart track"));
+    QLabel *kb_play_begin_track_on_deck_label = new QLabel(tr("Restart track"), this);
     shortcuts_layout->addWidget(kb_play_begin_track_on_deck_label, 3, 0);
     shortcuts_layout->addWidget(this->kb_play_begin_track_on_deck, 3, 1);
 
-    QLabel *kb_set_cue_point_on_deck_label = new QLabel(tr("Set cue point"));
+    QLabel *kb_set_cue_point_on_deck_label = new QLabel(tr("Set cue point"), this);
     shortcuts_layout->addWidget(kb_set_cue_point_on_deck_label, 4, 0);
     shortcuts_layout->addWidget(this->kb_set_cue_point_on_deck, 4, 1);
 
-    QLabel *kb_play_cue_point_on_deck_label = new QLabel(tr("Play from cue point"));
+    QLabel *kb_play_cue_point_on_deck_label = new QLabel(tr("Play from cue point"), this);
     shortcuts_layout->addWidget(kb_play_cue_point_on_deck_label, 5, 0);
     shortcuts_layout->addWidget(this->kb_play_cue_point_on_deck, 5, 1);
 
-    QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"));
+    QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"), this);
     shortcuts_layout->addWidget(kb_collapse_browse_label, 1, 3);
     shortcuts_layout->addWidget(this->kb_collapse_browse, 1, 4);
 
-    QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"));
+    QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"), this);
     shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 2, 3);
     shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 2, 4);
 
-    QLabel *kb_load_track_on_sampler2_label = new QLabel(tr("Load track on sampler 2"));
+    QLabel *kb_load_track_on_sampler2_label = new QLabel(tr("Load track on sampler 2"), this);
     shortcuts_layout->addWidget(kb_load_track_on_sampler2_label, 3, 3);
     shortcuts_layout->addWidget(this->kb_load_track_on_sampler2, 3, 4);
 
-    QLabel *kb_load_track_on_sampler3_label = new QLabel(tr("Load track on sampler 3"));
+    QLabel *kb_load_track_on_sampler3_label = new QLabel(tr("Load track on sampler 3"), this);
     shortcuts_layout->addWidget(kb_load_track_on_sampler3_label, 4, 3);
     shortcuts_layout->addWidget(this->kb_load_track_on_sampler3, 4, 4);
 
-    QLabel *kb_load_track_on_sampler4_label = new QLabel(tr("Load track on sampler 4"));
+    QLabel *kb_load_track_on_sampler4_label = new QLabel(tr("Load track on sampler 4"), this);
     shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 5, 3);
     shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 5, 4);
 
@@ -354,12 +303,12 @@ Config_dialog::show()
     shortcuts_layout->setColumnStretch(3, 10);
     shortcuts_layout->setColumnStretch(4, 15);
 
-    this->shortcut_reset_to_default = new QPushButton();
+    this->shortcut_reset_to_default = new QPushButton(this);
     this->shortcut_reset_to_default->setText(tr("Reset to default"));
     shortcuts_layout->addWidget(this->shortcut_reset_to_default, 6, 0);
     QObject::connect(this->shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
 
-    QWidget *shortcuts_tab = new QWidget();
+    QWidget *shortcuts_tab = new QWidget(this);
     shortcuts_tab->setLayout(shortcuts_layout);
 
 
@@ -368,19 +317,21 @@ Config_dialog::show()
     //
 
     // Create 3 tabs: player, sound card and motion detection.
-    QTabWidget *tabs = new QTabWidget();
+    QTabWidget *tabs = new QTabWidget(this);
     tabs->insertTab(0, player_tab, tr("Player"));
     tabs->insertTab(1, motion_detect_tab, tr("Motion detection"));
     tabs->insertTab(2, shortcuts_tab, tr("Shortcuts"));
 
     // 2 buttons: OK and Cancel.
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
-                                                       QDialogButtonBox::Cancel);
+                                                       QDialogButtonBox::Cancel,
+                                                       Qt::Horizontal,
+                                                       this);
     QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     // Create main vertical layout.
-    QVBoxLayout *main_layout = new QVBoxLayout;
+    QVBoxLayout *main_layout = new QVBoxLayout(this);
     main_layout->addWidget(tabs);
     main_layout->addWidget(buttonBox);
 
@@ -392,9 +343,6 @@ Config_dialog::show()
     this->gui_style_select->setCurrentIndex(this->gui_style_select->findText(this->settings->get_gui_style()));
     this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findText(this->settings->get_vinyl_type()));
     this->extreme_min->setText((new QString)->setNum(this->settings->get_extreme_min(), 'f', 3));
-    // TODO: it seems that changing these value does not affect quality of signal detection, check it.
-    //this->max_nb_buffer->setText((new QString)->setNum(this->settings->get_max_nb_buffer()));
-    //this->max_buffer_coeff->setText((new QString)->setNum(this->settings->get_max_buffer_coeff()));
     this->max_speed_diff->setText((new QString)->setNum(this->settings->get_max_speed_diff(), 'f', 3));
     this->slow_speed_algo_usage->setText((new QString)->setNum(this->settings->get_slow_speed_algo_usage(), 'f', 3));
     this->max_nb_speed_for_stability->setText((new QString)->setNum(this->settings->get_max_nb_speed_for_stability()));
@@ -412,13 +360,10 @@ Config_dialog::show()
     this->kb_load_track_on_sampler3->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3));
     this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
 
-    // Cancel any key capture if user click somewhere in the window.
-
-
     return this->exec();
 }
 
-ShortcutQLabel::ShortcutQLabel() : QLabel()
+ShortcutQLabel::ShortcutQLabel(QWidget *parent) : QLabel(parent)
 {
     qDebug() << "ShortcutQLabel::ShortcutQLabel: create object...";
 

@@ -51,7 +51,7 @@ class ShortcutQLabel : public QLabel
     Q_OBJECT
 
  public:
-    ShortcutQLabel();
+    ShortcutQLabel(QWidget *parent=0);
     virtual ~ShortcutQLabel();
 
  private:
@@ -82,8 +82,6 @@ class Config_dialog : public QDialog
     QComboBox            *gui_style_select;
     QComboBox            *vinyl_type_select;
     QLineEdit            *extreme_min;
-    QLineEdit            *max_nb_buffer;
-    QLineEdit            *max_buffer_coeff;
     QLineEdit            *max_speed_diff;
     QLineEdit            *slow_speed_algo_usage;
     QLineEdit            *max_nb_speed_for_stability;
