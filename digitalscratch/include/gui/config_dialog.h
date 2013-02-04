@@ -87,6 +87,7 @@ class Config_dialog : public QDialog
     QLineEdit            *max_nb_speed_for_stability;
     QLineEdit            *nb_cycle_before_changing_direction;
     QLineEdit            *low_pass_filter_max_speed_usage;
+    QPushButton          *motion_params_reset_to_default;
     ShortcutQLabel       *kb_switch_playback;
     ShortcutQLabel       *kb_load_track_on_deck;
     ShortcutQLabel       *kb_play_begin_track_on_deck;
@@ -114,6 +115,7 @@ class Config_dialog : public QDialog
  private slots:
     bool show_browse_window();
     void reset_shortcuts();
+    void reset_motion_detection_params();
 };
 
 #endif /* CONFIG_DIALOG_H_ */

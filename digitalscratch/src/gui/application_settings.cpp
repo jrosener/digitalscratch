@@ -66,7 +66,7 @@ Application_settings::init_settings()
     //
 
     if (this->settings->contains(BASE_DIR_PATH_CFG) == false) {
-        this->settings->setValue(BASE_DIR_PATH_CFG, QDir::homePath());
+        this->settings->setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
     }
     if (this->settings->contains(GUI_STYLE_CFG) == false) {
         this->settings->setValue(GUI_STYLE_CFG, GUI_STYLE_DEFAULT);
@@ -76,31 +76,31 @@ Application_settings::init_settings()
     // Timecode signal detection parameters.
     //
     if (this->settings->contains(VINYL_TYPE_CFG) == false) {
-        this->settings->setValue(VINYL_TYPE_CFG, dscratch_get_default_vinyl_type());
+        this->settings->setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
     }
     if (this->settings->contains(EXTREME_MIN_CFG) == false) {
-        this->settings->setValue(EXTREME_MIN_CFG, (new QString)->setNum(dscratch_get_default_extreme_min(), 'f', 3));
+        this->settings->setValue(EXTREME_MIN_CFG, (new QString)->setNum(this->get_extreme_min_default(), 'f', 3));
     }
     if (this->settings->contains(MAX_NB_BUFFER_CFG) == false) {
-        this->settings->setValue(MAX_NB_BUFFER_CFG, (new QString)->setNum(dscratch_get_default_max_nb_buffer()));
+        this->settings->setValue(MAX_NB_BUFFER_CFG, (new QString)->setNum(this->get_max_nb_buffer_default()));
     }
     if (this->settings->contains(MAX_BUFFER_COEFF_CFG) == false) {
-        this->settings->setValue(MAX_BUFFER_COEFF_CFG, (new QString)->setNum(dscratch_get_default_max_buffer_coeff()));
+        this->settings->setValue(MAX_BUFFER_COEFF_CFG, (new QString)->setNum(this->get_max_buffer_coeff_default()));
     }
     if (this->settings->contains(MAX_SPEED_DIFF_CFG) == false) {
-        this->settings->setValue(MAX_SPEED_DIFF_CFG, (new QString)->setNum(dscratch_get_default_max_speed_diff(), 'f', 3));
+        this->settings->setValue(MAX_SPEED_DIFF_CFG, (new QString)->setNum(this->get_max_speed_diff_default(), 'f', 3));
     }
     if (this->settings->contains(SLOW_SPEED_ALGO_USAGE_CFG) == false) {
-        this->settings->setValue(SLOW_SPEED_ALGO_USAGE_CFG, (new QString)->setNum(dscratch_get_default_slow_speed_algo_usage(), 'f', 3));
+        this->settings->setValue(SLOW_SPEED_ALGO_USAGE_CFG, (new QString)->setNum(this->get_slow_speed_algo_usage_default(), 'f', 3));
     }
     if (this->settings->contains(MAX_NB_SPEED_STABIL_CFG) == false) {
-        this->settings->setValue(MAX_NB_SPEED_STABIL_CFG, (new QString)->setNum(dscratch_get_default_max_nb_speed_for_stability()));
+        this->settings->setValue(MAX_NB_SPEED_STABIL_CFG, (new QString)->setNum(this->get_max_nb_speed_for_stability_default()));
     }
     if (this->settings->contains(NB_CYCLE_CHANGING_DIR_CFG) == false) {
-        this->settings->setValue(NB_CYCLE_CHANGING_DIR_CFG, (new QString)->setNum(dscratch_get_default_nb_cycle_before_changing_direction()));
+        this->settings->setValue(NB_CYCLE_CHANGING_DIR_CFG, (new QString)->setNum(this->get_nb_cycle_before_changing_direction_default()));
     }
     if (this->settings->contains(LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG) == false) {
-        this->settings->setValue(LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG, (new QString)->setNum(dscratch_get_default_low_pass_filter_max_speed_usage(), 'f', 3));
+        this->settings->setValue(LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG, (new QString)->setNum(this->get_low_pass_filter_max_speed_usage_default(), 'f', 3));
     }
 
     //
@@ -151,10 +151,10 @@ Application_settings::set_tracks_base_dir_path(QString in_tracks_base_dir_path)
     this->settings->setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
 }
 
-QList<QString>*
-Application_settings::get_available_vinyl_types()
+QString
+Application_settings::get_tracks_base_dir_path_default()
 {
-    return this->available_vinyl_types;
+    return QDir::homePath();
 }
 
 QList<QString>*
@@ -167,6 +167,12 @@ QString
 Application_settings::get_gui_style()
 {
     return this->settings->value(GUI_STYLE_CFG).toString();
+}
+
+QString
+Application_settings::get_gui_style_default()
+{
+    return GUI_STYLE_DEFAULT;
 }
 
 void
@@ -183,6 +189,12 @@ float
 Application_settings::get_extreme_min()
 {
     return this->settings->value(EXTREME_MIN_CFG).toFloat();
+}
+
+float
+Application_settings::get_extreme_min_default()
+{
+    return dscratch_get_default_extreme_min();
 }
 
 void
@@ -202,6 +214,12 @@ Application_settings::get_max_nb_buffer()
     return this->settings->value(MAX_NB_BUFFER_CFG).toInt();
 }
 
+int
+Application_settings::get_max_nb_buffer_default()
+{
+    return dscratch_get_default_max_nb_buffer();
+}
+
 void
 Application_settings::set_max_nb_buffer(int in_nb_buffer)
 {
@@ -219,6 +237,12 @@ Application_settings::get_max_buffer_coeff()
     return this->settings->value(MAX_BUFFER_COEFF_CFG).toInt();
 }
 
+int
+Application_settings::get_max_buffer_coeff_default()
+{
+    return dscratch_get_default_max_buffer_coeff();
+}
+
 void
 Application_settings::set_max_buffer_coeff(int in_buffer_coeff)
 {
@@ -234,6 +258,12 @@ float
 Application_settings::get_low_pass_filter_max_speed_usage()
 {
     return this->settings->value(LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG).toFloat();
+}
+
+float
+Application_settings::get_low_pass_filter_max_speed_usage_default()
+{
+    return dscratch_get_default_low_pass_filter_max_speed_usage();
 }
 
 void
@@ -263,6 +293,12 @@ Application_settings::get_max_speed_diff()
     return this->settings->value(MAX_SPEED_DIFF_CFG).toFloat();
 }
 
+float
+Application_settings::get_max_speed_diff_default()
+{
+    return dscratch_get_default_max_speed_diff();
+}
+
 void
 Application_settings::set_max_speed_diff(float in_diff)
 {
@@ -278,6 +314,12 @@ float
 Application_settings::get_slow_speed_algo_usage()
 {
     return this->settings->value(SLOW_SPEED_ALGO_USAGE_CFG).toFloat();
+}
+
+float
+Application_settings::get_slow_speed_algo_usage_default()
+{
+    return dscratch_get_default_slow_speed_algo_usage();
 }
 
 void
@@ -297,6 +339,12 @@ Application_settings::get_max_nb_speed_for_stability()
     return this->settings->value(MAX_NB_SPEED_STABIL_CFG).toInt();
 }
 
+int
+Application_settings::get_max_nb_speed_for_stability_default()
+{
+    return dscratch_get_default_max_nb_speed_for_stability();
+}
+
 void
 Application_settings::set_max_nb_speed_for_stability(int in_nb_speed)
 {
@@ -312,6 +360,12 @@ int
 Application_settings::get_nb_cycle_before_changing_direction()
 {
     return this->settings->value(NB_CYCLE_CHANGING_DIR_CFG).toInt();
+}
+
+int
+Application_settings::get_nb_cycle_before_changing_direction_default()
+{
+    return dscratch_get_default_nb_cycle_before_changing_direction();
 }
 
 void
@@ -346,9 +400,21 @@ Application_settings::get_vinyl_type()
     return this->settings->value(VINYL_TYPE_CFG).toString();
 }
 
+QString
+Application_settings::get_vinyl_type_default()
+{
+    return dscratch_get_default_vinyl_type();
+}
+
 void
 Application_settings::set_vinyl_type(QString in_vinyl_type)
 {
     this->settings->setValue(VINYL_TYPE_CFG, in_vinyl_type);
+}
+
+QList<QString>*
+Application_settings::get_available_vinyl_types()
+{
+    return this->available_vinyl_types;
 }
 

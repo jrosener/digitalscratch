@@ -50,14 +50,28 @@ Config_dialog::Config_dialog(QWidget              *parent,
 {
     this->settings = in_settings;
 
+    // Init player parameters.
+    this->base_dir_path    = new QLineEdit(this);
+    this->gui_style_select = new QComboBox(this);
+    QList<QString> *available_gui_styles = this->settings->get_available_gui_styles();
+    for (int i = 0; i < available_gui_styles->size(); i++)
+    {
+        this->gui_style_select->addItem(available_gui_styles->at(i));
+    }
+
     // Init motion detection parameters widgets.
-    this->base_dir_path                      = new QLineEdit(this);
     this->extreme_min                        = new QLineEdit(this);
     this->max_speed_diff                     = new QLineEdit(this);
     this->slow_speed_algo_usage              = new QLineEdit(this);
     this->max_nb_speed_for_stability         = new QLineEdit(this);
     this->nb_cycle_before_changing_direction = new QLineEdit(this);
     this->low_pass_filter_max_speed_usage    = new QLineEdit(this);
+    this->vinyl_type_select                  = new QComboBox(this);
+    QList<QString> *available_vinyl_types    = this->settings->get_available_vinyl_types();
+    for (int i = 0; i < available_vinyl_types->size(); i++)
+    {
+        this->vinyl_type_select->addItem(available_vinyl_types->at(i));
+    }
 
     // Init keyboard shortcuts widgets.
     this->kb_switch_playback          = new ShortcutQLabel(this);
@@ -69,23 +83,7 @@ Config_dialog::Config_dialog(QWidget              *parent,
     this->kb_load_track_on_sampler1   = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler2   = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler3   = new ShortcutQLabel(this);
-    this->kb_load_track_on_sampler4   = new ShortcutQLabel(this);
-
-    // Init gui style selection widget.
-    this->gui_style_select = new QComboBox(this);
-    QList<QString> *available_gui_styles = this->settings->get_available_gui_styles();
-    for (int i = 0; i < available_gui_styles->size(); i++)
-    {
-        this->gui_style_select->addItem(available_gui_styles->at(i));
-    }
-
-    // Init vinyl type selection widget.
-    this->vinyl_type_select = new QComboBox(this);
-    QList<QString> *available_vinyl_types = this->settings->get_available_vinyl_types();
-    for (int i = 0; i < available_vinyl_types->size(); i++)
-    {
-        this->vinyl_type_select->addItem(available_vinyl_types->at(i));
-    }
+    this->kb_load_track_on_sampler4   = new ShortcutQLabel(this);    
 
     return;
 }
@@ -111,6 +109,18 @@ Config_dialog::show_browse_window()
     }
 
     return true;
+}
+
+void Config_dialog::reset_motion_detection_params()
+{
+    // Reset all motion detection parameters to their default values.
+    this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findText(this->settings->get_vinyl_type_default()));
+    this->extreme_min->setText((new QString)->setNum(this->settings->get_extreme_min_default(), 'f', 3));
+    this->max_speed_diff->setText((new QString)->setNum(this->settings->get_max_speed_diff_default(), 'f', 3));
+    this->slow_speed_algo_usage->setText((new QString)->setNum(this->settings->get_slow_speed_algo_usage_default(), 'f', 3));
+    this->max_nb_speed_for_stability->setText((new QString)->setNum(this->settings->get_max_nb_speed_for_stability_default()));
+    this->nb_cycle_before_changing_direction->setText((new QString)->setNum(this->settings->get_nb_cycle_before_changing_direction_default()));
+    this->low_pass_filter_max_speed_usage->setText((new QString)->setNum(this->settings->get_low_pass_filter_max_speed_usage_default(), 'f', 3));
 }
 
 void Config_dialog::reset_shortcuts()
@@ -200,11 +210,11 @@ Config_dialog::show()
 
     // Player tab: setup layout.
     QGridLayout *player_tab_layout = new QGridLayout(this);
-    player_tab_layout->addWidget(base_dir_label,      0, 0);
-    player_tab_layout->addWidget(this->base_dir_path, 0, 1);
-    player_tab_layout->addWidget(base_dir_button,     0, 2);
-    player_tab_layout->addWidget(gui_style_label,     1, 0);
-    player_tab_layout->addWidget(this->gui_style_select,    1, 1);
+    player_tab_layout->addWidget(base_dir_label,         0, 0);
+    player_tab_layout->addWidget(this->base_dir_path,    0, 1);
+    player_tab_layout->addWidget(base_dir_button,        0, 2);
+    player_tab_layout->addWidget(gui_style_label,        1, 0);
+    player_tab_layout->addWidget(this->gui_style_select, 1, 1);
     QWidget *player_tab = new QWidget(this);
     player_tab->setLayout(player_tab_layout);
 
@@ -247,6 +257,11 @@ Config_dialog::show()
     this->nb_cycle_before_changing_direction->setMinimumWidth(300);
     motion_detect_layout->addWidget(nb_cycle_before_changing_direction_label, 6, 0);
     motion_detect_layout->addWidget(this->nb_cycle_before_changing_direction, 6, 1);
+
+    this->motion_params_reset_to_default = new QPushButton(this);
+    this->motion_params_reset_to_default->setText(tr("Reset to default"));
+    motion_detect_layout->addWidget(this->motion_params_reset_to_default, 7, 0, Qt::AlignLeft);
+    QObject::connect(this->motion_params_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_motion_detection_params()));
 
     QWidget *motion_detect_tab = new QWidget(this);
     motion_detect_tab->setLayout(motion_detect_layout);
@@ -305,7 +320,7 @@ Config_dialog::show()
 
     this->shortcut_reset_to_default = new QPushButton(this);
     this->shortcut_reset_to_default->setText(tr("Reset to default"));
-    shortcuts_layout->addWidget(this->shortcut_reset_to_default, 6, 0);
+    shortcuts_layout->addWidget(this->shortcut_reset_to_default, 6, 0, Qt::AlignLeft);
     QObject::connect(this->shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
 
     QWidget *shortcuts_tab = new QWidget(this);
