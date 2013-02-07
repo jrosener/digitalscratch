@@ -231,6 +231,18 @@ using namespace std;
                            {\
                                border: 2px solid gray;\
                            }\
+                           QSlider::groove:horizontal {\
+                               border:     1px solid gray;\
+                               height:     1px;\
+                               background: black;\
+                           }\
+                           QSlider::handle:horizontal {\
+                               background:    qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #737373, stop: 1 black);\
+                               border:        1px solid gray;\
+                               width:         10px;\
+                               margin:        -9px 0;\
+                               border-radius: 2px;\
+                           }\
                           "
 
 class PlaybackQGroupBox : public QGroupBox
