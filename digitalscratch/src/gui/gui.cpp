@@ -362,6 +362,12 @@ Gui::show_about_window()
     QLabel *description = new QLabel(tr("A vinyl emulation software."));
     description->setAlignment(Qt::AlignHCenter);
 
+    QLabel *web_site = new QLabel("<a style=\"color: orange\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
+    web_site->setAlignment(Qt::AlignHCenter);
+    web_site->setTextFormat(Qt::RichText);
+    web_site->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    web_site->setOpenExternalLinks(true);
+
     QLabel *credit = new QLabel(tr("Copyright (C) 2003-2013 Julien Rosener"));
     credit->setAlignment(Qt::AlignHCenter);
 
@@ -371,7 +377,8 @@ Gui::show_about_window()
                                      (at your option) any later version.<br/><br/>"));
     license->setTextFormat(Qt::RichText);
 
-    QLabel *built = new QLabel(tr("Built with:"));
+    QLabel *built = new QLabel("<b>" + tr("Built with:") + "</b>");
+    built->setTextFormat(Qt::RichText);
     char *dscratch_version;
     dscratch_get_version(&dscratch_version);
     QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_version)).toUtf8());
@@ -380,6 +387,13 @@ Gui::show_about_window()
     QLabel *libsamplerate_version = new QLabel((QString("- ") + QString(src_get_version())).toUtf8());
     QLabel *libjack_version = new QLabel((QString("- libjack v") + QString(jack_get_version_string())).toUtf8());
     QLabel *qt_version = new QLabel((QString("- Qt v") + QString(qVersion())).toUtf8());
+
+    QLabel *credits = new QLabel("<br/><b>" + tr("Credits:") + "</b>");
+    credits->setTextFormat(Qt::RichText);
+    QLabel *icons = new QLabel("- Devine icons: <a style=\"color: grey\" href=\"http://ipapun.deviantart.com\">http://ipapun.deviantart.com</a>");
+    icons->setTextFormat(Qt::RichText);
+    icons->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    icons->setOpenExternalLinks(true);
 
     // Close button.
     QDialogButtonBox *button = new QDialogButtonBox(QDialogButtonBox::Close);
@@ -390,6 +404,7 @@ Gui::show_about_window()
     layout->addWidget(logo, Qt::AlignHCenter);
     layout->addWidget(name, Qt::AlignHCenter);
     layout->addWidget(description, Qt::AlignHCenter);
+    layout->addWidget(web_site, Qt::AlignHCenter);
     layout->addWidget(credit);
     layout->addWidget(license);
     layout->addWidget(built);
@@ -399,6 +414,8 @@ Gui::show_about_window()
     layout->addWidget(libsamplerate_version);
     layout->addWidget(libjack_version);
     layout->addWidget(qt_version);
+    layout->addWidget(credits);
+    layout->addWidget(icons);
     layout->addWidget(button);
 
     // Put layout in dialog.
