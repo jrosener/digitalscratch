@@ -135,6 +135,7 @@ Gui::Gui(Application_settings           *in_settings,
     this->shortcut_load_sample_file_2 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
+    this->shortcut_fullscreen         = new QShortcut(this->window);
 
     // Apply application settings.
     if (this->apply_application_settings() != true)
@@ -239,6 +240,7 @@ Gui::apply_application_settings()
     this->shortcut_load_sample_file_2->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)));
     this->shortcut_load_sample_file_3->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)));
     this->shortcut_load_sample_file_4->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4)));
+    this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
 
     qDebug() << "Gui::apply_application_settings done.";
 
@@ -271,6 +273,23 @@ Gui::show_config_window()
     qDebug() << "Gui::show_config_window done.";
 
     return true;
+}
+
+void
+Gui::set_fullscreen()
+{
+    qDebug() << "Gui::set_fullscreen...";
+
+    if (this->window->isFullScreen() == false)
+    {
+        this->window->showFullScreen();
+    }
+    else
+    {
+        this->window->showNormal();
+    }
+
+    qDebug() << "Gui::set_fullscreen done.";
 }
 
 void
@@ -458,11 +477,9 @@ Gui::create_main_window()
     QPushButton *config_button = new QPushButton("   " + tr("&Settings"));
     config_button->setObjectName("Configuration_button");
 
-    // Spacer needed to center elements in layout.
-    // Should be replaced by real button for futur use.
-    QPushButton *spacer_button = new QPushButton();
-    spacer_button->setObjectName("Configuration_button");
-    spacer_button->setStyleSheet("color:transparent;background-color:transparent;image:none;border:none;");
+    // Create button to set full screen.
+    QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
+    fullscreen_button->setObjectName("Fullscreen_button");
 
     // Create Digital-scratch logo.
     QPushButton *logo = new QPushButton();
@@ -486,11 +503,11 @@ Gui::create_main_window()
     QHBoxLayout *top_layout = new QHBoxLayout();
 
     // Put configuration button and logo in configuration layout.
-    top_layout->addWidget(config_button, 1,   Qt::AlignLeft);
-    top_layout->addWidget(spacer_button, 1,   Qt::AlignLeft);
-    top_layout->addWidget(logo,          100, Qt::AlignCenter);
-    top_layout->addWidget(help_button,   1,   Qt::AlignRight);
-    top_layout->addWidget(quit_button,   1,   Qt::AlignRight);
+    top_layout->addWidget(config_button,     1,   Qt::AlignLeft);
+    top_layout->addWidget(fullscreen_button, 1,   Qt::AlignLeft);
+    top_layout->addWidget(logo,              100, Qt::AlignCenter);
+    top_layout->addWidget(help_button,       1,   Qt::AlignRight);
+    top_layout->addWidget(quit_button,       1,   Qt::AlignRight);
 
     ////////////////////////////////////////////////////////////////////////////
     // Decks.
@@ -713,7 +730,6 @@ Gui::create_main_window()
         sampler_layout->addWidget(this->sampler2_gbox);
     }
 
-
     ////////////////////////////////////////////////////////////////////////////
     // Deck and sampler selection.
     ////////////////////////////////////////////////////////////////////////////
@@ -817,7 +833,8 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Create help labels and pixmaps.
-    QLabel *help_switch_deck_lb = new QLabel(tr("Switch playback: Space"));
+    QLabel *help_switch_deck_lb = new QLabel(tr("Switch playback: ")
+                                              + this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
     QLabel *help_deck_lb        = new QLabel(tr("Load/Restart on deck: ")
                                               + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
                                               + "/"
@@ -834,16 +851,17 @@ Gui::create_main_window()
                                               + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
                                               + "/"
                                               + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
+    QLabel *help_browse_lb1     = new QLabel(tr("Browse files: Up/Down/Left/Right"));
+    QLabel *help_browse_lb2     = new QLabel(tr("Collapse file tree: ") + this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
+    QLabel *help_fullscreen_lb  = new QLabel(tr("Fullscreen: ") + this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
 
     help_switch_deck_lb->setObjectName("Help");
     help_cue_lb->setObjectName("Help");
     help_deck_lb->setObjectName("Help");
     help_sample_lb->setObjectName("Help");
-
-    QLabel *help_browse_lb1 = new QLabel(tr("Browse files: up/down/left/right"));
-    QLabel *help_browse_lb2 = new QLabel(tr("Collapse file tree: ") + this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
     help_browse_lb1->setObjectName("Help");
     help_browse_lb2->setObjectName("Help");
+    help_fullscreen_lb->setObjectName("Help");
 
     // Setup layout.
     QGridLayout *help_layout = new QGridLayout();
@@ -853,6 +871,7 @@ Gui::create_main_window()
     help_layout->addWidget(help_cue_lb,         1, 1);
     help_layout->addWidget(help_browse_lb1,     0, 2);
     help_layout->addWidget(help_browse_lb2,     1, 2);
+    help_layout->addWidget(help_fullscreen_lb,  0, 3);
 
     // Create help group box.
     QGroupBox *help_groupbox = new QGroupBox(tr("Help"));
@@ -876,6 +895,10 @@ Gui::create_main_window()
 
     // Open configuration window.
     QObject::connect(config_button, SIGNAL(clicked()), this, SLOT(show_config_window()));
+
+    // Set full screen.
+    QObject::connect(fullscreen_button,         SIGNAL(clicked()),   this, SLOT(set_fullscreen()));
+    QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
 
     // Open about window.
     QObject::connect(logo, SIGNAL(clicked()), this, SLOT(show_about_window()));

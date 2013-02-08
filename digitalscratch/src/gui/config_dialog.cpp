@@ -86,6 +86,7 @@ Config_dialog::Config_dialog(QWidget              *parent,
     this->kb_set_cue_point_on_deck    = new ShortcutQLabel(this);
     this->kb_play_cue_point_on_deck   = new ShortcutQLabel(this);
     this->kb_collapse_browse          = new ShortcutQLabel(this);
+    this->kb_fullscreen               = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler1   = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler2   = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler3   = new ShortcutQLabel(this);
@@ -403,6 +404,11 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(kb_play_cue_point_on_deck_label, 5, 0);
     shortcuts_layout->addWidget(this->kb_play_cue_point_on_deck, 5, 1, Qt::AlignVCenter);
 
+    QLabel *kb_fullscreen_label = new QLabel(tr("Full-screen"), this);
+    this->kb_fullscreen->setMinimumWidth(180);
+    shortcuts_layout->addWidget(kb_fullscreen_label, 6, 0);
+    shortcuts_layout->addWidget(this->kb_fullscreen, 6, 1, Qt::AlignVCenter);
+
     QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"), this);
     this->kb_collapse_browse->setMinimumWidth(180);
     shortcuts_layout->addWidget(kb_collapse_browse_label, 1, 3);
@@ -432,7 +438,7 @@ QWidget *Config_dialog::init_tab_shortcuts()
 
     QPushButton *shortcut_reset_to_default = new QPushButton(this);
     shortcut_reset_to_default->setText(tr("Reset to default"));
-    shortcuts_layout->addWidget(shortcut_reset_to_default, 6, 0, Qt::AlignLeft);
+    shortcuts_layout->addWidget(shortcut_reset_to_default, 7, 0, Qt::AlignLeft);
     QObject::connect(shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
 
     // Create tab.
@@ -449,6 +455,7 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_play_begin_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
     this->kb_set_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK));
     this->kb_play_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+    this->kb_fullscreen->setText(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
     this->kb_collapse_browse->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
     this->kb_load_track_on_sampler1->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1));
     this->kb_load_track_on_sampler2->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2));
@@ -494,6 +501,7 @@ void Config_dialog::reset_shortcuts()
     this->kb_play_begin_track_on_deck->setText(KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
     this->kb_set_cue_point_on_deck->setText(KB_SET_CUE_POINT_ON_DECK_DEFAULT);
     this->kb_play_cue_point_on_deck->setText(KB_PLAY_CUE_POINT_ON_DECK_DEFAULT);
+    this->kb_fullscreen->setText(KB_FULLSCREEN_DEFAULT);
     this->kb_collapse_browse->setText(KB_COLLAPSE_BROWSER_DEFAULT);
     this->kb_load_track_on_sampler1->setText(KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
     this->kb_load_track_on_sampler2->setText(KB_LOAD_TRACK_ON_SAMPLER2_DEFAULT);
@@ -534,6 +542,7 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK, this->kb_play_begin_track_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK,    this->kb_set_cue_point_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK,   this->kb_play_cue_point_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_FULLSCREEN,               this->kb_fullscreen->text());
     this->settings->set_keyboard_shortcut(KB_COLLAPSE_BROWSER,         this->kb_collapse_browse->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1,   this->kb_load_track_on_sampler1->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2,   this->kb_load_track_on_sampler2->text());

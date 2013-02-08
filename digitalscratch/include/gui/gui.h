@@ -120,7 +120,7 @@ using namespace std;
                                image:            url(pixmaps/settings.png);\
                                image-position:   left;\
                                height:           25px;\
-                               min-width:        80px;\
+                               min-width:        100px;\
                            }\
                            QPushButton#Configuration_button:hover\
                            {\
@@ -128,6 +128,26 @@ using namespace std;
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
                                image:            url(pixmaps/settings-white.png);\
+                           }\
+                           \
+                           QPushButton#Fullscreen_button\
+                           {\
+                               color:            black;\
+                               background-color: gray;\
+                               padding:          5px;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               image:            url(pixmaps/fullscreen.png);\
+                               image-position:   left;\
+                               height:           25px;\
+                               min-width:        100px;\
+                           }\
+                           QPushButton#Fullscreen_button:hover\
+                           {\
+                               background-color: transparent;\
+                               border:           1px solid orange;\
+                               color:            #f2f2ed;\
+                               image:            url(pixmaps/fullscreen-white.png);\
                            }\
                            \
                            QPushButton#Help_button\
@@ -140,7 +160,7 @@ using namespace std;
                                image:            url(pixmaps/help.png);\
                                image-position:   left;\
                                height:           25px;\
-                               min-width:        80px;\
+                               min-width:        100px;\
                            }\
                            QPushButton#Help_button:hover\
                            {\
@@ -160,7 +180,7 @@ using namespace std;
                                image:            url(pixmaps/exit.png);\
                                image-position:   left;\
                                height:           25px;\
-                               min-width:        80px;\
+                               min-width:        100px;\
                            }\
                            QPushButton#Quit_button:hover\
                            {\
@@ -395,6 +415,7 @@ class Gui : QObject
     QShortcut                     *shortcut_load_sample_file_2;
     QShortcut                     *shortcut_load_sample_file_3;
     QShortcut                     *shortcut_load_sample_file_4;
+    QShortcut                     *shortcut_fullscreen;
 
  public:
     Gui(Application_settings           *in_settings,
@@ -431,6 +452,7 @@ class Gui : QObject
 
  private slots:
     bool show_config_window();
+    void set_fullscreen();
     bool show_about_window();
     void done_about_window();
     bool show_error_window(QString in_error_message);

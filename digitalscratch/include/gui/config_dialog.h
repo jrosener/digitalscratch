@@ -99,6 +99,7 @@ class Config_dialog : public QDialog
     ShortcutQLabel       *kb_play_begin_track_on_deck;
     ShortcutQLabel       *kb_set_cue_point_on_deck;
     ShortcutQLabel       *kb_play_cue_point_on_deck;
+    ShortcutQLabel       *kb_fullscreen;
     ShortcutQLabel       *kb_collapse_browse;
     ShortcutQLabel       *kb_load_track_on_sampler1;
     ShortcutQLabel       *kb_load_track_on_sampler2;

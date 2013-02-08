@@ -137,6 +137,9 @@ Application_settings::init_settings()
     if (this->settings->contains(KB_LOAD_TRACK_ON_SAMPLER4) == false) {
         this->settings->setValue(KB_LOAD_TRACK_ON_SAMPLER4, KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
     }
+    if (this->settings->contains(KB_FULLSCREEN) == false) {
+        this->settings->setValue(KB_FULLSCREEN, KB_FULLSCREEN_DEFAULT);
+    }
 }
 
 QString

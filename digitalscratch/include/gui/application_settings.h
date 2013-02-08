@@ -77,6 +77,8 @@ using namespace std;
 #define KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT   "Q"
 #define KB_LOAD_TRACK_ON_SAMPLER4           "keyboard_shortcuts/kb_load_track_on_sampler4"
 #define KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT   "W"
+#define KB_FULLSCREEN                       "keyboard_shortcuts/kb_fullscreen"
+#define KB_FULLSCREEN_DEFAULT               "F"
 
 class Application_settings : public QObject
 {
