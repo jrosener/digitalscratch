@@ -137,6 +137,7 @@ Gui::Gui(Application_settings           *in_settings,
     this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
     this->shortcut_fullscreen         = new QShortcut(this->window);
+    this->shortcut_help               = new QShortcut(this->window);
 
     // Apply application settings.
     if (this->apply_application_settings() != true)
@@ -242,6 +243,7 @@ Gui::apply_application_settings()
     this->shortcut_load_sample_file_3->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)));
     this->shortcut_load_sample_file_4->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4)));
     this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
+    this->shortcut_help->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_HELP)));
 
     qDebug() << "Gui::apply_application_settings done.";
 
@@ -291,6 +293,23 @@ Gui::set_fullscreen()
     }
 
     qDebug() << "Gui::set_fullscreen done.";
+}
+
+void
+Gui::show_help()
+{
+    qDebug() << "Gui::show_help...";
+
+    if (this->help_groupbox->isHidden() == true)
+    {
+        this->help_groupbox->show();
+    }
+    else
+    {
+        this->help_groupbox->hide();
+    }
+
+    qDebug() << "Gui::show_help done.";
 }
 
 void
@@ -834,51 +853,77 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Create help labels and pixmaps.
-    QLabel *help_switch_deck_lb = new QLabel(tr("Switch playback: ")
-                                              + this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
-    QLabel *help_deck_lb        = new QLabel(tr("Load/Restart on deck: ")
-                                              + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
-                                              + "/"
-                                              + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
-    QLabel *help_cue_lb         = new QLabel(tr("Set/Play cue point on deck: ")
-                                              + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)
-                                              + "/"
-                                              + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
-    QLabel *help_sample_lb      = new QLabel(tr("Load on sampler 1/2/3/4: ")
-                                              + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
-                                              + "/"
-                                              + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
-                                              + "/"
-                                              + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
-                                              + "/"
-                                              + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
-    QLabel *help_browse_lb1     = new QLabel(tr("Browse files: Up/Down/Left/Right"));
-    QLabel *help_browse_lb2     = new QLabel(tr("Collapse file tree: ") + this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
-    QLabel *help_fullscreen_lb  = new QLabel(tr("Fullscreen: ") + this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
+    QLabel *help_switch_deck_lb    = new QLabel(tr("Switch playback"));
+    QLabel *help_switch_deck_value = new QLabel(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
+    QLabel *help_deck_lb           = new QLabel(tr("Load/Restart on deck"));
+    QLabel *help_deck_value        = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
+                                                + "/"
+                                                + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
+    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point on deck"));
+    QLabel *help_cue_value         = new QLabel(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)
+                                                + "/"
+                                                + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+    QLabel *help_sample_lb         = new QLabel(tr("Load on sampler 1/2/3/4"));
+    QLabel *help_sample_value      = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
+                                                + "/"
+                                                + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
+                                                + "/"
+                                                + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
+                                                + "/"
+                                                + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
+    QLabel *help_fullscreen_lb     = new QLabel(tr("Fullscreen"));
+    QLabel *help_fullscreen_value  = new QLabel(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
+    QLabel *help_help_lb           = new QLabel(tr("Help"));
+    QLabel *help_help_value        = new QLabel(this->settings->get_keyboard_shortcut(KB_HELP));
+    QLabel *help_browse_lb1        = new QLabel(tr("Browse files"));
+    QLabel *help_browse_value1     = new QLabel("Up/Down/Left/Right");
+    QLabel *help_browse_lb2        = new QLabel(tr("Collapse file tree"));
+    QLabel *help_browse_value2     = new QLabel(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
 
     help_switch_deck_lb->setObjectName("Help");
     help_cue_lb->setObjectName("Help");
     help_deck_lb->setObjectName("Help");
     help_sample_lb->setObjectName("Help");
+    help_fullscreen_lb->setObjectName("Help");
+    help_help_lb->setObjectName("Help");
     help_browse_lb1->setObjectName("Help");
     help_browse_lb2->setObjectName("Help");
-    help_fullscreen_lb->setObjectName("Help");
 
     // Setup layout.
     QGridLayout *help_layout = new QGridLayout();
-    help_layout->addWidget(help_switch_deck_lb, 0, 0);
-    help_layout->addWidget(help_sample_lb,      1, 0);
-    help_layout->addWidget(help_deck_lb,        0, 1);
-    help_layout->addWidget(help_cue_lb,         1, 1);
-    help_layout->addWidget(help_browse_lb1,     0, 2);
-    help_layout->addWidget(help_browse_lb2,     1, 2);
-    help_layout->addWidget(help_fullscreen_lb,  0, 3);
+    help_layout->addWidget(help_switch_deck_lb,    0, 0);
+    help_layout->addWidget(help_switch_deck_value, 0, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_sample_lb,         1, 0);
+    help_layout->addWidget(help_sample_value,      1, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_deck_lb,           0, 2);
+    help_layout->addWidget(help_deck_value,        0, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_cue_lb,            1, 2);
+    help_layout->addWidget(help_cue_value,         1, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_fullscreen_lb,     0, 4);
+    help_layout->addWidget(help_fullscreen_value,  0, 5, Qt::AlignLeft);
+    help_layout->addWidget(help_help_lb,           1, 4);
+    help_layout->addWidget(help_help_value,        1, 5, Qt::AlignLeft);
+    help_layout->addWidget(help_browse_lb1,        0, 6);
+    help_layout->addWidget(help_browse_value1,     0, 7, Qt::AlignLeft);
+    help_layout->addWidget(help_browse_lb2,        1, 6);
+    help_layout->addWidget(help_browse_value2,     1, 7, Qt::AlignLeft);
+
+    help_layout->setColumnStretch(0, 1);
+    help_layout->setColumnStretch(1, 5);
+    help_layout->setColumnStretch(2, 1);
+    help_layout->setColumnStretch(3, 5);
+    help_layout->setColumnStretch(4, 1);
+    help_layout->setColumnStretch(5, 5);
+    help_layout->setColumnStretch(6, 1);
+    help_layout->setColumnStretch(7, 5);
 
     // Create help group box.
-    QGroupBox *help_groupbox = new QGroupBox(tr("Help"));
+    this->help_groupbox = new QGroupBox();
+    this->help_groupbox->hide();
+    this->help_groupbox->setObjectName("Help");
 
     // Put help horizontal layout in help group box.
-    help_groupbox->setLayout(help_layout);
+    this->help_groupbox->setLayout(help_layout);
 
     ////////////////////////////////////////////////////////////////////////////
     // Bottom bar.
@@ -888,7 +933,7 @@ Gui::create_main_window()
     QHBoxLayout *bottom_layout = new QHBoxLayout;
 
     // Put help group box and configuration in bottom layout.
-    bottom_layout->addWidget(help_groupbox);
+    bottom_layout->addWidget(this->help_groupbox);
 
     ////////////////////////////////////////////////////////////////////////////
     // Make connections.
@@ -903,6 +948,10 @@ Gui::create_main_window()
 
     // Open about window.
     QObject::connect(logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
+
+    // Help button.
+    QObject::connect(help_button,         SIGNAL(clicked()),   this, SLOT(show_help()));
+    QObject::connect(this->shortcut_help, SIGNAL(activated()), this, SLOT(show_help()));
 
     // Quit application.
     QObject::connect(quit_button, SIGNAL(clicked()), this, SLOT(can_close()));
@@ -1027,7 +1076,7 @@ Gui::create_main_window()
     main_layout->addLayout(decks_layout,   30);
     main_layout->addLayout(sampler_layout, 5);
     main_layout->addLayout(file_layout,    65);
-    main_layout->addLayout(bottom_layout,  5);
+    main_layout->addLayout(bottom_layout,  0);
 
     // Display main window.
     this->window->show();

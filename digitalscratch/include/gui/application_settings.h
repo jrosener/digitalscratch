@@ -79,6 +79,8 @@ using namespace std;
 #define KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT   "W"
 #define KB_FULLSCREEN                       "keyboard_shortcuts/kb_fullscreen"
 #define KB_FULLSCREEN_DEFAULT               "F"
+#define KB_HELP                             "keyboard_shortcuts/kb_help"
+#define KB_HELP_DEFAULT                     "H"
 
 class Application_settings : public QObject
 {

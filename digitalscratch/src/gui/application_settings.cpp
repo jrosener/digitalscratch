@@ -140,6 +140,9 @@ Application_settings::init_settings()
     if (this->settings->contains(KB_FULLSCREEN) == false) {
         this->settings->setValue(KB_FULLSCREEN, KB_FULLSCREEN_DEFAULT);
     }
+    if (this->settings->contains(KB_HELP) == false) {
+        this->settings->setValue(KB_HELP, KB_HELP_DEFAULT);
+    }
 }
 
 QString

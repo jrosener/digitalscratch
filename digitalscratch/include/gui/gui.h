@@ -272,10 +272,7 @@ using namespace std;
                            {\
                                font:       10pt;\
                            }\
-                           QLabel#Help\
-                           {\
-                               color: #bfbbbf;\
-                           }\
+                           \
                            QTabBar::tab\
                            {\
                                background:              black;\
@@ -324,6 +321,17 @@ using namespace std;
                                width:         10px;\
                                margin:        -9px 0;\
                                border-radius: 2px;\
+                           }\
+                           \
+                           QGroupBox#Help\
+                           {\
+                               border:           none;\
+                               border-radius:    0px;\
+                               background-color: gray;\
+                           }\
+                           QLabel#Help\
+                           {\
+                               color: black;\
                            }\
                           "
 
@@ -417,6 +425,8 @@ class Gui : QObject
     QShortcut                     *shortcut_load_sample_file_3;
     QShortcut                     *shortcut_load_sample_file_4;
     QShortcut                     *shortcut_fullscreen;
+    QShortcut                     *shortcut_help;
+    QGroupBox                     *help_groupbox;
 
  public:
     Gui(Application_settings           *in_settings,
@@ -454,6 +464,7 @@ class Gui : QObject
  private slots:
     bool show_config_window();
     void set_fullscreen();
+    void show_help();
     bool show_about_window();
     void done_about_window();
     bool show_error_window(QString in_error_message);

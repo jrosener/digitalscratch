@@ -87,6 +87,7 @@ Config_dialog::Config_dialog(QWidget              *parent,
     this->kb_play_cue_point_on_deck   = new ShortcutQLabel(this);
     this->kb_collapse_browse          = new ShortcutQLabel(this);
     this->kb_fullscreen               = new ShortcutQLabel(this);
+    this->kb_help                     = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler1   = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler2   = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler3   = new ShortcutQLabel(this);
@@ -430,6 +431,11 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 5, 3);
     shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 5, 4, Qt::AlignVCenter);
 
+    QLabel *kb_help_label = new QLabel(tr("Help"), this);
+    this->kb_help->setMinimumWidth(180);
+    shortcuts_layout->addWidget(kb_help_label, 6, 3);
+    shortcuts_layout->addWidget(this->kb_help, 6, 4, Qt::AlignVCenter);
+
     shortcuts_layout->setColumnStretch(0, 0);
     shortcuts_layout->setColumnStretch(1, 15);
     shortcuts_layout->setColumnStretch(2, 10);
@@ -461,6 +467,7 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_load_track_on_sampler2->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2));
     this->kb_load_track_on_sampler3->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3));
     this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
+    this->kb_help->setText(this->settings->get_keyboard_shortcut(KB_HELP));
 }
 
 bool
@@ -507,6 +514,7 @@ void Config_dialog::reset_shortcuts()
     this->kb_load_track_on_sampler2->setText(KB_LOAD_TRACK_ON_SAMPLER2_DEFAULT);
     this->kb_load_track_on_sampler3->setText(KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT);
     this->kb_load_track_on_sampler4->setText(KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
+    this->kb_help->setText(KB_HELP_DEFAULT);
 }
 
 void
@@ -548,6 +556,7 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2,   this->kb_load_track_on_sampler2->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3,   this->kb_load_track_on_sampler3->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4,   this->kb_load_track_on_sampler4->text());
+    this->settings->set_keyboard_shortcut(KB_HELP,                     this->kb_help->text());
 
     // Close window.
     this->done(QDialog::Accepted);
