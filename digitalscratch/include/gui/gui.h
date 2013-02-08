@@ -90,6 +90,7 @@ using namespace std;
                                border:           0px;\
                                background-color: transparent;\
                            }\
+                           \
                            QPushButton\
                            {\
                                color:            #bfbbbf;\
@@ -98,7 +99,6 @@ using namespace std;
                                padding:          5px;\
                                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #737373, stop: 1 black);\
                            }\
-                           \
                            QPushButton:hover\
                            {\
                                color:            #bfbbbf;\
@@ -108,6 +108,66 @@ using namespace std;
                            {\
                                color:            black;\
                                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #737373, stop: 1 #b2b2b2);\
+                           }\
+                           \
+                           QPushButton#Configuration_button\
+                           {\
+                               color:            black;\
+                               background-color: gray;\
+                               padding:          5px;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               image:            url(pixmaps/settings.png);\
+                               image-position:   left;\
+                               height:           25px;\
+                               min-width:        80px;\
+                           }\
+                           QPushButton#Configuration_button:hover\
+                           {\
+                               background-color: transparent;\
+                               border:           1px solid orange;\
+                               color:            #f2f2ed;\
+                               image:            url(pixmaps/settings-white.png);\
+                           }\
+                           \
+                           QPushButton#Help_button\
+                           {\
+                               color:            black;\
+                               background-color: gray;\
+                               padding:          5px;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               image:            url(pixmaps/help.png);\
+                               image-position:   left;\
+                               height:           25px;\
+                               min-width:        80px;\
+                           }\
+                           QPushButton#Help_button:hover\
+                           {\
+                               background-color: transparent;\
+                               border:           1px solid orange;\
+                               color:            #f2f2ed;\
+                               image:            url(pixmaps/help-white.png);\
+                           }\
+                           \
+                           QPushButton#Quit_button\
+                           {\
+                               color:            black;\
+                               background-color: gray;\
+                               padding:          5px;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               image:            url(pixmaps/exit.png);\
+                               image-position:   left;\
+                               height:           25px;\
+                               min-width:        80px;\
+                           }\
+                           QPushButton#Quit_button:hover\
+                           {\
+                               background-color: transparent;\
+                               border:           1px solid orange;\
+                               color:            #f2f2ed;\
+                               image:            url(pixmaps/exit-white.png);\
                            }\
                            \
                            QGroupBox\
@@ -224,6 +284,7 @@ using namespace std;
                            }\
                            ShortcutQLabel\
                            {\
+                               padding:       2px;\
                                border:        1px solid gray;\
                                border-radius: 1px;\
                            }\

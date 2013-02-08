@@ -451,6 +451,48 @@ Gui::create_main_window()
     qDebug() << "Gui::create_main_window...";
 
     ////////////////////////////////////////////////////////////////////////////
+    // Configuration + logo.
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Create configuration button.
+    QPushButton *config_button = new QPushButton("   " + tr("&Settings"));
+    config_button->setObjectName("Configuration_button");
+
+    // Spacer needed to center elements in layout.
+    // Should be replaced by real button for futur use.
+    QPushButton *spacer_button = new QPushButton();
+    spacer_button->setObjectName("Configuration_button");
+    spacer_button->setStyleSheet("color:transparent;background-color:transparent;image:none;border:none;");
+
+    // Create Digital-scratch logo.
+    QPushButton *logo = new QPushButton();
+    logo->setObjectName("Logo");
+    logo->setIcon(QIcon(LOGO));
+    logo->setIconSize(QSize(112, 35));
+    logo->setMaximumWidth(112);
+    logo->setMaximumHeight(35);
+    logo->setFlat(true);
+    logo->setFocusPolicy(Qt::NoFocus);
+
+    // Create help button.
+    QPushButton *help_button = new QPushButton("   " + tr("&Help"));
+    help_button->setObjectName("Help_button");
+
+    // Create quit button.
+    QPushButton *quit_button = new QPushButton("   " + tr("&Exit"));
+    quit_button->setObjectName("Quit_button");
+
+    // Create top horizontal layout.
+    QHBoxLayout *top_layout = new QHBoxLayout();
+
+    // Put configuration button and logo in configuration layout.
+    top_layout->addWidget(config_button, 1,   Qt::AlignLeft);
+    top_layout->addWidget(spacer_button, 1,   Qt::AlignLeft);
+    top_layout->addWidget(logo,          100, Qt::AlignCenter);
+    top_layout->addWidget(help_button,   1,   Qt::AlignRight);
+    top_layout->addWidget(quit_button,   1,   Qt::AlignRight);
+
+    ////////////////////////////////////////////////////////////////////////////
     // Decks.
     ////////////////////////////////////////////////////////////////////////////
 
@@ -819,32 +861,6 @@ Gui::create_main_window()
     help_groupbox->setLayout(help_layout);
 
     ////////////////////////////////////////////////////////////////////////////
-    // Configuration + logo.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Create configuration button.
-    QPushButton *config_button = new QPushButton(tr("&Configuration"));
-    config_button->setToolTip(tr("Configure Digital-scratch"));
-
-    // Create Digital-scratch logo.
-    QPushButton *logo = new QPushButton();
-    logo->setObjectName("Logo");
-    logo->setIcon(QIcon(LOGO));
-    logo->setIconSize(QSize(112, 35));
-    logo->setMaximumWidth(112);
-    logo->setMaximumHeight(35);
-    logo->setFlat(true);
-    logo->setFocusPolicy(Qt::NoFocus);
-
-    // Create configuration vertical layout.
-    QVBoxLayout *config_layout = new QVBoxLayout;
-
-    // Put configuration button and logo in configuration layout.
-    config_layout->addWidget(logo, Qt::AlignHCenter);
-    config_layout->addWidget(config_button, Qt::AlignHCenter);
-    config_layout->setAlignment(Qt::AlignHCenter);
-
-    ////////////////////////////////////////////////////////////////////////////
     // Bottom bar.
     ////////////////////////////////////////////////////////////////////////////
 
@@ -852,8 +868,7 @@ Gui::create_main_window()
     QHBoxLayout *bottom_layout = new QHBoxLayout;
 
     // Put help group box and configuration in bottom layout.
-    bottom_layout->addWidget(help_groupbox, 10);
-    bottom_layout->addLayout(config_layout, 1);
+    bottom_layout->addWidget(help_groupbox);
 
     ////////////////////////////////////////////////////////////////////////////
     // Make connections.
@@ -981,10 +996,11 @@ Gui::create_main_window()
     this->window->setLayout(main_layout);
 
     // Put every components in main layout.
-    main_layout->addLayout(decks_layout, 30);
+    main_layout->addLayout(top_layout,     5);
+    main_layout->addLayout(decks_layout,   30);
     main_layout->addLayout(sampler_layout, 5);
-    main_layout->addLayout(file_layout, 65);
-    main_layout->addLayout(bottom_layout, 5);
+    main_layout->addLayout(file_layout,    65);
+    main_layout->addLayout(bottom_layout,  5);
 
     // Display main window.
     this->window->show();
