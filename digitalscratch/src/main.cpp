@@ -178,6 +178,9 @@ int main(int argc, char *argv[])
         qWarning() << "Main: can not start sound card.";
     }
 
+    // Forward the quit call.
+    app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+
     // Start application.
     app.exec();
 

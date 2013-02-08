@@ -49,6 +49,7 @@
 #include <samplerate.h>
 #include <jack/jack.h>
 #include <QSignalMapper>
+#include <QMessageBox>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -903,6 +904,9 @@ Gui::create_main_window()
     // Open about window.
     QObject::connect(logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
 
+    // Quit application.
+    QObject::connect(quit_button, SIGNAL(clicked()), this, SLOT(can_close()));
+
     // Open error window.
     QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
                      this,             SLOT(show_error_window(QString)));
@@ -1033,6 +1037,44 @@ Gui::create_main_window()
     return true;
 }
 
+void
+Gui::can_close()
+{
+    qDebug() << "Gui::can_close...";
+
+    // Show a pop-up asking to confirm to close.
+    QMessageBox msg_box;
+    msg_box.setWindowTitle("DigitalScratch");
+    msg_box.setText(tr("Do you really want to quit DigitalScratch ?"));
+    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setDefaultButton(QMessageBox::Cancel);
+    if (this->window_style == QString(GUI_STYLE_DEFAULT))
+    {
+        msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
+        msg_box.setIcon(QMessageBox::Question);
+    }
+    else if (this->window_style == QString(GUI_STYLE_NB1))
+    {
+        msg_box.setStyleSheet(GUI_STYLE_NB1_CSS);
+        msg_box.setIconPixmap((QPixmap(ICON_HELP)).scaledToWidth(32));
+    }
+    if (this->nb_decks > 1)
+    {
+        msg_box.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        msg_box.setWindowIcon(QIcon(ICON));
+    }
+
+    // Close request confirmed.
+    if (msg_box.exec() == QMessageBox::Ok)
+    {
+        this->window->close();
+    }
+
+    qDebug() << "Gui::can_close done";
+}
 
 bool
 Gui::apply_main_window_style()

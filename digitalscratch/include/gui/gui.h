@@ -65,6 +65,7 @@ using namespace std;
 #define ARROW_CLOSED PIXMAPS_PATH "/digitalscratch-branch-closed.png"
 #define ARROW_OPEN   PIXMAPS_PATH "/digitalscratch-branch-open.png"
 #define V_LINE       PIXMAPS_PATH "/digitalscratch-vline.png"
+#define ICON_HELP    PIXMAPS_PATH "/help-white.png"
 #define GUI_STYLE_DEFAULT_CSS ""
 #define GUI_STYLE_NB1_CSS "*\
                            {\
@@ -499,6 +500,7 @@ class Gui : QObject
     void select_playback_2();
     void hover_playback(int in_deck_index);
     void unhover_playback(int in_deck_index);
+    void can_close();
 };
 
 #endif /* GUI_H_ */
