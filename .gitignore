@@ -9,6 +9,8 @@ digitalscratch
 !digitalscratch/
 *-Debug/
 *-Release/
+*.rc
+*.pdb
 
 # Qt user project #
 ###################

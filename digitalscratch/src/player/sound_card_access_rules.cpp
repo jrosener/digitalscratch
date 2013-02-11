@@ -190,7 +190,7 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
             return false;
         }
     }
-    free(ports);
+    jack_free(ports);
 
     ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
     if (ports == NULL)
@@ -208,7 +208,7 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
             return false;
         }
     }
-    free (ports);
+    jack_free(ports);
 
     qDebug() << "Sound_card_access_rules::start: done.";
 
