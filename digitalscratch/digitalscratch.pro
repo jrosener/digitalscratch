@@ -136,6 +136,11 @@ CONFIG += qt thread
 #############################
 
 ############################
+# Icon for Windows build
+############################
+win32:RC_FILE = digitalscratch_resource.rc
+
+############################
 # Copy necessary files to run on windows
 win32 {
     DLLS = \
