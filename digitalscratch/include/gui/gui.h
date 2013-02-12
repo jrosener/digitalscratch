@@ -66,6 +66,7 @@ using namespace std;
 #define ARROW_OPEN   PIXMAPS_PATH "/digitalscratch-branch-open.png"
 #define V_LINE       PIXMAPS_PATH "/digitalscratch-vline.png"
 #define ICON_HELP    PIXMAPS_PATH "/help-white.png"
+#define ICON_ERROR   PIXMAPS_PATH "/error-white.png"
 #define GUI_STYLE_DEFAULT_CSS ""
 #define GUI_STYLE_NB1_CSS "*\
                            {\

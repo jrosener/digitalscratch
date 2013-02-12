@@ -456,45 +456,34 @@ Gui::show_error_window(QString in_error_message)
 {
     qDebug() << "Gui::show_error_window...";
 
-    // Create error window.
-    this->error_dialog = new QDialog(this->window);
-
-    // Set properties : title, icon.
-    this->error_dialog->setWindowTitle(tr("Digital Scratch error"));
+    // Prepare error window.
+    QMessageBox msg_box;
+    msg_box.setWindowTitle("DigitalScratch");
+    msg_box.setText("<h2>" + tr("Error") + "</h2>"
+                    + "<br/>" + in_error_message
+                    + "<br/><br/>" + "Please fix this issue and restart DigitalScratch.");
+    msg_box.setStandardButtons(QMessageBox::Close);
+    if (this->window_style == QString(GUI_STYLE_DEFAULT))
+    {
+        msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
+        msg_box.setIcon(QMessageBox::Critical);
+    }
+    else if (this->window_style == QString(GUI_STYLE_NB1))
+    {
+        msg_box.setStyleSheet(GUI_STYLE_NB1_CSS);
+        msg_box.setIconPixmap((QPixmap(ICON_ERROR)).scaledToWidth(32, Qt::SmoothTransformation));
+    }
     if (this->nb_decks > 1)
     {
-        this->error_dialog->setWindowIcon(QIcon(ICON_2));
+        msg_box.setWindowIcon(QIcon(ICON_2));
     }
     else
     {
-        this->error_dialog->setWindowIcon(QIcon(ICON));
+        msg_box.setWindowIcon(QIcon(ICON));
     }
 
-
-    //
-    // Set error message.
-    //
-
-    QString title = QString("<h2>Digital Scratch error:</h2>");
-    QLabel *error = new QLabel(tr(title.toUtf8()));
-    QLabel *msg = new QLabel(tr(in_error_message.toUtf8()));
-    QLabel *footer = new QLabel(tr("After fixing issue, restart Digital Scratch."));
-
-    QDialogButtonBox *button = new QDialogButtonBox(QDialogButtonBox::Close);
-    QObject::connect(button, SIGNAL(rejected()), this, SLOT(done_error_window()));
-
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(error, Qt::AlignHCenter);
-    layout->addWidget(msg, Qt::AlignHCenter);
-    layout->addWidget(footer, Qt::AlignHCenter);
-    layout->addWidget(button);
-
-    // Put layout in dialog.
-    this->error_dialog->setLayout(layout);
-    layout->setSizeConstraint(QLayout::SetFixedSize);
-
-    // Show dialog.
-    this->error_dialog->exec();
+    // Show error dialog.
+    msg_box.exec();
 
     qDebug() << "Gui::show_error_window done.";
 
@@ -1122,7 +1111,7 @@ Gui::can_close()
     else if (this->window_style == QString(GUI_STYLE_NB1))
     {
         msg_box.setStyleSheet(GUI_STYLE_NB1_CSS);
-        msg_box.setIconPixmap((QPixmap(ICON_HELP)).scaledToWidth(32));
+        msg_box.setIconPixmap((QPixmap(ICON_HELP)).scaledToWidth(32, Qt::SmoothTransformation));
     }
     if (this->nb_decks > 1)
     {
