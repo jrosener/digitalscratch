@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <?define ProductUpgradeCode = "32318521-631C-4064-88C6-4A54FAA3B383"?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <Product Name='PVsyst' Id='*' UpgradeCode='$(var.ProductUpgradeCode)'
-    Language='1033' Codepage='1252' Version='$(var.ProductVersion)' Manufacturer='PVsyst SA'>
+  <Product Name='DigitalScratch' Id='*' UpgradeCode='$(var.ProductUpgradeCode)'
+    Language='1033' Codepage='1252' Version='$(var.ProductVersion)' Manufacturer='DigitalScratch team'>
 
-    <Package Id='*' Keywords='Installer' Description="PVsyst Installer"
-      Comments='PVsyst is a photovoltaïc software of PVsyst SA' Manufacturer='PVsyst SA'
+    <Package Id='*' Keywords='Installer' Description="DigitalScratch Installer"
+      Comments='DigitalScratch is a vinyl emulation software' Manufacturer='DigitalScratch team'
       InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
-    <Media Id='1' Cabinet='PVsyst.cab' EmbedCab='yes' />
+    <Media Id='1' Cabinet='digitalscratch.cab' EmbedCab='yes' />
     
     <Property Id="UPGRADE" Value="Yes" />
     
@@ -18,74 +18,29 @@
     </Upgrade>
     
     <Property Id="BannerBitmap">bannrbmp</Property>
-    <Binary Id="bannrbmp" SourceFile="Bitmaps\top_banner.bmp" />     
-    <UI>
-      <TextStyle Id="DlgBoldFont" FaceName="Tahoma" Size="8" Bold="yes" />
-      <TextStyle Id="DlgNormalFont" FaceName="Tahoma" Size="8" Bold="yes" />
-            
-      <Dialog Id="InstallDlg" Width="370" Height="270" Title="[ProductName] Setup" NoMinimize="yes">
-        <Control Id="TopBanner" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
-        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>{\DlgBoldFont}Installation setup</Text>
-        </Control>
-        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>Other version of PVsyst has been found on this computer.</Text>
-        </Control>
-        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />       
-        
-        <Control Id="Text1" Type="Text" X="25" Y="70" Width="320" Height="20" NoPrefix="yes">
-          <Text>There is another version of PVsyst, please choose what to do:</Text>
-        </Control>
-        <Control Id="Text2" Type="Text" X="40" Y="90" Width="320" Height="20" NoPrefix="yes">
-          <Text>{\DlgBoldFont}- Upgrade</Text>
-        </Control>
-        <Control Id="Text2.1" Type="Text" X="50" Y="100" Width="320" Height="20" NoPrefix="yes">
-          <Text>Install PVsyst $(var.ProductVersion) and remove ALL existing PVsyst v6.x</Text>
-        </Control>
-        <Control Id="Text3" Type="Text" X="40" Y="120" Width="320" Height="20" NoPrefix="yes">
-          <Text>{\DlgBoldFont}- Parallel Install</Text>
-        </Control>
-        <Control Id="Text3.1" Type="Text" X="50" Y="130" Width="320" Height="20" NoPrefix="yes">
-          <Text>Install PVsyst $(var.ProductVersion) and keep existing PVsyst 6.x</Text>
-        </Control>
-        
-        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-        <Control Id="UpgradeBtn" Type="PushButton" X="190" Y="243" Width="80" Height="17" Default="yes" Text="&amp;Upgrade (default)">
-          <Publish Event="EndDialog" Value="Return" />
-        </Control>
-        <Control Id="ParallelInstallBtn" Type="PushButton" X="280" Y="243" Width="80" Height="17" Default="no" Text="&amp;Parallel Install">
-          <Publish Property="UPGRADE" Value="No">1</Publish>
-          <Publish Event="EndDialog" Value="Return">1</Publish>
-        </Control>  
-      </Dialog>
-      
-      <InstallUISequence>
-        <Show Dialog="InstallDlg" After="FindRelatedProducts">OLDERVERSIONBEINGUPGRADED</Show>
-      </InstallUISequence>
-    </UI>
-          
+    <Binary Id="bannrbmp" SourceFile="top_banner.bmp" />        
     
-    <Icon Id="PVsyst6.exe" SourceFile="PVsystExec\PVsyst6.exe" />
-    <Property Id="ARPPRODUCTICON" Value="PVsyst6.exe"/>
-    <Property Id="ARPHELPLINK" Value="http://www.pvsyst.com/support"/>
-    <Property Id="ARPURLINFOABOUT" Value="http://www.pvsyst.com"/>
+    <Icon Id="digitalscratchIcon.exe" SourceFile="digitalscratch.exe" />
+    <Property Id="ARPPRODUCTICON" Value="digitalscratchIcon.exe"/>
+    <Property Id="ARPHELPLINK" Value="http://www.digital-scratch.org"/>
+    <Property Id="ARPURLINFOABOUT" Value="http://www.digital-scratch.org"/>
     <Property Id="ARPNOREPAIR" Value="1"/>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
     
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
-        <Directory Id='INSTALLDIR' Name='PVsyst$(var.ProductVersion)'>
+        <Directory Id='INSTALLDIR' Name='DigitalScratch $(var.ProductVersion)'>
           <Component Id='MainExecutable' Guid='*'>
-            <File Id='PVsystEXE' Name='Pvsyst6.exe' DiskId='1' Source='PVsystExec\PVsyst6.exe' KeyPath='yes'>
-              <Shortcut Id="startmenuPVsyst6" Directory="ProgramMenuDir" Name="PVsyst $(var.ProductVersion)" WorkingDirectory='INSTALLDIR' Icon="PVsyst6.exe" IconIndex="0" Advertise="yes" />
-              <Shortcut Id="desktopPVsyst6" Directory="DesktopFolder" Name="PVsyst $(var.ProductVersion)" WorkingDirectory='INSTALLDIR' Icon="PVsyst6.exe" IconIndex="0" Advertise="yes" />
+            <File Id='digitalscratchEXE' Name='digitalscratch.exe' DiskId='1' Source='digitalscratch.exe' KeyPath='yes'>
+              <Shortcut Id="startmenuDigitalScratch" Directory="ProgramMenuDir" Name="DigitalScratch $(var.ProductVersion)" WorkingDirectory='INSTALLDIR' Icon="digitalscratchIcon.exe" IconIndex="0" Advertise="yes" />
+              <Shortcut Id="desktopDigitalScratch" Directory="DesktopFolder" Name="DigitalScratch $(var.ProductVersion)" WorkingDirectory='INSTALLDIR' Icon="digitalscratchIcon.exe" IconIndex="0" Advertise="yes" />
             </File>
           </Component>
         </Directory>
       </Directory>
 
       <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="ProgramMenuDir" Name="PVsyst 6">
+        <Directory Id="ProgramMenuDir" Name="DigitalScratch">
           <Component Id="ProgramMenuDir" Guid='*'>
             <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
             <RegistryKey Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\[ProductVersion]">
@@ -103,14 +58,14 @@
         <RemoveExistingProducts After="InstallInitialize">UPGRADE="Yes"</RemoveExistingProducts>
     </InstallExecuteSequence>
 
-    <Feature Id='Complete' Title='PVsyst 6' Description='The complete package.' Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
+    <Feature Id='Complete' Title='DigitalScratch' Description='The complete package.' Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
         <ComponentRef Id='MainExecutable' />
-        <ComponentGroupRef Id='PVsystFiles' />
+        <ComponentGroupRef Id='digitalscratchCG' />
         <ComponentRef Id='ProgramMenuDir' />
     </Feature>    
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-    <WixVariable Id="WixUILicenseRtf" Value="PVsystFiles\LicensingAgreement\licensing_agreement_en.rtf" />
+    <WixVariable Id="WixUILicenseRtf" Value="gpl_license.rtf" />
     <UIRef Id="WixUI_InstallDir" />
     <UIRef Id="WixUI_ErrorProgressText" />
 

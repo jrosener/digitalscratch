@@ -4,7 +4,7 @@
 #  include <winver.h>
 # endif
 
-IDI_ICON1 ICON DISCARDABLE "pixmaps/digitalscratch-icon_2decks.ico"
+IDI_ICON1 ICON DISCARDABLE "pixmaps/digitalscratch.ico"
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 1,1,0,0
 	PRODUCTVERSION 1,1,0,0
