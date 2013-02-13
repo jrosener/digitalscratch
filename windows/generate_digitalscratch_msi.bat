@@ -7,15 +7,25 @@ REM
 REM
 REM Check parameters
 REM
-IF [%1]==[] (
+IF [%2]==[] (
   echo ERROR: Incorrect number of mandatory parameters !
   GOTO usage
 )
 
 REM
-REM Get MSI file name
+REM Get params
 REM
-SET OUTPUT_MSI=%1
+SET VERSION=%1
+SET OUTPUT_MSI=%2
+
+
+echo.
+echo ----------------------------------------------------------------------------------
+echo  Change version in .pro ...
+echo ----------------------------------------------------------------------------------
+echo.
+powershell -command "(Get-Content ..\digitalscratch\digitalscratch.pro) | ForEach-Object { $_ -replace '^VERSION = .+$', 'VERSION = %VERSION%' } | Set-Content ..\digitalscratch\digitalscratch.pro"
+powershell -command "(Get-Content ..\libdigitalscratch\libdigitalscratch.pro) | ForEach-Object { $_ -replace '^VERSION = .+$', 'VERSION = %VERSION%' } | Set-Content ..\libdigitalscratch\libdigitalscratch.pro"
 
 echo.
 echo ----------------------------------------------------------------------------------
@@ -80,7 +90,7 @@ echo ---------------------------------------------------------------------------
 echo.
 del /Q /F %OUTPUT_MSI% 2> NUL
 "C:\Program Files (x86)\WiX Toolset v3.7\bin\heat.exe" dir "..\digitalscratch\release" -srd -cg digitalscratchCG -gg -scom -sreg -sfrag -dr INSTALLDIR -out "digitalscratchFiles.wxsfrg" -var var.digitalscratchFiles
-"C:\Program Files (x86)\WiX Toolset v3.7\bin\candle.exe" -dProductVersion=1.1.0 -ddigitalscratchFiles="..\digitalscratch\release" digitalscratchFiles.wxsfrg msi_config.wxs
+"C:\Program Files (x86)\WiX Toolset v3.7\bin\candle.exe" -dProductVersion=%VERSION% -ddigitalscratchFiles="..\digitalscratch\release" digitalscratchFiles.wxsfrg msi_config.wxs
 "C:\Program Files (x86)\WiX Toolset v3.7\bin\light.exe" -sw -ext WixUIExtension -dWixUIBannerBmp="top_banner.bmp" -dWixUIDialogBmp="side_banner.bmp" -out %OUTPUT_MSI% digitalscratchFiles.wixobj msi_config.wixobj
 del /Q /F *.wixobj 2> NUL
 del /Q /F *.wixpdb 2> NUL
@@ -101,7 +111,7 @@ GOTO end
 
 :usage
 echo.
-echo USAGE: generate_digitalscratch_msi.bat [msi_name]
+echo USAGE: generate_digitalscratch_msi.bat [version] [msi_name]
 echo.
 echo.
 

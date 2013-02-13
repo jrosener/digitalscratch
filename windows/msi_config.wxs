@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='windows-1252'?>
-<?define ProductUpgradeCode = "32318521-631C-4064-88C6-4A54FAA3B383"?>
+<?define ProductUpgradeCode = "0F0CE38F-73D2-41cf-9244-EEE8A737C018"?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <Product Name='DigitalScratch' Id='*' UpgradeCode='$(var.ProductUpgradeCode)'
     Language='1033' Codepage='1252' Version='$(var.ProductVersion)' Manufacturer='DigitalScratch team'>
@@ -10,12 +10,10 @@
 
     <Media Id='1' Cabinet='digitalscratch.cab' EmbedCab='yes' />
     
-    <Property Id="UPGRADE" Value="Yes" />
-    
     <Upgrade Id='$(var.ProductUpgradeCode)'>
-      <UpgradeVersion Minimum="$(var.ProductVersion)" IncludeMinimum="no" OnlyDetect="yes" Property="NEWERVERSIONDETECTED"/>
-      <UpgradeVersion Minimum="0.0.0" Maximum="$(var.ProductVersion)" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED"/>	  
-    </Upgrade>
+         <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='no' />
+         <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND' Minimum='0.0.0' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='no' />
+     </Upgrade>
     
     <Property Id="BannerBitmap">bannrbmp</Property>
     <Binary Id="bannrbmp" SourceFile="top_banner.bmp" />        
@@ -54,8 +52,11 @@
       
     </Directory>
     
+    <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
+    
     <InstallExecuteSequence>
-        <RemoveExistingProducts After="InstallInitialize">UPGRADE="Yes"</RemoveExistingProducts>
+        <Custom Action='NoDowngrade' After='FindRelatedProducts'>NEWERFOUND</Custom>
+        <RemoveExistingProducts After="InstallInitialize" />
     </InstallExecuteSequence>
 
     <Feature Id='Complete' Title='DigitalScratch' Description='The complete package.' Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
