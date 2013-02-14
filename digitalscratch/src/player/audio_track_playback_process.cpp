@@ -763,7 +763,7 @@ Audio_track_playback_process::speed_down(float              *io_speed,
     // Avoid to stop or go back.
     if (*io_speed < SPEED_MIN_TO_GO_DOWN)
     {
-        *io_speed = SPEED_MIN_TO_GO_DOWN;
+        *io_speed = (float)SPEED_MIN_TO_GO_DOWN;
     }
 
     qDebug() << "Audio_track_playback_process::speed_down done.";

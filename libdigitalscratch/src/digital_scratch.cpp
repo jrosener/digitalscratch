@@ -72,8 +72,8 @@ bool Digital_scratch::init(string coded_vinyl_type)
     this->set_playing_parameters_ready(false);
 
     // Set default value for public parameters.
-    this->set_max_speed_diff(DEFAULT_MAX_SPEED_DIFF);
-    this->set_max_slow_speed(DEFAULT_MAX_SLOW_SPEED);
+    this->set_max_speed_diff((float)DEFAULT_MAX_SPEED_DIFF);
+    this->set_max_slow_speed((float)DEFAULT_MAX_SLOW_SPEED);
     this->set_max_nb_buffer(DEFAULT_MAX_NB_BUFFER);
     this->set_max_nb_speed_for_stability(DEFAULT_MAX_NB_SPEED_FOR_STABILITY);
 
@@ -285,14 +285,28 @@ int Digital_scratch::get_max_nb_speed_for_stability()
 
 bool Digital_scratch::enable_position_detection(bool is_enabled)
 {
-    this->is_position_detection_enabled = is_enabled;
+    if (is_enabled == true)
+    {
+        this->is_position_detection_enabled = 1;
+    }
+    else
+    {
+        this->is_position_detection_enabled = 0;
+    }
 
     return true;
 }
 
 bool Digital_scratch::get_position_detection_state()
 {
-    return this->is_position_detection_enabled;
+    if (this->is_position_detection_enabled == 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Digital_scratch::calculate_speed()

@@ -64,17 +64,17 @@ Coded_vinyl::Coded_vinyl()
     this->latest_was_right                = false;
     this->old_volume                      = 0.0;
 
-    this->extreme_min                        = DEFAULT_EXTREME_MIN;
+    this->extreme_min                        = (float)DEFAULT_EXTREME_MIN;
     this->max_buffer_coeff                   = DEFAULT_MAX_BUFFER_COEFF;
     this->nb_cycle_before_changing_direction = DEFAULT_NB_CYCLE_BEFORE_CHANGING_DIRECTION;
-    this->coeff_right_dist_min_bit1_to_bit1  = DEFAULT_COEFF_RIGHT_DIST_MIN_BIT1_TO_BIT1;
-    this->coeff_left_dist_min_bit1_to_bit1   = DEFAULT_COEFF_LEFT_DIST_MIN_BIT1_TO_BIT1;
-    this->coeff_right_dist_max_bit0_to_bit0  = DEFAULT_COEFF_RIGHT_DIST_MAX_BIT0_TO_BIT0;
-    this->coeff_left_dist_max_bit0_to_bit0   = DEFAULT_COEFF_LEFT_DIST_MAX_BIT0_TO_BIT0;
-    this->progressive_volume_coeff           = DEFAULT_PROGRESSIVE_VOLUME_COEFF;
-    this->full_volume_amplitude              = DEFAULT_FULL_VOLUME_AMPLITUDE;
+    this->coeff_right_dist_min_bit1_to_bit1  = (float)DEFAULT_COEFF_RIGHT_DIST_MIN_BIT1_TO_BIT1;
+    this->coeff_left_dist_min_bit1_to_bit1   = (float)DEFAULT_COEFF_LEFT_DIST_MIN_BIT1_TO_BIT1;
+    this->coeff_right_dist_max_bit0_to_bit0  = (float)DEFAULT_COEFF_RIGHT_DIST_MAX_BIT0_TO_BIT0;
+    this->coeff_left_dist_max_bit0_to_bit0   = (float)DEFAULT_COEFF_LEFT_DIST_MAX_BIT0_TO_BIT0;
+    this->progressive_volume_coeff           = (float)DEFAULT_PROGRESSIVE_VOLUME_COEFF;
+    this->full_volume_amplitude              = (float)DEFAULT_FULL_VOLUME_AMPLITUDE;
     this->sample_rate                        = DEFAULT_SAMPLE_RATE;
-    this->low_pass_filter_max_speed_usage    = DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
+    this->low_pass_filter_max_speed_usage    = (float)DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
     this->total_input_samples_1.reserve(512 * this->get_max_buffer_coeff());
     this->total_input_samples_2.reserve(512 * this->get_max_buffer_coeff());
 
@@ -838,14 +838,14 @@ float Coded_vinyl::get_smoothed_volume(float new_volume)
     abs_interval = fabs(interval);
     abs_interval *= 100.0;
 
-    // Reduce interval according to his its value.
-    if (abs_interval >  0.0  && abs_interval < 1.0)  interval /= (this->progressive_volume_coeff/2.0);
-    if (abs_interval >= 1.0  && abs_interval < 2.0)  interval /= (this->progressive_volume_coeff/1.0);
-    if (abs_interval >= 2.0  && abs_interval < 5.0)  interval /= (this->progressive_volume_coeff/3.0);
-    if (abs_interval >= 5.0  && abs_interval < 10.0) interval /= (this->progressive_volume_coeff/5.0);
-    if (abs_interval >= 10.0 && abs_interval < 20.0) interval /= (this->progressive_volume_coeff/10.0);
-    if (abs_interval >= 20.0 && abs_interval < 30.0) interval /= (this->progressive_volume_coeff/30.0);
-    if (abs_interval >= 30.0 && abs_interval < 50.0) interval /= (this->progressive_volume_coeff/50.0);
+    // Reduce interval according to its value.
+    if (abs_interval >  0.0  && abs_interval < 1.0)  interval /= (float)(this->progressive_volume_coeff/2.0);
+    if (abs_interval >= 1.0  && abs_interval < 2.0)  interval /= (float)(this->progressive_volume_coeff/1.0);
+    if (abs_interval >= 2.0  && abs_interval < 5.0)  interval /= (float)(this->progressive_volume_coeff/3.0);
+    if (abs_interval >= 5.0  && abs_interval < 10.0) interval /= (float)(this->progressive_volume_coeff/5.0);
+    if (abs_interval >= 10.0 && abs_interval < 20.0) interval /= (float)(this->progressive_volume_coeff/10.0);
+    if (abs_interval >= 20.0 && abs_interval < 30.0) interval /= (float)(this->progressive_volume_coeff/30.0);
+    if (abs_interval >= 30.0 && abs_interval < 50.0) interval /= (float)(this->progressive_volume_coeff/50.0);
 
     // Get old volume plus reduced interval.
     new_volume = this->old_volume + interval;
@@ -890,7 +890,7 @@ float Coded_vinyl::get_speed()
         && speed_left != 0 && speed_right != 0)
     {
         // get the average speed (between the 2 channels)
-        this->current_speed = (speed_left + speed_right) / 2.0;
+        this->current_speed = (float)((speed_left + speed_right) / 2.0);
 
         // get direction
         short int new_direction = this->get_direction();
@@ -2033,7 +2033,7 @@ bool Coded_vinyl::low_pass_filter(vector<float> &samples,
     }
 
     // get value of coefficient a
-    coeff_a = (1.0/this->get_sample_rate()) / ((1.0/this->get_sample_rate()) + (1.0/(2.0*3.14159*cut_frequency)));
+    coeff_a = (float)((1.0/this->get_sample_rate()) / ((1.0/this->get_sample_rate()) + (1.0/(2.0*3.14159*cut_frequency))));
 
     // get samples_output filtered values
     for (i = 1; i < size; i++)

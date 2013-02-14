@@ -129,7 +129,7 @@ float Final_scratch_vinyl::get_position_from_timecode_value(unsigned int timecod
         if (timecode == timecode_table[i])
         {
             int_position = timecode_table[i+1];
-            time_position = (float)int_position / 48000.0 - 25.0;
+            time_position = (float)((float)int_position / 48000.0 - 25.0);
 
             return time_position;
         }

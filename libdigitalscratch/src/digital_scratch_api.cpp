@@ -491,7 +491,7 @@ int dscratch_get_turntable_name(int    turntable_id,
     name = (char*)malloc(sizeof(char) * size);
 
     // Put turntable name in resulting string.
-    #ifdef __WIN32__ // TODO: to be checked
+    #ifdef WIN32
         strncpy_s(name, size, controller_name, size);
     #else
         strncpy(name, controller_name, size);
@@ -550,8 +550,12 @@ int dscratch_get_vinyl_type(int    turntable_id,
             // Allocate memory for resulting string.
             vinyl_name = (char*)malloc(sizeof(char) * size);
 
-            // Put vinyl name in resulting string.
-            strncpy(vinyl_name, FINAL_SCRATCH_VINYL, size);
+            // Put vinyl name in resulting string.           
+            #ifdef WIN32
+                strncpy_s(vinyl_name, size, FINAL_SCRATCH_VINYL, size);
+            #else
+                strncpy(vinyl_name, FINAL_SCRATCH_VINYL, size);
+            #endif
         }
         else if (dynamic_cast<Serato_vinyl*>(cv) != NULL)
         {
@@ -562,7 +566,11 @@ int dscratch_get_vinyl_type(int    turntable_id,
             vinyl_name = (char*)malloc(sizeof(char) * size);
 
             // Put vinyl name in resulting string.
-            strncpy(vinyl_name, SERATO_VINYL, size);
+            #ifdef WIN32
+                strncpy_s(vinyl_name, size, SERATO_VINYL, size);
+            #else
+                strncpy(vinyl_name, SERATO_VINYL, size);
+            #endif
         }
         else if (dynamic_cast<Mixvibes_vinyl*>(cv) != NULL)
         {
@@ -573,7 +581,11 @@ int dscratch_get_vinyl_type(int    turntable_id,
             vinyl_name = (char*)malloc(sizeof(char) * size);
 
             // Put vinyl name in resulting string.
-            strncpy(vinyl_name, MIXVIBES_VINYL, size);
+            #ifdef WIN32
+                strncpy_s(vinyl_name, size, MIXVIBES_VINYL, size);
+            #else
+                strncpy(vinyl_name, MIXVIBES_VINYLI, size);
+            #endif
         }
         else
         {
@@ -694,7 +706,7 @@ DLLIMPORT float dscratch_get_max_speed_diff(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_max_speed_diff()
 {
-    return DEFAULT_MAX_SPEED_DIFF;
+    return (float)DEFAULT_MAX_SPEED_DIFF;
 }
 
 DLLIMPORT int dscratch_set_slow_speed_algo_usage(int   turntable_id,
@@ -865,7 +877,7 @@ DLLIMPORT float dscratch_get_extreme_min(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_extreme_min()
 {
-    return DEFAULT_EXTREME_MIN;
+    return (float)DEFAULT_EXTREME_MIN;
 }
 
 DLLIMPORT int dscratch_set_max_buffer_coeff(int turntable_id,
@@ -964,7 +976,7 @@ DLLIMPORT float dscratch_get_coeff_right_dist_min_bit1_to_bit1(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_coeff_right_dist_min_bit1_to_bit1()
 {
-    return DEFAULT_COEFF_RIGHT_DIST_MIN_BIT1_TO_BIT1;
+    return (float)DEFAULT_COEFF_RIGHT_DIST_MIN_BIT1_TO_BIT1;
 }
 
 DLLIMPORT int dscratch_set_coeff_left_dist_min_bit1_to_bit1(int   turntable_id,
@@ -997,7 +1009,7 @@ DLLIMPORT float dscratch_get_coeff_left_dist_min_bit1_to_bit1(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_coeff_left_dist_min_bit1_to_bit1()
 {
-    return DEFAULT_COEFF_LEFT_DIST_MIN_BIT1_TO_BIT1;
+    return (float)DEFAULT_COEFF_LEFT_DIST_MIN_BIT1_TO_BIT1;
 }
 
 DLLIMPORT int dscratch_set_coeff_right_dist_max_bit0_to_bit0(int   turntable_id,
@@ -1063,7 +1075,7 @@ DLLIMPORT float dscratch_get_coeff_left_dist_max_bit0_to_bit0(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_coeff_left_dist_max_bit0_to_bit0()
 {
-    return DEFAULT_COEFF_LEFT_DIST_MAX_BIT0_TO_BIT0;
+    return (float)DEFAULT_COEFF_LEFT_DIST_MAX_BIT0_TO_BIT0;
 }
 
 DLLIMPORT int dscratch_set_progressive_volume_coeff(int   turntable_id,
@@ -1129,7 +1141,7 @@ DLLIMPORT float dscratch_get_full_volume_amplitude(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_full_volume_amplitude()
 {
-    return DEFAULT_FULL_VOLUME_AMPLITUDE;
+    return (float)DEFAULT_FULL_VOLUME_AMPLITUDE;
 }
 
 DLLIMPORT int dscratch_set_low_pass_filter_max_speed_usage(int   turntable_id,
@@ -1162,5 +1174,5 @@ DLLIMPORT float dscratch_get_low_pass_filter_max_speed_usage(int turntable_id)
 
 DLLIMPORT float dscratch_get_default_low_pass_filter_max_speed_usage()
 {
-    return DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
+    return (float)DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
 }
