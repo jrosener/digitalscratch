@@ -37,11 +37,11 @@
 #include <QObject>
 #include <QString>
 #include "jack/jack.h"
-typedef jack_client_t *                 AUDIO_STREAM_TYPE;
-typedef JackProcessCallback             AUDIO_CALLBACK_TYPE;
-typedef jack_nframes_t                  AUDIO_CALLBACK_NB_FRAMES_TYPE;
+typedef jack_client_t *     AUDIO_STREAM_TYPE;
+typedef JackProcessCallback AUDIO_CALLBACK_TYPE;
+typedef jack_nframes_t      AUDIO_CALLBACK_NB_FRAMES_TYPE;
 
-#define CLIENT_NAME   "digital-scratch-player"
+#define CLIENT_NAME   "digitalscratch"
 #define INPUT_PORT_1  "left_turntable-left_channel"
 #define INPUT_PORT_2  "left_turntable-right_channel"
 #define INPUT_PORT_3  "right_turntable-left_channel"

@@ -26,7 +26,7 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Creates configuration GUI for Digital-scratch player        */
+/*                Creates configuration GUI for DigitalScratch player         */
 /*                                                                            */
 /*============================================================================*/
 

@@ -59,7 +59,7 @@ Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_par
     this->dscratch_ids = new int[in_nb_decks];
 
     //
-    // Initialize digital-scratch library.
+    // Initialize DigitalScratch library.
     //
     for (unsigned short int i = 0; i < in_nb_decks; i++)
     {
@@ -163,7 +163,7 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
                 }
                 if (volume != NO_NEW_VOLUME_FOUND)
                 {
-                    // TODO: move this job into digital-scratch library.
+                    // TODO: move this job into DigitalScratch library.
                     if (fabs(speed) < SPEED_FOR_VOLUME_CUT)
                     {
                         volume = fabs(speed) / SPEED_FOR_VOLUME_CUT;

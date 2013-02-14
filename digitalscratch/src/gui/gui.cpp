@@ -26,7 +26,7 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Creates GUI for Digital-scratch player                      */
+/*                Creates GUI for DigitalScratch player                       */
 /*                                                                            */
 /*============================================================================*/
 
@@ -337,7 +337,7 @@ Gui::show_about_window()
     this->about_dialog = new QDialog(this->window);
 
     // Set properties : title, icon.
-    this->about_dialog->setWindowTitle(tr("About Digital-scratch"));
+    this->about_dialog->setWindowTitle(tr("About DigitalScratch"));
     if (this->nb_decks > 1)
     {
         this->about_dialog->setWindowIcon(QIcon(ICON_2));
@@ -355,7 +355,7 @@ Gui::show_about_window()
     logo->setPixmap(QPixmap(LOGO));
     logo->setAlignment(Qt::AlignHCenter);
 
-    QString version = QString("<h1>Digital-scratch ") + QString(STR(VERSION)) + QString("</h1>");
+    QString version = QString("<h1>DigitalScratch ") + QString(STR(VERSION)) + QString("</h1>");
     QLabel *name = new QLabel(tr(version.toUtf8()));
     name->setAlignment(Qt::AlignHCenter);
     name->setTextFormat(Qt::RichText);
@@ -501,7 +501,7 @@ Gui::create_main_window()
     QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
     fullscreen_button->setObjectName("Fullscreen_button");
 
-    // Create Digital-scratch logo.
+    // Create DigitalScratch logo.
     QPushButton *logo = new QPushButton();
     logo->setObjectName("Logo");
     logo->setIcon(QIcon(LOGO));
@@ -1056,7 +1056,7 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Create main window.
-    this->window->setWindowTitle(tr("Digital-scratch") + " " + QString(STR(VERSION)));
+    this->window->setWindowTitle(tr("DigitalScratch") + " " + QString(STR(VERSION)));
     this->window->setMinimumSize(800, 480);
     if (this->nb_decks > 1)
     {

@@ -26,7 +26,7 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*           Digital-scratch player application starting point                */
+/*           DigitalScratch player application starting point                 */
 /*                                                                            */
 /*============================================================================*/
 

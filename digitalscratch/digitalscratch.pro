@@ -83,7 +83,7 @@ unix {
 #############################
 
 #############################
-# Digital-scratch library
+# DigitalScratch library
 win32 {
     LIBS += -L$$PWD/win-external/libdigitalscratch/lib/ -ldigitalscratch1
     INCLUDEPATH += $$PWD/win-external/libdigitalscratch/include

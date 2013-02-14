@@ -112,7 +112,7 @@ class Digital_scratch : public Controller
     public:
         /**
          * Constructor.
-         * @param controller_name is the name of this digital-scratch controller.
+         * @param controller_name is the name of this DigitalScratch controller.
          * @param timecoded_vinyl is the Coded_vinyl object used with
          *        Digital_scratch (e.g. Final_scratch_vinyl)
          */

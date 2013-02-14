@@ -17,7 +17,7 @@ Output: motion parameters (speed, direction, needle position).
 A common usage would be to drive an audio player. As a result a DJ is able to
 mix digital audio files using regular vinyl turntables.
 
-Digital-scratch library is under GNU/GPL3 licence.
+DigitalScratch library is under GNU/GPL3 licence.
 
 
 More informations on : http://www.digital-scratch.org

@@ -43,7 +43,7 @@ Sound_card_access_rules::Sound_card_access_rules(unsigned short int in_nb_channe
 
     if ((in_nb_channels == 0) || (in_nb_channels > 4))
     {
-        qFatal("Sound_card_access_rules::Sound_card_access_rules: digital-scratch can only handle 2 decks maximum.");
+        qFatal("Sound_card_access_rules::Sound_card_access_rules: DigitalScratch can only handle 2 decks maximum.");
         return;
     }
 
@@ -120,8 +120,8 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
     qDebug() << "Sound_card_access_rules::start: engine sample rate = " << jack_get_sample_rate(this->stream);
     if (jack_get_sample_rate(this->stream) != 44100)
     {
-        qWarning() << "Sound_card_access_rules::start: Digital-scratch only support sample rate of 44100Hz";
-        emit error_msg(QString("Digital-scratch currently only support sample rate of 44100Hz, please configure/start Jack server properly."));
+        qWarning() << "Sound_card_access_rules::start: DigitalScratch only support sample rate of 44100Hz";
+        emit error_msg(QString("DigitalScratch currently only support sample rate of 44100Hz, please configure/start Jack server properly."));
         return false;
     }
 
