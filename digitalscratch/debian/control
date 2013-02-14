@@ -5,13 +5,13 @@ Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
 Build-Depends: debhelper (>= 8.0.0), libmpg123-dev, libjack-jackd2-dev, libsamplerate0-dev, libflac-dev, libdigitalscratch-dev, qt4-qmake, libqt4-dev
 Standards-Version: 3.9.3
 Homepage: http://www.digital-scratch.org
-Vcs-Svn: svn://svn.gna.org/svn/dscratch/players/digital-scratch-player
+Vcs-Git: git://github.com/jrosener/digitalscratch.git
 
 Package: digitalscratch
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Audio file player driven by vinyl turntable
- Digital Scratch player is an audio file player driven by a vinyl turntable
+ DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
  .
  Requirements:
