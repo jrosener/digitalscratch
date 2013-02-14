@@ -41,7 +41,7 @@ Application_settings::Application_settings()
 
     this->available_gui_styles = new QList<QString>();
     this->available_gui_styles->append(GUI_STYLE_DEFAULT);
-    this->available_gui_styles->append(GUI_STYLE_NB1);
+    this->available_gui_styles->append(GUI_STYLE_DARK);
 
     this->available_vinyl_types = new QList<QString>();
     this->available_vinyl_types->append(FINAL_SCRATCH_VINYL);

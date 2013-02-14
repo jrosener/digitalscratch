@@ -442,36 +442,9 @@ int dscratch_get_number_of_turntables()
     return tab_turntable.size();
 }
 
-int dscratch_get_version(char **version)
+const char *dscratch_get_version()
 {
-    char *ver  = NULL;
-    int   size = 0;
-
-    // Check parameter.
-    if (version == NULL)
-    {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot get digitalscratch version.");
-        return 1;
-    }
-    
-    // Size of result.
-    size = strlen(STR(VERSION))+1;
-
-    // Allocate memory for resulting string.
-    ver = (char*)malloc(sizeof(char) * size);
-
-    // Put version number in resulting string.
-    #ifdef __WIN32__ // TODO: to be checked
-        strncpy_s(ver, size, STR(VERSION), size);
-    #else
-        strncpy(ver, STR(VERSION), size);
-    #endif
-
-    // Return digital scratch version.
-    *version = ver;
-
-    return 0;
+    return STR(VERSION);
 }
 
 int dscratch_get_turntable_name(int    turntable_id,

@@ -247,7 +247,7 @@ DLLIMPORT int dscratch_get_number_of_turntables();
  * @note This function will allocate (malloc) the buffer in which it will put
  *       the version, so do not forget to deallocate it (free).
  */
-DLLIMPORT int dscratch_get_version(char **version);
+DLLIMPORT const char *dscratch_get_version();
 
 /**
  * Display on stdout informations about specified turntable.

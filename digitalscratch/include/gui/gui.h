@@ -57,18 +57,15 @@ using namespace std;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
-#define ICON_2       PIXMAPS_PATH "/digitalscratch-icon_2decks.png"
-#define LOGO         PIXMAPS_PATH "/digitalscratch-logo.png"
-#define PLAY         PIXMAPS_PATH "/digitalscratch-start.png"
-#define PLAY_RUNNING PIXMAPS_PATH "/digitalscratch-start-run.png"
-#define STOP         PIXMAPS_PATH "/digitalscratch-stop.png"
-#define ARROW_CLOSED PIXMAPS_PATH "/digitalscratch-branch-closed.png"
-#define ARROW_OPEN   PIXMAPS_PATH "/digitalscratch-branch-open.png"
-#define V_LINE       PIXMAPS_PATH "/digitalscratch-vline.png"
-#define ICON_HELP    PIXMAPS_PATH "/help-white.png"
-#define ICON_ERROR   PIXMAPS_PATH "/error-white.png"
+#define ICON_2          PIXMAPS_PATH "/digitalscratch-icon_2decks.png"
+#define LOGO            PIXMAPS_PATH "/digitalscratch-logo.png"
+#define PLAY            PIXMAPS_PATH "/dark-play.png"
+#define PLAY_RUNNING    PIXMAPS_PATH "/dark-play_white.png"
+#define STOP            PIXMAPS_PATH "/dark-stop.png"
+#define DARK_ICON_HELP  PIXMAPS_PATH "/dark-help_white.png"
+#define DARK_ICON_ERROR PIXMAPS_PATH "/dark-error_white.png"
 #define GUI_STYLE_DEFAULT_CSS ""
-#define GUI_STYLE_NB1_CSS "*\
+#define GUI_STYLE_DARK_CSS "*\
                            {\
                                color:            #f2f2ed;\
                                background-color: black;\
@@ -80,12 +77,6 @@ using namespace std;
                                background: transparent;\
                            }\
                            \
-                           QPushButton#Logo\
-						   {\
-                               color:            #000000;\
-                               border:           0px;\
-                               background-color: transparent;\
-						   }\
                            QPushButton#Sampler_buttons\
                            {\
                                color:            #000000;\
@@ -112,6 +103,21 @@ using namespace std;
                                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #737373, stop: 1 #b2b2b2);\
                            }\
                            \
+                           QPushButton#Logo\
+                           {\
+                               border:           0px;\
+                               background-color: transparent;\
+                           }\
+                           QPushButton#Logo:hover\
+                           {\
+                               border:           1px solid orange;\
+                               border-radius:    13px;\
+                           }\
+                           QPushButton#Logo:pressed\
+                           {\
+                               background-color: lightGray;\
+                           }\
+                           \
                            QPushButton#Configuration_button\
                            {\
                                color:            black;\
@@ -119,7 +125,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/settings.png);\
+                               image:            url(pixmaps/dark-settings.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -129,7 +135,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/settings-white.png);\
+                               image:            url(pixmaps/dark-settings_white.png);\
+                           }\
+                           QPushButton#Configuration_button:pressed\
+                           {\
+                               color:            black;\
+                               background-color: lightGray;\
+                               image:            url(pixmaps/dark-settings.png);\
                            }\
                            \
                            QPushButton#Fullscreen_button\
@@ -139,7 +151,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/fullscreen.png);\
+                               image:            url(pixmaps/dark-fullscreen.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -149,7 +161,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/fullscreen-white.png);\
+                               image:            url(pixmaps/dark-fullscreen_white.png);\
+                           }\
+                           QPushButton#Fullscreen_button:pressed\
+                           {\
+                               color:            black;\
+                               background-color: lightGray;\
+                               image:            url(pixmaps/dark-fullscreen.png);\
                            }\
                            \
                            QPushButton#Help_button\
@@ -159,7 +177,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/help.png);\
+                               image:            url(pixmaps/dark-help.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -169,7 +187,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/help-white.png);\
+                               image:            url(pixmaps/dark-help_white.png);\
+                           }\
+                           QPushButton#Help_button:pressed\
+                           {\
+                               color:            black;\
+                               background-color: lightGray;\
+                               image:            url(pixmaps/dark-help.png);\
                            }\
                            \
                            QPushButton#Quit_button\
@@ -179,7 +203,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/exit.png);\
+                               image:            url(pixmaps/dark-exit.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -189,7 +213,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/exit-white.png);\
+                               image:            url(pixmaps/dark-exit_white.png);\
+                           }\
+                           QPushButton#Quit_button:pressed\
+                           {\
+                               color:            black;\
+                               background-color: lightGray;\
+                               image:            url(pixmaps/dark-exit.png);\
                            }\
                            \
                            QGroupBox\
@@ -249,15 +279,15 @@ using namespace std;
                                background-color: black;\
                            }\
                            QTreeView::branch:has-siblings:!adjoins-item {\
-                               border-image: url(" V_LINE ") 0;\
+                               border-image: url(pixmaps/dark-branch_vline.png) 0;\
                            }\
                            QTreeView::branch:has-children:!has-siblings:closed,\
                            QTreeView::branch:closed:has-children:has-siblings {\
-                               image: url(" ARROW_CLOSED ");\
+                               image: url(pixmaps/dark-branch_closed.png);\
                            }\
                            QTreeView::branch:open:has-children:!has-siblings,\
                            QTreeView::branch:open:has-children:has-siblings  {\
-                               image: url(" ARROW_OPEN ");\
+                               image: url(pixmaps/dark-branch_open.png);\
                            }\
                            QLabel#TrackName\
                            {\
@@ -333,6 +363,25 @@ using namespace std;
                            QLabel#Help\
                            {\
                                color: black;\
+                           }\
+                           \
+                           QPushButton#Sampler_buttons\
+                           {\
+                               background-color: gray;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               height:           24px;\
+                               width:            24px;\
+                           }\
+                           QPushButton#Sampler_buttons:hover\
+                           {\
+                               background-color: lightGray;\
+                               border:           1px solid orange;\
+                           }\
+                           QPushButton#Sampler_buttons:checked\
+                           {\
+                               background-color: gray;\
+                               border:           1px solid orange;\
                            }\
                           "
 

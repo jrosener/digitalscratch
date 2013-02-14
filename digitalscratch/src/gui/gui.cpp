@@ -50,6 +50,7 @@
 #include <jack/jack.h>
 #include <QSignalMapper>
 #include <QMessageBox>
+#include <QApplication>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -379,9 +380,7 @@ Gui::show_about_window()
 
     QLabel *built = new QLabel("<b>" + tr("Built with:") + "</b>");
     built->setTextFormat(Qt::RichText);
-    char *dscratch_version;
-    dscratch_get_version(&dscratch_version);
-    QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_version)).toUtf8());
+    QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8());
     QLabel *libmpg123_version = new QLabel("- libmpg123");
     QLabel *libFLAC_version = new QLabel((QString("- libFLAC v") + QString(FLAC__VERSION_STRING)).toUtf8());
     QLabel *libsamplerate_version = new QLabel((QString("- ") + QString(src_get_version())).toUtf8());
@@ -425,12 +424,6 @@ Gui::show_about_window()
     // Show dialog.
     this->about_dialog->exec();
 
-    // Cleanup.
-    if (dscratch_version != NULL)
-    {
-        free(dscratch_version);
-    }
-
     qDebug() << "Gui::show_about_window done.";
 
     return true;
@@ -468,10 +461,10 @@ Gui::show_error_window(QString in_error_message)
         msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
         msg_box.setIcon(QMessageBox::Critical);
     }
-    else if (this->window_style == QString(GUI_STYLE_NB1))
+    else if (this->window_style == QString(GUI_STYLE_DARK))
     {
-        msg_box.setStyleSheet(GUI_STYLE_NB1_CSS);
-        msg_box.setIconPixmap((QPixmap(ICON_ERROR)).scaledToWidth(32, Qt::SmoothTransformation));
+        msg_box.setStyleSheet(GUI_STYLE_DARK_CSS);
+        msg_box.setIconPixmap((QPixmap(DARK_ICON_ERROR)).scaledToWidth(32, Qt::SmoothTransformation));
     }
     if (this->nb_decks > 1)
     {
@@ -502,6 +495,7 @@ Gui::create_main_window()
     // Create configuration button.
     QPushButton *config_button = new QPushButton("   " + tr("&Settings"));
     config_button->setObjectName("Configuration_button");
+
 
     // Create button to set full screen.
     QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
@@ -679,19 +673,20 @@ Gui::create_main_window()
         this->sampler1_buttons_play[i] = new QPushButton();
         this->sampler1_buttons_play[i]->setObjectName("Sampler_buttons");
         this->sampler1_buttons_play[i]->setIcon(QIcon(PLAY));
-        this->sampler1_buttons_play[i]->setIconSize(QSize(24, 24));
+        this->sampler1_buttons_play[i]->setIconSize(QSize(12, 12));
         this->sampler1_buttons_play[i]->setMaximumWidth(24);
         this->sampler1_buttons_play[i]->setMaximumHeight(24);
-        this->sampler1_buttons_play[i]->setFlat(true);
         this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler1_buttons_play[i]->setCheckable(true);
         this->sampler1_buttons_stop[i] = new QPushButton();
         this->sampler1_buttons_stop[i]->setObjectName("Sampler_buttons");
         this->sampler1_buttons_stop[i]->setIcon(QIcon(STOP));
-        this->sampler1_buttons_stop[i]->setIconSize(QSize(24, 24));
+        this->sampler1_buttons_stop[i]->setIconSize(QSize(12, 12));
         this->sampler1_buttons_stop[i]->setMaximumWidth(24);
         this->sampler1_buttons_stop[i]->setMaximumHeight(24);
-        this->sampler1_buttons_stop[i]->setFlat(true);
         this->sampler1_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler1_buttons_stop[i]->setCheckable(true);
+        this->sampler1_buttons_stop[i]->setChecked(true);
         this->sampler1_trackname[i] = new QLabel(tr("--"));
         this->sampler1_remainingtime[i] = new QLabel("- 00");
 
@@ -719,19 +714,20 @@ Gui::create_main_window()
         this->sampler2_buttons_play[i] = new QPushButton();
         this->sampler2_buttons_play[i]->setObjectName("Sampler_buttons");
         this->sampler2_buttons_play[i]->setIcon(QIcon(PLAY));
-        this->sampler2_buttons_play[i]->setIconSize(QSize(24, 24));
+        this->sampler2_buttons_play[i]->setIconSize(QSize(12, 12));
         this->sampler2_buttons_play[i]->setMaximumWidth(24);
         this->sampler2_buttons_play[i]->setMaximumHeight(24);
-        this->sampler2_buttons_play[i]->setFlat(true);
         this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler2_buttons_play[i]->setCheckable(true);
         this->sampler2_buttons_stop[i] = new QPushButton();
         this->sampler2_buttons_stop[i]->setObjectName("Sampler_buttons");
         this->sampler2_buttons_stop[i]->setIcon(QIcon(STOP));
-        this->sampler2_buttons_stop[i]->setIconSize(QSize(24, 24));
+        this->sampler2_buttons_stop[i]->setIconSize(QSize(12, 12));
         this->sampler2_buttons_stop[i]->setMaximumWidth(24);
         this->sampler2_buttons_stop[i]->setMaximumHeight(24);
-        this->sampler2_buttons_stop[i]->setFlat(true);
         this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler2_buttons_stop[i]->setCheckable(true);
+        this->sampler2_buttons_stop[i]->setChecked(true);
         this->sampler2_trackname[i] = new QLabel(tr("--"));
         this->sampler2_remainingtime[i] = new QLabel("- 00");
 
@@ -1108,10 +1104,10 @@ Gui::can_close()
         msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
         msg_box.setIcon(QMessageBox::Question);
     }
-    else if (this->window_style == QString(GUI_STYLE_NB1))
+    else if (this->window_style == QString(GUI_STYLE_DARK))
     {
-        msg_box.setStyleSheet(GUI_STYLE_NB1_CSS);
-        msg_box.setIconPixmap((QPixmap(ICON_HELP)).scaledToWidth(32, Qt::SmoothTransformation));
+        msg_box.setStyleSheet(GUI_STYLE_DARK_CSS);
+        msg_box.setIconPixmap((QPixmap(DARK_ICON_HELP)).scaledToWidth(32, Qt::SmoothTransformation));
     }
     if (this->nb_decks > 1)
     {
@@ -1141,9 +1137,9 @@ Gui::apply_main_window_style()
     {
         this->window->setStyleSheet(GUI_STYLE_DEFAULT_CSS);
     }
-    else if (this->window_style == QString(GUI_STYLE_NB1))
+    else if (this->window_style == QString(GUI_STYLE_DARK))
     {
-        this->window->setStyleSheet(GUI_STYLE_NB1_CSS);
+        this->window->setStyleSheet(GUI_STYLE_DARK_CSS);
     }
     else
     {
@@ -1643,11 +1639,15 @@ Gui::set_sampler_state(int in_deck_index,
             {
                 this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon());
                 this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY_RUNNING));
+                this->sampler1_buttons_play[in_sampler_index]->setChecked(true);
+                this->sampler1_buttons_stop[in_sampler_index]->setChecked(false);
             }
             else
             {
                 this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon());
                 this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY_RUNNING));
+                this->sampler2_buttons_play[in_sampler_index]->setChecked(true);
+                this->sampler2_buttons_stop[in_sampler_index]->setChecked(false);
             }
         }
         else // Sampler is stopping, make play button inactive.
@@ -1656,11 +1656,15 @@ Gui::set_sampler_state(int in_deck_index,
             {
                 this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon());
                 this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY));
+                this->sampler1_buttons_play[in_sampler_index]->setChecked(false);
+                this->sampler1_buttons_stop[in_sampler_index]->setChecked(true);
             }
             else
             {
                 this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon());
                 this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY));
+                this->sampler2_buttons_play[in_sampler_index]->setChecked(false);
+                this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
             }
         }
     }
