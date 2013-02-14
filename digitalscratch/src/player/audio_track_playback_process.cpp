@@ -193,8 +193,9 @@ Audio_track_playback_process::play_audio_track(unsigned short int   in_deck_inde
 {
     qDebug() << "Audio_track_playback_process::play_audio_track...";
 
-    // Prevent sample table overflow.
-    if ((this->current_samples[in_deck_index] + 1) > (this->ats[in_deck_index]->get_end_of_samples() - in_nb_samples))
+    // Prevent sample table overflow if going forward.
+    if ((this->params[in_deck_index]->get_speed() >= 0.0) &&
+       ((this->current_samples[in_deck_index] + 1) > (this->ats[in_deck_index]->get_end_of_samples() - in_nb_samples)))
     {
         qWarning() << "Audio_track_playback_process::play_audio_track: audio track sample table overflow";
         this->play_empty(in_deck_index, in_nb_samples, out_samples);
