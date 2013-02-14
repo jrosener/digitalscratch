@@ -584,7 +584,7 @@ int dscratch_get_vinyl_type(int    turntable_id,
             #ifdef WIN32
                 strncpy_s(vinyl_name, size, MIXVIBES_VINYL, size);
             #else
-                strncpy(vinyl_name, MIXVIBES_VINYLI, size);
+                strncpy(vinyl_name, MIXVIBES_VINYL, size);
             #endif
         }
         else
