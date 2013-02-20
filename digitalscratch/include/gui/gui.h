@@ -57,13 +57,13 @@ using namespace std;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
-#define ICON_2          PIXMAPS_PATH "/digitalscratch-icon_2decks.png"
-#define LOGO            PIXMAPS_PATH "/digitalscratch-logo.png"
-#define PLAY            PIXMAPS_PATH "/dark-play.png"
-#define PLAY_RUNNING    PIXMAPS_PATH "/dark-play_white.png"
-#define STOP            PIXMAPS_PATH "/dark-stop.png"
-#define DARK_ICON_HELP  PIXMAPS_PATH "/dark-help_white.png"
-#define DARK_ICON_ERROR PIXMAPS_PATH "/dark-error_white.png"
+#define ICON_2          ":/pixmaps/digitalscratch-icon_2decks.png"
+#define LOGO            ":/pixmaps/digitalscratch-logo.png"
+#define PLAY            ":/pixmaps/dark-play.png"
+#define PLAY_RUNNING    ":/pixmaps/dark-play_white.png"
+#define STOP            ":/pixmaps/dark-stop.png"
+#define DARK_ICON_HELP  ":/pixmaps/dark-help_white.png"
+#define DARK_ICON_ERROR ":/pixmaps/dark-error_white.png"
 #define GUI_STYLE_DEFAULT_CSS ""
 #define GUI_STYLE_DARK_CSS "*\
                            {\
@@ -125,7 +125,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/dark-settings.png);\
+                               image:            url(:/pixmaps/dark-settings.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -135,13 +135,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/dark-settings_white.png);\
+                               image:            url(:/pixmaps/dark-settings_white.png);\
                            }\
                            QPushButton#Configuration_button:pressed\
                            {\
                                color:            black;\
                                background-color: lightGray;\
-                               image:            url(pixmaps/dark-settings.png);\
+                               image:            url(:/pixmaps/dark-settings.png);\
                            }\
                            \
                            QPushButton#Fullscreen_button\
@@ -151,7 +151,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/dark-fullscreen.png);\
+                               image:            url(:/pixmaps/dark-fullscreen.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -161,13 +161,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/dark-fullscreen_white.png);\
+                               image:            url(:/pixmaps/dark-fullscreen_white.png);\
                            }\
                            QPushButton#Fullscreen_button:pressed\
                            {\
                                color:            black;\
                                background-color: lightGray;\
-                               image:            url(pixmaps/dark-fullscreen.png);\
+                               image:            url(:/pixmaps/dark-fullscreen.png);\
                            }\
                            \
                            QPushButton#Help_button\
@@ -177,7 +177,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/dark-help.png);\
+                               image:            url(:/pixmaps/dark-help.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -187,13 +187,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/dark-help_white.png);\
+                               image:            url(:/pixmaps/dark-help_white.png);\
                            }\
                            QPushButton#Help_button:pressed\
                            {\
                                color:            black;\
                                background-color: lightGray;\
-                               image:            url(pixmaps/dark-help.png);\
+                               image:            url(:/pixmaps/dark-help.png);\
                            }\
                            \
                            QPushButton#Quit_button\
@@ -203,7 +203,7 @@ using namespace std;
                                padding:          5px;\
                                border:           none;\
                                border-radius:    0px;\
-                               image:            url(pixmaps/dark-exit.png);\
+                               image:            url(:/pixmaps/dark-exit.png);\
                                image-position:   left;\
                                height:           25px;\
                                min-width:        100px;\
@@ -213,13 +213,13 @@ using namespace std;
                                background-color: transparent;\
                                border:           1px solid orange;\
                                color:            #f2f2ed;\
-                               image:            url(pixmaps/dark-exit_white.png);\
+                               image:            url(:/pixmaps/dark-exit_white.png);\
                            }\
                            QPushButton#Quit_button:pressed\
                            {\
                                color:            black;\
                                background-color: lightGray;\
-                               image:            url(pixmaps/dark-exit.png);\
+                               image:            url(:/pixmaps/dark-exit.png);\
                            }\
                            \
                            QGroupBox\
@@ -279,15 +279,15 @@ using namespace std;
                                background-color: black;\
                            }\
                            QTreeView::branch:has-siblings:!adjoins-item {\
-                               border-image: url(pixmaps/dark-branch_vline.png) 0;\
+                               border-image: url(:/pixmaps/dark-branch_vline.png) 0;\
                            }\
                            QTreeView::branch:has-children:!has-siblings:closed,\
                            QTreeView::branch:closed:has-children:has-siblings {\
-                               image: url(pixmaps/dark-branch_closed.png);\
+                               image: url(:/pixmaps/dark-branch_closed.png);\
                            }\
                            QTreeView::branch:open:has-children:!has-siblings,\
                            QTreeView::branch:open:has-children:has-siblings  {\
-                               image: url(pixmaps/dark-branch_open.png);\
+                               image: url(:/pixmaps/dark-branch_open.png);\
                            }\
                            QLabel#TrackName\
                            {\

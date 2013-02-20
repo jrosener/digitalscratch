@@ -43,7 +43,7 @@
 #include <QSlider>
 #include "application_settings.h"
 
-#define ICON PIXMAPS_PATH "/digitalscratch-icon.png"
+#define ICON ":/pixmaps/digitalscratch-icon.png"
 
 using namespace std;
 

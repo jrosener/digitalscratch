@@ -1,0 +1,24 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>pixmaps/dark-branch_closed.png</file>
+    <file>pixmaps/dark-branch_open.png</file>
+    <file>pixmaps/dark-branch_vline.png</file>
+    <file>pixmaps/dark-error.png</file>
+    <file>pixmaps/dark-error_white.png</file>
+    <file>pixmaps/dark-exit.png</file>
+    <file>pixmaps/dark-exit_white.png</file>
+    <file>pixmaps/dark-fullscreen.png</file>
+    <file>pixmaps/dark-fullscreen_white.png</file>
+    <file>pixmaps/dark-help.png</file>
+    <file>pixmaps/dark-help_white.png</file>
+    <file>pixmaps/dark-play.png</file>
+    <file>pixmaps/dark-play_white.png</file>
+    <file>pixmaps/dark-settings.png</file>
+    <file>pixmaps/dark-settings_white.png</file>
+    <file>pixmaps/dark-stop.png</file>
+    <file>pixmaps/dark-stop_white.png</file>
+    <file>pixmaps/digitalscratch-icon_2decks.png</file>
+    <file>pixmaps/digitalscratch-icon.png</file>
+    <file>pixmaps/digitalscratch-logo.png</file>
+</qresource>
+</RCC>
