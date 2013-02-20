@@ -240,12 +240,8 @@ DLLIMPORT int dscratch_get_number_of_turntables();
 /**
  * Get DigitalScratch version.
  *
- * @param version will be returned, this is the version of libdigitalscratch.
+ * @return a const string containing version number.
  *
- * @return 0 if all is OK, otherwise 1.
- *
- * @note This function will allocate (malloc) the buffer in which it will put
- *       the version, so do not forget to deallocate it (free).
  */
 DLLIMPORT const char *dscratch_get_version();
 

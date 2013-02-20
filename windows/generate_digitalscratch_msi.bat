@@ -4,28 +4,16 @@ REM
 REM Tools for packaging DigitalScratch software as a setup installation file.
 REM
 
-REM
-REM Check parameters
-REM
-IF [%2]==[] (
-  echo ERROR: Incorrect number of mandatory parameters !
-  GOTO usage
-)
-
-REM
-REM Get params
-REM
-SET VERSION=%1
-SET OUTPUT_MSI=%2
-
-
 echo.
 echo ----------------------------------------------------------------------------------
-echo  Change version in .pro ...
+echo  Get version from .pro ...
 echo ----------------------------------------------------------------------------------
 echo.
-powershell -command "(Get-Content ..\digitalscratch\digitalscratch.pro) | ForEach-Object { $_ -replace '^VERSION = .+$', 'VERSION = %VERSION%' } | Set-Content ..\digitalscratch\digitalscratch.pro"
-powershell -command "(Get-Content ..\libdigitalscratch\libdigitalscratch.pro) | ForEach-Object { $_ -replace '^VERSION = .+$', 'VERSION = %VERSION%' } | Set-Content ..\libdigitalscratch\libdigitalscratch.pro"
+FOR /F "tokens=1-2 delims==" %%a IN ('FINDSTR /C:"VERSION = " ..\digitalscratch\digitalscratch.pro') DO set VERSION=%%b
+if !errorlevel! neq 0 goto error
+set VERSION=%VERSION: =%
+SET OUTPUT_MSI=digitalscratch-%VERSION%.msi
+echo Creating %OUTPUT_MSI%...
 
 echo.
 echo ----------------------------------------------------------------------------------
@@ -106,14 +94,6 @@ IF NOT EXIST %OUTPUT_MSI% (
   echo MSI is OK.
   echo.
 )
-
-GOTO end
-
-:usage
-echo.
-echo USAGE: generate_digitalscratch_msi.bat [version] [msi_name]
-echo.
-echo.
 
 GOTO end
 
