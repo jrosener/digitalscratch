@@ -7,6 +7,9 @@
 /*                                                                            */
 /*============================================================================*/
 
+libdigitalscratch-1.2.0:
+  * ported to Windows
+
 libdigitalscratch-1.1.0:
   * added MixVibes and Final Scratch vinyl support (speed/direction only)
   * added API functions to get default configurations values
@@ -23,53 +26,3 @@ libdigitalscratch-1.0.0:
   * removed completely internal capture management
   * cleanup source structure
   * support Serato Scratch Live CV02 vinyl disc
-
-digital-scratch v.0.1.0:
-  * implemented position detection
-  * added API and scenario tests
-  * improve dynamic buffer size algorithm (improve quality of speed detection)
-  * added easy-to-use API functions for players
-  * started implementation of external capture management
-
-digital-scratch v.0.0.4 (not released):
-  * add a new sample application to use digital-scratch under Win32
-  * add Code::blocks (http://www.codeblocks.org/) project files for Win32 (to
-    compile dll) and Linux
-  * modify configure script to compile a library
-  * add a flag __LIBRARY__ to not compile Main.cpp when building a lib
-  * add new contributor in file AUTHORS
-  * change place of help(), get_version() and others
-  * add a new file to use when compiling with a player : digital_scratch_api.h
-  * main() function change to be compatible with new digital_scratch_api.h
-  * add a configuration file (~/.digital_scratch) with sections (multiple
-    turntables)
-  * separate libdigital-scratch and digital-scratch-alsaplayer (now as an
-    implementation with a player example)
-  * do some changes in configure.ac and Makefile.am : now digital-scratch is just
-    a library.
-  * correct usage of change volume callback
-  * add more analyzis parameters in config file
-  * add an API function to get all available capture buffer size
-  * add an API function to print all trace level used by digital-scratch
-  * try to add a build-in direct_sound support, not functionnal for the moment
-
-digital-scratch v.0.0.3:
-  * better speed detection on slow speeds
-  * callback management between sound_driver (capture data producer) and
-    digital-scratch (consummer)
-  * more easy to understand configure script outpout
-  * add --enable-debug option in configure script
-  * better management of Ctrl-C to quit application
-  * better ALSA capture algorithm
-  * configure script work under Win32 (--enable-win32 --enable-directsound
-    --enable-directx_path="C:\DXSDK")
-  * add -s (or --buffer_size) at the command line to specify size of
-    buffer containing captured datas
-
-digital-scratch v.0.0.2:
-  * add configure script
-  * modify speed detection algorithm
-  * add direction detection algorithm
-  * can control Alsaplayer
-  * add RTAudio support (JACK, ALSA, OSS, CoreAudio, DirectSound, ASIO)
-

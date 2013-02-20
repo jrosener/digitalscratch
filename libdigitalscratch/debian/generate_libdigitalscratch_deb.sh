@@ -15,36 +15,22 @@ function check_error {
 # Usage
 function usage {
     echo ""
-    echo "Usage: generate_libdigitalscratch_deb.sh [version_number] [ppa_type]"
+    echo "Usage: generate_libdigitalscratch_deb.sh [ppa_type]"
     echo ""
-    echo "    [version_number] is a 3 digits version like 1.1.0"
-    echo "    [ppa_type]       'test' (for the test PPA url) or 'prod'"
+    echo "    [ppa_type]  'test' (for the test PPA url) or 'prod'"
     echo ""
     exit
 }
 
 # Check parameters
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
     usage
 fi
 
-# Main vars
-VERSION=$1
-VERSIONPACKAGE=$1-0ubuntu1
-WORKINGPATH=$HOME/libdigitalscratch_$1-make_package
-DEBPATH=$WORKINGPATH/deb
-SOURCEDIR=libdigitalscratch_source
-TARPACK=libdigitalscratch_$1.orig.tar.gz
-ORIGDIR=$(pwd)
-DISTRIB=$(lsb_release -cs)
-export DEBEMAIL=julien.rosener@digital-scratch.org
-export DEBFULLNAME="Julien Rosener"
-export EDITOR=vim
-
 # Select PPA
-if [[ $2 == test ]] ; then
+if [[ $1 == test ]] ; then
     PPAPATH=julien-rosener/digitalscratch-test
-elif [[ $2 == prod ]] ; then
+elif [[ $1 == prod ]] ; then
     PPAPATH=julien-rosener/digitalscratch
 else
     usage
@@ -56,7 +42,26 @@ check_error
 echo ""
 echo ""
 
+echo "************************* Get version from .pro ************************"
+VERSION=$(cat ../libdigitalscratch.pro | grep 'VERSION =' | cut -d'=' -f2 | tr -d ' ')
+echo VERSION = $VERSION
+check_error
+echo ""
+echo ""
+
 echo "*************************** Prepare environment *************************"
+# Main vars
+VERSIONPACKAGE=$VERSION-0ubuntu1
+WORKINGPATH=$HOME/libdigitalscratch_$VERSION-make_package
+DEBPATH=$WORKINGPATH/deb
+SOURCEDIR=libdigitalscratch_source
+TARPACK=libdigitalscratch_$VERSION.orig.tar.gz
+ORIGDIR=$(pwd)
+DISTRIB=$(lsb_release -cs)
+export DEBEMAIL=julien.rosener@digital-scratch.org
+export DEBFULLNAME="Julien Rosener"
+export EDITOR=vim
+
 rm -rf $WORKINGPATH
 check_error
 mkdir -v $WORKINGPATH
@@ -64,19 +69,14 @@ check_error
 echo ""
 echo ""
 
-echo "************************* Change version in .pro ************************"
-sed -i "s/\(^VERSION = \)\(..*$\)/\1$VERSION/" ../libdigitalscratch.pro
-check_error
-cat ../libdigitalscratch.pro | grep 'VERSION ='
-check_error
-echo ""
-echo ""
-
 echo "**************************** Copy source code ***************************"
-svn revert changelog
+git checkout changelog
 check_error
-svn export ../ $WORKINGPATH/$SOURCEDIR
+cd ..
+git archive --format zip --output $WORKINGPATH/archive.zip master
+unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR
 check_error
+cd debian
 echo ""
 echo ""
 

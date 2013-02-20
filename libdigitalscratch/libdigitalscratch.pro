@@ -10,7 +10,7 @@ TARGET = digitalscratch
 TEMPLATE = lib
 
 DEFINES += DIGITALSCRATCH_LIBRARY
-VERSION = 1.1.0
+VERSION = 1.2.0
 DEFINES += VERSION=$${VERSION}
 
 target.path = /usr/lib

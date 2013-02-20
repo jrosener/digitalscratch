@@ -7,6 +7,20 @@
 /*                                                                            */
 /*============================================================================*/
 
+digitalscratch-1.2.0:
+  * configuration:
+     - added configuration dialog for keyboard shortcuts
+     - modified configuration dialog for motion parameters
+  * graphics:
+     - added a top bar with main buttons (config, fullscreen,...)
+     - added a fullscreen option
+     - added a bottom bar for help section
+     - updated all application icons
+  * bugs:
+     - fixed a Jack crash
+     - fixed icon issue in Ubuntu Unity
+     - fixed a playback issue when playing backward after end of a track
+
 digitalscratch-1.1.0:
   * cue point support:
      - one cue point could be set per deck
