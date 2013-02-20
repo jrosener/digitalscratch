@@ -184,7 +184,7 @@ DLLIMPORT int dscratch_analyze_recorded_datas_interleaved(int    turntable_id,
  *        play. Indeed, the volume of the sound is dependant of the speed, so
  *        the more is the speed the more will be the volume.
  *        0.0 correspond to mute. 1.0 should be mapped to 80% of the maximum of
- *        the volume for example, in fact digital-scratch can return for example
+ *        the volume for example, in fact DigitalScratch can return for example
  *        a volume equal to 1.26.
  *        NO_NEW_VOLUME_FOUND is returned if no volume is found.
  *
@@ -226,21 +226,21 @@ DLLIMPORT int dscratch_set_position_detection(int turntable_id,
 DLLIMPORT int dscratch_get_position_detection_state(int turntable_id);
 
 /**
- * Print which trace type are used to monitor Digital-scratch.
+ * Print which trace type are used to monitor DigitalScratch.
  */
 DLLIMPORT void dscratch_print_trace_used();
 
 /**
- * Get number of turntable registered in digital-scratch.
+ * Get number of turntable registered in DigitalScratch.
  *
  * @return number of turntable.
  */
 DLLIMPORT int dscratch_get_number_of_turntables();
 
 /**
- * Get digital-scratch version.
+ * Get DigitalScratch version.
  *
- * @param version will be returned, this is the version of libdigital-scratch.
+ * @param version will be returned, this is the version of libdigitalscratch.
  *
  * @return 0 if all is OK, otherwise 1.
  *
