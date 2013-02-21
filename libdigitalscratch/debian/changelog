@@ -1,3 +1,9 @@
+libdigitalscratch (1.2.0-0ubuntu1) quantal; urgency=low
+
+  * ported to Windows 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 21 Feb 2013 20:35:45 +0100
+
 libdigitalscratch (1.1.0-0ubuntu1) quantal; urgency=low
 
   * added MixVibes and Final Scratch vinyl support (speed/direction only)

@@ -1,3 +1,22 @@
+digitalscratch (1.2.0-0ubuntu1) quantal; urgency=low
+
+  * configuration:
+     - added configuration dialog for keyboard shortcuts
+     - modified configuration dialog for motion parameters
+  * graphics:
+     - added a top bar with main buttons (config, fullscreen,...)
+     - added a fullscreen option
+     - added a bottom bar for help section
+     - updated all application icons
+  * bugs:
+     - fixed a Jack crash
+     - fixed icon issue in Ubuntu Unity
+     - fixed a playback issue when playing backward after end of a track
+  * build:
+     - ported to Windows 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Fri, 22 Feb 2013 00:25:40 +0100
+
 digitalscratch (1.1.0-0ubuntu1) quantal; urgency=low
 
   * cue point support:

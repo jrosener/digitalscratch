@@ -20,6 +20,8 @@ digitalscratch-1.2.0:
      - fixed a Jack crash
      - fixed icon issue in Ubuntu Unity
      - fixed a playback issue when playing backward after end of a track
+  * build:
+     - ported to Windows
 
 digitalscratch-1.1.0:
   * cue point support:
