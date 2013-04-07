@@ -477,6 +477,7 @@ class Gui : QObject
     QShortcut                     *shortcut_fullscreen;
     QShortcut                     *shortcut_help;
     QGroupBox                     *help_groupbox;
+    QGroupBox                     *file_browser_gbox;
 
  public:
     Gui(Application_settings           *in_settings,
@@ -499,6 +500,7 @@ class Gui : QObject
     bool create_main_window();
     bool apply_main_window_style();
     bool set_file_browser_base_path(QString in_path);
+    bool set_file_browser_title();
     bool restart_sound_card(short unsigned int in_nb_channels);
     bool apply_application_settings();
     void run_sampler_decoding_process(unsigned short int in_deck_index,

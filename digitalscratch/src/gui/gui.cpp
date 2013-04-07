@@ -118,6 +118,7 @@ Gui::Gui(Application_settings           *in_settings,
 
     this->file_browser = new QTreeView();
     this->file_browser->setModel(this->file_system_model);
+    this->file_browser_gbox = new QGroupBox();
 
     this->decks_remaining_time    = new Remaining_time* [2];
     this->decks_remaining_time[0] = new Remaining_time();
@@ -827,8 +828,8 @@ Gui::create_main_window()
     // Create layout and group box for file browser.
     QHBoxLayout *file_browser_layout = new QHBoxLayout();
     file_browser_layout->addWidget(this->file_browser);
-    QGroupBox *file_browser_gbox = new QGroupBox(tr("File browser"));
-    file_browser_gbox->setLayout(file_browser_layout);
+    this->set_file_browser_title();
+    this->file_browser_gbox->setLayout(file_browser_layout);
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -845,7 +846,7 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     QHBoxLayout *file_layout = new QHBoxLayout();
-    file_layout->addWidget(file_browser_gbox, 50);
+    file_layout->addWidget(this->file_browser_gbox, 50);
     // TODO implement playlist
     // file_layout->addWidget(playlist_gbox, 50);
 
@@ -1158,8 +1159,22 @@ Gui::set_file_browser_base_path(QString in_path)
 
     // Change root path of file browser.
     this->file_browser->setRootIndex(this->file_system_model->setRootPath(in_path));
+    this->set_file_browser_title();
 
     qDebug() << "Gui::set_file_browser_base_path done.";
+
+    return true;
+}
+
+bool
+Gui::set_file_browser_title()
+{
+    qDebug() << "Gui::set_file_browser_title...";
+
+    // Change file borwser title (which contains base dir for tracks).
+    this->file_browser_gbox->setTitle(tr("File browser") + " [" + this->settings->get_tracks_base_dir_path() + "]");
+
+    qDebug() << "Gui::set_file_browser_title done.";
 
     return true;
 }
