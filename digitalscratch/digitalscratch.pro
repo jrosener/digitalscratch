@@ -20,9 +20,18 @@ INSTALLS += target
 ##############################
 
 TEMPLATE = app
-TARGET = digitalscratch
+CONFIG(unittest) {
+    QT       += testlib
+    TARGET    = digitalscratch-test
+    CONFIG   += console
+    CONFIG   -= app_bundle
+}
+else {
+    TARGET = digitalscratch
+}
 DEPENDPATH += . src include/gui include/player src/gui src/player
 INCLUDEPATH += . include/player include/gui
+
 
 # Input
 HEADERS += include/gui/config_dialog.h \
@@ -55,6 +64,11 @@ SOURCES += src/main.cpp \
            src/player/timecode_analyzis_process.cpp \
            src/player/playback_parameters.cpp \
            src/player/sound_capture_and_playback_process.cpp
+
+CONFIG(unittest) {
+    SOURCES += test/audio_track_test.cpp
+    SOURCES -= src/main.cpp
+}
 
 
 #############################
