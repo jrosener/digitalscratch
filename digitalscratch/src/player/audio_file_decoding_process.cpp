@@ -219,6 +219,9 @@ Audio_file_decoding_process::mp3_decode()
         return FALSE;
     }
 
+    // Verbosity.
+    mpg123_param(handle, MPG123_ADD_FLAGS, MPG123_QUIET, 0.0);
+
     // Ensure that this output format will not change (it could, when we allow it).
     mpg123_format_none(handle);
     mpg123_format(handle, rate, channels, encoding);
