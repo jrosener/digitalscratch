@@ -32,6 +32,7 @@
 
 #include <QtDebug>
 #include <QCryptographicHash>
+#include <algorithm>
 
 #include "audio_file_decoding_process.h"
 
@@ -59,6 +60,11 @@ Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at)
 Audio_file_decoding_process::~Audio_file_decoding_process()
 {
     qDebug() << "Audio_file_decoding_process::~Audio_file_decoding_process: delete object...";
+
+    if (this->file != NULL)
+    {
+        delete this->file;
+    }
     qDebug() << "Audio_file_decoding_process::~Audio_file_decoding_process: delete object done.";
 
     return;
@@ -77,6 +83,10 @@ Audio_file_decoding_process::calculate_hash(QString in_path)
     }
 
     // Check if file exists.
+    if (this->file != NULL)
+    {
+        delete this->file;
+    }
     this->file = new QFile(in_path);
     if (this->file->exists() == FALSE)
     {
@@ -84,10 +94,18 @@ Audio_file_decoding_process::calculate_hash(QString in_path)
         return FALSE;
     }
 
-    // Get a hash of the first 100kb of data. // TODO take first bytes of file
-    QString blah = QString(QCryptographicHash::hash(("myPassword"), QCryptographicHash::Md5).toHex());
-    this->at->set_hash(blah);
-    cout << "hash = " << blah.toStdString().c_str() << endl;
+    // Open file as binary.
+    if (this->file->open(QIODevice::ReadOnly) == FALSE)
+    {
+        return FALSE;
+    }
+
+    // Get a hash of the first 10kb of data (or the size of the file if it is less).
+    QByteArray bin  = this->file->read(std::min((qint64)10*1024, this->file->size()));
+    QString    hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
+
+    // Set the hash to the audio track.
+    this->at->set_hash(hash);
 
     qDebug() << "Audio_file_decoding_process::calculate_hash: done.";
 
@@ -107,6 +125,10 @@ Audio_file_decoding_process::run(QString in_path)
     }
 
     // Check if file exists.
+    if (this->file != NULL)
+    {
+        delete this->file;
+    }
     this->file = new QFile(in_path);
     if (this->file->exists() == FALSE)
     {

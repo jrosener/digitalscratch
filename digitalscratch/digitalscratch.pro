@@ -48,8 +48,6 @@ HEADERS += include/gui/config_dialog.h \
            include/player/playback_parameters.h \
            include/player/sound_capture_and_playback_process.h
            
-INCLUDEPATH += 
-           
 SOURCES += src/main.cpp \
            src/gui/config_dialog.cpp \
            src/gui/gui.cpp \
@@ -66,7 +64,15 @@ SOURCES += src/main.cpp \
            src/player/sound_capture_and_playback_process.cpp
 
 CONFIG(test) {
-    SOURCES += test/audio_track_test.cpp
+    INCLUDEPATH += test
+
+    HEADERS += test/audio_track_test.h \
+               test/audio_file_decoding_process_test.h
+
+    SOURCES += test/main.cpp \
+               test/audio_track_test.cpp \
+               test/audio_file_decoding_process_test.cpp
+
     SOURCES -= src/main.cpp
 }
 
@@ -163,10 +169,16 @@ win32 {
         DESTDIR_WIN += debug
         DLLS += %QTDIR%/bin/QtCored4.dll \
                 %QTDIR%/bin/QtGuid4.dll
+        CONFIG(test) {
+           DLLS += %QTDIR%/bin/QtTestd4.dll
+        }
     } else {
         DESTDIR_WIN += release
         DLLS += %QTDIR%/bin/QtCore4.dll \
                 %QTDIR%/bin/QtGui4.dll
+        CONFIG(test) {
+           DLLS += %QTDIR%/bin/QtTest4.dll
+        }
     }
     DLLS ~= s,/,\\,g
     DESTDIR_WIN ~= s,/,\\,g
