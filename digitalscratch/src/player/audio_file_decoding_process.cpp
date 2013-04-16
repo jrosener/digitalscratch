@@ -31,6 +31,7 @@
 /*============================================================================*/
 
 #include <QtDebug>
+#include <QCryptographicHash>
 
 #include "audio_file_decoding_process.h"
 
@@ -61,6 +62,36 @@ Audio_file_decoding_process::~Audio_file_decoding_process()
     qDebug() << "Audio_file_decoding_process::~Audio_file_decoding_process: delete object done.";
 
     return;
+}
+
+bool
+Audio_file_decoding_process::calculate_hash(QString in_path)
+{
+    qDebug() << "Audio_file_decoding_process::calculate_hash...";
+
+    // Check if path is defined.
+    if (in_path == NULL)
+    {
+        qWarning() << "Audio_file_decoding_process::calculate_hash: path is NULL.";
+        return FALSE;
+    }
+
+    // Check if file exists.
+    this->file = new QFile(in_path);
+    if (this->file->exists() == FALSE)
+    {
+        qWarning() << "Audio_file_decoding_process::calculate_hash: file does not exists.";
+        return FALSE;
+    }
+
+    // Get a hash of the first 100kb of data. // TODO take first bytes of file
+    QString blah = QString(QCryptographicHash::hash(("myPassword"), QCryptographicHash::Md5).toHex());
+    this->at->set_hash(blah);
+    cout << "hash = " << blah.toStdString().c_str() << endl;
+
+    qDebug() << "Audio_file_decoding_process::calculate_hash: done.";
+
+    return TRUE;
 }
 
 bool

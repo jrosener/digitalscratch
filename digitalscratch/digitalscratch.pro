@@ -20,7 +20,7 @@ INSTALLS += target
 ##############################
 
 TEMPLATE = app
-CONFIG(unittest) {
+CONFIG(test) {
     QT       += testlib
     TARGET    = digitalscratch-test
     CONFIG   += console
@@ -65,7 +65,7 @@ SOURCES += src/main.cpp \
            src/player/playback_parameters.cpp \
            src/player/sound_capture_and_playback_process.cpp
 
-CONFIG(unittest) {
+CONFIG(test) {
     SOURCES += test/audio_track_test.cpp
     SOURCES -= src/main.cpp
 }

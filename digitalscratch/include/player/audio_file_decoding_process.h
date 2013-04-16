@@ -63,9 +63,10 @@ class Audio_file_decoding_process
     Audio_file_decoding_process(Audio_track *in_at);
     virtual ~Audio_file_decoding_process();
 
-    bool run(QString in_path);         // Make decoding of the audio file depending of its extension.
+    bool calculate_hash(QString in_path); // Get a hash of the first 100kb of the file.
+    bool run(QString in_path);            // Make decoding of the audio file depending of its extension.
 
- private:
+ private:   
     bool mp3_decode();                 // Make mp3 decoding and id3 (artist + track name).
 
     bool flac_decode();                // Decode flac encoded file.

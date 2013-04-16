@@ -48,7 +48,7 @@ Audio_track::Audio_track(short unsigned int in_max_minutes)
     this->samples = new short signed int[this->max_nb_samples + this->get_security_nb_samples()];
     this->reset();
 
-    qDebug() << "Audio_track::Audio_trac: create object done";
+    qDebug() << "Audio_track::Audio_track: create object done";
 
     return;
 }
@@ -179,6 +179,30 @@ Audio_track::set_name(QString in_name)
     }
 
     qDebug() << "Audio_track::set_name done.";
+
+    return true;
+}
+
+QString
+Audio_track::get_hash()
+{
+    qDebug() << "Audio_track::get_hash...";
+    qDebug() << "Audio_track::get_hash done.";
+
+    return this->hash;
+}
+
+bool
+Audio_track::set_hash(QString in_hash)
+{
+    qDebug() << "Audio_track::set_hash...";
+
+    if (in_hash != this->hash)
+    {
+        this->hash = in_hash;
+    }
+
+    qDebug() << "Audio_track::set_hash done.";
 
     return true;
 }

@@ -42,6 +42,15 @@
 [MS Windows]
 - TODO
 
+-- Build test suite ------------------------------------------------------------
+
+[GNU/Linux]
+- qmake CONFIG+=test
+- make
+
+[MS Windows]
+- TODO
+
 
 -- Playing requirements --------------------------------------------------------
 
