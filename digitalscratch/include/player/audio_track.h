@@ -52,7 +52,7 @@ class Audio_track : public QObject
     unsigned int      length;                    // Length of the track (ms).
     QString           name;                      // Name of the track.
     unsigned int      max_nb_samples;            // Max number of decoded samples.
-    QString           hash;                      // Hash of the first 10kb of the file.
+    QString           hash;                      // Hash of the first kbytes of the file.
 
  public:
     Audio_track(short unsigned int in_max_minutes);

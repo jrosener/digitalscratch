@@ -36,6 +36,7 @@
 
 #include "audio_file_decoding_process.h"
 
+#define HASH_TRACK_SIZE 200*1024
 
 Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at)
 {
@@ -100,12 +101,15 @@ Audio_file_decoding_process::calculate_hash(QString in_path)
         return FALSE;
     }
 
-    // Get a hash of the first 100kb of data (or the size of the file if it is less).
-    QByteArray bin  = this->file->read(std::min((qint64)100*1024, this->file->size()));
+    // Get a hash of the first bytes of data (or the size of the file if it is less).
+    QByteArray bin  = this->file->read(std::min((qint64)HASH_TRACK_SIZE, this->file->size()));
     QString    hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
 
     // Set the hash to the audio track.
     this->at->set_hash(hash);
+
+    // Cleanup.
+    this->file->close();
 
     qDebug() << "Audio_file_decoding_process::calculate_hash: done.";
 

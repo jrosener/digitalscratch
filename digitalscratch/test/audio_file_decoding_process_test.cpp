@@ -8,7 +8,11 @@
 #define DATA_TRACK_1 "track_1.mp3"
 #define DATA_TRACK_2 "track_2.mp3"
 #define DATA_TRACK_3 "track_3.mp3"
-#define MUSIC_PATH   "/home/julien/Music"
+#ifdef WIN32
+    #define MUSIC_PATH   "D:/musique"
+#else
+    #define MUSIC_PATH   "/home/julien/Music"
+#endif
 
 Audio_file_decoding_process_Test::Audio_file_decoding_process_Test()
 {
@@ -42,15 +46,15 @@ void Audio_file_decoding_process_Test::testCaseCalculateHash()
     // Get hash of files.
     at->reset();
     QVERIFY2(decoder->calculate_hash(QString(DATA_DIR) + QString(DATA_TRACK_1)) == true, "calculate hash track 1");
-    QVERIFY2(at->get_hash() == "e9e6e98ef4c8a32ac55e7e1155882b57", "track 1 hash");
+    QVERIFY2(at->get_hash() == "18cc3115b3b4f43e71a4b8859d18fcc1", "track 1 hash");
 
     at->reset();
     QVERIFY2(decoder->calculate_hash(QString(DATA_DIR) + QString(DATA_TRACK_2)) == true, "calculate hash track 2");
-    QVERIFY2(at->get_hash() == "557a8a86952a10e5eca44cd24021bd32", "track 2 hash");
+    QVERIFY2(at->get_hash() == "4fb8a48432061b1defa514e73087aace", "track 2 hash");
 
     at->reset();
     QVERIFY2(decoder->calculate_hash(QString(DATA_DIR) + QString(DATA_TRACK_3)) == true, "calculate hash track 3");
-    QVERIFY2(at->get_hash() == "e47ee9c41c0279a6addf528414739db4", "track 3 hash");
+    QVERIFY2(at->get_hash() == "f610ccedaf72485853b3829b3b88a38c", "track 3 hash");
 
     // Wrong parameters.
     at->reset();
@@ -91,8 +95,6 @@ void Audio_file_decoding_process_Test::testCaseChargeCalculateHash()
             QString filename = iterator.fileName();
             if (filename.endsWith(".mp3") == true)
             {
-                //cout << qPrintable(iterator.filePath()) << endl;
-
                 // Get hash of this mp3.
                 //at->reset(); // takes too much time (std::fill)
                 QVERIFY2(decoder->calculate_hash(iterator.filePath()) == true, qPrintable("calculate hash on " + iterator.filePath()));
