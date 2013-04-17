@@ -72,6 +72,7 @@ Audio_track::reset()
     this->end_of_samples = 0;
     this->name           = "";
     this->length         = 0;
+    this->hash           = "";
 
     std::fill(this->samples, this->samples + this->get_max_nb_samples(), 0);
 
