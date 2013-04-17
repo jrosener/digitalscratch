@@ -37,6 +37,7 @@
 #include <audio_track.h>
 #include <playback_parameters.h>
 #include <samplerate.h>
+#include <application_const.h>
 
 using namespace std;
 

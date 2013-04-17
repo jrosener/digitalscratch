@@ -35,6 +35,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <application_const.h>
 
 using namespace std;
 

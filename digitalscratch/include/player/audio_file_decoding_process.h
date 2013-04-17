@@ -40,6 +40,7 @@
 #include <QFile>
 #include <QString>
 #include <audio_track.h>
+#include <application_const.h>
 
 using namespace std;
 
@@ -63,8 +64,7 @@ class Audio_file_decoding_process
     Audio_file_decoding_process(Audio_track *in_at);
     virtual ~Audio_file_decoding_process();
 
-    bool calculate_hash(QString in_path); // Get a hash of the first kbytes of the file.
-    bool run(QString in_path);            // Make decoding of the audio file depending of its extension.
+    bool run(QString in_path);         // Make decoding of the audio file depending of its extension.
 
  private:   
     bool mp3_decode();                 // Make mp3 decoding and id3 (artist + track name).

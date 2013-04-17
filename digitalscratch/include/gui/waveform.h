@@ -35,6 +35,7 @@
 
 #include <QLabel>
 #include "audio_track.h"
+#include <application_const.h>
 
 #define POINTS_MAX_SIZE (this->at->get_max_nb_samples() / 100) // Number of samples for a track of 15 min (divided by 100).
 

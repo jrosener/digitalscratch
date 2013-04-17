@@ -51,6 +51,7 @@
 #include "vertical_waveform.h"
 #include "remaining_time.h"
 #include "application_settings.h"
+#include <application_const.h>
 
 using namespace std;
 

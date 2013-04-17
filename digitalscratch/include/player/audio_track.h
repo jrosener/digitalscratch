@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------------------------( audio_track.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2012                                                   */
+/*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -36,6 +36,7 @@
 #include <string>
 #include <QObject>
 #include <QString>
+#include <application_const.h>
 using namespace std;
 
 #define SAMPLE_RATE         44100                  // Fixed sample rate.

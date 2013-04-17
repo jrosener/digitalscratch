@@ -37,6 +37,7 @@
 #include <timecode_analyzis_process.h>
 #include <audio_track_playback_process.h>
 #include <sound_card_access_rules.h>
+#include <application_const.h>
 
 using namespace std;
 

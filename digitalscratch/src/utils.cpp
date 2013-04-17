@@ -4,15 +4,15 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*--------------------------------------------------------------( utils.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2012                                                   */
+/*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,64 +26,59 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/*                         Static utility functions                           */
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef PLAYBACK_PARAMETERS_H_
-#define PLAYBACK_PARAMETERS_H_
+#include <utils.h>
+#include <QCryptographicHash>
+#include <algorithm>
+#include <QtDebug>
+#include <QFile>
 
-#include <string>
-#include <iostream>
-#include <QObject>
-#include <QString>
-#include <application_const.h>
+QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
+{   
+    qDebug() << "Utils::get_file_hash...";
 
-using namespace std;
+    // Init.
+    QString hash("");
 
-class Playback_parameters : public QObject
-{
-    Q_OBJECT
+    // Check if path is defined.
+    if (in_path == NULL)
+    {
+        qWarning() << "Utils::get_file_hash: path is NULL.";
+        return "";
+    }
 
- private:
-    float speed;        // Vinyl speed.
-    float position;     // Needle position.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_position; // If true: position is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+    // Check number of kbytes.
+    if (in_kbytes == 0)
+    {
+        qWarning() << "Utils::get_file_hash: nb bytes to hash is 0.";
+        return "";
+    }
 
- public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
+    // Check if file exists.
+    QFile file(in_path);
+    if (file.exists() == FALSE)
+    {
+        qWarning() << "Utils::get_file_hash: file " << in_path << " does not exists.";
+        return "";
+    }
 
- public:
-    bool  set_speed(float in_speed);
-    float get_speed();
-    bool  set_new_speed(bool in_new);
-    bool  is_new_speed();
+    // Open file as binary.
+    if (file.open(QIODevice::ReadOnly) == FALSE)
+    {
+        return "";
+    }
 
-    bool  set_position(float in_speed);
-    float get_position();
-    bool  set_new_position(bool in_new);
-    bool  is_new_position();
+    // Get a hash of the first bytes of data (or the size of the file if it is less).
+    QByteArray bin  = file.read(std::min((qint64)(in_kbytes*1024), file.size()));
+    hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
 
-    bool  set_volume(float in_volume);
-    float get_volume();
-    bool  set_new_volume(bool in_new);
-    bool  is_new_volume();
+    // Cleanup.
+    file.close();
 
-    bool  set_new_data(bool in_new_data);
-    bool  get_new_data();
+    qDebug() << "Utils::get_file_hash: done.";
 
- private:
-    bool reset();
-
- signals:
-    void speed_changed(double in_speed);       // Speed.
-    void position_changed(double in_position); // Position in msec.
-    void volume_changed(double in_volume);     // Volume.
-};
-
-#endif /* PLAYBACK_PARAMETERS_H_ */
+    return hash;
+}

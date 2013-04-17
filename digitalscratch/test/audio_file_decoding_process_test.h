@@ -1,5 +1,6 @@
 #include <QObject>
 #include <QtTest>
+#include <application_const.h>
 
 class Audio_file_decoding_process_Test : public QObject
 {
@@ -13,6 +14,4 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCaseCreate();
-    void testCaseCalculateHash();
-    void testCaseChargeCalculateHash();
 };

@@ -30,7 +30,7 @@ else {
     TARGET = digitalscratch
 }
 DEPENDPATH += . src include/gui include/player src/gui src/player
-INCLUDEPATH += . include/player include/gui
+INCLUDEPATH += . include/player include/gui include
 
 
 # Input
@@ -46,7 +46,9 @@ HEADERS += include/gui/config_dialog.h \
            include/player/sound_card_access_rules.h \
            include/player/timecode_analyzis_process.h \
            include/player/playback_parameters.h \
-           include/player/sound_capture_and_playback_process.h
+           include/player/sound_capture_and_playback_process.h \
+           include/utils.h \
+           include/application_const.h
            
 SOURCES += src/main.cpp \
            src/gui/config_dialog.cpp \
@@ -61,19 +63,22 @@ SOURCES += src/main.cpp \
            src/player/sound_card_access_rules.cpp \
            src/player/timecode_analyzis_process.cpp \
            src/player/playback_parameters.cpp \
-           src/player/sound_capture_and_playback_process.cpp
+           src/player/sound_capture_and_playback_process.cpp \
+           src/utils.cpp
 
 CONFIG(test) {
     INCLUDEPATH += test
 
-    HEADERS += test/audio_track_test.h \
-               test/audio_file_decoding_process_test.h
-
-    SOURCES += test/main.cpp \
-               test/audio_track_test.cpp \
-               test/audio_file_decoding_process_test.cpp
-
     SOURCES -= src/main.cpp
+
+    HEADERS += test/audio_track_test.h \
+               test/audio_file_decoding_process_test.h \
+               test/utils_test.h
+
+    SOURCES += test/main_test.cpp \
+               test/audio_track_test.cpp \
+               test/audio_file_decoding_process_test.cpp \
+               test/utils_test.cpp
 }
 
 

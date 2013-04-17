@@ -34,6 +34,7 @@
 #define REMAINING_TIME_H_
 
 #include <QLabel>
+#include <application_const.h>
 
 using namespace std;
 

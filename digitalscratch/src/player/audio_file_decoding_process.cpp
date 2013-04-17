@@ -31,12 +31,9 @@
 /*============================================================================*/
 
 #include <QtDebug>
-#include <QCryptographicHash>
 #include <algorithm>
 
 #include "audio_file_decoding_process.h"
-
-#define HASH_TRACK_SIZE 200*1024
 
 Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at)
 {
@@ -69,51 +66,6 @@ Audio_file_decoding_process::~Audio_file_decoding_process()
     qDebug() << "Audio_file_decoding_process::~Audio_file_decoding_process: delete object done.";
 
     return;
-}
-
-bool
-Audio_file_decoding_process::calculate_hash(QString in_path)
-{
-    qDebug() << "Audio_file_decoding_process::calculate_hash...";
-
-    // Check if path is defined.
-    if (in_path == NULL)
-    {
-        qWarning() << "Audio_file_decoding_process::calculate_hash: path is NULL.";
-        return FALSE;
-    }
-
-    // Check if file exists.
-    if (this->file != NULL)
-    {
-        delete this->file;
-    }
-    this->file = new QFile(in_path);
-    if (this->file->exists() == FALSE)
-    {
-        qWarning() << "Audio_file_decoding_process::calculate_hash: file does not exists.";
-        return FALSE;
-    }
-
-    // Open file as binary.
-    if (this->file->open(QIODevice::ReadOnly) == FALSE)
-    {
-        return FALSE;
-    }
-
-    // Get a hash of the first bytes of data (or the size of the file if it is less).
-    QByteArray bin  = this->file->read(std::min((qint64)HASH_TRACK_SIZE, this->file->size()));
-    QString    hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
-
-    // Set the hash to the audio track.
-    this->at->set_hash(hash);
-
-    // Cleanup.
-    this->file->close();
-
-    qDebug() << "Audio_file_decoding_process::calculate_hash: done.";
-
-    return TRUE;
 }
 
 bool

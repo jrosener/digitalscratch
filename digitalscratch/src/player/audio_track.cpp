@@ -35,6 +35,7 @@
 #include <mpg123.h>
 #include <QFileInfo>
 #include <QtDebug>
+#include <utils.h>
 
 #include "audio_track.h"
 
@@ -198,7 +199,11 @@ Audio_track::set_path(QString in_path)
 {
     qDebug() << "Audio_track::set_path...";
 
+    // Store path
     this->path = in_path;
+
+    // Get the hash of the file.
+    this->hash = Utils::get_file_hash(in_path, FILE_HASH_SIZE);
 
     qDebug() << "Audio_track::set_path done.";
 
