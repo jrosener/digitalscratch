@@ -14,4 +14,5 @@ private Q_SLOTS:
 
     void testCaseCreate();
     void testCaseFillSamples();
+    void testCaseSetPath();
 };

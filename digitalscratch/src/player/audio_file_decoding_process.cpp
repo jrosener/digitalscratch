@@ -181,6 +181,9 @@ Audio_file_decoding_process::run(QString in_path)
     // Set name of the track which is for the moment the name of the file.
     this->at->set_name(file_info.fileName());
 
+    // Set file path.
+    this->at->set_path(file_info.absoluteFilePath());
+
     qDebug() << "Audio_file_decoding_process::run: done.";
 
     return TRUE;

@@ -72,3 +72,17 @@ void Audio_track_Test::testCaseFillSamples()
     delete at;
 }
 
+void Audio_track_Test::testCaseSetPath()
+{
+    // Create a track.
+    Audio_track *at = new Audio_track(15);
+
+    // Set path and check it.
+    QString path("/aé-.filepath/ù/ö");
+    QVERIFY2(at->set_path(path) == true, "set path");
+    QVERIFY2(at->get_path()     == path, "get path");
+
+    // Cleanup.
+    delete at;
+}
+

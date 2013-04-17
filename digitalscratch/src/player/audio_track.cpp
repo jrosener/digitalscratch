@@ -185,6 +185,27 @@ Audio_track::set_name(QString in_name)
 }
 
 QString
+Audio_track::get_path()
+{
+    qDebug() << "Audio_track::get_path...";
+    qDebug() << "Audio_track::get_path done.";
+
+    return this->path;
+}
+
+bool
+Audio_track::set_path(QString in_path)
+{
+    qDebug() << "Audio_track::set_path...";
+
+    this->path = in_path;
+
+    qDebug() << "Audio_track::set_path done.";
+
+    return true;
+}
+
+QString
 Audio_track::get_hash()
 {
     qDebug() << "Audio_track::get_hash...";
