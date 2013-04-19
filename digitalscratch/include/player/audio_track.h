@@ -53,6 +53,7 @@ class Audio_track : public QObject
     unsigned int      length;                    // Length of the track (ms).
     QString           name;                      // Name of the track.
     QString           path;                      // Path of the file.
+    QString           filename;                  // Name of the file.
     unsigned int      max_nb_samples;            // Max number of decoded samples.
     QString           hash;                      // Hash of the first kbytes of the file.
 
@@ -72,7 +73,8 @@ class Audio_track : public QObject
     QString           get_name();                                         // Get name of the track.
     bool              set_name(QString in_name);                          // Set name of the track (basically artist+track).
     QString           get_path();                                         // Get path of the track.
-    bool              set_path(QString in_path);                          // Set path of the track.
+    bool              set_fullpath(QString in_fullpath);                      // Set full path of the track.
+    QString           get_filename();                                     // Get name of the file.
     QString           get_hash();                                         // Get hash of the track.
     bool              set_hash(QString in_hash);                          // Set hash of the track.
 

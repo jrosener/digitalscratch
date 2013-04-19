@@ -36,6 +36,7 @@
 #include <QFileInfo>
 #include <QtDebug>
 #include <utils.h>
+#include <QDir>
 
 #include "audio_track.h"
 
@@ -74,6 +75,8 @@ Audio_track::reset()
     this->name           = "";
     this->length         = 0;
     this->hash           = "";
+    this->path           = "";
+    this->filename       = "";
 
     std::fill(this->samples, this->samples + this->get_max_nb_samples(), 0);
 
@@ -195,20 +198,32 @@ Audio_track::get_path()
 }
 
 bool
-Audio_track::set_path(QString in_path)
+Audio_track::set_fullpath(QString in_fullpath)
 {
     qDebug() << "Audio_track::set_path...";
 
-    // Store path
-    this->path = in_path;
+    // Store path and filename
+    QFileInfo path_info(in_fullpath);
+    this->path = path_info.path();
+    this->filename = path_info.fileName();
 
     // Get the hash of the file.
-    this->hash = Utils::get_file_hash(in_path, FILE_HASH_SIZE);
+    this->hash = Utils::get_file_hash(in_fullpath, FILE_HASH_SIZE);
 
     qDebug() << "Audio_track::set_path done.";
 
     return true;
 }
+
+QString
+Audio_track::get_filename()
+{
+    qDebug() << "Audio_track::get_filename...";
+    qDebug() << "Audio_track::get_filename done.";
+
+    return this->filename;
+}
+
 
 QString
 Audio_track::get_hash()

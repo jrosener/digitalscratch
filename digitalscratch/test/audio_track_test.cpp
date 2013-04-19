@@ -79,8 +79,10 @@ void Audio_track_Test::testCaseSetPath()
 
     // Set path and check it.
     QString path("/aé-.filepath/ù/ö");
-    QVERIFY2(at->set_path(path) == true, "set path");
-    QVERIFY2(at->get_path()     == path, "get path");
+    QString filename("filename.mp3");
+    QVERIFY2(at->set_fullpath(path + '/' + filename) == true, "set path");
+    QVERIFY2(at->get_path()     == path,     "get path");
+    QVERIFY2(at->get_filename() == filename, "get filename");
 
     // Cleanup.
     delete at;
