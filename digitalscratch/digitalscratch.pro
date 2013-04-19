@@ -20,6 +20,7 @@ INSTALLS += target
 ##############################
 
 TEMPLATE = app
+QT += sql
 CONFIG(test) {
     QT       += testlib
     TARGET    = digitalscratch-test
@@ -47,8 +48,11 @@ HEADERS += include/gui/config_dialog.h \
            include/player/timecode_analyzis_process.h \
            include/player/playback_parameters.h \
            include/player/sound_capture_and_playback_process.h \
+           include/player/data_persistence.h \
            include/utils.h \
-           include/application_const.h
+           include/application_const.h \
+    test/data_persistence_test.h \
+    include/singleton.h
            
 SOURCES += src/main.cpp \
            src/gui/config_dialog.cpp \
@@ -64,7 +68,9 @@ SOURCES += src/main.cpp \
            src/player/timecode_analyzis_process.cpp \
            src/player/playback_parameters.cpp \
            src/player/sound_capture_and_playback_process.cpp \
-           src/utils.cpp
+           src/player/data_persistence.cpp \
+           src/utils.cpp \
+    test/data_persistence_test.cpp
 
 CONFIG(test) {
     INCLUDEPATH += test
@@ -173,14 +179,16 @@ win32 {
     CONFIG(debug, debug|release) {
         DESTDIR_WIN += debug
         DLLS += %QTDIR%/bin/QtCored4.dll \
-                %QTDIR%/bin/QtGuid4.dll
+                %QTDIR%/bin/QtGuid4.dll \
+                %QTDIR%/bin/QtSqld4.dll
         CONFIG(test) {
            DLLS += %QTDIR%/bin/QtTestd4.dll
         }
     } else {
         DESTDIR_WIN += release
         DLLS += %QTDIR%/bin/QtCore4.dll \
-                %QTDIR%/bin/QtGui4.dll
+                %QTDIR%/bin/QtGui4.dll \
+                %QTDIR%/bin/QtSql4.dll
         CONFIG(test) {
            DLLS += %QTDIR%/bin/QtTest4.dll
         }
