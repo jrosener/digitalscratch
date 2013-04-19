@@ -18,6 +18,7 @@ void Data_persistence_Test::initTestCase()
 
 void Data_persistence_Test::cleanupTestCase()
 {
+    // Cleanup.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     data_persist->close_db();
 }

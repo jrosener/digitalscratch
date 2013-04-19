@@ -9,7 +9,7 @@
 #ifdef WIN32
     #define MUSIC_PATH   "D:/musique"
 #else
-    #define MUSIC_PATH   "/home/julien/Music"
+    #define MUSIC_PATH   "/home/julien/Music/drum_n_bass"
 #endif
 
 Utils_Test::Utils_Test()

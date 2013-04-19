@@ -39,6 +39,7 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QDir>
+#include <QSqlQuery>
 
 Data_persistence::Data_persistence()
 {
@@ -83,7 +84,58 @@ bool Data_persistence::init_db()
         result = false;
     }
 
+    // Create DB structure if needed.
+    if (this->create_db_structure() == false)
+    {
+        qWarning() << "Data_persistence::init_db: creating base DB structure failed";
+        result = false;
+    }
+
     qDebug() << "Data_persistence::init_db done.";
+
+    return result;
+}
+
+bool Data_persistence::create_db_structure()
+{
+    qDebug() << "Data_persistence::create_db_structure...";
+
+    // Init.
+    bool result = true;
+
+    // Create DB structure
+    if (this->db.isOpen() == true)
+    {
+        QSqlQuery query;
+
+        // Enable foreign key support.
+        result = query.exec("PRAGMA foreign_keys = ON");
+
+        // Create TRACK table
+        if (result == true)
+        {
+            result = query.exec("CREATE TABLE IF NOT EXISTS \"TRACK\" "
+                                "(\"id_track\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
+                                "\"hash\" VARCHAR NOT NULL , "
+                                "\"bpm\" INTEGER, "
+                                "\"key\" VARCHAR, "
+                                "\"key_tag\" VARCHAR, "
+                                "\"path\" VARCHAR, "
+                                "\"filename\" VARCHAR);");
+        }
+
+        // Create CUE_POINT table
+        if (result == true)
+        {
+            result = query.exec("CREATE TABLE IF NOT EXISTS \"CUE_POINT\" "
+                                "(\"id_cuepoint\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
+                                "\"id_track\" INTEGER  NOT NULL  , "
+                                "\"position\" INTEGER NOT NULL , "
+                                "FOREIGN KEY(id_track) REFERENCES TRACK(id_track));");
+        }
+    }
+
+    qDebug() << "Data_persistence::create_db_structure done.";
 
     return result;
 }
