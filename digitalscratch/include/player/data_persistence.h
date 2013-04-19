@@ -33,6 +33,7 @@
 #ifndef DATA_PERSISTENCE_H
 #define DATA_PERSISTENCE_H
 
+#include <iostream>
 #include <QObject>
 #include <QSqlDatabase>
 
