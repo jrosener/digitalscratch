@@ -36,6 +36,7 @@
 #include <iostream>
 #include <QObject>
 #include <QSqlDatabase>
+#include <audio_track.h>
 
 using namespace std;
 
@@ -54,11 +55,13 @@ class Data_persistence : public QObject
     QSqlDatabase db;
 
  public:
-    void close_db();
+    bool store_audio_track(Audio_track *in_at); // Insert (or update if exists) an audio track in DB.
+    bool get_audio_track(Audio_track *in_at);   // Get and fill the audio track specified by in_at->get_hash().
 
  private:
     bool init_db();
     bool create_db_structure();
+    void close_db();
 };
 
 #endif // DATA_PERSISTENCE_H

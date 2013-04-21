@@ -11,4 +11,7 @@ class Data_persistence_Test : public QObject
  private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+
+    void testCaseStoreAudioTrack();
+    void testCaseGetAudioTrack();
 };

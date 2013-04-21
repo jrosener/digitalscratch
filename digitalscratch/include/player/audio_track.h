@@ -48,17 +48,20 @@ class Audio_track : public QObject
     Q_OBJECT
 
  private:
-    short signed int *samples;                   // Table of decoded samples.
-    unsigned int      end_of_samples;            // The last filled sample in the table of samples.
-    unsigned int      length;                    // Length of the track (ms).
-    QString           name;                      // Name of the track.
-    QString           path;                      // Path of the file.
-    QString           filename;                  // Name of the file.
-    unsigned int      max_nb_samples;            // Max number of decoded samples.
-    QString           hash;                      // Hash of the first kbytes of the file.
+    short signed int  *samples;                   // Table of decoded samples.
+    unsigned int       end_of_samples;            // The last filled sample in the table of samples.
+    unsigned int       length;                    // Length of the track (ms).
+    QString            name;                      // Name of the track.
+    QString            path;                      // Path of the file.
+    QString            filename;                  // Name of the file.
+    unsigned int       max_nb_samples;            // Max number of decoded samples.
+    QString            hash;                      // Hash of the first kbytes of the file.
+    QString            music_key;                 // The main musical key of the track.
+    QString            music_key_tag;             // The main musical key of the track (get from metadata tag).
 
  public:
-    Audio_track(short unsigned int in_max_minutes);
+    Audio_track();                                  // Does not contains any samples.
+    Audio_track(short unsigned int in_max_minutes); // Contains the table of decoded audio samples.
     virtual ~Audio_track();
 
  public:
@@ -69,14 +72,18 @@ class Audio_track : public QObject
     unsigned int      get_max_nb_samples();                               // Get maximum number of samples.
     signed int        get_sample_rate();                                  // Get sample rate.
     unsigned int      get_security_nb_samples();                          // Get number of samples used for decoding security purpose.
-    unsigned int      get_length();                                       // Get length of the track(msec).
+    unsigned int      get_length();                                       // Get length of the track (msec).
     QString           get_name();                                         // Get name of the track.
     bool              set_name(QString in_name);                          // Set name of the track (basically artist+track).
     QString           get_path();                                         // Get path of the track.
-    bool              set_fullpath(QString in_fullpath);                      // Set full path of the track.
+    bool              set_fullpath(QString in_fullpath);                  // Set full path of the track.
     QString           get_filename();                                     // Get name of the file.
-    QString           get_hash();                                         // Get hash of the track.
-    bool              set_hash(QString in_hash);                          // Set hash of the track.
+    QString           get_hash();                                         // Get hash of the file.
+    bool              set_hash(QString in_hash);                          // Set hash of the file.
+    QString           get_music_key();                                    // Get music key of the track.
+    bool              set_music_key(QString in_key);                      // Set music key of the track.
+    QString           get_music_key_tag();                                // Get music key of the track (from tag).
+    bool              set_music_key_tag(QString in_key_tag);              // Set music key of the track (from tag).
 
  signals:
     void name_changed(QString in_name);

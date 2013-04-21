@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK);
     Audio_track *at_2 = NULL;
     if (nb_decks > 1) at_2 = new Audio_track(MAX_MINUTES_TRACK);
-    else              at_2 = new Audio_track(0);
+    else              at_2 = new Audio_track();
     Audio_track *ats[] = { at_1, at_2 };
 
     // Samplers.
@@ -109,10 +109,10 @@ int main(int argc, char *argv[])
     }
     else
     {
-        at_2_sampler_1  = new Audio_track(0);
-        at_2_sampler_2  = new Audio_track(0);
-        at_2_sampler_3  = new Audio_track(0);
-        at_2_sampler_4  = new Audio_track(0);
+        at_2_sampler_1  = new Audio_track();
+        at_2_sampler_2  = new Audio_track();
+        at_2_sampler_3  = new Audio_track();
+        at_2_sampler_4  = new Audio_track();
     }
     Audio_track *at_2_samplers[] = { at_2_sampler_1, at_2_sampler_2, at_2_sampler_3, at_2_sampler_4 };
 

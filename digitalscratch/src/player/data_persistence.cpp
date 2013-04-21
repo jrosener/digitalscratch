@@ -56,6 +56,8 @@ Data_persistence::~Data_persistence()
 {
     qDebug() << "Audio_track::~Audio_track: delete object...";
 
+    this->close_db();
+
     qDebug() << "Audio_track::~Audio_track: delete object done.";
 
     return;
@@ -134,6 +136,11 @@ bool Data_persistence::create_db_structure()
                                 "FOREIGN KEY(id_track) REFERENCES TRACK(id_track));");
         }
     }
+    else
+    {
+        // Db not open.
+        result = false;
+    }
 
     qDebug() << "Data_persistence::create_db_structure done.";
 
@@ -149,3 +156,110 @@ void Data_persistence::close_db()
     qDebug() << "Data_persistence::close_db done.";
 }
 
+bool Data_persistence::store_audio_track(Audio_track *in_at)
+{
+    qDebug() << "Data_persistence::store_audio_track...";
+
+    // Check input parameter.
+    if ((in_at == NULL) ||
+       (in_at->get_hash().size() == 0))
+    {
+        return false;
+    }
+
+    // Insert or update main data of the audio track.
+    if (this->db.isOpen() == true)
+    {
+        // Try to get audio track from Db.
+        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        if (query.lastError().isValid())
+        {
+            qWarning() << "SELECT track failed: " << query.lastError().text();
+            //cout << "select failed: " << query.lastError().text().toStdString().c_str() << endl;
+            return false;
+        }
+        if (query.next() == true) // Check if there is a record.
+        {
+            // An audio track with same hash already exists, update it.
+            int existing_id = query.value(0).toInt();
+            //cout << "existing_id=" << existing_id << endl;
+            query = this->db.exec("UPDATE TRACK SET path = \"" + in_at->get_path() + "\" , "
+                                  + "filename = \"" + in_at->get_filename() + "\" , "
+                                  + "key = \"" + in_at->get_music_key() + "\" , "
+                                  + "key_tag = \"" + in_at->get_music_key_tag() + "\" "
+                                  + "WHERE id_track = " + QString::number(existing_id));
+            if (query.lastError().isValid())
+            {
+                qWarning() << "UPDATE track failed: " << query.lastError().text();
+                //cout << "update failed: " << query.lastError().text().toStdString().c_str() << endl;
+                return false;
+            }
+        }
+        else
+        {
+            // No existing audio track found, insert it in DB.
+            query = this->db.exec("INSERT INTO TRACK (hash,path,filename,key,key_tag) VALUES (\"" + in_at->get_hash()
+                                  + "\",\"" + in_at->get_path()
+                                  + "\",\"" + in_at->get_filename()
+                                  + "\",\"" + in_at->get_music_key()
+                                  + "\",\"" + in_at->get_music_key_tag()
+                                  + "\")");
+            if (query.lastError().isValid())
+            {
+                qWarning() << "INSERT track failed: " << query.lastError().text();
+                //cout << "insert failed: " << query.lastError().text().toStdString().c_str() << endl;
+                return false;
+            }
+        }
+
+
+    }
+    else
+    {
+        // Db not open.
+        qWarning() << "Can not store audio track: db not open";
+        return false;
+    }
+
+    qDebug() << "Data_persistence::store_audio_track done.";
+
+    return true;
+}
+
+bool Data_persistence::get_audio_track(Audio_track *in_at)
+{
+    qDebug() << "Data_persistence::get_audio_track...";
+
+    // Check input parameter.
+    if ((in_at == NULL) ||
+        (in_at->get_hash().size() == 0))
+    {
+        qWarning() << "Can not get audio track: hash not specified.";
+        return false;
+    }
+
+    // Search the audio track (based on its hash) in DB.
+    QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+    if (query.lastError().isValid())
+    {
+        qWarning() << "SELECT track failed: " << query.lastError().text();
+        //cout << "select failed: " << query.lastError().text().toStdString().c_str() << endl;
+        return false;
+    }
+    if (query.next() == true) // Check if there is a record.
+    {
+        // The audio track exists, fill the returned object.
+        in_at->set_music_key(query.value(0).toString());
+        in_at->set_music_key_tag(query.value(1).toString());
+        in_at->set_fullpath(query.value(2).toString() + "/" + query.value(3).toString());
+    }
+    else
+    {
+        // Audio track not found.
+        return false;
+    }
+
+    qDebug() << "Data_persistence::get_audio_track done.";
+
+    return true;
+}
