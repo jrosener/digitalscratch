@@ -78,7 +78,11 @@ void Audio_track_Test::testCaseSetPath()
     Audio_track *at = new Audio_track(15);
 
     // Set path and check it.
+   #ifdef WIN32
+    QString path("C:/aé-.filepath/ù/ö");
+   #else
     QString path("/aé-.filepath/ù/ö");
+   #endif
     QString filename("filename.mp3");
     QVERIFY2(at->set_fullpath(path + '/' + filename) == true, "set path");
     QVERIFY2(at->get_path()     == path,     "get path");
