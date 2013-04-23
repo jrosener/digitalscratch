@@ -167,7 +167,7 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
         return false;
     }
 
-    // Insert or update main data of the audio track.
+    // Insert or update main data of the audio track (identified by the hash).
     if (this->db.isOpen() == true)
     {
         // Try to get audio track from Db.

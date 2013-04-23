@@ -9,6 +9,11 @@
 #define DATA_TRACK_1 "track_1.mp3"
 #define DATA_TRACK_2 "track_2.mp3"
 #define DATA_TRACK_3 "track_3.mp3"
+#ifdef WIN32
+    #define MUSIC_PATH   "D:/musique"
+#else
+    #define MUSIC_PATH   "/home/julien/Music/drum_n_bass"
+#endif
 
 Data_persistence_Test::Data_persistence_Test()
 {
@@ -87,5 +92,63 @@ void Data_persistence_Test::testCaseGetAudioTrack()
 
     // Cleanup.
     delete at;
+    delete at_from_db;
+}
+
+void Data_persistence_Test::testCaseStoreAndGetATCharge()
+{
+    //
+    // For each audio file in big directory, create an Audio Track and store it.
+    // Get it as well to check data.
+    //
+
+    // Init.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    Audio_track      *at_to_store  = new Audio_track();
+    Audio_track      *at_from_db   = new Audio_track();
+
+    // Iterate recursively over files in directory.
+    QDir dir(MUSIC_PATH);
+    QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
+    QMultiMap<QString, QString> map;
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // Should be probably removed in Qt5.
+    QString hash("");
+    while (i.hasNext())
+    {
+        // Go to the next element (file or directory).
+        i.next();
+        if (i.fileInfo().isDir() == false)
+        {
+            // The element is a file.
+            QString filename = i.fileName();
+            if (filename.endsWith(".mp3") == true)
+            {
+                // Prepare the audio track.
+                at_to_store->reset();
+                hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
+                at_to_store->set_hash(hash);
+                at_to_store->set_fullpath(i.filePath());
+                at_to_store->set_music_key("A1");
+
+                // Store the audio track.
+                QVERIFY2(data_persist->store_audio_track(at_to_store) == true, qPrintable(QString("store track ") + i.filePath()));
+
+                // Update audio track.
+                at_to_store->set_music_key("B1");
+                QVERIFY2(data_persist->store_audio_track(at_to_store) == true, qPrintable(QString("update track ") + i.filePath()));
+
+                // Get data in another Audio track object and compare values.
+                at_from_db->reset();
+                at_from_db->set_hash(hash);
+                QVERIFY2(data_persist->get_audio_track(at_from_db) == true,           qPrintable(QString("get audio track") + i.filePath()));
+                QVERIFY2(at_from_db->get_path()      == at_to_store->get_path(),      qPrintable(QString("path from DB") + i.filePath()));
+                QVERIFY2(at_from_db->get_filename()  == at_to_store->get_filename(),  qPrintable(QString("filename from DB") + i.filePath()));
+                QVERIFY2(at_from_db->get_music_key() == at_to_store->get_music_key(), qPrintable(QString("key from DB") + i.filePath()));
+            }
+      }
+    }
+
+    // Cleanup.
+    delete at_to_store;
     delete at_from_db;
 }

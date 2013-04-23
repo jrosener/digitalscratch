@@ -14,4 +14,5 @@ class Data_persistence_Test : public QObject
 
     void testCaseStoreAudioTrack();
     void testCaseGetAudioTrack();
+    void testCaseStoreAndGetATCharge();
 };
