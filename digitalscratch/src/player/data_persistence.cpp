@@ -67,9 +67,6 @@ bool Data_persistence::init_db()
 {
     qDebug() << "Data_persistence::init_db...";
 
-    // Init.
-    bool result = true;
-
     // Create DB.
     this->db = QSqlDatabase::addDatabase("QSQLITE");
     QFileInfo path_info(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
@@ -83,19 +80,34 @@ bool Data_persistence::init_db()
     if (this->db.open() == false)
     {
         qWarning() << "Data_persistence::init_db: " << this->db.lastError().text();
-        result = false;
+        return false;
+    }
+    else
+    {
+        // Enable foreign key support.
+        QSqlQuery query;
+        if (query.exec("PRAGMA foreign_keys = ON") == false)
+        {
+            return false;
+        }
+
+        // Disable wait on write (on hdd).
+        if (query.exec("PRAGMA synchronous = OFF") == false)
+        {
+            return false;
+        }
     }
 
     // Create DB structure if needed.
     if (this->create_db_structure() == false)
     {
         qWarning() << "Data_persistence::init_db: creating base DB structure failed";
-        result = false;
+        return false;
     }
 
     qDebug() << "Data_persistence::init_db done.";
 
-    return result;
+    return true;
 }
 
 bool Data_persistence::create_db_structure()
@@ -110,21 +122,15 @@ bool Data_persistence::create_db_structure()
     {
         QSqlQuery query;
 
-        // Enable foreign key support.
-        result = query.exec("PRAGMA foreign_keys = ON");
-
         // Create TRACK table
-        if (result == true)
-        {
-            result = query.exec("CREATE TABLE IF NOT EXISTS \"TRACK\" "
-                                "(\"id_track\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
-                                "\"hash\" VARCHAR NOT NULL , "
-                                "\"bpm\" INTEGER, "
-                                "\"key\" VARCHAR, "
-                                "\"key_tag\" VARCHAR, "
-                                "\"path\" VARCHAR, "
-                                "\"filename\" VARCHAR);");
-        }
+        result = query.exec("CREATE TABLE IF NOT EXISTS \"TRACK\" "
+                            "(\"id_track\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
+                            "\"hash\" VARCHAR NOT NULL , "
+                            "\"bpm\" INTEGER, "
+                            "\"key\" VARCHAR, "
+                            "\"key_tag\" VARCHAR, "
+                            "\"path\" VARCHAR, "
+                            "\"filename\" VARCHAR);");
 
         // Create CUE_POINT table
         if (result == true)
@@ -139,6 +145,7 @@ bool Data_persistence::create_db_structure()
     else
     {
         // Db not open.
+        qWarning() << "Can not create DB structure: db not open";
         result = false;
     }
 
@@ -156,6 +163,63 @@ void Data_persistence::close_db()
     qDebug() << "Data_persistence::close_db done.";
 }
 
+bool Data_persistence::begin_transaction()
+{
+    qDebug() << "Data_persistence::begin_transaction...";
+
+    if (this->db.isOpen() == true)
+    {
+        // Begin transaction.
+        return this->db.transaction();
+    }
+    else
+    {
+        // Db not open.
+        qWarning() << "Can not begin transaction: db not open";
+        return false;
+    }
+
+    qDebug() << "Data_persistence::begin_transaction done.";
+}
+
+bool Data_persistence::commit_transaction()
+{
+    qDebug() << "Data_persistence::commit_transaction...";
+
+    if (this->db.isOpen() == true)
+    {
+        // Commit transaction.
+        return this->db.commit();
+    }
+    else
+    {
+        // Db not open.
+        qWarning() << "Can not begin commit_transaction: db not open";
+        return false;
+    }
+
+    qDebug() << "Data_persistence::begin_transaction done.";
+}
+
+bool Data_persistence::rollback_transaction()
+{
+    qDebug() << "Data_persistence::rollback_transaction...";
+
+    if (this->db.isOpen() == true)
+    {
+        // Rollback transaction.
+        return this->db.rollback();
+    }
+    else
+    {
+        // Db not open.
+        qWarning() << "Can not begin rollback_transaction: db not open";
+        return false;
+    }
+
+    qDebug() << "Data_persistence::begin_transaction done.";
+}
+
 bool Data_persistence::store_audio_track(Audio_track *in_at)
 {
     qDebug() << "Data_persistence::store_audio_track...";
@@ -170,49 +234,65 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
     // Insert or update main data of the audio track (identified by the hash).
     if (this->db.isOpen() == true)
     {
+        // Start transaction.
+        this->db.transaction();
+
         // Try to get audio track from Db.
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qWarning() << "SELECT track failed: " << query.lastError().text();
-            //cout << "select failed: " << query.lastError().text().toStdString().c_str() << endl;
+            this->db.rollback();
             return false;
         }
         if (query.next() == true) // Check if there is a record.
         {
-            // An audio track with same hash already exists, update it.
-            int existing_id = query.value(0).toInt();
-            //cout << "existing_id=" << existing_id << endl;
-            query = this->db.exec("UPDATE TRACK SET path = \"" + in_at->get_path() + "\" , "
-                                  + "filename = \"" + in_at->get_filename() + "\" , "
-                                  + "key = \"" + in_at->get_music_key() + "\" , "
-                                  + "key_tag = \"" + in_at->get_music_key_tag() + "\" "
-                                  + "WHERE id_track = " + QString::number(existing_id));
-            if (query.lastError().isValid())
+            // An audio track with same hash already exists, update it if at least one element changed.
+            if ((query.value(1) != in_at->get_path()) ||
+                (query.value(2) != in_at->get_filename()) ||
+                (query.value(3) != in_at->get_music_key()) ||
+                (query.value(4) != in_at->get_music_key_tag()))
             {
-                qWarning() << "UPDATE track failed: " << query.lastError().text();
-                //cout << "update failed: " << query.lastError().text().toStdString().c_str() << endl;
-                return false;
+                int existing_id = query.value(0).toInt();
+                query.prepare("UPDATE TRACK SET path = :path, filename = :filename, key = :key, key_tag = :key_tag "
+                              "WHERE id_track = :id_track");
+                query.bindValue(":path",     in_at->get_path());
+                query.bindValue(":filename", in_at->get_filename());
+                query.bindValue(":key",      in_at->get_music_key());
+                query.bindValue(":key_tag",  in_at->get_music_key_tag());
+                query.bindValue(":id_track", QString::number(existing_id));
+                query.exec();
+
+                if (query.lastError().isValid())
+                {
+                    qWarning() << "UPDATE track failed: " << query.lastError().text();
+                    this->db.rollback();
+                    return false;
+                }
             }
         }
         else
         {
             // No existing audio track found, insert it in DB.
-            query = this->db.exec("INSERT INTO TRACK (hash,path,filename,key,key_tag) VALUES (\"" + in_at->get_hash()
-                                  + "\",\"" + in_at->get_path()
-                                  + "\",\"" + in_at->get_filename()
-                                  + "\",\"" + in_at->get_music_key()
-                                  + "\",\"" + in_at->get_music_key_tag()
-                                  + "\")");
+            query.prepare("INSERT INTO TRACK (hash, path, filename, key, key_tag) "
+                          "VALUES (:hash, :path, :filename, :key, :key_tag)");
+            query.bindValue(":hash",     in_at->get_hash());
+            query.bindValue(":path",     in_at->get_path());
+            query.bindValue(":filename", in_at->get_filename());
+            query.bindValue(":key",      in_at->get_music_key());
+            query.bindValue(":key_tag",  in_at->get_music_key_tag());
+            query.exec();
+
             if (query.lastError().isValid())
             {
                 qWarning() << "INSERT track failed: " << query.lastError().text();
-                //cout << "insert failed: " << query.lastError().text().toStdString().c_str() << endl;
+                this->db.rollback();
                 return false;
             }
         }
 
-
+        // Commit transaction.
+        this->db.commit();
     }
     else
     {
@@ -243,7 +323,6 @@ bool Data_persistence::get_audio_track(Audio_track *in_at)
     if (query.lastError().isValid())
     {
         qWarning() << "SELECT track failed: " << query.lastError().text();
-        //cout << "select failed: " << query.lastError().text().toStdString().c_str() << endl;
         return false;
     }
     if (query.next() == true) // Check if there is a record.

@@ -55,6 +55,10 @@ class Data_persistence : public QObject
     QSqlDatabase db;
 
  public:
+    bool begin_transaction();
+    bool commit_transaction();
+    bool rollback_transaction();
+
     bool store_audio_track(Audio_track *in_at); // Insert (or update if exists) an audio track in DB.
     bool get_audio_track(Audio_track *in_at);   // Get and fill the audio track specified by in_at->get_hash().
 
