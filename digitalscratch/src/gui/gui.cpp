@@ -1171,7 +1171,7 @@ Gui::set_file_browser_title()
 {
     qDebug() << "Gui::set_file_browser_title...";
 
-    // Change file borwser title (which contains base dir for tracks).
+    // Change file browser title (which contains base dir for tracks).
     this->file_browser_gbox->setTitle(tr("File browser") + " [" + this->settings->get_tracks_base_dir_path() + "]");
 
     qDebug() << "Gui::set_file_browser_title done.";

@@ -111,7 +111,7 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
     QDir dir(MUSIC_PATH);
     QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
     QMultiMap<QString, QString> map;
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // Should be probably removed in Qt5.
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // FIXME: Should be probably removed in Qt5.
     QString hash("");
     while (i.hasNext())
     {
