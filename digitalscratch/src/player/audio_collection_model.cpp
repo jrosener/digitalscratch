@@ -162,11 +162,11 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
         if ((file_or_dir_name.endsWith(".mp3",  Qt::CaseInsensitive) == true) ||
             (file_or_dir_name.endsWith(".flac", Qt::CaseInsensitive) == true))
         {
-            return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(14, Qt::SmoothTransformation);
+            return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(10, Qt::SmoothTransformation);
         }
         else
         {
-            return (QPixmap(ICON_FOLDER)).scaledToWidth(14, Qt::SmoothTransformation);
+            return (QPixmap(ICON_FOLDER)).scaledToWidth(10, Qt::SmoothTransformation);
         }
     }
     else
@@ -285,7 +285,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         if (file_info.isDir() == false)
         {
             // It is a file.
-            line << displayed_path << "KEY" << file_info.absoluteFilePath();
+            line << displayed_path << "" << file_info.absoluteFilePath();
             Audio_collection_item *file_item = new Audio_collection_item(line, in_item);
             in_item->append_child(file_item);
         }

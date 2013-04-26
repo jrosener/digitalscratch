@@ -284,6 +284,13 @@ using namespace std;
                            QTreeView::branch:open:has-children:has-siblings  {\
                                image: url(:/pixmaps/dark-branch_open.png);\
                            }\
+                           QHeaderView::section {\
+                               background-color: gray;\
+                               color:            black;\
+                               padding-left:     4px;\
+                               border:           1px solid #6c6c6c;\
+                           }\
+                           \
                            QLabel#TrackName\
                            {\
                                font:        10pt;\
