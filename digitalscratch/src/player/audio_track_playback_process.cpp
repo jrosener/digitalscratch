@@ -542,7 +542,7 @@ cout << endl;
 
     // Do time stretching.
     int err = 0;
-    std::fill(this->src_float_output_data, this->src_float_output_data + (in_nb_samples * 2), 0.0);
+    std::fill(this->src_float_output_data, this->src_float_output_data + (in_nb_samples * 2), float(0.0));
     this->src_data[in_deck_index]->data_in           = this->src_float_input_data;
     this->src_data[in_deck_index]->data_out          = this->src_float_output_data;
     this->src_data[in_deck_index]->end_of_input      = 0;

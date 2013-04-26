@@ -52,19 +52,13 @@
 #include "remaining_time.h"
 #include "application_settings.h"
 #include <application_const.h>
+#include <audio_collection_model.h>
 
 using namespace std;
 
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
-#define ICON_2          ":/pixmaps/digitalscratch-icon_2decks.png"
-#define LOGO            ":/pixmaps/digitalscratch-logo.png"
-#define PLAY            ":/pixmaps/dark-play.png"
-#define PLAY_RUNNING    ":/pixmaps/dark-play_white.png"
-#define STOP            ":/pixmaps/dark-stop.png"
-#define DARK_ICON_HELP  ":/pixmaps/dark-help_white.png"
-#define DARK_ICON_ERROR ":/pixmaps/dark-error_white.png"
 #define GUI_STYLE_DEFAULT_CSS ""
 #define GUI_STYLE_DARK_CSS "*\
                            {\
@@ -462,7 +456,7 @@ class Gui : QObject
     Audio_track_playback_process  *playback;
     unsigned short int             nb_decks;
     Sound_card_access_rules       *sound_card;
-    QFileSystemModel              *file_system_model;
+    Audio_collection_model        *file_system_model;
     int                           *dscratch_ids;
     Application_settings          *settings;
     QShortcut                     *shortcut_switch_playback;

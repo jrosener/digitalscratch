@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*----------------------------------------------------( application_const.h )-*/
+/*-----------------------------------------------( audio_collection_model.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,19 +26,67 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                         Constants for the application                      */
+/*                    Class defining a data model for audio files             */
 /*                                                                            */
 /*============================================================================*/
 
-#define FILE_HASH_SIZE 200 // Size (in kbytes) used to create file hash.
+#ifndef AUDIO_COLLECTION_MODEL_H_
+#define AUDIO_COLLECTION_MODEL_H_
 
-// GUI image/icons
-#define ICON_2          ":/pixmaps/digitalscratch-icon_2decks.png"
-#define LOGO            ":/pixmaps/digitalscratch-logo.png"
-#define PLAY            ":/pixmaps/dark-play.png"
-#define PLAY_RUNNING    ":/pixmaps/dark-play_white.png"
-#define STOP            ":/pixmaps/dark-stop.png"
-#define DARK_ICON_HELP  ":/pixmaps/dark-help_white.png"
-#define DARK_ICON_ERROR ":/pixmaps/dark-error_white.png"
-#define ICON_FOLDER     ":/pixmaps/dark-folder_white.png"
-#define ICON_AUDIO_FILE ":/pixmaps/dark-audio_file_white.png"
+#include <QAbstractItemModel>
+#include <QModelIndex>
+#include <QVariant>
+#include <QList>
+#include <QDir>
+
+using namespace std;
+
+class Audio_collection_item
+{
+ private:
+    QList<Audio_collection_item*>  childItems;
+    QList<QVariant>                itemData;
+    Audio_collection_item         *parentItem;
+
+ public:
+    Audio_collection_item(const QList<QVariant> &in_data, Audio_collection_item *in_parent = 0);
+    ~Audio_collection_item();
+
+    void                   append_child(Audio_collection_item *in_item);
+    Audio_collection_item *get_child(int in_row);
+    int                    get_child_count() const;
+
+    int      get_column_count() const;
+    QVariant get_data(int in_column) const;
+
+    int                    get_row() const;
+    Audio_collection_item *get_parent();
+};
+
+class Audio_collection_model : public QAbstractItemModel
+{
+    Q_OBJECT
+
+ private:
+    Audio_collection_item *rootItem;
+
+ public:
+    Audio_collection_model(QObject *in_parent = 0);
+    ~Audio_collection_model();
+
+    QModelIndex   set_root_path(QString in_root_path);
+
+    QVariant      data(const QModelIndex &in_index, int in_role) const;
+    Qt::ItemFlags flags(const QModelIndex &in_index) const;
+    QVariant      headerData(int in_section, Qt::Orientation in_orientation, int in_role = Qt::DisplayRole) const;
+    QModelIndex   index(int in_row, int in_column, const QModelIndex &in_parent = QModelIndex()) const;
+    QModelIndex   parent(const QModelIndex &in_index) const;
+    int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
+    int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
+
+ private:
+    void setup_model_data(QString in_path, Audio_collection_item *in_item);
+    void create_header();
+};
+
+#endif /* AUDIO_COLLECTION_MODEL_H_ */

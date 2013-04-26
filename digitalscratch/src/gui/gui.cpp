@@ -54,6 +54,7 @@
 
 #include "gui.h"
 #include "digital_scratch_api.h"
+#include "audio_collection_model.h"
 
 Gui::Gui(Application_settings           *in_settings,
          Audio_track                    *in_at_1,
@@ -111,10 +112,7 @@ Gui::Gui(Application_settings           *in_settings,
     }
 
     // Creates dynamic widgets.
-    this->file_system_model = new QFileSystemModel();
-    QStringList filters; filters << "*.mp3" << "*.flac";
-    this->file_system_model->setNameFilters(filters);
-    this->file_system_model->setNameFilterDisables(false);
+    this->file_system_model = new Audio_collection_model();
 
     this->file_browser = new QTreeView();
     this->file_browser->setModel(this->file_system_model);
@@ -806,10 +804,6 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Customize file browser display.
-    this->file_browser->setColumnHidden(1, true);
-    this->file_browser->setColumnHidden(2, true);
-    this->file_browser->setColumnHidden(3, true);
-    this->file_browser->header()->hide();
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     // Connect the keyboard shortcut that collapse tree.
@@ -1158,7 +1152,7 @@ Gui::set_file_browser_base_path(QString in_path)
     qDebug() << "Gui::set_file_browser_base_path...";
 
     // Change root path of file browser.
-    this->file_browser->setRootIndex(this->file_system_model->setRootPath(in_path));
+    this->file_browser->setRootIndex(this->file_system_model->set_root_path(in_path));
     this->set_file_browser_title();
 
     qDebug() << "Gui::set_file_browser_base_path done.";
@@ -1186,7 +1180,9 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
     qDebug() << "Gui::run_sampler_decoding_process...";
 
     // Get selected file path.
-    QFileInfo info = this->file_system_model->fileInfo(this->file_browser->currentIndex());
+    // TODO : implement fileinfo
+   // QFileInfo info = this->file_system_model->fileInfo(this->file_browser->currentIndex());
+    QFileInfo info;
     qDebug() << "Gui::run_sampler_decoding_process: selected item: " << info.absoluteFilePath();
 
     // Execute decoding.
@@ -1489,7 +1485,9 @@ Gui::run_audio_file_decoding_process()
     qDebug() << "Gui::run_audio_file_decoding_process...";
 
     // Get selected file path.
-    QFileInfo info = this->file_system_model->fileInfo(this->file_browser->currentIndex());
+    // TODO implement file info
+    //QFileInfo info = this->file_system_model->fileInfo(this->file_browser->currentIndex());
+    QFileInfo info;
     qDebug() << "Gui::run_audio_file_decoding_process: selected item: " << info.absoluteFilePath();
 
     // Get selected deck/sampler.
