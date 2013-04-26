@@ -805,6 +805,7 @@ Gui::create_main_window()
 
     // Customize file browser display.
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->file_browser->setColumnHidden(2, true); // Hide last column which contains full path.
 
     // Resize column with file name when expanding/collapsing a directory.
     QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand_collapse(QModelIndex)));
@@ -1185,9 +1186,8 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
     qDebug() << "Gui::run_sampler_decoding_process...";
 
     // Get selected file path.
-    // TODO : implement fileinfo
-   // QFileInfo info = this->file_system_model->fileInfo(this->file_browser->currentIndex());
-    QFileInfo info;
+    Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
+    QFileInfo info(item->get_data(COLUMN_FULL_PATH).toString());
     qDebug() << "Gui::run_sampler_decoding_process: selected item: " << info.absoluteFilePath();
 
     // Execute decoding.
@@ -1487,13 +1487,17 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
 void
 Gui::on_file_browser_expand_collapse(QModelIndex)
 {
+    qDebug() << "Gui::on_file_browser_expand_collapse...";
     this->resize_file_browser_columns();
+    qDebug() << "Gui::on_file_browser_expand_collapse...";
 }
 
 void
 Gui::resize_file_browser_columns()
 {
-    this->file_browser->resizeColumnToContents(0);
+    qDebug() << "Gui::resize_file_browser_columns...";
+    this->file_browser->resizeColumnToContents(COLUMN_FILE_NAME);
+    qDebug() << "Gui::resize_file_browser_columns...";
 }
 
 void
@@ -1502,9 +1506,8 @@ Gui::run_audio_file_decoding_process()
     qDebug() << "Gui::run_audio_file_decoding_process...";
 
     // Get selected file path.
-    // TODO implement file info
-    //QFileInfo info = this->file_system_model->fileInfo(this->file_browser->currentIndex());
-    QFileInfo info;
+    Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
+    QFileInfo info(item->get_data(COLUMN_FULL_PATH).toString());
     qDebug() << "Gui::run_audio_file_decoding_process: selected item: " << info.absoluteFilePath();
 
     // Get selected deck/sampler.

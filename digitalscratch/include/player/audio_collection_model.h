@@ -41,6 +41,10 @@
 
 using namespace std;
 
+#define COLUMN_FILE_NAME 0
+#define COLUMN_KEY       1
+#define COLUMN_FULL_PATH 2
+
 class Audio_collection_item
 {
  private:

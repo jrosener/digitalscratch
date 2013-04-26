@@ -107,7 +107,7 @@ void Audio_collection_model::create_header()
 {
     // Create root item which is the collection header.
     QList<QVariant> rootData;
-    rootData << tr("Track") << tr("Key");
+    rootData << tr("Track") << tr("Key") << tr("Hidden full path");
     if (this->rootItem != NULL)
     {
         delete this->rootItem;
@@ -127,7 +127,6 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     // Fill the model.
     this->setup_model_data(in_root_path, this->rootItem);
 
-    //return this->index(0, 0, this->rootItem);
     return createIndex(0, 0, this->rootItem);
 }
 
@@ -157,17 +156,17 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
         return item->get_data(in_index.column());
     }
     else if ((in_role == Qt::DecorationRole) &&
-             (in_index.column() == 0))
+             (in_index.column() == COLUMN_FILE_NAME))
     {
         QString file_or_dir_name((item->get_data(in_index.column()).toString()));
         if ((file_or_dir_name.endsWith(".mp3",  Qt::CaseInsensitive) == true) ||
             (file_or_dir_name.endsWith(".flac", Qt::CaseInsensitive) == true))
         {
-            return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(16, Qt::SmoothTransformation);
+            return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(14, Qt::SmoothTransformation);
         }
         else
         {
-            return (QPixmap(ICON_FOLDER)).scaledToWidth(16, Qt::SmoothTransformation);
+            return (QPixmap(ICON_FOLDER)).scaledToWidth(14, Qt::SmoothTransformation);
         }
     }
     else
@@ -286,14 +285,14 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         if (file_info.isDir() == false)
         {
             // It is a file.
-            line << displayed_path << "KEY";
+            line << displayed_path << "KEY" << file_info.absoluteFilePath();
             Audio_collection_item *file_item = new Audio_collection_item(line, in_item);
             in_item->append_child(file_item);
         }
         else
         {
             // It is a directory, analyze file under it.
-            line << displayed_path << "";
+            line << displayed_path << "" << file_info.absoluteFilePath();
             Audio_collection_item *dir_item = new Audio_collection_item(line, in_item);
             in_item->append_child(dir_item);
 
