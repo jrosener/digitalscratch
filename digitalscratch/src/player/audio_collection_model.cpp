@@ -32,7 +32,6 @@
 
 #include <QtDebug>
 #include <QStringList>
-#include <QDirIterator>
 #include <QTextCodec>
 #include <iostream>
 #include <QPixmap>
@@ -272,21 +271,19 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
     QDir dir(in_path);
     dir.setNameFilters(filters);
     dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
+    dir.setSorting(QDir::DirsFirst);
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // FIXME: Should be probably removed in Qt5.
 
     // Iterate in directory.
-    QDirIterator i(dir);
-    while (i.hasNext())
+    QFileInfoList file_info_list = dir.entryInfoList();
+    foreach (QFileInfo file_info, file_info_list)
     {
-        // Go to the next element (file or directory).
-        i.next();
-
         // Prepare data for the item.
-        QString displayed_path(i.fileInfo().fileName());
+        QString displayed_path(file_info.fileName());
         QList<QVariant> line;
 
         // Add a child item.
-        if (i.fileInfo().isDir() == false)
+        if (file_info.isDir() == false)
         {
             // It is a file.
             line << displayed_path << "KEY";
@@ -300,7 +297,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
             Audio_collection_item *dir_item = new Audio_collection_item(line, in_item);
             in_item->append_child(dir_item);
 
-            this->setup_model_data(i.fileInfo().absoluteFilePath(), dir_item);
+            this->setup_model_data(file_info.absoluteFilePath(), dir_item);
         }
     }
 }
