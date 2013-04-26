@@ -806,6 +806,10 @@ Gui::create_main_window()
     // Customize file browser display.
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    // Resize column with file name when expanding/collapsing a directory.
+    QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand_collapse(QModelIndex)));
+    QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand_collapse(QModelIndex)));
+
     // Connect the keyboard shortcut that collapse tree.
     QObject::connect(this->shortcut_collapse_browser, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
 
@@ -1154,6 +1158,7 @@ Gui::set_file_browser_base_path(QString in_path)
     // Change root path of file browser.
     this->file_browser->setRootIndex(this->file_system_model->set_root_path(in_path));
     this->set_file_browser_title();
+    this->resize_file_browser_columns();
 
     qDebug() << "Gui::set_file_browser_base_path done.";
 
@@ -1477,6 +1482,18 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
     qDebug() << "Gui::on_sampler_button_play_click done.";
 
     return;
+}
+
+void
+Gui::on_file_browser_expand_collapse(QModelIndex)
+{
+    this->resize_file_browser_columns();
+}
+
+void
+Gui::resize_file_browser_columns()
+{
+    this->file_browser->resizeColumnToContents(0);
 }
 
 void

@@ -507,6 +507,7 @@ class Gui : QObject
     void highlight_deck_sampler_area(unsigned short int in_deck_index);
     void highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                             bool               switch_on);
+    void resize_file_browser_columns();
 
  private slots:
     bool show_config_window();
@@ -559,6 +560,7 @@ class Gui : QObject
     void hover_playback(int in_deck_index);
     void unhover_playback(int in_deck_index);
     void can_close();
+    void on_file_browser_expand_collapse(QModelIndex);
 };
 
 #endif /* GUI_H_ */
