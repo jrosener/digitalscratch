@@ -90,6 +90,9 @@ class Audio_collection_model : public QAbstractItemModel
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
+    QModelIndex read_from_db(); // TODO : iterate over file items, get a hash, get audio data from db and put it to the item
+    QModelIndex store_to_db();  // TODO : iterate over file items, calculate or get data (key, key_tag, etc..), get a hash and update db.
+
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);
     void create_header();

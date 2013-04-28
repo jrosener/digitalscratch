@@ -805,7 +805,6 @@ Gui::create_main_window()
 
     // Customize file browser display.
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->file_browser->setColumnHidden(2, true); // Hide last column which contains full path.
 
     // Resize column with file name when expanding/collapsing a directory.
     QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand_collapse(QModelIndex)));

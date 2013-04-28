@@ -37,6 +37,10 @@
 #include <QPixmap>
 #include <application_const.h>
 #include <audio_collection_model.h>
+#include <audio_track.h>
+#include <utils.h>
+#include <data_persistence.h>
+#include <singleton.h>
 
 Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data, QString in_full_path, Audio_collection_item *in_parent)
 {
