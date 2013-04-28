@@ -32,6 +32,7 @@
 
 #include <QtDebug>
 #include <QApplication>
+#include <QTextCodec>
 #include "gui.h"
 #include "audio_track.h"
 #include "audio_file_decoding_process.h"
@@ -78,6 +79,9 @@ int main(int argc, char *argv[])
 
     // Create application.
     QApplication app(argc, argv);
+
+    // Used for file path as UTF8.
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // FIXME: Should be probably removed in Qt5.
 
     // Application settings management.
     Application_settings *settings = new Application_settings();

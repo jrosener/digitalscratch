@@ -271,7 +271,6 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
     dir.setNameFilters(filters);
     dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
     dir.setSorting(QDir::DirsFirst);
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // FIXME: Should be probably removed in Qt5.
 
     // Iterate in directory.
     QFileInfoList file_info_list = dir.entryInfoList();
