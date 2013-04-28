@@ -1187,7 +1187,7 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
-    QFileInfo info(item->get_data(COLUMN_FULL_PATH).toString());
+    QFileInfo info(item->get_full_path());
     qDebug() << "Gui::run_sampler_decoding_process: selected item: " << info.absoluteFilePath();
 
     // Execute decoding.
@@ -1507,7 +1507,7 @@ Gui::run_audio_file_decoding_process()
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
-    QFileInfo info(item->get_data(COLUMN_FULL_PATH).toString());
+    QFileInfo info(item->get_full_path());
     qDebug() << "Gui::run_audio_file_decoding_process: selected item: " << info.absoluteFilePath();
 
     // Get selected deck/sampler.

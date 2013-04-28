@@ -43,7 +43,6 @@ using namespace std;
 
 #define COLUMN_FILE_NAME 0
 #define COLUMN_KEY       1
-#define COLUMN_FULL_PATH 2
 
 class Audio_collection_item
 {
@@ -51,9 +50,10 @@ class Audio_collection_item
     QList<Audio_collection_item*>  childItems;
     QList<QVariant>                itemData;
     Audio_collection_item         *parentItem;
+    QString                        fullPath;
 
  public:
-    Audio_collection_item(const QList<QVariant> &in_data, Audio_collection_item *in_parent = 0);
+    Audio_collection_item(const QList<QVariant> &in_data, QString in_full_path = "", Audio_collection_item *in_parent = 0);
     ~Audio_collection_item();
 
     void                   append_child(Audio_collection_item *in_item);
@@ -65,6 +65,8 @@ class Audio_collection_item
 
     int                    get_row() const;
     Audio_collection_item *get_parent();
+
+    QString                get_full_path();
 };
 
 class Audio_collection_model : public QAbstractItemModel

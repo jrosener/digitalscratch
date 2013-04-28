@@ -38,10 +38,11 @@
 #include <application_const.h>
 #include <audio_collection_model.h>
 
-Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data, Audio_collection_item *in_parent)
+Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data, QString in_full_path, Audio_collection_item *in_parent)
 {
     this->parentItem = in_parent;
     this->itemData   = in_data;
+    this->fullPath   = in_full_path;
 }
 
 Audio_collection_item::~Audio_collection_item()
@@ -89,6 +90,11 @@ int Audio_collection_item::get_row() const
     return 0;
 }
 
+QString Audio_collection_item::get_full_path()
+{
+    return this->fullPath;
+}
+
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)
 {
     this->rootItem = NULL;
@@ -107,7 +113,7 @@ void Audio_collection_model::create_header()
 {
     // Create root item which is the collection header.
     QList<QVariant> rootData;
-    rootData << tr("Track") << tr("Key") << tr("Hidden full path");
+    rootData << tr("Track") << tr("Key");
     if (this->rootItem != NULL)
     {
         delete this->rootItem;
@@ -276,7 +282,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
     QFileInfoList file_info_list = dir.entryInfoList();
     foreach (QFileInfo file_info, file_info_list)
     {
-        // Prepare data for the item.
+        // Prepare data to show for the item.
         QString displayed_path(file_info.fileName());
         QList<QVariant> line;
 
@@ -284,15 +290,15 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         if (file_info.isDir() == false)
         {
             // It is a file.
-            line << displayed_path << "" << file_info.absoluteFilePath();
-            Audio_collection_item *file_item = new Audio_collection_item(line, in_item);
+            line << displayed_path << "";
+            Audio_collection_item *file_item = new Audio_collection_item(line, file_info.absoluteFilePath(), in_item);
             in_item->append_child(file_item);
         }
         else
         {
             // It is a directory, analyze file under it.
-            line << displayed_path << "" << file_info.absoluteFilePath();
-            Audio_collection_item *dir_item = new Audio_collection_item(line, in_item);
+            line << displayed_path << "";
+            Audio_collection_item *dir_item = new Audio_collection_item(line, file_info.absoluteFilePath(), in_item);
             in_item->append_child(dir_item);
 
             this->setup_model_data(file_info.absoluteFilePath(), dir_item);
