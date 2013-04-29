@@ -81,7 +81,8 @@ class Audio_collection_model : public QAbstractItemModel
     Q_OBJECT
 
  public:
-    QFutureWatcher<void>  *concurrent_watcher;
+    QFutureWatcher<void>  *concurrent_watcher_read;
+    QFutureWatcher<void>  *concurrent_watcher_store;
 
  private:
     Audio_collection_item *rootItem;
@@ -104,7 +105,9 @@ class Audio_collection_model : public QAbstractItemModel
 
     void concurrent_read_collection_from_db(); // Call read_collection_from_db() in separate thread.
     void read_collection_from_db(Audio_collection_item *in_parent_item = NULL);
-    void store_to_db();  // TODO : iterate over file items, calculate or get data (key, key_tag, etc..), get a hash and update db.
+
+    void concurrent_store_collection_to_db(); // Call store_collection_to_db() in separate thread.
+    void store_collection_to_db(Audio_collection_item *in_parent_item = NULL);
 
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);

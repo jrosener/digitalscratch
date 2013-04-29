@@ -569,6 +569,7 @@ class Gui : QObject
     void can_close();
     void on_file_browser_expand_collapse(QModelIndex);
     void sync_file_browser_to_audio_collection();
+    void on_finished_store_audio_collection();
 };
 
 #endif /* GUI_H_ */

@@ -823,7 +823,8 @@ Gui::create_main_window()
     QObject::connect(this->shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
 
     // Connect thread states for audio collection read and write to DB.
-    QObject::connect(this->file_system_model->concurrent_watcher, SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_store_audio_collection()));
 
     // Create layout and group box for file browser.
     QHBoxLayout *file_browser_layout = new QHBoxLayout();
@@ -1172,8 +1173,15 @@ Gui::set_file_browser_base_path(QString in_path)
 void
 Gui::sync_file_browser_to_audio_collection()
 {
+    // Reset file browser root node to audio collection model's root.
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->resize_file_browser_columns();
+}
+
+void
+Gui::on_finished_store_audio_collection()
+{
+    // TODO
 }
 
 bool
