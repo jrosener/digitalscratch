@@ -139,17 +139,17 @@ Gui::Gui(Application_settings           *in_settings,
     this->shortcut_fullscreen         = new QShortcut(this->window);
     this->shortcut_help               = new QShortcut(this->window);
 
-    // Apply application settings.
-    if (this->apply_application_settings() != true)
-    {
-        qFatal("Gui::Gui: Can not apply application settings.");
-        return;
-    }
-
     // Create main window.
     if (this->create_main_window() != true)
     {
         qFatal("Gui::Gui: Creation of main window failed.");
+        return;
+    }
+
+    // Apply application settings.
+    if (this->apply_application_settings() != true)
+    {
+        qFatal("Gui::Gui: Can not apply application settings.");
         return;
     }
 
