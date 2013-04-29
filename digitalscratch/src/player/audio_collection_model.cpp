@@ -41,6 +41,7 @@
 #include <utils.h>
 #include <data_persistence.h>
 #include <singleton.h>
+#include <QtConcurrentRun>
 
 Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
                                              QString                in_full_path,
@@ -120,6 +121,10 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
 {
     this->rootItem = NULL;
     this->create_header();
+
+    // Init thread tools.
+    this->concurrent_future  = new QFuture<void>;
+    this->concurrent_watcher = new QFutureWatcher<void>;
 }
 
 Audio_collection_model::~Audio_collection_model()
@@ -128,6 +133,9 @@ Audio_collection_model::~Audio_collection_model()
     {
         delete this->rootItem;
     }
+
+    delete this->concurrent_future;
+    delete this->concurrent_watcher;
 }
 
 void Audio_collection_model::create_header()
@@ -386,4 +394,11 @@ void Audio_collection_model::read_collection_from_db(Audio_collection_item *in_p
 
     // Cleanup.
     delete at;
+}
+
+void Audio_collection_model::concurrent_read_collection_from_db()
+{
+    // Run read_collection_from_db() in a separate thread.
+    *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::read_collection_from_db, this->rootItem);
+    this->concurrent_watcher->setFuture(*this->concurrent_future);
 }

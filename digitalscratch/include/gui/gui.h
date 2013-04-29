@@ -568,6 +568,7 @@ class Gui : QObject
     void unhover_playback(int in_deck_index);
     void can_close();
     void on_file_browser_expand_collapse(QModelIndex);
+    void sync_file_browser_to_audio_collection();
 };
 
 #endif /* GUI_H_ */

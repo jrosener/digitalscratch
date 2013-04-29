@@ -38,6 +38,8 @@
 #include <QVariant>
 #include <QList>
 #include <QDir>
+#include <QFuture>
+#include <QFutureWatcher>
 
 using namespace std;
 
@@ -78,8 +80,12 @@ class Audio_collection_model : public QAbstractItemModel
 {
     Q_OBJECT
 
+ public:
+    QFutureWatcher<void>  *concurrent_watcher;
+
  private:
     Audio_collection_item *rootItem;
+    QFuture<void>         *concurrent_future;
 
  public:
     Audio_collection_model(QObject *in_parent = 0);
@@ -96,6 +102,7 @@ class Audio_collection_model : public QAbstractItemModel
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
+    void concurrent_read_collection_from_db(); // Call read_collection_from_db() in separate thread.
     void read_collection_from_db(Audio_collection_item *in_parent_item = NULL);
     void store_to_db();  // TODO : iterate over file items, calculate or get data (key, key_tag, etc..), get a hash and update db.
 
