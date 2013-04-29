@@ -51,22 +51,27 @@ class Audio_collection_item
     QList<QVariant>                itemData;
     Audio_collection_item         *parentItem;
     QString                        fullPath;
+    bool                           directoryFlag;
 
  public:
-    Audio_collection_item(const QList<QVariant> &in_data, QString in_full_path = "", Audio_collection_item *in_parent = 0);
+    Audio_collection_item(const QList<QVariant>       &in_data,
+                                QString                in_full_path    = "",
+                                bool                   in_is_directory = false,
+                                Audio_collection_item *in_parent       = 0);
     ~Audio_collection_item();
 
     void                   append_child(Audio_collection_item *in_item);
     Audio_collection_item *get_child(int in_row);
     int                    get_child_count() const;
-
-    int      get_column_count() const;
-    QVariant get_data(int in_column) const;
-
-    int                    get_row() const;
     Audio_collection_item *get_parent();
 
+    int                    get_row() const;
+    int                    get_column_count() const;
+    QVariant               get_data(int in_column) const;
+    void                   set_data(int in_column, QVariant in_data);
     QString                get_full_path();
+
+    bool                   is_directory();
 };
 
 class Audio_collection_model : public QAbstractItemModel
@@ -81,6 +86,7 @@ class Audio_collection_model : public QAbstractItemModel
     ~Audio_collection_model();
 
     QModelIndex   set_root_path(QString in_root_path);
+    QModelIndex   get_root_index();
 
     QVariant      data(const QModelIndex &in_index, int in_role) const;
     Qt::ItemFlags flags(const QModelIndex &in_index) const;
@@ -90,8 +96,8 @@ class Audio_collection_model : public QAbstractItemModel
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
-    QModelIndex read_from_db(); // TODO : iterate over file items, get a hash, get audio data from db and put it to the item
-    QModelIndex store_to_db();  // TODO : iterate over file items, calculate or get data (key, key_tag, etc..), get a hash and update db.
+    void read_collection_from_db(Audio_collection_item *in_parent_item = NULL);
+    void store_to_db();  // TODO : iterate over file items, calculate or get data (key, key_tag, etc..), get a hash and update db.
 
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);

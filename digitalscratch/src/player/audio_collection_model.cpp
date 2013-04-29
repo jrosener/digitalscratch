@@ -42,11 +42,15 @@
 #include <data_persistence.h>
 #include <singleton.h>
 
-Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data, QString in_full_path, Audio_collection_item *in_parent)
+Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
+                                             QString                in_full_path,
+                                             bool                   in_is_directory,
+                                             Audio_collection_item *in_parent)
 {
-    this->parentItem = in_parent;
-    this->itemData   = in_data;
-    this->fullPath   = in_full_path;
+    this->parentItem    = in_parent;
+    this->itemData      = in_data;
+    this->fullPath      = in_full_path;
+    this->directoryFlag = in_is_directory;
 }
 
 Audio_collection_item::~Audio_collection_item()
@@ -79,6 +83,14 @@ QVariant Audio_collection_item::get_data(int in_column) const
     return this->itemData.value(in_column);
 }
 
+void Audio_collection_item::set_data(int in_column, QVariant in_data)
+{
+    if (in_column < this->itemData.size())
+    {
+        this->itemData.replace(in_column, in_data);
+    }
+}
+
 Audio_collection_item *Audio_collection_item::get_parent()
 {
     return this->parentItem;
@@ -97,6 +109,11 @@ int Audio_collection_item::get_row() const
 QString Audio_collection_item::get_full_path()
 {
     return this->fullPath;
+}
+
+bool Audio_collection_item::is_directory()
+{
+    return this->directoryFlag;
 }
 
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)
@@ -137,7 +154,19 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     // Fill the model.
     this->setup_model_data(in_root_path, this->rootItem);
 
-    return createIndex(0, 0, this->rootItem);
+    return this->get_root_index();
+}
+
+QModelIndex Audio_collection_model::get_root_index()
+{
+    if (this->rootItem != NULL)
+    {
+        return createIndex(0, 0, this->rootItem);
+    }
+    else
+    {
+        return QModelIndex();
+    }
 }
 
 int Audio_collection_model::columnCount(const QModelIndex &in_parent) const
@@ -289,23 +318,72 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         // Prepare data to show for the item.
         QString displayed_path(file_info.fileName());
         QList<QVariant> line;
+        line << displayed_path << "";
 
         // Add a child item.
         if (file_info.isDir() == false)
         {
-            // It is a file.
-            line << displayed_path << "";
-            Audio_collection_item *file_item = new Audio_collection_item(line, file_info.absoluteFilePath(), in_item);
+            // It is a file, add the item.
+            Audio_collection_item *file_item = new Audio_collection_item(line,
+                                                                         file_info.absoluteFilePath(),
+                                                                         false,
+                                                                         in_item);
             in_item->append_child(file_item);
         }
         else
         {
-            // It is a directory, analyze file under it.
-            line << displayed_path << "";
-            Audio_collection_item *dir_item = new Audio_collection_item(line, file_info.absoluteFilePath(), in_item);
+            // It is a directory, add the item and analyze file under it.
+            Audio_collection_item *dir_item = new Audio_collection_item(line,
+                                                                        file_info.absoluteFilePath(),
+                                                                        true,
+                                                                        in_item);
             in_item->append_child(dir_item);
 
             this->setup_model_data(file_info.absoluteFilePath(), dir_item);
         }
     }
+}
+
+void Audio_collection_model::read_collection_from_db(Audio_collection_item *in_parent_item)
+{
+    // Init.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    Audio_track      *at           = new Audio_track();
+
+    // Get the root (parent) audio item.
+    Audio_collection_item *parent_item;
+    if (in_parent_item == NULL)
+    {
+        // No parent specified, take the root of the collection.
+        parent_item = this->rootItem;
+    }
+    else
+    {
+        parent_item = in_parent_item;
+    }
+
+    // Iterate over child items.
+    for (int i = 0; i < parent_item->get_child_count(); i++)
+    {
+       Audio_collection_item *child_item = parent_item->get_child(i);
+       if (child_item->is_directory() == true)
+       {
+           // Child is a directory, call recursively this method.
+           this->read_collection_from_db(child_item);
+       }
+       else
+       {
+           // Child is an audio file, get a hash, get audio data from db and put it back to the item.
+           at->reset();
+           at->set_hash(Utils::get_file_hash(child_item->get_full_path(), FILE_HASH_SIZE));
+           if (data_persist->get_audio_track(at) == true)
+           {
+               // File found in DB, put data back to item.
+               child_item->set_data(COLUMN_KEY, at->get_music_key());
+           }
+       }
+    }
+
+    // Cleanup.
+    delete at;
 }

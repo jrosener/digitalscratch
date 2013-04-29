@@ -1155,9 +1155,13 @@ Gui::set_file_browser_base_path(QString in_path)
 {
     qDebug() << "Gui::set_file_browser_base_path...";
 
-    // Change root path of file browser.
-    this->file_browser->setRootIndex(this->file_system_model->set_root_path(in_path));
+    // Set base path as title to file browser.
     this->set_file_browser_title();
+
+    // Change root path of file browser.
+    this->file_system_model->set_root_path(in_path);
+    this->file_system_model->read_collection_from_db();
+    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->resize_file_browser_columns();
 
     qDebug() << "Gui::set_file_browser_base_path done.";
