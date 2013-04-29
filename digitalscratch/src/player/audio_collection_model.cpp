@@ -354,6 +354,17 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
     }
 }
 
+void Audio_collection_model::concurrent_read_collection_from_db()
+{
+    // Run read_collection_from_db() in a separate thread.
+    if ((this->concurrent_watcher_read->isRunning()  == false) &&
+        (this->concurrent_watcher_store->isRunning() == false))
+    {
+        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::read_collection_from_db, this->rootItem);
+        this->concurrent_watcher_read->setFuture(*this->concurrent_future);
+    }
+}
+
 void Audio_collection_model::read_collection_from_db(Audio_collection_item *in_parent_item)
 {
     // Init.
@@ -398,14 +409,51 @@ void Audio_collection_model::read_collection_from_db(Audio_collection_item *in_p
     delete at;
 }
 
-void Audio_collection_model::concurrent_read_collection_from_db()
+void Audio_collection_model::concurrent_analyse_audio_collection()
 {
-    // Run read_collection_from_db() in a separate thread.
+    // Run store_collection_to_db() in a separate thread.
     if ((this->concurrent_watcher_read->isRunning()  == false) &&
         (this->concurrent_watcher_store->isRunning() == false))
     {
-        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::read_collection_from_db, this->rootItem);
-        this->concurrent_watcher_read->setFuture(*this->concurrent_future);
+        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::analyze_audio_collection);
+        this->concurrent_watcher_store->setFuture(*this->concurrent_future);
+    }
+}
+
+void Audio_collection_model::analyze_audio_collection()
+{
+    this->calculate_audio_collection_data(this->rootItem);
+    this->store_collection_to_db(this->rootItem);
+}
+
+void Audio_collection_model::calculate_audio_collection_data(Audio_collection_item *in_parent_item)
+{
+    // Get the root (parent) audio item.
+    Audio_collection_item *parent_item;
+    if (in_parent_item == NULL)
+    {
+        // No parent specified, take the root of the collection.
+        parent_item = this->rootItem;
+    }
+    else
+    {
+        parent_item = in_parent_item;
+    }
+
+    // Iterate over child items.
+    for (int i = 0; i < parent_item->get_child_count(); i++)
+    {
+       Audio_collection_item *child_item = parent_item->get_child(i);
+       if (child_item->is_directory() == true)
+       {
+           // Child is a directory, call recursively this method.
+           this->calculate_audio_collection_data(child_item);
+       }
+       else
+       {
+           // Child is an audio file, calculate data and put them back in audio item.
+           child_item->set_data(COLUMN_KEY, "A1"); // TODO: calculate audio data.
+       }
     }
 }
 
@@ -452,15 +500,4 @@ void Audio_collection_model::store_collection_to_db(Audio_collection_item *in_pa
 
     // Cleanup.
     delete at;
-}
-
-void Audio_collection_model::concurrent_store_collection_to_db()
-{
-    // Run store_collection_to_db() in a separate thread.
-    if ((this->concurrent_watcher_read->isRunning()  == false) &&
-        (this->concurrent_watcher_store->isRunning() == false))
-    {
-        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::store_collection_to_db, this->rootItem);
-        this->concurrent_watcher_store->setFuture(*this->concurrent_future);
-    }
 }

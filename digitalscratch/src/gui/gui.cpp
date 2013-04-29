@@ -824,7 +824,7 @@ Gui::create_main_window()
 
     // Connect thread states for audio collection read and write to DB.
     QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_store_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
 
     // Create layout and group box for file browser.
     QHBoxLayout *file_browser_layout = new QHBoxLayout();
@@ -1179,7 +1179,7 @@ Gui::sync_file_browser_to_audio_collection()
 }
 
 void
-Gui::on_finished_store_audio_collection()
+Gui::on_finished_analyze_audio_collection()
 {
     // TODO
 }

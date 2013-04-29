@@ -104,9 +104,11 @@ class Audio_collection_model : public QAbstractItemModel
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
     void concurrent_read_collection_from_db(); // Call read_collection_from_db() in separate thread.
-    void read_collection_from_db(Audio_collection_item *in_parent_item = NULL);
+    void read_collection_from_db(Audio_collection_item *in_parent_item = NULL); 
 
-    void concurrent_store_collection_to_db(); // Call store_collection_to_db() in separate thread.
+    void concurrent_analyse_audio_collection(); // Call analyze_audio_collection in separate thread.
+    void analyze_audio_collection(); // Call calculate_audio_collection_data() and store_collection_to_db().
+    void calculate_audio_collection_data(Audio_collection_item *in_parent_item = NULL); // Compute music key, etc...
     void store_collection_to_db(Audio_collection_item *in_parent_item = NULL);
 
  private:
