@@ -494,11 +494,13 @@ Gui::create_main_window()
     // Create configuration button.
     QPushButton *config_button = new QPushButton("   " + tr("&Settings"));
     config_button->setObjectName("Configuration_button");
+    config_button->setFocusPolicy(Qt::NoFocus);
 
 
     // Create button to set full screen.
     QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
     fullscreen_button->setObjectName("Fullscreen_button");
+    fullscreen_button->setFocusPolicy(Qt::NoFocus);
 
     // Create DigitalScratch logo.
     QPushButton *logo = new QPushButton();
@@ -513,10 +515,12 @@ Gui::create_main_window()
     // Create help button.
     QPushButton *help_button = new QPushButton("   " + tr("&Help"));
     help_button->setObjectName("Help_button");
+    help_button->setFocusPolicy(Qt::NoFocus);
 
     // Create quit button.
     QPushButton *quit_button = new QPushButton("   " + tr("&Exit"));
     quit_button->setObjectName("Quit_button");
+    quit_button->setFocusPolicy(Qt::NoFocus);
 
     // Create top horizontal layout.
     QHBoxLayout *top_layout = new QHBoxLayout();
@@ -670,16 +674,14 @@ Gui::create_main_window()
     for (int i = 0; i < this->nb_samplers; i++)
     {
         this->sampler1_buttons_play[i] = new QPushButton();
-        this->sampler1_buttons_play[i]->setObjectName("Sampler_buttons");
-        this->sampler1_buttons_play[i]->setIcon(QIcon(PLAY));
+        this->sampler1_buttons_play[i]->setObjectName("Sampler_play_buttons");
         this->sampler1_buttons_play[i]->setIconSize(QSize(12, 12));
         this->sampler1_buttons_play[i]->setMaximumWidth(24);
         this->sampler1_buttons_play[i]->setMaximumHeight(24);
         this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler1_buttons_play[i]->setCheckable(true);
         this->sampler1_buttons_stop[i] = new QPushButton();
-        this->sampler1_buttons_stop[i]->setObjectName("Sampler_buttons");
-        this->sampler1_buttons_stop[i]->setIcon(QIcon(STOP));
+        this->sampler1_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
         this->sampler1_buttons_stop[i]->setIconSize(QSize(12, 12));
         this->sampler1_buttons_stop[i]->setMaximumWidth(24);
         this->sampler1_buttons_stop[i]->setMaximumHeight(24);
@@ -711,16 +713,14 @@ Gui::create_main_window()
     for (int i = 0; i < this->nb_samplers; i++)
     {
         this->sampler2_buttons_play[i] = new QPushButton();
-        this->sampler2_buttons_play[i]->setObjectName("Sampler_buttons");
-        this->sampler2_buttons_play[i]->setIcon(QIcon(PLAY));
+        this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
         this->sampler2_buttons_play[i]->setIconSize(QSize(12, 12));
         this->sampler2_buttons_play[i]->setMaximumWidth(24);
         this->sampler2_buttons_play[i]->setMaximumHeight(24);
         this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler2_buttons_play[i]->setCheckable(true);
         this->sampler2_buttons_stop[i] = new QPushButton();
-        this->sampler2_buttons_stop[i]->setObjectName("Sampler_buttons");
-        this->sampler2_buttons_stop[i]->setIcon(QIcon(STOP));
+        this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
         this->sampler2_buttons_stop[i]->setIconSize(QSize(12, 12));
         this->sampler2_buttons_stop[i]->setMaximumWidth(24);
         this->sampler2_buttons_stop[i]->setMaximumHeight(24);
@@ -826,9 +826,24 @@ Gui::create_main_window()
     QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
     QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
 
+    // Create function buttons for file browser.
+    this->refresh_file_browser = new QPushButton();
+    this->refresh_file_browser->setObjectName("Refresh_browser_button");
+    this->refresh_file_browser->setIconSize(QSize(12, 12));
+    this->refresh_file_browser->setMaximumWidth(24);
+    this->refresh_file_browser->setMaximumHeight(24);
+    this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
+    this->refresh_file_browser->setCheckable(true);
+    QHBoxLayout *file_browser_buttons_layout = new QHBoxLayout();
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser);
+
+    // Connect function buttons.
+    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(on_file_browser_refresh_button_click()));
+
     // Create layout and group box for file browser.
-    QHBoxLayout *file_browser_layout = new QHBoxLayout();
-    file_browser_layout->addWidget(this->file_browser);
+    QVBoxLayout *file_browser_layout = new QVBoxLayout();
+    file_browser_layout->addLayout(file_browser_buttons_layout, 5);
+    file_browser_layout->addWidget(this->file_browser, 95);
     this->set_file_browser_title();
     this->file_browser_gbox->setLayout(file_browser_layout);
 
@@ -1137,10 +1152,22 @@ Gui::apply_main_window_style()
     // Change main window skin (using CSS).
     if (this->window_style == QString(GUI_STYLE_DEFAULT))
     {
+        for (int i = 0; i < this->nb_samplers; i++)
+        {
+            this->sampler1_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
+            this->sampler2_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
+        }
+        this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
         this->window->setStyleSheet(GUI_STYLE_DEFAULT_CSS);
     }
     else if (this->window_style == QString(GUI_STYLE_DARK))
     {
+        for (int i = 0; i < this->nb_samplers; i++)
+        {
+            this->sampler1_buttons_play[i]->setIcon(QIcon());
+            this->sampler2_buttons_play[i]->setIcon(QIcon());
+        }
+        this->refresh_file_browser->setIcon(QIcon());
         this->window->setStyleSheet(GUI_STYLE_DARK_CSS);
     }
     else
@@ -1179,9 +1206,18 @@ Gui::sync_file_browser_to_audio_collection()
 }
 
 void
+Gui::on_file_browser_refresh_button_click()
+{
+    this->file_system_model->concurrent_analyse_audio_collection();
+    this->refresh_file_browser->setEnabled(false);
+}
+
+void
 Gui::on_finished_analyze_audio_collection()
 {
-    // TODO
+    this->refresh_file_browser->setEnabled(true);
+    this->refresh_file_browser->setChecked(false);
+    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
 }
 
 bool

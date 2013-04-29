@@ -367,23 +367,64 @@ using namespace std;
                                color: black;\
                            }\
                            \
-                           QPushButton#Sampler_buttons\
+                           QPushButton#Sampler_play_buttons\
                            {\
                                background-color: gray;\
                                border:           none;\
                                border-radius:    0px;\
                                height:           24px;\
                                width:            24px;\
+                               image:            url(:/pixmaps/dark-play.png);\
                            }\
-                           QPushButton#Sampler_buttons:hover\
+                           QPushButton#Sampler_play_buttons:hover\
                            {\
                                background-color: lightGray;\
                                border:           1px solid orange;\
                            }\
-                           QPushButton#Sampler_buttons:checked\
+                           QPushButton#Sampler_play_buttons:checked\
                            {\
                                background-color: gray;\
                                border:           1px solid orange;\
+                               image:            url(:/pixmaps/dark-play_white.png);\
+                           }\
+                           QPushButton#Sampler_stop_buttons\
+                           {\
+                               background-color: gray;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               height:           24px;\
+                               width:            24px;\
+                               image:            url(:/pixmaps/dark-stop.png);\
+                           }\
+                           QPushButton#Sampler_stop_buttons:hover\
+                           {\
+                               background-color: lightGray;\
+                               border:           1px solid orange;\
+                           }\
+                           QPushButton#Sampler_stop_buttons:checked\
+                           {\
+                               background-color: gray;\
+                               border:           1px solid orange;\
+                           }\
+                           QPushButton#Refresh_browser_button\
+                           {\
+                               background-color: gray;\
+                               border:           none;\
+                               border-radius:    0px;\
+                               height:           24px;\
+                               width:            24px;\
+                               image:            url(:/pixmaps/dark-file_browser_update.png);\
+                           }\
+                           QPushButton#Refresh_browser_button:hover\
+                           {\
+                               background-color: lightGray;\
+                               border:           1px solid orange;\
+                           }\
+                           QPushButton#Refresh_browser_button:checked\
+                           {\
+                               background-color: gray;\
+                               border:           1px solid orange;\
+                               image:            url(:/pixmaps/dark-file_browser_update_white.png);\
                            }\
                           "
 
@@ -480,6 +521,7 @@ class Gui : QObject
     QShortcut                     *shortcut_help;
     QGroupBox                     *help_groupbox;
     QGroupBox                     *file_browser_gbox;
+    QPushButton                   *refresh_file_browser;
 
  public:
     Gui(Application_settings           *in_settings,
@@ -569,6 +611,7 @@ class Gui : QObject
     void can_close();
     void on_file_browser_expand_collapse(QModelIndex);
     void sync_file_browser_to_audio_collection();
+    void on_file_browser_refresh_button_click();
     void on_finished_analyze_audio_collection();
 };
 
