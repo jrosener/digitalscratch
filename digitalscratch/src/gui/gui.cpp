@@ -1196,9 +1196,11 @@ Gui::set_file_browser_base_path(QString in_path)
     this->set_file_browser_title();
 
     // Change root path of file browser.
+    this->file_browser->setRootIndex(QModelIndex());
     this->file_system_model->set_root_path(in_path);
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
+
     qDebug() << "Gui::set_file_browser_base_path done.";
 
     return true;
