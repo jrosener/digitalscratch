@@ -33,6 +33,7 @@
 #define FILE_HASH_SIZE 200 // Size (in kbytes) used to create file hash.
 
 // GUI image/icons
+#define SKINS_PATH              ":/skins/"
 #define PIXMAPS_PATH            ":/pixmaps/"
 #define ICON_2                  PIXMAPS_PATH "digitalscratch-icon_2decks.png"
 #define LOGO                    PIXMAPS_PATH "digitalscratch-logo.png"
