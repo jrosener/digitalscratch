@@ -55,9 +55,11 @@ class Audio_collection_item
     Audio_collection_item         *parentItem;
     QString                        fullPath;
     bool                           directoryFlag;
+    QString                        fileHash;
 
  public:
     Audio_collection_item(const QList<QVariant>       &in_data,
+                                QString                in_file_hash    = "",
                                 QString                in_full_path    = "",
                                 bool                   in_is_directory = false,
                                 Audio_collection_item *in_parent       = 0);
@@ -73,6 +75,7 @@ class Audio_collection_item
     QVariant               get_data(int in_column) const;
     void                   set_data(int in_column, QVariant in_data);
     QString                get_full_path();
+    QString                get_file_hash();
 
     bool                   is_directory();
 };
