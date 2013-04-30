@@ -82,3 +82,17 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 
     return hash;
 }
+
+QString Utils::file_read_all_text(QString in_path)
+{
+    QString result = "";
+
+    QFile file(in_path);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
+    {
+        result = QString(file.readAll());
+        file.close();
+    }
+
+    return result;
+}

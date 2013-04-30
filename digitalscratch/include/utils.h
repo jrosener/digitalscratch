@@ -42,6 +42,9 @@ class Utils
  public:
     // Get a MD5 hash from in_kbytes bytes of the specified file.
     static QString get_file_hash(QString in_path, unsigned int in_kbytes);
+
+    // Get full text content of a file.
+    static QString file_read_all_text(QString in_path);
 };
 
 #endif /* UTILS_H_ */

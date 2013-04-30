@@ -45,7 +45,9 @@ using namespace std;
 
 #define GUI_STYLE_CFG         "player/gui_style_select"
 #define GUI_STYLE_DEFAULT     "no style"
+#define GUI_STYLE_DEFAULT_CSS ""
 #define GUI_STYLE_DARK        "dark style"
+#define GUI_STYLE_DARK_CSS    ":/skins/dark.css"
 
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"

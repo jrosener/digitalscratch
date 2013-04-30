@@ -55,6 +55,7 @@
 #include "gui.h"
 #include "digital_scratch_api.h"
 #include "audio_collection_model.h"
+#include "utils.h"
 
 Gui::Gui(Application_settings           *in_settings,
          Audio_track                    *in_at_1,
@@ -455,16 +456,8 @@ Gui::show_error_window(QString in_error_message)
                     + "<br/>" + in_error_message
                     + "<br/><br/>" + "Please fix this issue and restart DigitalScratch.");
     msg_box.setStandardButtons(QMessageBox::Close);
-    if (this->window_style == QString(GUI_STYLE_DEFAULT))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
-        msg_box.setIcon(QMessageBox::Critical);
-    }
-    else if (this->window_style == QString(GUI_STYLE_DARK))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DARK_CSS);
-        msg_box.setIconPixmap((QPixmap(DARK_ICON_ERROR)).scaledToWidth(32, Qt::SmoothTransformation));
-    }
+    msg_box.setIcon(QMessageBox::Critical);
+    msg_box.setStyleSheet(this->get_stylesheet_css());
     if (this->nb_decks > 1)
     {
         msg_box.setWindowIcon(QIcon(ICON_2));
@@ -480,6 +473,19 @@ Gui::show_error_window(QString in_error_message)
     qDebug() << "Gui::show_error_window done.";
 
     return true;
+}
+
+QString
+Gui::get_stylesheet_css()
+{
+    QString result = "";
+
+    if (this->window_style == QString(GUI_STYLE_DARK))
+    {
+        result = Utils::file_read_all_text(GUI_STYLE_DARK_CSS);
+    }
+
+    return result;
 }
 
 bool
@@ -1115,17 +1121,9 @@ Gui::can_close()
     msg_box.setWindowTitle("DigitalScratch");
     msg_box.setText(tr("Do you really want to quit DigitalScratch ?"));
     msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setIcon(QMessageBox::Question);
     msg_box.setDefaultButton(QMessageBox::Cancel);
-    if (this->window_style == QString(GUI_STYLE_DEFAULT))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
-        msg_box.setIcon(QMessageBox::Question);
-    }
-    else if (this->window_style == QString(GUI_STYLE_DARK))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DARK_CSS);
-        msg_box.setIconPixmap((QPixmap(DARK_ICON_HELP)).scaledToWidth(32, Qt::SmoothTransformation));
-    }
+    msg_box.setStyleSheet(this->get_stylesheet_css());
     if (this->nb_decks > 1)
     {
         msg_box.setWindowIcon(QIcon(ICON_2));
@@ -1149,31 +1147,34 @@ Gui::apply_main_window_style()
 {
     qDebug() << "Gui::apply_main_window_style...";
 
-    // Change main window skin (using CSS).
+    // Apply some GUI settings manually.
     if (this->window_style == QString(GUI_STYLE_DEFAULT))
     {
+        // Set manually some standard icons.
         for (int i = 0; i < this->nb_samplers; i++)
         {
             this->sampler1_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
             this->sampler2_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
+            this->sampler1_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
+            this->sampler2_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
-        this->window->setStyleSheet(GUI_STYLE_DEFAULT_CSS);
     }
-    else if (this->window_style == QString(GUI_STYLE_DARK))
+    else
     {
+        // Reset some icons (can not be done nicely in CSS).
         for (int i = 0; i < this->nb_samplers; i++)
         {
             this->sampler1_buttons_play[i]->setIcon(QIcon());
             this->sampler2_buttons_play[i]->setIcon(QIcon());
+            this->sampler1_buttons_stop[i]->setIcon(QIcon());
+            this->sampler2_buttons_stop[i]->setIcon(QIcon());
         }
         this->refresh_file_browser->setIcon(QIcon());
-        this->window->setStyleSheet(GUI_STYLE_DARK_CSS);
     }
-    else
-    {
-        return false;
-    }
+
+    // Change main window skin (using CSS).
+    this->window->setStyleSheet(this->get_stylesheet_css());
 
     qDebug() << "Gui::apply_main_window_style done.";
 
@@ -1716,45 +1717,35 @@ Gui::set_sampler_state(int in_deck_index,
 {
     qDebug() << "Gui::set_sampler_state...";
 
-    // Change state only if a sample is loaded.
-    if (this->playback->is_sampler_loaded(in_deck_index, in_sampler_index) == true)
+    // Change state only if a sample is loaded and playing.
+    if ((this->playback->is_sampler_loaded(in_deck_index, in_sampler_index) == true) && (in_state == true))
     {
-        // Sampler is playing, make play button active.
-        if (in_state == true)
+        if (in_deck_index == 0)
         {
-            if (in_deck_index == 0)
-            {
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY_RUNNING));
-                this->sampler1_buttons_play[in_sampler_index]->setChecked(true);
-                this->sampler1_buttons_stop[in_sampler_index]->setChecked(false);
-            }
-            else
-            {
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY_RUNNING));
-                this->sampler2_buttons_play[in_sampler_index]->setChecked(true);
-                this->sampler2_buttons_stop[in_sampler_index]->setChecked(false);
-            }
+            this->sampler1_buttons_play[in_sampler_index]->setChecked(true);
+            this->sampler1_buttons_stop[in_sampler_index]->setChecked(false);
         }
-        else // Sampler is stopping, make play button inactive.
+        else
         {
-            if (in_deck_index == 0)
-            {
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY));
-                this->sampler1_buttons_play[in_sampler_index]->setChecked(false);
-                this->sampler1_buttons_stop[in_sampler_index]->setChecked(true);
-            }
-            else
-            {
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY));
-                this->sampler2_buttons_play[in_sampler_index]->setChecked(false);
-                this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
-            }
+            this->sampler2_buttons_play[in_sampler_index]->setChecked(true);
+            this->sampler2_buttons_stop[in_sampler_index]->setChecked(false);
+        }
+
+    }
+    else // Sampler is stopping or is not loaded, make play button inactive.
+    {
+        if (in_deck_index == 0)
+        {
+            this->sampler1_buttons_play[in_sampler_index]->setChecked(false);
+            this->sampler1_buttons_stop[in_sampler_index]->setChecked(true);
+        }
+        else
+        {
+            this->sampler2_buttons_play[in_sampler_index]->setChecked(false);
+            this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
         }
     }
+
 
     qDebug() << "Gui::set_sampler_state done.";
 

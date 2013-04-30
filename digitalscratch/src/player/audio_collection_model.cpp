@@ -207,9 +207,7 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
     else if ((in_role == Qt::DecorationRole) &&
              (in_index.column() == COLUMN_FILE_NAME))
     {
-        QString file_or_dir_name((item->get_data(in_index.column()).toString()));
-        if ((file_or_dir_name.endsWith(".mp3",  Qt::CaseInsensitive) == true) ||
-            (file_or_dir_name.endsWith(".flac", Qt::CaseInsensitive) == true))
+        if (item->is_directory() == false)
         {
             return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(10, Qt::SmoothTransformation);
         }

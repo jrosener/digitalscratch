@@ -218,7 +218,8 @@ OTHER_FILES += \
     debian/digitalscratch.desktop \
     debian/copyright \
     debian/control \
-    debian/compat
+    debian/compat \
+    skins/dark.css
 
 RESOURCES += \
     digitalscratch.qrc

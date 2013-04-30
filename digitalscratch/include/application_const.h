@@ -33,14 +33,8 @@
 #define FILE_HASH_SIZE 200 // Size (in kbytes) used to create file hash.
 
 // GUI image/icons
-#define ICON_2                  ":/pixmaps/digitalscratch-icon_2decks.png"
-#define LOGO                    ":/pixmaps/digitalscratch-logo.png"
-#define PLAY                    ":/pixmaps/dark-play.png"
-#define PLAY_RUNNING            ":/pixmaps/dark-play_white.png"
-#define STOP                    ":/pixmaps/dark-stop.png"
-#define DARK_ICON_HELP          ":/pixmaps/dark-help_white.png"
-#define DARK_ICON_ERROR         ":/pixmaps/dark-error_white.png"
-#define ICON_FOLDER             ":/pixmaps/dark-folder_white.png"
-#define ICON_AUDIO_FILE         ":/pixmaps/dark-audio_file_white.png"
-#define DARK_REFRESH_BROWSER    ":/pixmaps/dark-file_browser_update.png"
-#define DARK_REFRESHING_BROWSER ":/pixmaps/dark-file_browser_update_white.png"
+#define PIXMAPS_PATH            ":/pixmaps/"
+#define ICON_2                  PIXMAPS_PATH "digitalscratch-icon_2decks.png"
+#define LOGO                    PIXMAPS_PATH "digitalscratch-logo.png"
+#define ICON_FOLDER             PIXMAPS_PATH "dark-folder_white.png"
+#define ICON_AUDIO_FILE         PIXMAPS_PATH "dark-audio_file_white.png"
