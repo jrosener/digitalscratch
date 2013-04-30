@@ -90,6 +90,7 @@ class Audio_collection_model : public QAbstractItemModel
     QFuture<void>         *concurrent_future;
     QPixmap                audio_file_icon;
     QPixmap                directory_icon;
+    int                    nb_audio_file_items;
 
  public:
     Audio_collection_model(QObject *in_parent = 0);

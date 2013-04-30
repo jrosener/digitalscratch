@@ -121,6 +121,7 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
 {
     this->rootItem = NULL;
     this->create_header();
+    this->nb_audio_file_items = 0;
 
     // Init thread tools.
     this->concurrent_future        = new QFuture<void>;
@@ -318,6 +319,9 @@ int Audio_collection_model::rowCount(const QModelIndex &in_parent) const
 
 void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_item *in_item)
 {
+    // Reset nb file items.
+    this->nb_audio_file_items = 0;
+
     // Create a Qdir based on input path.
     QStringList filters;
     filters << "*.mp3" << "*.flac";
@@ -339,6 +343,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         if (file_info.isDir() == false)
         {
             // It is a file, add the item.
+            this->nb_audio_file_items++;
             Audio_collection_item *file_item = new Audio_collection_item(line,
                                                                          file_info.absoluteFilePath(),
                                                                          false,
@@ -427,7 +432,10 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
 
 void Audio_collection_model::analyze_audio_collection()
 {
+    // Calculate things on audio collection (music key, etc...)
     this->calculate_audio_collection_data(this->rootItem);
+
+    // Store audio collection to DB.
     this->store_collection_to_db(this->rootItem);
 }
 

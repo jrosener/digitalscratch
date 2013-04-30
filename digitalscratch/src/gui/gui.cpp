@@ -836,20 +836,27 @@ Gui::create_main_window()
     this->refresh_file_browser = new QPushButton();
     this->refresh_file_browser->setObjectName("Refresh_browser_button");
     this->refresh_file_browser->setIconSize(QSize(12, 12));
-    this->refresh_file_browser->setMaximumWidth(24);
-    this->refresh_file_browser->setMaximumHeight(24);
+    this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
-    QHBoxLayout *file_browser_buttons_layout = new QHBoxLayout();
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser);
+    this->refresh_file_browser_progress= new QProgressBar();
+    this->refresh_file_browser_progress->hide();
+    this->refresh_file_browser_progress->setFixedSize(20, 4);
+    this->refresh_file_browser_progress->setTextVisible(false);
+
+    QWidget *file_browser_buttons_widget = new QWidget();
+    QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser,          0, 0, Qt::AlignCenter);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress, 1, 0, Qt::AlignCenter);
+    file_browser_buttons_widget->setFixedHeight(37);
 
     // Connect function buttons.
     QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(on_file_browser_refresh_button_click()));
 
     // Create layout and group box for file browser.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
-    file_browser_layout->addLayout(file_browser_buttons_layout, 5);
-    file_browser_layout->addWidget(this->file_browser, 95);
+    file_browser_layout->addWidget(file_browser_buttons_widget);
+    file_browser_layout->addWidget(this->file_browser);
     this->set_file_browser_title();
     this->file_browser_gbox->setLayout(file_browser_layout);
 
@@ -1217,16 +1224,20 @@ Gui::sync_file_browser_to_audio_collection()
 void
 Gui::on_file_browser_refresh_button_click()
 {
-    this->file_system_model->concurrent_analyse_audio_collection();
+    this->refresh_file_browser_progress->setVisible(true);
     this->refresh_file_browser->setEnabled(false);
+    this->refresh_file_browser_progress->setMaximum(0);
+    this->refresh_file_browser_progress->setMinimum(0);
+    this->file_system_model->concurrent_analyse_audio_collection();
 }
 
 void
 Gui::on_finished_analyze_audio_collection()
 {
+    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->refresh_file_browser->setEnabled(true);
     this->refresh_file_browser->setChecked(false);
-    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
+    this->refresh_file_browser_progress->setVisible(false);
 }
 
 bool

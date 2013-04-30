@@ -53,6 +53,7 @@
 #include "application_settings.h"
 #include <application_const.h>
 #include <audio_collection_model.h>
+#include <QProgressBar>
 
 using namespace std;
 
@@ -153,6 +154,7 @@ class Gui : QObject
     QGroupBox                     *help_groupbox;
     QGroupBox                     *file_browser_gbox;
     QPushButton                   *refresh_file_browser;
+    QProgressBar                  *refresh_file_browser_progress;
 
  public:
     Gui(Application_settings           *in_settings,
