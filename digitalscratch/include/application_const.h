@@ -36,5 +36,5 @@
 #define PIXMAPS_PATH            ":/pixmaps/"
 #define ICON_2                  PIXMAPS_PATH "digitalscratch-icon_2decks.png"
 #define LOGO                    PIXMAPS_PATH "digitalscratch-logo.png"
-#define ICON_FOLDER             PIXMAPS_PATH "dark-folder_white.png"
-#define ICON_AUDIO_FILE         PIXMAPS_PATH "dark-audio_file_white.png"
+#define ICON_FOLDER_SUFFIX      "-folder_white.png"
+#define ICON_AUDIO_FILE_SUFFIX  "-audio_file_white.png"

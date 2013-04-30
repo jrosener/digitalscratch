@@ -40,6 +40,7 @@
 #include <QDir>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QPixmap>
 
 using namespace std;
 
@@ -87,6 +88,8 @@ class Audio_collection_model : public QAbstractItemModel
  private:
     Audio_collection_item *rootItem;
     QFuture<void>         *concurrent_future;
+    QPixmap                audio_file_icon;
+    QPixmap                directory_icon;
 
  public:
     Audio_collection_model(QObject *in_parent = 0);
@@ -110,6 +113,9 @@ class Audio_collection_model : public QAbstractItemModel
     void analyze_audio_collection(); // Call calculate_audio_collection_data() and store_collection_to_db().
     void calculate_audio_collection_data(Audio_collection_item *in_parent_item = NULL); // Compute music key, etc...
     void store_collection_to_db(Audio_collection_item *in_parent_item = NULL);
+
+    void set_icons(QPixmap &in_audio_file_icon,
+                   QPixmap &in_directory_icon);
 
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);

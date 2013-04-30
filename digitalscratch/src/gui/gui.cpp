@@ -1159,6 +1159,8 @@ Gui::apply_main_window_style()
             this->sampler2_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
+        this->file_system_model->set_icons((QApplication::style()->standardIcon(QStyle::SP_FileIcon).pixmap(10, 10)),
+                                           (QApplication::style()->standardIcon(QStyle::SP_DirIcon).pixmap(10, 10)));
     }
     else
     {
@@ -1171,6 +1173,10 @@ Gui::apply_main_window_style()
             this->sampler2_buttons_stop[i]->setIcon(QIcon());
         }
         this->refresh_file_browser->setIcon(QIcon());
+
+        // Set icon for file browser QTreeview (can not be done nicely in CSS).
+        this->file_system_model->set_icons(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation),
+                                           QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation));
     }
 
     // Change main window skin (using CSS).

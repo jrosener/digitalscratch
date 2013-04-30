@@ -140,6 +140,13 @@ Audio_collection_model::~Audio_collection_model()
     delete this->concurrent_watcher_store;
 }
 
+void Audio_collection_model::set_icons(QPixmap &in_audio_file_icon,
+                                       QPixmap &in_directory_icon)
+{
+    this->audio_file_icon = in_audio_file_icon;
+    this->directory_icon  = in_directory_icon;
+}
+
 void Audio_collection_model::create_header()
 {
     // Create root item which is the collection header.
@@ -204,16 +211,16 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
     {
         return item->get_data(in_index.column());
     }
-    else if ((in_role == Qt::DecorationRole) &&
-             (in_index.column() == COLUMN_FILE_NAME))
+    else if ((in_role               == Qt::DecorationRole) &&
+             (in_index.column()     == COLUMN_FILE_NAME))
     {
         if (item->is_directory() == false)
         {
-            return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(10, Qt::SmoothTransformation);
+            return this->audio_file_icon;
         }
         else
         {
-            return (QPixmap(ICON_FOLDER)).scaledToWidth(10, Qt::SmoothTransformation);
+            return this->directory_icon;
         }
     }
     else
