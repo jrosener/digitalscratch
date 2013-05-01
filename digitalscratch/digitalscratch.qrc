@@ -24,5 +24,6 @@
     <file>pixmaps/digitalscratch-icon_2decks.png</file>
     <file>pixmaps/digitalscratch-icon.png</file>
     <file>pixmaps/digitalscratch-logo.png</file>
+    <file>skins/dark.css</file>
 </qresource>
 </RCC>

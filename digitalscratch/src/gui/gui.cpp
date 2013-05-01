@@ -55,6 +55,7 @@
 #include "gui.h"
 #include "digital_scratch_api.h"
 #include "audio_collection_model.h"
+#include "utils.h"
 
 Gui::Gui(Application_settings           *in_settings,
          Audio_track                    *in_at_1,
@@ -455,16 +456,8 @@ Gui::show_error_window(QString in_error_message)
                     + "<br/>" + in_error_message
                     + "<br/><br/>" + "Please fix this issue and restart DigitalScratch.");
     msg_box.setStandardButtons(QMessageBox::Close);
-    if (this->window_style == QString(GUI_STYLE_DEFAULT))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
-        msg_box.setIcon(QMessageBox::Critical);
-    }
-    else if (this->window_style == QString(GUI_STYLE_DARK))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DARK_CSS);
-        msg_box.setIconPixmap((QPixmap(DARK_ICON_ERROR)).scaledToWidth(32, Qt::SmoothTransformation));
-    }
+    msg_box.setIcon(QMessageBox::Critical);
+    msg_box.setStyleSheet(this->get_stylesheet_css());
     if (this->nb_decks > 1)
     {
         msg_box.setWindowIcon(QIcon(ICON_2));
@@ -480,6 +473,19 @@ Gui::show_error_window(QString in_error_message)
     qDebug() << "Gui::show_error_window done.";
 
     return true;
+}
+
+QString
+Gui::get_stylesheet_css()
+{
+    QString result = "";
+
+    if (this->window_style == QString(GUI_STYLE_DARK))
+    {
+        result = Utils::file_read_all_text(GUI_STYLE_DARK_CSS);
+    }
+
+    return result;
 }
 
 bool
@@ -830,20 +836,27 @@ Gui::create_main_window()
     this->refresh_file_browser = new QPushButton();
     this->refresh_file_browser->setObjectName("Refresh_browser_button");
     this->refresh_file_browser->setIconSize(QSize(12, 12));
-    this->refresh_file_browser->setMaximumWidth(24);
-    this->refresh_file_browser->setMaximumHeight(24);
+    this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
-    QHBoxLayout *file_browser_buttons_layout = new QHBoxLayout();
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser);
+    this->refresh_file_browser_progress= new QProgressBar();
+    this->refresh_file_browser_progress->hide();
+    this->refresh_file_browser_progress->setFixedSize(20, 4);
+    this->refresh_file_browser_progress->setTextVisible(false);
+
+    QWidget *file_browser_buttons_widget = new QWidget();
+    QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser,          0, 0, Qt::AlignCenter);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress, 1, 0, Qt::AlignCenter);
+    file_browser_buttons_widget->setFixedHeight(37);
 
     // Connect function buttons.
     QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(on_file_browser_refresh_button_click()));
 
     // Create layout and group box for file browser.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
-    file_browser_layout->addLayout(file_browser_buttons_layout, 5);
-    file_browser_layout->addWidget(this->file_browser, 95);
+    file_browser_layout->addWidget(file_browser_buttons_widget);
+    file_browser_layout->addWidget(this->file_browser);
     this->set_file_browser_title();
     this->file_browser_gbox->setLayout(file_browser_layout);
 
@@ -1115,17 +1128,9 @@ Gui::can_close()
     msg_box.setWindowTitle("DigitalScratch");
     msg_box.setText(tr("Do you really want to quit DigitalScratch ?"));
     msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setIcon(QMessageBox::Question);
     msg_box.setDefaultButton(QMessageBox::Cancel);
-    if (this->window_style == QString(GUI_STYLE_DEFAULT))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DEFAULT_CSS);
-        msg_box.setIcon(QMessageBox::Question);
-    }
-    else if (this->window_style == QString(GUI_STYLE_DARK))
-    {
-        msg_box.setStyleSheet(GUI_STYLE_DARK_CSS);
-        msg_box.setIconPixmap((QPixmap(DARK_ICON_HELP)).scaledToWidth(32, Qt::SmoothTransformation));
-    }
+    msg_box.setStyleSheet(this->get_stylesheet_css());
     if (this->nb_decks > 1)
     {
         msg_box.setWindowIcon(QIcon(ICON_2));
@@ -1149,31 +1154,40 @@ Gui::apply_main_window_style()
 {
     qDebug() << "Gui::apply_main_window_style...";
 
-    // Change main window skin (using CSS).
+    // Apply some GUI settings manually.
     if (this->window_style == QString(GUI_STYLE_DEFAULT))
     {
+        // Set manually some standard icons.
         for (int i = 0; i < this->nb_samplers; i++)
         {
             this->sampler1_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
             this->sampler2_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
+            this->sampler1_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
+            this->sampler2_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
-        this->window->setStyleSheet(GUI_STYLE_DEFAULT_CSS);
+        this->file_system_model->set_icons((QApplication::style()->standardIcon(QStyle::SP_FileIcon).pixmap(10, 10)),
+                                           (QApplication::style()->standardIcon(QStyle::SP_DirIcon).pixmap(10, 10)));
     }
-    else if (this->window_style == QString(GUI_STYLE_DARK))
+    else
     {
+        // Reset some icons (can not be done nicely in CSS).
         for (int i = 0; i < this->nb_samplers; i++)
         {
             this->sampler1_buttons_play[i]->setIcon(QIcon());
             this->sampler2_buttons_play[i]->setIcon(QIcon());
+            this->sampler1_buttons_stop[i]->setIcon(QIcon());
+            this->sampler2_buttons_stop[i]->setIcon(QIcon());
         }
         this->refresh_file_browser->setIcon(QIcon());
-        this->window->setStyleSheet(GUI_STYLE_DARK_CSS);
+
+        // Set icon for file browser QTreeview (can not be done nicely in CSS).
+        this->file_system_model->set_icons(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation),
+                                           QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation));
     }
-    else
-    {
-        return false;
-    }
+
+    // Change main window skin (using CSS).
+    this->window->setStyleSheet(this->get_stylesheet_css());
 
     qDebug() << "Gui::apply_main_window_style done.";
 
@@ -1189,9 +1203,11 @@ Gui::set_file_browser_base_path(QString in_path)
     this->set_file_browser_title();
 
     // Change root path of file browser.
+    this->file_browser->setRootIndex(QModelIndex());
     this->file_system_model->set_root_path(in_path);
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
+
     qDebug() << "Gui::set_file_browser_base_path done.";
 
     return true;
@@ -1208,16 +1224,20 @@ Gui::sync_file_browser_to_audio_collection()
 void
 Gui::on_file_browser_refresh_button_click()
 {
-    this->file_system_model->concurrent_analyse_audio_collection();
+    this->refresh_file_browser_progress->setVisible(true);
     this->refresh_file_browser->setEnabled(false);
+    this->refresh_file_browser_progress->setMaximum(0);
+    this->refresh_file_browser_progress->setMinimum(0);
+    this->file_system_model->concurrent_analyse_audio_collection();
 }
 
 void
 Gui::on_finished_analyze_audio_collection()
 {
+    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->refresh_file_browser->setEnabled(true);
     this->refresh_file_browser->setChecked(false);
-    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
+    this->refresh_file_browser_progress->setVisible(false);
 }
 
 bool
@@ -1716,45 +1736,35 @@ Gui::set_sampler_state(int in_deck_index,
 {
     qDebug() << "Gui::set_sampler_state...";
 
-    // Change state only if a sample is loaded.
-    if (this->playback->is_sampler_loaded(in_deck_index, in_sampler_index) == true)
+    // Change state only if a sample is loaded and playing.
+    if ((this->playback->is_sampler_loaded(in_deck_index, in_sampler_index) == true) && (in_state == true))
     {
-        // Sampler is playing, make play button active.
-        if (in_state == true)
+        if (in_deck_index == 0)
         {
-            if (in_deck_index == 0)
-            {
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY_RUNNING));
-                this->sampler1_buttons_play[in_sampler_index]->setChecked(true);
-                this->sampler1_buttons_stop[in_sampler_index]->setChecked(false);
-            }
-            else
-            {
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY_RUNNING));
-                this->sampler2_buttons_play[in_sampler_index]->setChecked(true);
-                this->sampler2_buttons_stop[in_sampler_index]->setChecked(false);
-            }
+            this->sampler1_buttons_play[in_sampler_index]->setChecked(true);
+            this->sampler1_buttons_stop[in_sampler_index]->setChecked(false);
         }
-        else // Sampler is stopping, make play button inactive.
+        else
         {
-            if (in_deck_index == 0)
-            {
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler1_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY));
-                this->sampler1_buttons_play[in_sampler_index]->setChecked(false);
-                this->sampler1_buttons_stop[in_sampler_index]->setChecked(true);
-            }
-            else
-            {
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon());
-                this->sampler2_buttons_play[in_sampler_index]->setIcon(QIcon(PLAY));
-                this->sampler2_buttons_play[in_sampler_index]->setChecked(false);
-                this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
-            }
+            this->sampler2_buttons_play[in_sampler_index]->setChecked(true);
+            this->sampler2_buttons_stop[in_sampler_index]->setChecked(false);
+        }
+
+    }
+    else // Sampler is stopping or is not loaded, make play button inactive.
+    {
+        if (in_deck_index == 0)
+        {
+            this->sampler1_buttons_play[in_sampler_index]->setChecked(false);
+            this->sampler1_buttons_stop[in_sampler_index]->setChecked(true);
+        }
+        else
+        {
+            this->sampler2_buttons_play[in_sampler_index]->setChecked(false);
+            this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
         }
     }
+
 
     qDebug() << "Gui::set_sampler_state done.";
 

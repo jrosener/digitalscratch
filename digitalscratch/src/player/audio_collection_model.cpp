@@ -44,11 +44,13 @@
 #include <QtConcurrentRun>
 
 Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
+                                             QString                in_file_hash,
                                              QString                in_full_path,
                                              bool                   in_is_directory,
                                              Audio_collection_item *in_parent)
 {
     this->parentItem    = in_parent;
+    this->fileHash      = in_file_hash;
     this->itemData      = in_data;
     this->fullPath      = in_full_path;
     this->directoryFlag = in_is_directory;
@@ -112,6 +114,11 @@ QString Audio_collection_item::get_full_path()
     return this->fullPath;
 }
 
+QString Audio_collection_item::get_file_hash()
+{
+    return this->fileHash;
+}
+
 bool Audio_collection_item::is_directory()
 {
     return this->directoryFlag;
@@ -121,6 +128,7 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
 {
     this->rootItem = NULL;
     this->create_header();
+    this->nb_audio_file_items = 0;
 
     // Init thread tools.
     this->concurrent_future        = new QFuture<void>;
@@ -138,6 +146,13 @@ Audio_collection_model::~Audio_collection_model()
     delete this->concurrent_future;
     delete this->concurrent_watcher_read;
     delete this->concurrent_watcher_store;
+}
+
+void Audio_collection_model::set_icons(QPixmap &in_audio_file_icon,
+                                       QPixmap &in_directory_icon)
+{
+    this->audio_file_icon = in_audio_file_icon;
+    this->directory_icon  = in_directory_icon;
 }
 
 void Audio_collection_model::create_header()
@@ -204,18 +219,16 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
     {
         return item->get_data(in_index.column());
     }
-    else if ((in_role == Qt::DecorationRole) &&
-             (in_index.column() == COLUMN_FILE_NAME))
+    else if ((in_role               == Qt::DecorationRole) &&
+             (in_index.column()     == COLUMN_FILE_NAME))
     {
-        QString file_or_dir_name((item->get_data(in_index.column()).toString()));
-        if ((file_or_dir_name.endsWith(".mp3",  Qt::CaseInsensitive) == true) ||
-            (file_or_dir_name.endsWith(".flac", Qt::CaseInsensitive) == true))
+        if (item->is_directory() == false)
         {
-            return (QPixmap(ICON_AUDIO_FILE)).scaledToWidth(10, Qt::SmoothTransformation);
+            return this->audio_file_icon;
         }
         else
         {
-            return (QPixmap(ICON_FOLDER)).scaledToWidth(10, Qt::SmoothTransformation);
+            return this->directory_icon;
         }
     }
     else
@@ -313,6 +326,9 @@ int Audio_collection_model::rowCount(const QModelIndex &in_parent) const
 
 void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_item *in_item)
 {
+    // Reset nb file items.
+    this->nb_audio_file_items = 0;
+
     // Create a Qdir based on input path.
     QStringList filters;
     filters << "*.mp3" << "*.flac";
@@ -334,7 +350,9 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         if (file_info.isDir() == false)
         {
             // It is a file, add the item.
+            this->nb_audio_file_items++;
             Audio_collection_item *file_item = new Audio_collection_item(line,
+                                                                         Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
                                                                          file_info.absoluteFilePath(),
                                                                          false,
                                                                          in_item);
@@ -344,6 +362,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         {
             // It is a directory, add the item and analyze file under it.
             Audio_collection_item *dir_item = new Audio_collection_item(line,
+                                                                        "",
                                                                         file_info.absoluteFilePath(),
                                                                         true,
                                                                         in_item);
@@ -396,7 +415,7 @@ void Audio_collection_model::read_collection_from_db(Audio_collection_item *in_p
        {
            // Child is an audio file, get a hash, get audio data from db and put it back to the item.
            at->reset();
-           at->set_hash(Utils::get_file_hash(child_item->get_full_path(), FILE_HASH_SIZE));
+           at->set_hash(child_item->get_file_hash());
            if (data_persist->get_audio_track(at) == true)
            {
                // File found in DB, put data back to item.
@@ -422,7 +441,10 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
 
 void Audio_collection_model::analyze_audio_collection()
 {
+    // Calculate things on audio collection (music key, etc...)
     this->calculate_audio_collection_data(this->rootItem);
+
+    // Store audio collection to DB.
     this->store_collection_to_db(this->rootItem);
 }
 
@@ -488,7 +510,7 @@ void Audio_collection_model::store_collection_to_db(Audio_collection_item *in_pa
        {
            // Child is an audio file, get a hash, set audio data and persist them.
            at->reset();
-           at->set_hash(Utils::get_file_hash(child_item->get_full_path(), FILE_HASH_SIZE));
+           at->set_hash(child_item->get_file_hash());
            at->set_fullpath(child_item->get_full_path());
            at->set_music_key(child_item->get_data(COLUMN_KEY).toString());
            if (data_persist->store_audio_track(at) == false)
