@@ -148,8 +148,8 @@ Audio_collection_model::~Audio_collection_model()
     delete this->concurrent_watcher_store;
 }
 
-void Audio_collection_model::set_icons(QPixmap &in_audio_file_icon,
-                                       QPixmap &in_directory_icon)
+void Audio_collection_model::set_icons(QPixmap in_audio_file_icon,
+                                       QPixmap in_directory_icon)
 {
     this->audio_file_icon = in_audio_file_icon;
     this->directory_icon  = in_directory_icon;
