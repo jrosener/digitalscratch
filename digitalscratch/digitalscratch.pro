@@ -148,6 +148,15 @@ unix {
 #############################
 
 #############################
+# lib KeyFinder
+win32 {
+    # TODO
+}
+unix {
+    LIBS += -lkeyfinder -lboost_system
+}
+
+#############################
 # Enable for release and debug mode.
 CONFIG += debug_and_release
 DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT

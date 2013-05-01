@@ -35,6 +35,7 @@
 
 #include <QString>
 #include <application_const.h>
+#include <audio_track.h>
 using namespace std;
 
 class Utils
@@ -42,6 +43,12 @@ class Utils
  public:
     // Get a MD5 hash from in_kbytes bytes of the specified file.
     static QString get_file_hash(QString in_path, unsigned int in_kbytes);
+
+    // Get the musical key of the specified audio track (use KeyFinder).
+    static QString get_music_key(short signed int   *in_samples,
+                                 unsigned int        in_nb_samples,
+                                 short unsigned int  in_frame_rate,
+                                 short unsigned int  in_nb_channels);
 };
 
 #endif /* UTILS_H_ */
