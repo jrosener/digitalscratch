@@ -46,12 +46,6 @@ class Utils
 
     // Get full text content of a file.
     static QString file_read_all_text(QString in_path);
-
-    // Get the musical key of the specified audio track (use KeyFinder).
-    static QString get_music_key(short signed int   *in_samples,
-                                 unsigned int        in_nb_samples,
-                                 short unsigned int  in_frame_rate,
-                                 short unsigned int  in_nb_channels);
 };
 
 #endif /* UTILS_H_ */
