@@ -14,10 +14,10 @@
 extern "C" {
 #endif
 
-DLLEXPORT const char* get_key(float              *samples,
-                              unsigned int        nb_samples,
-                              short unsigned int  frame_rate,
-                              short unsigned int  nb_channels);
+DLLEXPORT const char* kfinder_get_key(short signed int   *samples,
+                                      unsigned int        nb_samples,
+                                      short unsigned int  frame_rate,
+                                      short unsigned int  nb_channels);
 
 #ifdef __cplusplus
 }

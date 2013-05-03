@@ -93,11 +93,6 @@ Audio_track::reset()
     this->music_key      = "";
     this->music_key_tag  = "";
 
-    if (this->samples != NULL)
-    {
-        std::fill(this->samples, this->samples + this->get_max_nb_samples(), 0);
-    }
-
     qDebug() << "Audio_track::reset done.";
 
     return;
