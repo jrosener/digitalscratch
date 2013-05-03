@@ -35,7 +35,6 @@
 #include <algorithm>
 #include <QtDebug>
 #include <QFile>
-#include <libkeyfinder/keyfinder.h>
 
 QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 {   

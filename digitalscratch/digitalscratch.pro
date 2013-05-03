@@ -152,10 +152,12 @@ unix {
 #############################
 # lib KeyFinder
 win32 {
-    # TODO
+    LIBS += -L$$PWD/win-external/libkeyfinder/lib/ -lkeyfinder0
+    INCLUDEPATH += $$PWD/win-external/libkeyfinder/include
+    DEPENDPATH += $$PWD/win-external/libkeyfinder/include
 }
 unix {
-    LIBS += -lkeyfinder -lboost_system
+    LIBS += -lkeyfinder
 }
 
 #############################
@@ -187,7 +189,10 @@ win32 {
         $${PWD}/win-external/flac-1.2.1-devel-win/lib/libFLAC.dll \
         $${PWD}/win-external/libdigitalscratch/lib/digitalscratch1.dll \
         $${PWD}/win-external/samplerate-0.1.8/lib/libsamplerate-0.dll \
-        $${PWD}/win-external/jack-1.9.9/lib/libjack.dll
+        $${PWD}/win-external/jack-1.9.9/lib/libjack.dll \
+        $${PWD}/win-external/libkeyfinder/lib/keyfinder0.dll \
+        $${PWD}/win-external/libkeyfinder/lib/libfftw3-3.dll \
+        $${PWD}/win-external/libkeyfinder/lib/boost_system-vc100-mt-1_51.dll
     DESTDIR_WIN = $${DESTDIR}
     CONFIG(debug, debug|release) {
         DESTDIR_WIN += debug
