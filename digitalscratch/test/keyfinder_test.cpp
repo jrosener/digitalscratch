@@ -41,32 +41,32 @@ void Keyfinder_Test::testCaseGetKey()
     // Decode and get music key of the track.
     at->reset();
     dec->run(QString(DATA_DIR) + QString(DATA_TRACK_REAL1));
-    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_max_nb_samples(), SAMPLE_RATE, 2)) == "Bbm",
+    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_end_of_samples(), SAMPLE_RATE, 2)) == "Bbm",
              DATA_TRACK_REAL1); // From report: Bb(M?)
 
     at->reset();
     dec->run(QString(DATA_DIR) + QString(DATA_TRACK_REAL2));
-    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_max_nb_samples(), SAMPLE_RATE, 2)) == "Ebm",
+    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_end_of_samples(), SAMPLE_RATE, 2)) == "Ebm",
              DATA_TRACK_REAL2); // From report: Ebm
 
     at->reset();
     dec->run(QString(DATA_DIR) + QString(DATA_TRACK_REAL3));
-    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_max_nb_samples(), SAMPLE_RATE, 2)) == "Gbm",
+    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_end_of_samples(), SAMPLE_RATE, 2)) == "Gbm",
              DATA_TRACK_REAL3); // From report: Dm
 
     at->reset();
     dec->run(QString(DATA_DIR) + QString(DATA_TRACK_REAL4));
-    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_max_nb_samples(), SAMPLE_RATE, 2)) == "Dm",
+    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_end_of_samples(), SAMPLE_RATE, 2)) == "Dm",
              DATA_TRACK_REAL4); // From report: Dm
 
     at->reset();
     dec->run(QString(DATA_DIR) + QString(DATA_TRACK_REAL5));
-    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_max_nb_samples(), SAMPLE_RATE, 2)) == "Bbm",
+    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_end_of_samples(), SAMPLE_RATE, 2)) == "Bbm",
              DATA_TRACK_REAL5); // From report: Bb(M?)
 
     at->reset();
     dec->run(QString(DATA_DIR) + QString(DATA_TRACK_REAL6));
-    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_max_nb_samples(), SAMPLE_RATE, 2)) == "Ebm",
+    QVERIFY2(QString(kfinder_get_key(at->get_samples(), at->get_end_of_samples(), SAMPLE_RATE, 2)) == "Ebm",
              DATA_TRACK_REAL6); // From report  Abm
 
     // Cleanup.
