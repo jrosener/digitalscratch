@@ -2,7 +2,6 @@
 #include <audio_file_decoding_process_test.h>
 #include <utils_test.h>
 #include <data_persistence_test.h>
-#include <keyfinder_test.h>
 
 int main(int argc, char** argv)
 {
