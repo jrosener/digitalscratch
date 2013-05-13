@@ -6,12 +6,6 @@
 #define DATA_TRACK_1 "track_1.mp3"
 #define DATA_TRACK_2 "track_2.mp3"
 #define DATA_TRACK_3 "track_3.mp3"
-#define DATA_TRACK_REAL1 "laurent_garnier_-_the_sound_of_the_big_babou.mp3"
-#define DATA_TRACK_REAL2 "02_dig_your_own_hole.mp3"
-#define DATA_TRACK_REAL3 "08-pendulum_-_tarantula_feat._fresh_pyda_and_tenor_fly.mp3"
-#define DATA_TRACK_REAL4 "16-pendulum-tarantula.mp3"
-#define DATA_TRACK_REAL5 "b2_the_sound_of_the_big_babou.mp3"
-#define DATA_TRACK_REAL6 "commix_-_be_true.mp3"
 #ifdef WIN32
     #define MUSIC_PATH   "D:/musique"
 #else
@@ -102,22 +96,16 @@ void Utils_Test::testCaseGetFileMusicKey()
 {
     // Prepare list of audio file for getting music key concurrently.
     QList<QString> filepaths = QList<QString>();
-    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_REAL1);
-    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_REAL2);
-    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_REAL3);
-    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_REAL4);
-    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_REAL5);
-    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_REAL6);
+    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_1);
+    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_2);
+    filepaths << QString(DATA_DIR) + QString(DATA_TRACK_3);
     
     // Get music key for list of audio file.
     QList<QString> keys = QtConcurrent::blockingMapped(filepaths, Utils::get_file_music_key);
     
     // Check keys.
-    QVERIFY2(keys.length() == 6, "size of list of keys");
-    QVERIFY2(keys[0] == "Bbm", DATA_TRACK_REAL1);
-    QVERIFY2(keys[1] == "Ebm", DATA_TRACK_REAL2);
-    QVERIFY2(keys[2] == "Gbm", DATA_TRACK_REAL3);
-    QVERIFY2(keys[3] == "Dm",  DATA_TRACK_REAL4);
-    QVERIFY2(keys[4] == "Bbm", DATA_TRACK_REAL5);
-    QVERIFY2(keys[5] == "Ebm", DATA_TRACK_REAL6);
+    QVERIFY2(keys.length() == 3, "size of list of keys");
+    QVERIFY2(keys[0] == "Abm", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[0])));
+    QVERIFY2(keys[1] == "Bm",  qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[1])));
+    QVERIFY2(keys[2] == "Abm", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[2])));
 }
