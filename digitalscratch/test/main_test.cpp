@@ -22,5 +22,9 @@ int main(int argc, char** argv)
       Data_persistence_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
+
+   // Wait until threads are done (necessary because no QApplication is created/deleted).
+   QThreadPool::globalInstance()->waitForDone();
+
    return status;
 }

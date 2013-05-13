@@ -32,7 +32,6 @@ void Audio_track_Test::testCaseCreate()
     QVERIFY2(at->get_name()           == "", "name is empty");
     QVERIFY2(at->get_length()         == 0,  "length is null");
     QVERIFY2(at->get_end_of_samples() == 0,  "end of sample is null");
-    QVERIFY2(at->get_samples()[0]     == 0,  "samples are null");
 
     // Cleanup.
     delete at;
