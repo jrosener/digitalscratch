@@ -50,6 +50,7 @@ HEADERS += include/gui/config_dialog.h \
            include/player/sound_capture_and_playback_process.h \
            include/player/data_persistence.h \
            include/player/audio_collection_model.h \
+           include/player/audio_track_key_process.h \
            include/utils.h \
            include/application_const.h \
            include/singleton.h
@@ -70,6 +71,7 @@ SOURCES += src/main.cpp \
            src/player/sound_capture_and_playback_process.cpp \
            src/player/data_persistence.cpp \
            src/player/audio_collection_model.cpp \
+           src/player/audio_track_key_process.cpp \
            src/utils.cpp
 
 CONFIG(test) {

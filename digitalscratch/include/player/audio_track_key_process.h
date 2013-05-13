@@ -4,9 +4,9 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*----------------------------------------------------------------( utils.h )-*/
+/*----------------------------------------------( audio_track_key_process.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2013                                                   */
+/*  Copyright (C) 2003-2012                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -26,29 +26,30 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                         Static utility functions                           */
+/*    Behavior class: process to compute a musical key for an audio track     */
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef AUDIO_TRACK_KEY_PROCESS_H_
+#define AUDIO_TRACK_KEY_PROCESS_H_
 
-#include <QString>
-#include <application_const.h>
+#include <iostream>
 #include <audio_track.h>
+#include <application_const.h>
+#include <keyfinder_api.h>
+
 using namespace std;
 
-class Utils
+class Audio_track_key_process
 {
+ private:
+    Audio_track *at;
+
  public:
-    // Get a MD5 hash from in_kbytes bytes of the specified file.
-    static QString get_file_hash(QString in_path, unsigned int in_kbytes);
+    Audio_track_key_process(Audio_track *in_at);
+    virtual ~Audio_track_key_process();
 
-    // Get full text content of a file.
-    static QString file_read_all_text(QString in_path);
-
-    // Compute music key of an audio file.
-    static QString get_file_music_key(QString in_path);
+    bool run();         // Compute music key of the track and set it to the Audio_track object.
 };
 
-#endif /* UTILS_H_ */
+#endif /* AUDIO_TRACK_KEY_PROCESS_H_ */

@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------------------( utils.cpp )-*/
+/*---------------------------------------------( audio_file_key_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2013                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,102 +26,59 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                         Static utility functions                           */
+/*    Behavior class: process to compute a musical key for an audio track     */
 /*                                                                            */
 /*============================================================================*/
 
-#include <utils.h>
-#include <QCryptographicHash>
-#include <algorithm>
 #include <QtDebug>
-#include <QFile>
-#include <audio_track.h>
-#include <audio_file_decoding_process.h>
-#include <audio_track_key_process.h>
 
-QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
-{   
-    qDebug() << "Utils::get_file_hash...";
+#include "audio_track_key_process.h"
+#include "audio_track.h"
 
-    // Init.
-    QString hash("");
+Audio_track_key_process::Audio_track_key_process(Audio_track *in_at)
+{
+    qDebug() << "Audio_track_key_process::Audio_track_key_process: create object...";
 
-    // Check if path is defined.
-    if (in_path == NULL)
+    if (in_at == NULL)
     {
-        qWarning() << "Utils::get_file_hash: path is NULL.";
-        return "";
+        qCritical() << "Audio_track_key_process::Audio_track_key_process: audio track is NULL";
+    }
+    else
+    {
+        this->at = in_at;
     }
 
-    // Check number of kbytes.
-    if (in_kbytes == 0)
-    {
-        qWarning() << "Utils::get_file_hash: nb bytes to hash is 0.";
-        return "";
-    }
+    qDebug() << "Audio_track_key_process::Audio_track_key_process: create object done.";
 
-    // Check if file exists.
-    QFile file(in_path);
-    if (file.exists() == FALSE)
-    {
-        qWarning() << "Utils::get_file_hash: file " << in_path << " does not exists.";
-        return "";
-    }
-
-    // Open file as binary.
-    if (file.open(QIODevice::ReadOnly) == FALSE)
-    {
-        return "";
-    }
-
-    // Get a hash of the first bytes of data (or the size of the file if it is less).
-    QByteArray bin  = file.read(std::min((qint64)(in_kbytes*1024), file.size()));
-    hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
-
-    // Cleanup.
-    file.close();
-
-    qDebug() << "Utils::get_file_hash: done.";
-
-    return hash;
+    return;
 }
 
-QString Utils::file_read_all_text(QString in_path)
+Audio_track_key_process::~Audio_track_key_process()
 {
-    QString result = "";
+    qDebug() << "Audio_track_key_process::~Audio_track_key_process: delete object...";
 
-    QFile file(in_path);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
-    {
-        result = QString(file.readAll());
-        file.close();
-    }
+    qDebug() << "Audio_track_key_process::~Audio_track_key_process: delete object done.";
 
-    return result;
-
+    return;
 }
 
-QString Utils::get_file_music_key(QString in_path)
+bool
+Audio_track_key_process::run()
 {
-    // Init result.
-    QString result = "";
+    qDebug() << "Audio_track_key_process::run...";
 
-    // Decode the audio track.
-    Audio_track *at = new Audio_track(10);
-    Audio_file_decoding_process *dec = new Audio_file_decoding_process(at);
-    dec->run(in_path);
-
-    // Compute the music key.
-    Audio_track_key_process *key_proc = new Audio_track_key_process(at);
-    if (key_proc->run() == true)
+    // Check if there are decoded audio data in audio track.
+    if (this->at->get_end_of_samples() == 0)
     {
-        result = at->get_music_key();
+        return false;
     }
 
-    // Cleanup.
-    delete dec;
-    delete at;
-    
-    // Return result.
-    return result;
+    // Compute the musical key.
+    this->at->set_music_key(kfinder_get_key(at->get_samples(),
+                                            at->get_end_of_samples(),
+                                            SAMPLE_RATE, 2));
+
+    qDebug() << "Audio_track_key_process::run: done.";
+
+    return true;
 }

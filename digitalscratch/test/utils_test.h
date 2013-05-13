@@ -16,4 +16,5 @@ private Q_SLOTS:
 
     void testCaseGetFileHash();
     void testCaseGetFileHashCharge();
+    void testCaseGetFileMusicKey();
 };
