@@ -128,7 +128,7 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
 {
     this->rootItem = NULL;
     this->create_header();
-    this->nb_audio_file_items = 0;
+    this->audio_item_list.clear();
 
     // Init thread tools.
     this->concurrent_future        = new QFuture<void>;
@@ -175,6 +175,9 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
 
     // Create root item which is the collection header.
     this->create_header();
+
+    // Reset internal list of audio files (item pointers).
+    this->audio_item_list.clear();
 
     // Fill the model.
     this->setup_model_data(in_root_path, this->rootItem);
@@ -326,9 +329,6 @@ int Audio_collection_model::rowCount(const QModelIndex &in_parent) const
 
 void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_item *in_item)
 {
-    // Reset nb file items.
-    this->nb_audio_file_items = 0;
-
     // Create a Qdir based on input path.
     QStringList filters;
     filters << "*.mp3" << "*.flac";
@@ -350,13 +350,15 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         if (file_info.isDir() == false)
         {
             // It is a file, add the item.
-            this->nb_audio_file_items++;
             Audio_collection_item *file_item = new Audio_collection_item(line,
                                                                          Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
                                                                          file_info.absoluteFilePath(),
                                                                          false,
                                                                          in_item);
             in_item->append_child(file_item);
+
+            // Add the item's reference to a list (useful for future parsing).
+            this->audio_item_list << file_item;
         }
         else
         {
@@ -379,49 +381,30 @@ void Audio_collection_model::concurrent_read_collection_from_db()
     if ((this->concurrent_watcher_read->isRunning()  == false) &&
         (this->concurrent_watcher_store->isRunning() == false))
     {
-        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::read_collection_from_db, this->rootItem);
+        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::read_collection_from_db);
         this->concurrent_watcher_read->setFuture(*this->concurrent_future);
     }
 }
 
-void Audio_collection_model::read_collection_from_db(Audio_collection_item *in_parent_item)
+void Audio_collection_model::read_collection_from_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     Audio_track      *at           = new Audio_track();
 
-    // Get the root (parent) audio item.
-    Audio_collection_item *parent_item;
-    if (in_parent_item == NULL)
+    // Iterate over internal list of audio items (only files, no directories).
+    foreach (Audio_collection_item *item, this->audio_item_list)
     {
-        // No parent specified, take the root of the collection.
-        parent_item = this->rootItem;
-    }
-    else
-    {
-        parent_item = in_parent_item;
-    }
+        // Get the hash of audio file.
+        at->reset();
+        at->set_hash(item->get_file_hash());
 
-    // Iterate over child items.
-    for (int i = 0; i < parent_item->get_child_count(); i++)
-    {
-       Audio_collection_item *child_item = parent_item->get_child(i);
-       if (child_item->is_directory() == true)
-       {
-           // Child is a directory, call recursively this method.
-           this->read_collection_from_db(child_item);
-       }
-       else
-       {
-           // Child is an audio file, get a hash, get audio data from db and put it back to the item.
-           at->reset();
-           at->set_hash(child_item->get_file_hash());
-           if (data_persist->get_audio_track(at) == true)
-           {
-               // File found in DB, put data back to item.
-               child_item->set_data(COLUMN_KEY, at->get_music_key());
-           }
-       }
+        // Get audio data from db and put it back to the item.
+        if (data_persist->get_audio_track(at) == true)
+        {
+            // File found in DB, put data back to item.
+            item->set_data(COLUMN_KEY, at->get_music_key());
+        }
     }
 
     // Cleanup.
@@ -442,83 +425,77 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
 void Audio_collection_model::analyze_audio_collection()
 {
     // Calculate things on audio collection (music key, etc...)
-    this->calculate_audio_collection_data(this->rootItem);
+    this->calculate_audio_collection_data();
 
     // Store audio collection to DB.
-    this->store_collection_to_db(this->rootItem);
+    this->store_collection_to_db();
 }
 
-void Audio_collection_model::calculate_audio_collection_data(Audio_collection_item *in_parent_item)
+void Audio_collection_model::calculate_audio_collection_data()
 {
-    // Get the root (parent) audio item.
-    Audio_collection_item *parent_item;
-    if (in_parent_item == NULL)
+    // Iterate over internal list of audio items (only files, no directories).
+    foreach (Audio_collection_item *item, this->audio_item_list)
     {
-        // No parent specified, take the root of the collection.
-        parent_item = this->rootItem;
-    }
-    else
-    {
-        parent_item = in_parent_item;
-    }
-
-    // Iterate over child items.
-    for (int i = 0; i < parent_item->get_child_count(); i++)
-    {
-       Audio_collection_item *child_item = parent_item->get_child(i);
-       if (child_item->is_directory() == true)
-       {
-           // Child is a directory, call recursively this method.
-           this->calculate_audio_collection_data(child_item);
-       }
-       else
-       {
-           // Child is an audio file, calculate data and put them back in audio item.
-           child_item->set_data(COLUMN_KEY, "A1"); // TODO: calculate audio data.
-       }
+        // Calculate data and put them back in audio item.
+        item->set_data(COLUMN_KEY, "A1"); // TODO: calculate audio data.
     }
 }
 
-void Audio_collection_model::store_collection_to_db(Audio_collection_item *in_parent_item)
+void Audio_collection_model::store_collection_to_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     Audio_track      *at           = new Audio_track();
 
-    // Get the root (parent) audio item.
-    Audio_collection_item *parent_item;
-    if (in_parent_item == NULL)
+    // Iterate over internal list of audio items (only files, no directories).
+    foreach (Audio_collection_item *item, this->audio_item_list)
     {
-        // No parent specified, take the root of the collection.
-        parent_item = this->rootItem;
-    }
-    else
-    {
-        parent_item = in_parent_item;
+        // Get a hash, set audio data to an Audio_track and persist it.
+        at->reset();
+        at->set_hash(item->get_file_hash());
+        at->set_fullpath(item->get_full_path());
+        at->set_music_key(item->get_data(COLUMN_KEY).toString());
+        if (data_persist->store_audio_track(at) == false)
+        {
+            qWarning() << "Audio_collection_model::store_collection_to_db: can not store " << item->get_full_path() << " to DB";
+        }
     }
 
-    // Iterate over child items.
-    for (int i = 0; i < parent_item->get_child_count(); i++)
-    {
-       Audio_collection_item *child_item = parent_item->get_child(i);
-       if (child_item->is_directory() == true)
-       {
-           // Child is a directory, call recursively this method.
-           this->store_collection_to_db(child_item);
-       }
-       else
-       {
-           // Child is an audio file, get a hash, set audio data and persist them.
-           at->reset();
-           at->set_hash(child_item->get_file_hash());
-           at->set_fullpath(child_item->get_full_path());
-           at->set_music_key(child_item->get_data(COLUMN_KEY).toString());
-           if (data_persist->store_audio_track(at) == false)
-           {
-               qWarning() << "Audio_collection_model::store_collection_to_db: can not store " << child_item->get_full_path() << " to DB";
-           }
-       }
-    }
+
+//    // Get the root (parent) audio item.
+//    Audio_collection_item *parent_item;
+//    if (in_parent_item == NULL)
+//    {
+//        // No parent specified, take the root of the collection.
+//        parent_item = this->rootItem;
+//    }
+//    else
+//    {
+//        parent_item = in_parent_item;
+//    }
+
+//    // Iterate over child items.
+//    for (int i = 0; i < parent_item->get_child_count(); i++)
+//    {
+//       Audio_collection_item *child_item = parent_item->get_child(i);
+//       if (child_item->is_directory() == true)
+//       {
+//           // Child is a directory, call recursively this method.
+//           this->store_collection_to_db(child_item);
+//       }
+//       else
+//       {
+//           // Child is an audio file, get a hash, set audio data and persist them.
+//           at->reset();
+//           at->set_hash(child_item->get_file_hash());
+//           at->set_fullpath(child_item->get_full_path());
+//           at->set_music_key(child_item->get_data(COLUMN_KEY).toString());
+//           if (data_persist->store_audio_track(at) == false)
+//           {
+//               qWarning() << "Audio_collection_model::store_collection_to_db: can not store " << child_item->get_full_path() << " to DB";
+//           }
+//       }
+//    }
 
     // Cleanup.
     delete at;

@@ -41,6 +41,7 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QPixmap>
+#include <QList>
 
 using namespace std;
 
@@ -89,11 +90,11 @@ class Audio_collection_model : public QAbstractItemModel
     QFutureWatcher<void>  *concurrent_watcher_store;
 
  private:
-    Audio_collection_item *rootItem;
-    QFuture<void>         *concurrent_future;
-    QPixmap                audio_file_icon;
-    QPixmap                directory_icon;
-    int                    nb_audio_file_items;
+    Audio_collection_item         *rootItem;
+    QFuture<void>                 *concurrent_future;
+    QPixmap                        audio_file_icon;
+    QPixmap                        directory_icon;
+    QList<Audio_collection_item*>  audio_item_list;
 
  public:
     Audio_collection_model(QObject *in_parent = 0);
@@ -110,13 +111,13 @@ class Audio_collection_model : public QAbstractItemModel
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
-    void concurrent_read_collection_from_db(); // Call read_collection_from_db() in separate thread.
-    void read_collection_from_db(Audio_collection_item *in_parent_item = NULL); 
+    void concurrent_read_collection_from_db();  // Call read_collection_from_db() in separate thread.
+    void read_collection_from_db();
 
     void concurrent_analyse_audio_collection(); // Call analyze_audio_collection in separate thread.
-    void analyze_audio_collection(); // Call calculate_audio_collection_data() and store_collection_to_db().
-    void calculate_audio_collection_data(Audio_collection_item *in_parent_item = NULL); // Compute music key, etc...
-    void store_collection_to_db(Audio_collection_item *in_parent_item = NULL);
+    void analyze_audio_collection();            // Call calculate_audio_collection_data() and store_collection_to_db().
+    void calculate_audio_collection_data();     // Compute music key, etc...
+    void store_collection_to_db();              // Persist audio collection to DB.
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);
