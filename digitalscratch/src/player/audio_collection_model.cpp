@@ -148,7 +148,6 @@ void Audio_collection_item::read_from_db()
 
 void Audio_collection_item::compute_and_store_to_db()
 {
-    //cout << "computing " << qPrintable(this->fullPath) << "..." << endl;
     // Calculate things (music key, bpm, etc...)
     this->calculate_audio_data();
 

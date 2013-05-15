@@ -67,7 +67,6 @@ class Data_persistence : public QObject
  private:
     bool init_db();
     bool create_db_structure();
-    void close_db();
 };
 
 #endif // DATA_PERSISTENCE_H

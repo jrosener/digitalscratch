@@ -163,10 +163,22 @@ Gui::~Gui()
 {
     qDebug() << "Gui::Gui: delete object...";
 
+    // Stop running threads.
+    if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
+    {
+        this->file_system_model->concurrent_watcher_store->cancel();
+        this->file_system_model->concurrent_watcher_store->waitForFinished();
+    }
+    if (this->file_system_model->concurrent_watcher_read->isRunning() == true)
+    {
+        this->file_system_model->concurrent_watcher_read->cancel();
+        this->file_system_model->concurrent_watcher_read->waitForFinished();
+    }
+    delete this->file_system_model;
+
     // Cleanup.
     delete this->file_browser;
     delete this->config_dialog;
-    delete this->file_system_model;
     delete this->window;
     delete [] this->decks_remaining_time;
 
@@ -1230,24 +1242,34 @@ Gui::sync_file_browser_to_audio_collection()
 void
 Gui::on_file_browser_refresh_button_click()
 {
-    // Show progress bar and check progress button.
-    this->refresh_file_browser_progress->setVisible(true);
-    this->refresh_file_browser->setEnabled(false);
+    if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
+    {
+        // Show progress bar and check progress button.
+        this->refresh_file_browser_progress->setVisible(true);
+        //this->refresh_file_browser->setEnabled(false);
+        this->refresh_file_browser->setChecked(true);
 
-    // Compute data on file collection and store them to DB.
-    this->file_system_model->concurrent_analyse_audio_collection();
+        // Compute data on file collection and store them to DB.
+        this->file_system_model->concurrent_analyse_audio_collection();
+    }
+    else
+    {
+        // Analyzis already running. Cancel it.
+        this->file_system_model->concurrent_watcher_store->cancel();
+        this->file_system_model->concurrent_watcher_store->waitForFinished();
+    }
 }
 
 void
 Gui::on_finished_analyze_audio_collection()
 {
+    // Hide progress bar.
+    this->refresh_file_browser_progress->setVisible(false);
+
     // Refresh file browser.
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->refresh_file_browser->setEnabled(true);
     this->refresh_file_browser->setChecked(false);
-
-    // Hide progress bar.
-    this->refresh_file_browser_progress->setVisible(false);
 }
 
 bool

@@ -56,7 +56,12 @@ Data_persistence::~Data_persistence()
 {
     qDebug() << "Audio_track::~Audio_track: delete object...";
 
-    this->close_db();
+    this->mutex.lock();
+    if (this->db.open() == true)
+    {
+        this->db.close();
+    }
+    this->mutex.unlock();
 
     qDebug() << "Audio_track::~Audio_track: delete object done.";
 
@@ -152,15 +157,6 @@ bool Data_persistence::create_db_structure()
     qDebug() << "Data_persistence::create_db_structure done.";
 
     return result;
-}
-
-void Data_persistence::close_db()
-{
-    qDebug() << "Data_persistence::close_db...";
-
-    this->db.close();
-
-    qDebug() << "Data_persistence::close_db done.";
 }
 
 bool Data_persistence::begin_transaction()
