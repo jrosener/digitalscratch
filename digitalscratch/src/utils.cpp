@@ -116,6 +116,11 @@ QString Utils::get_file_music_key(QString in_path)
     if (key_proc->run() == true)
     {
         result = at->get_music_key();
+        cout << "  " << qPrintable(in_path) << " : " << qPrintable(result) << endl;
+    }
+    else
+    {
+        qWarning() << "Utils::get_file_music_key: cannot get music key for " << in_path;
     }
 
     // Cleanup.

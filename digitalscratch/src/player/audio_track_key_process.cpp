@@ -74,9 +74,18 @@ Audio_track_key_process::run()
     }
 
     // Compute the musical key.
-    this->at->set_music_key(kfinder_get_key(at->get_samples(),
-                                            at->get_end_of_samples(),
-                                            SAMPLE_RATE, 2));
+    QString key = kfinder_get_key(at->get_samples(),
+                                  at->get_end_of_samples(),
+                                  SAMPLE_RATE, 2);
+    if (key != "")
+    {
+        this->at->set_music_key(key);
+    }
+    else
+    {
+        qWarning() << "Audio_track_key_process::run: no music key found";
+        return false;
+    }
 
     qDebug() << "Audio_track_key_process::run: done.";
 

@@ -148,6 +148,7 @@ void Audio_collection_item::read_from_db()
 
 void Audio_collection_item::compute_and_store_to_db()
 {
+    //cout << "computing " << qPrintable(this->fullPath) << "..." << endl;
     // Calculate things (music key, bpm, etc...)
     this->calculate_audio_data();
 
@@ -158,7 +159,7 @@ void Audio_collection_item::compute_and_store_to_db()
 void Audio_collection_item::calculate_audio_data()
 {
     // Calculate data and put them back in current audio item.
-    this->set_data(COLUMN_KEY, "A1"); // TODO: calculate audio data.
+    this->set_data(COLUMN_KEY, Utils::get_file_music_key(this->fullPath));
 }
 
 void Audio_collection_item::store_to_db()
