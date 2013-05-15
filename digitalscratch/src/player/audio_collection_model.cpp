@@ -146,6 +146,41 @@ void Audio_collection_item::read_from_db()
     delete at;
 }
 
+void Audio_collection_item::compute_and_store_to_db()
+{
+    // Calculate things (music key, bpm, etc...)
+    this->calculate_audio_data();
+
+    // Store audio collection to DB.
+    this->store_to_db();
+}
+
+void Audio_collection_item::calculate_audio_data()
+{
+    // Calculate data and put them back in current audio item.
+    this->set_data(COLUMN_KEY, "A1"); // TODO: calculate audio data.
+}
+
+void Audio_collection_item::store_to_db()
+{
+    // Init.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    Audio_track      *at           = new Audio_track();
+
+    // Get a hash, set audio data to an Audio_track and persist it.
+    at->reset();
+    at->set_hash(this->get_file_hash());
+    at->set_fullpath(this->get_full_path());
+    at->set_music_key(this->get_data(COLUMN_KEY).toString());
+    if (data_persist->store_audio_track(at) == false)
+    {
+        qWarning() << "Audio_collection_item::store_collection_to_db: can not store " << this->get_full_path() << " to DB";
+    }
+
+    // Cleanup.
+    delete at;
+}
+
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)
 {
     this->rootItem = NULL;
@@ -397,7 +432,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
     }
 }
 
-void read_from_db(Audio_collection_item *&in_audio_item)
+void external_read_from_db(Audio_collection_item *&in_audio_item)
 {
     // Only a wrapper to get data from DB for an audio item object.
     in_audio_item->read_from_db();
@@ -405,66 +440,36 @@ void read_from_db(Audio_collection_item *&in_audio_item)
 
 void Audio_collection_model::concurrent_read_collection_from_db()
 {
-    // Just be sure DB is init.
+    // Just be sure DB was init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     if (data_persist->is_initialized == true)
     {
         // Read audio item from database for the whole collection.
-        QFuture<void> future = QtConcurrent::map(this->audio_item_list, &read_from_db);
+        QFuture<void> future = QtConcurrent::map(this->audio_item_list, &external_read_from_db);
         this->concurrent_watcher_read->setFuture(future);
     }
 }
 
+void external_analyze_audio_collection(Audio_collection_item *&in_audio_item)
+{
+    // Only a wrapper to analyze and store data of a audio item object.
+    in_audio_item->compute_and_store_to_db();
+}
+
 void Audio_collection_model::concurrent_analyse_audio_collection()
 {
-    // Run store_collection_to_db() in a separate thread.
-    if ((this->concurrent_watcher_read->isRunning()  == false) &&
-        (this->concurrent_watcher_store->isRunning() == false))
-    {
-        *this->concurrent_future = QtConcurrent::run(this, &Audio_collection_model::analyze_audio_collection);
-        this->concurrent_watcher_store->setFuture(*this->concurrent_future);
-    }
-}
-
-void Audio_collection_model::analyze_audio_collection()
-{
-    // Calculate things on audio collection (music key, etc...)
-    this->calculate_audio_collection_data();
-
-    // Store audio collection to DB.
-    this->store_collection_to_db();
-}
-
-void Audio_collection_model::calculate_audio_collection_data()
-{
-    // Iterate over internal list of audio items (only files, no directories).
-    foreach (Audio_collection_item *item, this->audio_item_list)
-    {
-        // Calculate data and put them back in audio item.
-        item->set_data(COLUMN_KEY, "A1"); // TODO: calculate audio data.
-    }
-}
-
-void Audio_collection_model::store_collection_to_db()
-{
-    // Init.
+    // Just be sure DB was init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track      *at           = new Audio_track();
-
-    // Iterate over internal list of audio items (only files, no directories).
-    foreach (Audio_collection_item *item, this->audio_item_list)
+    if (data_persist->is_initialized == true)
     {
-        // Get a hash, set audio data to an Audio_track and persist it.
-        at->reset();
-        at->set_hash(item->get_file_hash());
-        at->set_fullpath(item->get_full_path());
-        at->set_music_key(item->get_data(COLUMN_KEY).toString());
-        if (data_persist->store_audio_track(at) == false)
+        // Do not do anything if we are still reading collection from DB.
+        if ((this->concurrent_watcher_read->isRunning()  == false) &&
+            (this->concurrent_watcher_store->isRunning() == false))
         {
-            qWarning() << "Audio_collection_model::store_collection_to_db: can not store " << item->get_full_path() << " to DB";
+            // Analyze item and store to DB (for the whole collection).
+            QFuture<void> future = QtConcurrent::map(this->audio_item_list, &external_analyze_audio_collection);
+            this->concurrent_watcher_store->setFuture(future);
         }
     }
-
-    // Cleanup.
-    delete at;
 }
+

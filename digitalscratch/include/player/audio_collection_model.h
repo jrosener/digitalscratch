@@ -79,8 +79,13 @@ class Audio_collection_item
     QString                get_file_hash();
 
     void                   read_from_db();
+    void                   compute_and_store_to_db();
 
     bool                   is_directory();
+
+ private:
+    void calculate_audio_data();     // Compute music key, bpm, etc...
+    void store_to_db();              // Persist to DB.
 };
 
 class Audio_collection_model : public QAbstractItemModel
@@ -114,11 +119,7 @@ class Audio_collection_model : public QAbstractItemModel
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
     void concurrent_read_collection_from_db();  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
-
-    void concurrent_analyse_audio_collection(); // Call analyze_audio_collection in separate thread.
-    void analyze_audio_collection();            // Call calculate_audio_collection_data() and store_collection_to_db().
-    void calculate_audio_collection_data();     // Compute music key, etc...
-    void store_collection_to_db();              // Persist audio collection to DB.
+    void concurrent_analyse_audio_collection(); // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);
