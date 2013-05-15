@@ -96,7 +96,7 @@ bool Data_persistence::init_db()
         {
             return false;
         }
-    }
+    }    
 
     // Create DB structure if needed.
     if (this->create_db_structure() == false)
@@ -165,87 +165,48 @@ void Data_persistence::close_db()
 
 bool Data_persistence::begin_transaction()
 {
-    qDebug() << "Data_persistence::begin_transaction...";
-
-    if (this->db.isOpen() == true)
-    {
-        // Begin transaction.
-        return this->db.transaction();
-    }
-    else
-    {
-        // Db not open.
-        qWarning() << "Can not begin transaction: db not open";
-        return false;
-    }
-
-    qDebug() << "Data_persistence::begin_transaction done.";
+    return this->db.transaction();
 }
 
 bool Data_persistence::commit_transaction()
 {
-    qDebug() << "Data_persistence::commit_transaction...";
-
-    if (this->db.isOpen() == true)
-    {
-        // Commit transaction.
-        return this->db.commit();
-    }
-    else
-    {
-        // Db not open.
-        qWarning() << "Can not begin commit_transaction: db not open";
-        return false;
-    }
-
-    qDebug() << "Data_persistence::begin_transaction done.";
+    return this->db.commit();
 }
 
 bool Data_persistence::rollback_transaction()
 {
-    qDebug() << "Data_persistence::rollback_transaction...";
-
-    if (this->db.isOpen() == true)
-    {
-        // Rollback transaction.
-        return this->db.rollback();
-    }
-    else
-    {
-        // Db not open.
-        qWarning() << "Can not begin rollback_transaction: db not open";
-        return false;
-    }
-
-    qDebug() << "Data_persistence::begin_transaction done.";
+    return this->db.rollback();
 }
 
 bool Data_persistence::store_audio_track(Audio_track *in_at)
 {
+    // Init result.
+    bool result = true;
+
     qDebug() << "Data_persistence::store_audio_track...";
 
     // Check input parameter.
     if ((in_at == NULL) ||
        (in_at->get_hash().size() == 0))
     {
-        return false;
+        result = false;
     }
 
     // Insert or update main data of the audio track (identified by the hash).
-    if (this->db.isOpen() == true)
+    if ((result == true) &&
+        (this->is_initialized == true))
     {
-        // Start transaction.
-        this->db.transaction();
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
 
         // Try to get audio track from Db.
         QSqlQuery query = this->db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qWarning() << "SELECT track failed: " << query.lastError().text();
-            this->db.rollback();
-            return false;
+            result = false;
         }
-        if (query.next() == true) // Check if there is a record.
+        else if (query.next() == true) // Check if there is a record.
         {
             // An audio track with same hash already exists, update it if at least one element changed.
             if ((query.value(1) != in_at->get_path()) ||
@@ -266,8 +227,7 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
                 if (query.lastError().isValid())
                 {
                     qWarning() << "UPDATE track failed: " << query.lastError().text();
-                    this->db.rollback();
-                    return false;
+                    result = false;
                 }
             }
         }
@@ -286,28 +246,30 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
             if (query.lastError().isValid())
             {
                 qWarning() << "INSERT track failed: " << query.lastError().text();
-                this->db.rollback();
-                return false;
+                result = false;
             }
         }
 
-        // Commit transaction.
-        this->db.commit();
+        // Release the DB connection.
+        this->mutex.unlock();
     }
     else
     {
         // Db not open.
         qWarning() << "Can not store audio track: db not open";
-        return false;
+        result = false;
     }
 
     qDebug() << "Data_persistence::store_audio_track done.";
 
-    return true;
+    return result;
 }
 
 bool Data_persistence::get_audio_track(Audio_track *in_at)
 {
+    // Init result.
+    bool result = true;
+
     qDebug() << "Data_persistence::get_audio_track...";
 
     // Check input parameter.
@@ -315,30 +277,40 @@ bool Data_persistence::get_audio_track(Audio_track *in_at)
         (in_at->get_hash().size() == 0))
     {
         qWarning() << "Can not get audio track: hash not specified.";
-        return false;
+        result = false;
     }
 
     // Search the audio track (based on its hash) in DB.
-    QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
-    if (query.lastError().isValid())
+    if ((result == true) &&
+        (this->is_initialized == true))
     {
-        qWarning() << "SELECT track failed: " << query.lastError().text();
-        return false;
-    }
-    if (query.next() == true) // Check if there is a record.
-    {
-        // The audio track exists, fill the returned object.
-        in_at->set_music_key(query.value(0).toString());
-        in_at->set_music_key_tag(query.value(1).toString());
-        in_at->set_fullpath(query.value(2).toString() + "/" + query.value(3).toString());
-    }
-    else
-    {
-        // Audio track not found.
-        return false;
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        if (query.lastError().isValid())
+        {
+            qWarning() << "SELECT track failed: " << query.lastError().text();
+            result = false;
+        }
+        else if (query.next() == true) // Check if there is a record.
+        {
+            // The audio track exists, fill the returned object.
+            in_at->set_music_key(query.value(0).toString());
+            in_at->set_music_key_tag(query.value(1).toString());
+            in_at->set_fullpath(query.value(2).toString() + "/" + query.value(3).toString());
+        }
+        else
+        {
+            // Audio track not found.
+            result = false;
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
     }
 
     qDebug() << "Data_persistence::get_audio_track done.";
 
-    return true;
+    return result;
 }

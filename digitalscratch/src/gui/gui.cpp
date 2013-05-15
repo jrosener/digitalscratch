@@ -839,10 +839,16 @@ Gui::create_main_window()
     this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
+
+    // Create progress bar for the refresh button.
     this->refresh_file_browser_progress= new QProgressBar();
     this->refresh_file_browser_progress->hide();
     this->refresh_file_browser_progress->setFixedSize(20, 4);
     this->refresh_file_browser_progress->setTextVisible(false);
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
+                     this->refresh_file_browser_progress,               SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
+                     this->refresh_file_browser_progress,               SLOT(setValue(int)));
 
     QWidget *file_browser_buttons_widget = new QWidget();
     QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
@@ -1224,19 +1230,23 @@ Gui::sync_file_browser_to_audio_collection()
 void
 Gui::on_file_browser_refresh_button_click()
 {
+    // Show progress bar and check progress button.
     this->refresh_file_browser_progress->setVisible(true);
     this->refresh_file_browser->setEnabled(false);
-    this->refresh_file_browser_progress->setMaximum(0);
-    this->refresh_file_browser_progress->setMinimum(0);
+
+    // Compute data on file collection and store them to DB.
     this->file_system_model->concurrent_analyse_audio_collection();
 }
 
 void
 Gui::on_finished_analyze_audio_collection()
 {
+    // Refresh file browser.
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->refresh_file_browser->setEnabled(true);
     this->refresh_file_browser->setChecked(false);
+
+    // Hide progress bar.
     this->refresh_file_browser_progress->setVisible(false);
 }
 

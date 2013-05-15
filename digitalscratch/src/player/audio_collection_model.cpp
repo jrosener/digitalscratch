@@ -432,6 +432,23 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
     }
 }
 
+void Audio_collection_model::begin_db_change()
+{
+    // Start DB transaction.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    data_persist->begin_transaction();
+}
+
+void Audio_collection_model::commit_db_change()
+{
+    // Commit DB transaction.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    if (data_persist->commit_transaction() == false)
+    {
+        qWarning() << "Audio_collection_model::commit_db_change: can not commit DB transaction";
+    }
+}
+
 void external_read_from_db(Audio_collection_item *&in_audio_item)
 {
     // Only a wrapper to get data from DB for an audio item object.

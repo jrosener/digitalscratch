@@ -37,6 +37,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <audio_track.h>
+#include <QMutex>
 
 using namespace std;
 
@@ -53,6 +54,7 @@ class Data_persistence : public QObject
 
  private:
     QSqlDatabase db;
+    QMutex       mutex;
 
  public:
     bool begin_transaction();
