@@ -78,6 +78,8 @@ class Audio_collection_item
     QString                get_full_path();
     QString                get_file_hash();
 
+    void                   read_from_db();
+
     bool                   is_directory();
 };
 
@@ -111,8 +113,7 @@ class Audio_collection_model : public QAbstractItemModel
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
-    void concurrent_read_collection_from_db();  // Call read_collection_from_db() in separate thread.
-    void read_collection_from_db();
+    void concurrent_read_collection_from_db();  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
 
     void concurrent_analyse_audio_collection(); // Call analyze_audio_collection in separate thread.
     void analyze_audio_collection();            // Call calculate_audio_collection_data() and store_collection_to_db().
