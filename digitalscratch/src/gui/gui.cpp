@@ -860,7 +860,7 @@ Gui::create_main_window()
     QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
                      this->refresh_file_browser_progress,               SLOT(setRange(int,int)));
     QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
-                     this->refresh_file_browser_progress,               SLOT(setValue(int)));
+                     this,                                              SLOT(update_refresh_progress_value(int)));
 
     QWidget *file_browser_buttons_widget = new QWidget();
     QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
@@ -1270,6 +1270,13 @@ Gui::on_finished_analyze_audio_collection()
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->refresh_file_browser->setEnabled(true);
     this->refresh_file_browser->setChecked(false);
+}
+
+void
+Gui::update_refresh_progress_value(int in_value)
+{
+    this->refresh_file_browser_progress->setValue(in_value);
+    this->file_browser->update();
 }
 
 bool

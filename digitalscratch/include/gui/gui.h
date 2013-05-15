@@ -247,6 +247,7 @@ class Gui : QObject
     void sync_file_browser_to_audio_collection();
     void on_file_browser_refresh_button_click();
     void on_finished_analyze_audio_collection();
+    void update_refresh_progress_value(int in_value);
 };
 
 #endif /* GUI_H_ */
