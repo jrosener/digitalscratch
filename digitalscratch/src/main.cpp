@@ -40,6 +40,7 @@
 #include "sound_card_access_rules.h"
 #include "playback_parameters.h"
 #include "timecode_analyzis_process.h"
+#include <QThreadPool>
 #include "sound_capture_and_playback_process.h"
 
 #define MAX_MINUTES_TRACK   15 // Maximum number of minutes for an audio track
@@ -82,6 +83,13 @@ int main(int argc, char *argv[])
 
     // Used for file path as UTF8.
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // FIXME: Should be probably removed in Qt5.
+
+    // Set max number of simultaneous threads.
+#ifdef WIN32
+    QThreadPool::globalInstance()->setMaxThreadCount(1);
+#elif
+    QThreadPool::globalInstance()->setMaxThreadCount(QThreadPool::globalInstance()->maxThreadCount() - 1);
+#endif
 
     // Application settings management.
     Application_settings *settings = new Application_settings();

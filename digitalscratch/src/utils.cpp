@@ -125,6 +125,7 @@ QString Utils::get_file_music_key(QString in_path)
     // Cleanup.
     delete dec;
     delete at;
+    delete key_proc;
     
     // Return result.
     return result;

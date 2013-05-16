@@ -473,6 +473,14 @@ void external_analyze_audio_collection(Audio_collection_item *&in_audio_item)
     in_audio_item->compute_and_store_to_db();
 }
 
+void Audio_collection_model::analyse_audio_collection()
+{
+    foreach (Audio_collection_item* item, this->audio_item_list)
+    {
+        item->compute_and_store_to_db();
+    }
+}
+
 void Audio_collection_model::concurrent_analyse_audio_collection()
 {
     // Just be sure DB was init.
@@ -486,6 +494,8 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
             // Analyze item and store to DB (for the whole collection).
             QFuture<void> future = QtConcurrent::map(this->audio_item_list, &external_analyze_audio_collection);
             this->concurrent_watcher_store->setFuture(future);
+
+            //QFuture<void> future = QtConcurrent::run(this, &Audio_collection_model::analyse_audio_collection);
         }
     }
 }

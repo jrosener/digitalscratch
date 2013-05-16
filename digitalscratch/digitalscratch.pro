@@ -191,8 +191,7 @@ win32 {
         $${PWD}/win-external/samplerate-0.1.8/lib/libsamplerate-0.dll \
         $${PWD}/win-external/jack-1.9.9/lib/libjack.dll \
         $${PWD}/win-external/libkeyfinder/lib/keyfinder0.dll \
-        $${PWD}/win-external/libkeyfinder/lib/libfftw3-3.dll \
-        $${PWD}/win-external/libkeyfinder/lib/boost_system-vc100-mt-1_51.dll
+        $${PWD}/win-external/libkeyfinder/lib/libfftw3-3.dll
     DESTDIR_WIN = $${DESTDIR}
     CONFIG(debug, debug|release) {
         DESTDIR_WIN += debug
