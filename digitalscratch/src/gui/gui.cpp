@@ -1244,6 +1244,11 @@ Gui::on_file_browser_refresh_button_click()
 {
     if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
     {
+        // Analyzis not running, show a popup asking for a full refresh or only for new files.
+        // TODO
+        // Store result in application settings. => should be a singleton.
+
+
         // Show progress bar and check progress button.
         this->refresh_file_browser_progress->setVisible(true);
         //this->refresh_file_browser->setEnabled(false);

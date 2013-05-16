@@ -43,6 +43,7 @@
 #include <singleton.h>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
+#include <application_settings.h>
 
 Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
                                              QString                in_file_hash,
@@ -469,16 +470,8 @@ void Audio_collection_model::concurrent_read_collection_from_db()
 
 void external_analyze_audio_collection(Audio_collection_item *&in_audio_item)
 {
-    // Only a wrapper to analyze and store data of a audio item object.
+    // Only a wrapper to analyze and store data of an audio item object.
     in_audio_item->compute_and_store_to_db();
-}
-
-void Audio_collection_model::analyse_audio_collection()
-{
-    foreach (Audio_collection_item* item, this->audio_item_list)
-    {
-        item->compute_and_store_to_db();
-    }
 }
 
 void Audio_collection_model::concurrent_analyse_audio_collection()
@@ -494,8 +487,6 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
             // Analyze item and store to DB (for the whole collection).
             QFuture<void> future = QtConcurrent::map(this->audio_item_list, &external_analyze_audio_collection);
             this->concurrent_watcher_store->setFuture(future);
-
-            //QFuture<void> future = QtConcurrent::run(this, &Audio_collection_model::analyse_audio_collection);
         }
     }
 }

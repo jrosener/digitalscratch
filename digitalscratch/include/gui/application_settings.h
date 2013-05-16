@@ -92,6 +92,7 @@ class Application_settings : public QObject
     QSettings      *settings;
     QList<QString> *available_gui_styles;
     QList<QString> *available_vinyl_types;
+    bool            audio_collection_full_refresh;
 
  public:
     Application_settings();
@@ -146,6 +147,10 @@ class Application_settings : public QObject
 
     void    set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);
+
+    // Runtime settings (not stored in preference file).
+    void set_audio_collection_full_refresh(bool in_full_refresh);
+    bool get_audio_collection_full_refresh();
 
  private:
     void init_settings();

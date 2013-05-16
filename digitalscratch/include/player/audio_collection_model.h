@@ -129,7 +129,6 @@ class Audio_collection_model : public QAbstractItemModel
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);
     void create_header();
-    void analyse_audio_collection();
 };
 
 #endif /* AUDIO_COLLECTION_MODEL_H_ */

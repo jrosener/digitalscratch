@@ -48,6 +48,8 @@ Application_settings::Application_settings()
     this->available_vinyl_types->append(SERATO_VINYL);
     this->available_vinyl_types->append(MIXVIBES_VINYL);
 
+    this->audio_collection_full_refresh = true;
+
     this->init_settings();
 }
 
@@ -424,3 +426,14 @@ Application_settings::get_available_vinyl_types()
     return this->available_vinyl_types;
 }
 
+void
+Application_settings::set_audio_collection_full_refresh(bool in_full_refresh)
+{
+    this->audio_collection_full_refresh = in_full_refresh;
+}
+
+bool
+Application_settings::get_audio_collection_full_refresh()
+{
+    return this->audio_collection_full_refresh;
+}
