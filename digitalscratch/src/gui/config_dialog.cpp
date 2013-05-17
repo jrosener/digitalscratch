@@ -44,11 +44,11 @@
 #include "config_dialog.h"
 #include <digital_scratch_api.h>
 #include <iostream>
+#include <singleton.h>
 
-Config_dialog::Config_dialog(QWidget              *parent,
-                             Application_settings *in_settings) : QDialog(parent)
+Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
 {
-    this->settings = in_settings;
+    this->settings = &Singleton<Application_settings>::get_instance();
 
     // Init player parameters widgets.
     this->base_dir_path    = new QLineEdit(this);

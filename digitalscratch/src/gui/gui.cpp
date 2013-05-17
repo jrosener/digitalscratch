@@ -56,9 +56,9 @@
 #include "digital_scratch_api.h"
 #include "audio_collection_model.h"
 #include "utils.h"
+#include "singleton.h"
 
-Gui::Gui(Application_settings           *in_settings,
-         Audio_track                    *in_at_1,
+Gui::Gui(Audio_track                    *in_at_1,
          Audio_track                    *in_at_2,
          Audio_track                  ***in_at_samplers,
          unsigned short int              in_nb_samplers,
@@ -77,8 +77,7 @@ Gui::Gui(Application_settings           *in_settings,
     // Set attributes.
     this->window_style = GUI_STYLE_DEFAULT;
     this->window       = new QWidget;
-    if (in_settings      == NULL ||
-        in_at_1          == NULL ||
+    if (in_at_1          == NULL ||
         in_at_2          == NULL ||
         in_at_samplers   == NULL ||
         in_dec_1         == NULL ||
@@ -94,7 +93,7 @@ Gui::Gui(Application_settings           *in_settings,
     }
     else
     {
-        this->settings       = in_settings;
+        this->settings       = &Singleton<Application_settings>::get_instance();
         this->at_1           = in_at_1;
         this->at_2           = in_at_2;
         this->at_1_samplers  = in_at_samplers[0];
@@ -273,8 +272,7 @@ Gui::show_config_window()
     {
         delete this->config_dialog;
     }
-    this->config_dialog = new Config_dialog(this->window,
-                                     this->settings);
+    this->config_dialog = new Config_dialog(this->window);
 
     // Apply application settings if dialog is closed by OK.
     if (this->config_dialog->show() == QDialog::Accepted)
@@ -1251,7 +1249,6 @@ Gui::on_file_browser_refresh_button_click()
 
         // Show progress bar and check progress button.
         this->refresh_file_browser_progress->setVisible(true);
-        //this->refresh_file_browser->setEnabled(false);
         this->refresh_file_browser->setChecked(true);
 
         // Compute data on file collection and store them to DB.

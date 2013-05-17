@@ -157,8 +157,7 @@ class Gui : QObject
     QProgressBar                  *refresh_file_browser_progress;
 
  public:
-    Gui(Application_settings           *in_settings,
-        Audio_track                    *in_at_1,
+    Gui(Audio_track                    *in_at_1,
         Audio_track                    *in_at_2,
         Audio_track                  ***in_at_samplers,
         unsigned short int              in_nb_samplers,

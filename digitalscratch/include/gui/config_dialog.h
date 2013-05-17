@@ -110,8 +110,7 @@ class Config_dialog : public QDialog
     Application_settings *settings;
 
  public:
-    Config_dialog(QWidget              *parent,
-                  Application_settings *in_settings);
+    Config_dialog(QWidget *parent);
     virtual ~Config_dialog();
     int show();
 

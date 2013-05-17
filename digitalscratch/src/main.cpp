@@ -42,6 +42,7 @@
 #include "timecode_analyzis_process.h"
 #include <QThreadPool>
 #include "sound_capture_and_playback_process.h"
+#include <singleton.h>
 
 #define MAX_MINUTES_TRACK   15 // Maximum number of minutes for an audio track
 #define MAX_MINUTES_SAMPLER 1  // Maximum number of minutes for a sample in the sampler
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
 #endif
 
     // Application settings management.
-    Application_settings *settings = new Application_settings();
+    Application_settings *settings = &Singleton<Application_settings>::get_instance();
 
     // Tracks.
     Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK);
@@ -173,8 +174,7 @@ int main(int argc, char *argv[])
     Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_analyzis, playback, sound_card);
 
     // Create GUI.
-    Gui *gui = new Gui(settings,
-                       at_1, at_2,
+    Gui *gui = new Gui(at_1, at_2,
                        at_samplers, 4,
                        dec_1, dec_2,
                        dec_samplers,
@@ -209,7 +209,6 @@ int main(int argc, char *argv[])
     delete at_1;
     delete at_2;
     delete[] dscratch_ids;
-    delete settings;
 
     return 0;
 }
