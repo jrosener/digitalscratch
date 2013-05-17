@@ -149,11 +149,18 @@ void Audio_collection_item::read_from_db()
 
 void Audio_collection_item::compute_and_store_to_db()
 {
-    // Calculate things (music key, bpm, etc...)
-    this->calculate_audio_data();
+    Application_settings *settings = &Singleton<Application_settings>::get_instance();
 
-    // Store audio collection to DB.
-    this->store_to_db();
+    // Check in application settings if we should analyze only files with missing data.
+    if ((settings->get_audio_collection_full_refresh() == true) ||
+        ((settings->get_audio_collection_full_refresh() == false) && (this->get_data(COLUMN_KEY) == "")))
+    {
+        // Calculate things (music key, bpm, etc...)
+        this->calculate_audio_data();
+
+        // Store audio collection to DB.
+        this->store_to_db();
+    }
 }
 
 void Audio_collection_item::calculate_audio_data()
