@@ -364,15 +364,25 @@ Gui::reject_refresh_audio_collection_dialog()
 {
     qDebug() << "Gui::reject_refresh_audio_collection_dialog...";
 
+    this->refresh_file_browser->setEnabled(true);
+    this->refresh_file_browser->setChecked(false);
+
+    qDebug() << "Gui::reject_refresh_audio_collection_dialog done.";
+
+    return;
+}
+
+void
+Gui::close_refresh_audio_collection_dialog()
+{
+    qDebug() << "Gui::close_refresh_audio_collection_dialog...";
+
     if (this->refresh_audio_collection_dialog != NULL)
     {
         this->refresh_audio_collection_dialog->done(QDialog::Rejected);
     }
 
-    this->refresh_file_browser->setEnabled(true);
-    this->refresh_file_browser->setChecked(false);
-
-    qDebug() << "Gui::reject_refresh_audio_collection_dialog done.";
+    qDebug() << "Gui::close_refresh_audio_collection_dialog done.";
 
     return;
 }
@@ -462,7 +472,8 @@ Gui::show_refresh_audio_collection_dialog()
 
         // Close/cancel button.
         QDialogButtonBox *cancel_button = new QDialogButtonBox(QDialogButtonBox::Cancel);
-        QObject::connect(cancel_button, SIGNAL(rejected()), this, SLOT(reject_refresh_audio_collection_dialog()));
+        QObject::connect(cancel_button, SIGNAL(rejected()), this, SLOT(close_refresh_audio_collection_dialog()));
+        QObject::connect(this->refresh_audio_collection_dialog, SIGNAL(rejected()), this, SLOT(reject_refresh_audio_collection_dialog()));
 
         // Full dialog layout.
         QVBoxLayout *layout = new QVBoxLayout(this->refresh_audio_collection_dialog);

@@ -201,6 +201,7 @@ class Gui : QObject
     void done_about_window();
     bool show_refresh_audio_collection_dialog();
     void reject_refresh_audio_collection_dialog();
+    void close_refresh_audio_collection_dialog();
     void accept_refresh_audio_collection_dialog_all_files();
     void accept_refresh_audio_collection_dialog_new_files();
     bool show_error_window(QString in_error_message);
