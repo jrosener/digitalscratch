@@ -678,17 +678,20 @@ Gui::create_main_window()
 
     // Create configuration button.
     QPushButton *config_button = new QPushButton("   " + tr("&Settings"));
+    config_button->setToolTip(tr("Change application settings..."));
     config_button->setObjectName("Configuration_button");
     config_button->setFocusPolicy(Qt::NoFocus);
 
 
     // Create button to set full screen.
     QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
+    fullscreen_button->setToolTip(tr("Toggle fullscreen mode"));
     fullscreen_button->setObjectName("Fullscreen_button");
     fullscreen_button->setFocusPolicy(Qt::NoFocus);
 
     // Create DigitalScratch logo.
     QPushButton *logo = new QPushButton();
+    logo->setToolTip(tr("About DigitalScratch..."));
     logo->setObjectName("Logo");
     logo->setIcon(QIcon(LOGO));
     logo->setIconSize(QSize(112, 35));
@@ -699,11 +702,13 @@ Gui::create_main_window()
 
     // Create help button.
     QPushButton *help_button = new QPushButton("   " + tr("&Help"));
+    help_button->setToolTip(tr("Show/hide keyboard shortcuts"));
     help_button->setObjectName("Help_button");
     help_button->setFocusPolicy(Qt::NoFocus);
 
     // Create quit button.
     QPushButton *quit_button = new QPushButton("   " + tr("&Exit"));
+    quit_button->setToolTip(tr("Exit DigitalScratch"));
     quit_button->setObjectName("Quit_button");
     quit_button->setFocusPolicy(Qt::NoFocus);
 
@@ -1014,6 +1019,7 @@ Gui::create_main_window()
     // Create function buttons for file browser.
     this->refresh_file_browser = new QPushButton();
     this->refresh_file_browser->setObjectName("Refresh_browser_button");
+    this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
     this->refresh_file_browser->setIconSize(QSize(12, 12));
     this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
