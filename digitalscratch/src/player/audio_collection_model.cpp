@@ -498,3 +498,22 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
     }
 }
 
+int Audio_collection_model::get_nb_items()
+{
+    return this->audio_item_list.length();
+}
+
+int Audio_collection_model::get_nb_new_items()
+{
+    int nb_items = 0;
+    foreach (Audio_collection_item *item, this->audio_item_list)
+    {
+        if (item->get_data(COLUMN_KEY) == "")
+        {
+            // This file does not have been analyzed, let's consider it as a new one.
+            nb_items++;
+        }
+    }
+
+    return nb_items;
+}

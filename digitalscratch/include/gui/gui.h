@@ -113,6 +113,7 @@ class Gui : QObject
     QString                        window_style;
     QTreeView                     *file_browser;
     QDialog                       *about_dialog;
+    QDialog                       *refresh_audio_collection_dialog;
     QDialog                       *error_dialog;
     Audio_track                   *at_1;
     Audio_track                   *at_2;
@@ -190,6 +191,7 @@ class Gui : QObject
                                                bool               switch_on);
     void    resize_file_browser_columns();
     QString get_stylesheet_css();
+    void    analyze_audio_collection(bool is_all_files);
 
  private slots:
     bool show_config_window();
@@ -197,6 +199,10 @@ class Gui : QObject
     void show_help();
     bool show_about_window();
     void done_about_window();
+    bool show_refresh_audio_collection_dialog();
+    void reject_refresh_audio_collection_dialog();
+    void accept_refresh_audio_collection_dialog_all_files();
+    void accept_refresh_audio_collection_dialog_new_files();
     bool show_error_window(QString in_error_message);
     void done_error_window();
     void run_audio_file_decoding_process();
@@ -244,7 +250,6 @@ class Gui : QObject
     void can_close();
     void on_file_browser_expand_collapse(QModelIndex);
     void sync_file_browser_to_audio_collection();
-    void on_file_browser_refresh_button_click();
     void on_finished_analyze_audio_collection();
     void update_refresh_progress_value(int in_value);
 };

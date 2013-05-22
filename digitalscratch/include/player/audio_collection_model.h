@@ -122,6 +122,8 @@ class Audio_collection_model : public QAbstractItemModel
     void commit_db_change();                    // Commit a DB transaction.
     void concurrent_read_collection_from_db();  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
     void concurrent_analyse_audio_collection(); // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
+    int  get_nb_items();                        // Get number of files.
+    int  get_nb_new_items();                    // Get number of new files (i.e. files with missing data such as music key).
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);

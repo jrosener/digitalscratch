@@ -51,6 +51,8 @@
 #include <QSignalMapper>
 #include <QMessageBox>
 #include <QApplication>
+#include <QPushButton>
+#include <QCommandLinkButton>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -122,8 +124,10 @@ Gui::Gui(Audio_track                    *in_at_1,
     this->decks_remaining_time[0] = new Remaining_time();
     this->decks_remaining_time[1] = new Remaining_time();
 
-    // Init config dialog.
+    // Init dialogs.
     this->config_dialog = NULL;
+    this->refresh_audio_collection_dialog = NULL;
+    this->about_dialog = NULL;
 
     // Init shortcuts.
     this->shortcut_switch_playback    = new QShortcut(this->window);
@@ -321,6 +325,171 @@ Gui::show_help()
     }
 
     qDebug() << "Gui::show_help done.";
+}
+
+void
+Gui::analyze_audio_collection(bool is_all_files)
+{
+    // Analyzis not running, show a popup asking for a full refresh or only for new files.
+    this->settings->set_audio_collection_full_refresh(is_all_files);
+
+    // Show progress bar.
+    this->refresh_file_browser_progress->setVisible(true);
+
+    // Compute data on file collection and store them to DB.
+    this->file_system_model->concurrent_analyse_audio_collection();
+}
+
+void
+Gui::update_refresh_progress_value(int in_value)
+{
+    this->refresh_file_browser_progress->setValue(in_value);
+    this->file_browser->update();
+}
+
+void
+Gui::on_finished_analyze_audio_collection()
+{
+    // Hide progress bar.
+    this->refresh_file_browser_progress->setVisible(false);
+
+    // Refresh file browser.
+    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
+    this->refresh_file_browser->setEnabled(true);
+    this->refresh_file_browser->setChecked(false);
+}
+
+void
+Gui::reject_refresh_audio_collection_dialog()
+{
+    qDebug() << "Gui::reject_refresh_audio_collection_dialog...";
+
+    if (this->refresh_audio_collection_dialog != NULL)
+    {
+        this->refresh_audio_collection_dialog->done(QDialog::Rejected);
+    }
+
+    this->refresh_file_browser->setEnabled(true);
+    this->refresh_file_browser->setChecked(false);
+
+    qDebug() << "Gui::reject_refresh_audio_collection_dialog done.";
+
+    return;
+}
+
+void
+Gui::accept_refresh_audio_collection_dialog_all_files()
+{
+    qDebug() << "Gui::accept_refresh_audio_collection_dialog_all_files...";
+
+    // Analyze all files of audio collection.
+    this->analyze_audio_collection(true);
+
+    if (this->refresh_audio_collection_dialog != NULL)
+    {
+        this->refresh_audio_collection_dialog->done(QDialog::Accepted);
+    }
+
+    qDebug() << "Gui::accept_refresh_audio_collection_dialog_all_files done.";
+
+    return;
+}
+
+void
+Gui::accept_refresh_audio_collection_dialog_new_files()
+{
+    qDebug() << "Gui::accept_refresh_audio_collection_dialog_new_files...";
+
+    // Analyze all files of audio collection.
+    this->analyze_audio_collection(false);
+
+    if (this->refresh_audio_collection_dialog != NULL)
+    {
+        this->refresh_audio_collection_dialog->done(QDialog::Accepted);
+    }
+
+    qDebug() << "Gui::accept_refresh_audio_collection_dialog_new_files done.";
+
+    return;
+}
+
+bool
+Gui::show_refresh_audio_collection_dialog()
+{
+    qDebug() << "Gui::show_refresh_audio_collection_dialog...";
+
+    // Show dialog only if there is no other analyzis process running.
+    if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
+    {
+        // Create the dialog object.
+        if (this->refresh_audio_collection_dialog != NULL)
+        {
+            delete this->refresh_audio_collection_dialog;
+        }
+        this->refresh_audio_collection_dialog = new QDialog(this->window);
+
+        // Set properties : title, icon.
+        this->refresh_audio_collection_dialog->setWindowTitle(tr("Refresh audio collection"));
+        if (this->nb_decks > 1)
+        {
+            this->refresh_audio_collection_dialog->setWindowIcon(QIcon(ICON_2));
+        }
+        else
+        {
+            this->refresh_audio_collection_dialog->setWindowIcon(QIcon(ICON));
+        }
+
+        // Main question.
+        QLabel *main_question = new QLabel("<h3>" + tr("There are 2 possibilities to analyze the audio collection.") + "</h3>"
+                                           + "<p>" + tr("Click the choice you would like") + "</p>",
+                                           this->refresh_audio_collection_dialog);
+
+
+        // Choice 1: => All files.
+        QCommandLinkButton *choice_all_files_button = new QCommandLinkButton(tr("All files."),
+                                                                             tr("Analyze full audio collection") + " (" + QString::number(this->file_system_model->get_nb_items()) + " " + tr("elements") + ")",
+                                                                             this->refresh_audio_collection_dialog);
+        QObject::connect(choice_all_files_button, SIGNAL(clicked()),
+                         this, SLOT(accept_refresh_audio_collection_dialog_all_files()));
+
+
+        // Choice 2: => New files.
+        QCommandLinkButton *choice_new_files_button = new QCommandLinkButton(tr("New files."),
+                                                                             tr("Analyze only files with missing data") + " (" + QString::number(this->file_system_model->get_nb_new_items()) + " " + tr("elements") + ")",
+                                                                             this->refresh_audio_collection_dialog);
+        QObject::connect(choice_new_files_button, SIGNAL(clicked()),
+                         this, SLOT(accept_refresh_audio_collection_dialog_new_files()));
+
+        // Close/cancel button.
+        QDialogButtonBox *cancel_button = new QDialogButtonBox(QDialogButtonBox::Cancel);
+        QObject::connect(cancel_button, SIGNAL(rejected()), this, SLOT(reject_refresh_audio_collection_dialog()));
+
+        // Full dialog layout.
+        QVBoxLayout *layout = new QVBoxLayout(this->refresh_audio_collection_dialog);
+        layout->addWidget(main_question);
+        layout->addWidget(choice_all_files_button);
+        layout->addWidget(choice_new_files_button);
+        layout->addWidget(cancel_button);
+
+        // Put layout in dialog.
+        this->refresh_audio_collection_dialog->setLayout(layout);
+        layout->setSizeConstraint(QLayout::SetFixedSize);
+
+        // Show dialog.
+        this->refresh_audio_collection_dialog->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        this->refresh_audio_collection_dialog->adjustSize();
+        this->refresh_audio_collection_dialog->exec();
+    }
+    else
+    {
+        // Analyzis already running. Cancel it.
+        this->file_system_model->concurrent_watcher_store->cancel();
+        this->file_system_model->concurrent_watcher_store->waitForFinished();
+    }
+
+    qDebug() << "Gui::show_refresh_audio_collection_dialog done.";
+
+    return true;
 }
 
 void
@@ -867,7 +1036,7 @@ Gui::create_main_window()
     file_browser_buttons_widget->setFixedHeight(37);
 
     // Connect function buttons.
-    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(on_file_browser_refresh_button_click()));
+    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
 
     // Create layout and group box for file browser.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
@@ -1235,48 +1404,6 @@ Gui::sync_file_browser_to_audio_collection()
     // Reset file browser root node to audio collection model's root.
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->resize_file_browser_columns();
-}
-
-void
-Gui::on_file_browser_refresh_button_click()
-{
-    if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
-    {
-        // Analyzis not running, show a popup asking for a full refresh or only for new files.
-        this->settings->set_audio_collection_full_refresh(false); // TODO get true/false from a user dialog
-
-        // Show progress bar and check progress button.
-        this->refresh_file_browser_progress->setVisible(true);
-        this->refresh_file_browser->setChecked(true);
-
-        // Compute data on file collection and store them to DB.
-        this->file_system_model->concurrent_analyse_audio_collection();
-    }
-    else
-    {
-        // Analyzis already running. Cancel it.
-        this->file_system_model->concurrent_watcher_store->cancel();
-        this->file_system_model->concurrent_watcher_store->waitForFinished();
-    }
-}
-
-void
-Gui::on_finished_analyze_audio_collection()
-{
-    // Hide progress bar.
-    this->refresh_file_browser_progress->setVisible(false);
-
-    // Refresh file browser.
-    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
-    this->refresh_file_browser->setEnabled(true);
-    this->refresh_file_browser->setChecked(false);
-}
-
-void
-Gui::update_refresh_progress_value(int in_value)
-{
-    this->refresh_file_browser_progress->setValue(in_value);
-    this->file_browser->update();
 }
 
 bool
