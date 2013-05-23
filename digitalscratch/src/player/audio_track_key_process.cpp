@@ -34,6 +34,7 @@
 
 #include "audio_track_key_process.h"
 #include "audio_track.h"
+#include "utils.h"
 
 Audio_track_key_process::Audio_track_key_process(Audio_track *in_at)
 {
@@ -79,6 +80,10 @@ Audio_track_key_process::run()
                                   SAMPLE_RATE, 2);
     if (key != "")
     {
+        // Transform music key to a clock number.
+        key = Utils::convert_music_key_to_clock_number(key);
+
+        // Set music key to the audio track.
         this->at->set_music_key(key);
     }
     else

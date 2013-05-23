@@ -49,6 +49,9 @@ class Utils
 
     // Compute music key of an audio file.
     static QString get_file_music_key(QString in_path);
+
+    // Convert music key as clock number.
+    static QString convert_music_key_to_clock_number(QString in_key);
 };
 
 #endif /* UTILS_H_ */

@@ -130,3 +130,34 @@ QString Utils::get_file_music_key(QString in_path)
     // Return result.
     return result;
 }
+
+QString Utils::convert_music_key_to_clock_number(QString in_key)
+{
+    QMap<QString, QString> key_map; // Map music key to clock number.
+    key_map.insert("AM",  "11B");
+    key_map.insert("Am",  "8A");
+    key_map.insert("BbM", "6B");
+    key_map.insert("Bbm", "3A");
+    key_map.insert("BM",  "1B");
+    key_map.insert("Bm",  "10A");
+    key_map.insert("CM",  "8B");
+    key_map.insert("Cm",  "5A");
+    key_map.insert("DbM", "3B");
+    key_map.insert("Dbm", "12A");
+    key_map.insert("DM",  "10B");
+    key_map.insert("Dm",  "7A");
+    key_map.insert("EbM", "5B");
+    key_map.insert("Ebm", "2A");
+    key_map.insert("EM",  "12B");
+    key_map.insert("Em",  "9A");
+    key_map.insert("FM",  "7B");
+    key_map.insert("Fm",  "4A");
+    key_map.insert("GbM", "2B");
+    key_map.insert("Gbm", "11A");
+    key_map.insert("GM",  "9B");
+    key_map.insert("Gm",  "6A");
+    key_map.insert("AbM", "4B");
+    key_map.insert("Abm", "1A");
+
+    return key_map.value(in_key, "");
+}
