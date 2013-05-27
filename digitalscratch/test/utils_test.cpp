@@ -105,7 +105,7 @@ void Utils_Test::testCaseGetFileMusicKey()
     
     // Check keys.
     QVERIFY2(keys.length() == 3, "size of list of keys");
-    QVERIFY2(keys[0] == "Abm", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[0])));
-    QVERIFY2(keys[1] == "Bm",  qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[1])));
-    QVERIFY2(keys[2] == "Abm", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[2])));
+    QVERIFY2(keys[0] == "1A",  qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[0])));
+    QVERIFY2(keys[1] == "10A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[1])));
+    QVERIFY2(keys[2] == "1A",  qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[2])));
 }
