@@ -872,6 +872,7 @@ Gui::create_main_window()
     this->sampler1_trackname     = new QLabel*[this->nb_samplers];
     this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
     QGridLayout *sampler1_layout = new QGridLayout();
+    QString      sampler1_name("A");
     for (int i = 0; i < this->nb_samplers; i++)
     {
         this->sampler1_buttons_play[i] = new QPushButton();
@@ -892,15 +893,20 @@ Gui::create_main_window()
         this->sampler1_trackname[i] = new QLabel(tr("--"));
         this->sampler1_remainingtime[i] = new QLabel("- 00");
 
-        sampler1_layout->addWidget(this->sampler1_buttons_play[i],  i, 0);
-        sampler1_layout->addWidget(this->sampler1_buttons_stop[i],  i, 1);
-        sampler1_layout->addWidget(this->sampler1_remainingtime[i], i, 2);
-        sampler1_layout->addWidget(this->sampler1_trackname[i],     i, 3);
+        QLabel *sampler1_name_label = new QLabel(sampler1_name);
+        sampler1_layout->addWidget(sampler1_name_label,             i, 0);
+        sampler1_layout->addWidget(this->sampler1_buttons_play[i],  i, 1);
+        sampler1_layout->addWidget(this->sampler1_buttons_stop[i],  i, 2);
+        sampler1_layout->addWidget(this->sampler1_remainingtime[i], i, 3);
+        sampler1_layout->addWidget(this->sampler1_trackname[i],     i, 4);
+
+        sampler1_name[0].unicode()++; // Next sampler letter.
     }
     sampler1_layout->setColumnStretch(0, 1);
     sampler1_layout->setColumnStretch(1, 1);
-    sampler1_layout->setColumnStretch(2, 4);
-    sampler1_layout->setColumnStretch(3, 95);
+    sampler1_layout->setColumnStretch(2, 1);
+    sampler1_layout->setColumnStretch(3, 4);
+    sampler1_layout->setColumnStretch(4, 95);
     this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
     this->sampler1_gbox->setObjectName("SamplerGBox");
     this->sampler1_gbox->setLayout(sampler1_layout);
@@ -911,6 +917,7 @@ Gui::create_main_window()
     this->sampler2_trackname     = new QLabel*[this->nb_samplers];
     this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
     QGridLayout *sampler2_layout = new QGridLayout();
+    QString      sampler2_name("A");
     for (int i = 0; i < this->nb_samplers; i++)
     {
         this->sampler2_buttons_play[i] = new QPushButton();
@@ -931,15 +938,20 @@ Gui::create_main_window()
         this->sampler2_trackname[i] = new QLabel(tr("--"));
         this->sampler2_remainingtime[i] = new QLabel("- 00");
 
-        sampler2_layout->addWidget(this->sampler2_buttons_play[i],  i, 0);
-        sampler2_layout->addWidget(this->sampler2_buttons_stop[i],  i, 1);
-        sampler2_layout->addWidget(this->sampler2_remainingtime[i], i, 2);
-        sampler2_layout->addWidget(this->sampler2_trackname[i],     i, 3);
+        QLabel *sampler2_name_label = new QLabel(sampler2_name);
+        sampler2_layout->addWidget(sampler2_name_label,             i, 0);
+        sampler2_layout->addWidget(this->sampler2_buttons_play[i],  i, 1);
+        sampler2_layout->addWidget(this->sampler2_buttons_stop[i],  i, 2);
+        sampler2_layout->addWidget(this->sampler2_remainingtime[i], i, 3);
+        sampler2_layout->addWidget(this->sampler2_trackname[i],     i, 4);
+
+        sampler2_name[0].unicode()++; // Next sampler letter.
     }
     sampler2_layout->setColumnStretch(0, 1);
     sampler2_layout->setColumnStretch(1, 1);
-    sampler2_layout->setColumnStretch(2, 4);
-    sampler2_layout->setColumnStretch(3, 95);
+    sampler2_layout->setColumnStretch(2, 1);
+    sampler2_layout->setColumnStretch(3, 4);
+    sampler2_layout->setColumnStretch(4, 95);
     this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
     this->sampler2_gbox->setObjectName("SamplerGBox");
     this->sampler2_gbox->setLayout(sampler2_layout);
@@ -1031,53 +1043,47 @@ Gui::create_main_window()
     this->refresh_file_browser = new QPushButton();
     this->refresh_file_browser->setObjectName("Refresh_browser_button");
     this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
-    this->refresh_file_browser->setIconSize(QSize(12, 12));
     this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
     QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
 
     this->load_track_on_deck1_button = new QPushButton();
-    this->load_track_on_deck1_button->setObjectName("Load_track_button");
+    this->load_track_on_deck1_button->setObjectName("Load_track_button_1");
     this->load_track_on_deck1_button->setToolTip(tr("Load selected track to deck 1"));
-    this->load_track_on_deck1_button->setIconSize(QSize(12, 12));
     this->load_track_on_deck1_button->setFixedSize(24, 24);
     this->load_track_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->load_track_on_deck1_button->setCheckable(true);
     QObject::connect(this->load_track_on_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
 
     this->load_sample1_1_button = new QPushButton();
-    this->load_sample1_1_button->setObjectName("Load_track_sample_button");
-    this->load_sample1_1_button->setToolTip(tr("Load selected track to sample 1"));
-    this->load_sample1_1_button->setIconSize(QSize(10, 10));
-    this->load_sample1_1_button->setFixedSize(18, 18);
+    this->load_sample1_1_button->setObjectName("Load_track_sample_button_a");
+    this->load_sample1_1_button->setToolTip(tr("Load selected track to sample A"));
+    this->load_sample1_1_button->setFixedSize(20, 20);
     this->load_sample1_1_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_1_button->setCheckable(true);
     QObject::connect(this->load_sample1_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
 
     this->load_sample1_2_button = new QPushButton();
-    this->load_sample1_2_button->setObjectName("Load_track_sample_button");
-    this->load_sample1_2_button->setToolTip(tr("Load selected track to sample 2"));
-    this->load_sample1_2_button->setIconSize(QSize(10, 10));
-    this->load_sample1_2_button->setFixedSize(18, 18);
+    this->load_sample1_2_button->setObjectName("Load_track_sample_button_b");
+    this->load_sample1_2_button->setToolTip(tr("Load selected track to sample B"));
+    this->load_sample1_2_button->setFixedSize(20, 20);
     this->load_sample1_2_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_2_button->setCheckable(true);
     QObject::connect(this->load_sample1_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck1()));
 
     this->load_sample1_3_button = new QPushButton();
-    this->load_sample1_3_button->setObjectName("Load_track_sample_button");
-    this->load_sample1_3_button->setToolTip(tr("Load selected track to sample 3"));
-    this->load_sample1_3_button->setIconSize(QSize(10, 10));
-    this->load_sample1_3_button->setFixedSize(18, 18);
+    this->load_sample1_3_button->setObjectName("Load_track_sample_button_c");
+    this->load_sample1_3_button->setToolTip(tr("Load selected track to sample C"));
+    this->load_sample1_3_button->setFixedSize(20, 20);
     this->load_sample1_3_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_3_button->setCheckable(true);
     QObject::connect(this->load_sample1_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck1()));
 
     this->load_sample1_4_button = new QPushButton();
-    this->load_sample1_4_button->setObjectName("Load_track_sample_button");
-    this->load_sample1_4_button->setToolTip(tr("Load selected track to sample 4"));
-    this->load_sample1_4_button->setIconSize(QSize(10, 10));
-    this->load_sample1_4_button->setFixedSize(18, 18);
+    this->load_sample1_4_button->setObjectName("Load_track_sample_button_d");
+    this->load_sample1_4_button->setToolTip(tr("Load selected track to sample D"));
+    this->load_sample1_4_button->setFixedSize(20, 20);
     this->load_sample1_4_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_4_button->setCheckable(true);
     QObject::connect(this->load_sample1_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
@@ -1085,45 +1091,40 @@ Gui::create_main_window()
     if (this->nb_decks > 1)
     {
         this->load_sample2_1_button = new QPushButton();
-        this->load_sample2_1_button->setObjectName("Load_track_sample_button");
-        this->load_sample2_1_button->setToolTip(tr("Load selected track to sample 1"));
-        this->load_sample2_1_button->setIconSize(QSize(10, 10));
-        this->load_sample2_1_button->setFixedSize(18, 18);
+        this->load_sample2_1_button->setObjectName("Load_track_sample_button_a");
+        this->load_sample2_1_button->setToolTip(tr("Load selected track to sample A"));
+        this->load_sample2_1_button->setFixedSize(20, 20);
         this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_1_button->setCheckable(true);
         QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
 
         this->load_sample2_2_button = new QPushButton();
-        this->load_sample2_2_button->setObjectName("Load_track_sample_button");
-        this->load_sample2_2_button->setToolTip(tr("Load selected track to sample 2"));
-        this->load_sample2_2_button->setIconSize(QSize(10, 10));
-        this->load_sample2_2_button->setFixedSize(18, 18);
+        this->load_sample2_2_button->setObjectName("Load_track_sample_button_b");
+        this->load_sample2_2_button->setToolTip(tr("Load selected track to sample B"));
+        this->load_sample2_2_button->setFixedSize(20, 20);
         this->load_sample2_2_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_2_button->setCheckable(true);
         QObject::connect(this->load_sample2_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
 
         this->load_sample2_3_button = new QPushButton();
-        this->load_sample2_3_button->setObjectName("Load_track_sample_button");
-        this->load_sample2_3_button->setToolTip(tr("Load selected track to sample 3"));
-        this->load_sample2_3_button->setIconSize(QSize(10, 10));
-        this->load_sample2_3_button->setFixedSize(18, 18);
+        this->load_sample2_3_button->setObjectName("Load_track_sample_button_c");
+        this->load_sample2_3_button->setToolTip(tr("Load selected track to sample C"));
+        this->load_sample2_3_button->setFixedSize(20, 20);
         this->load_sample2_3_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_3_button->setCheckable(true);
         QObject::connect(this->load_sample2_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
 
         this->load_sample2_4_button = new QPushButton();
-        this->load_sample2_4_button->setObjectName("Load_track_sample_button");
-        this->load_sample2_4_button->setToolTip(tr("Load selected track to sample 4"));
-        this->load_sample2_4_button->setIconSize(QSize(10, 10));
-        this->load_sample2_4_button->setFixedSize(18, 18);
+        this->load_sample2_4_button->setObjectName("Load_track_sample_button_d");
+        this->load_sample2_4_button->setToolTip(tr("Load selected track to sample D"));
+        this->load_sample2_4_button->setFixedSize(20, 20);
         this->load_sample2_4_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_4_button->setCheckable(true);
         QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
 
         this->load_track_on_deck2_button = new QPushButton();
-        this->load_track_on_deck2_button->setObjectName("Load_track_button");
+        this->load_track_on_deck2_button->setObjectName("Load_track_button_2");
         this->load_track_on_deck2_button->setToolTip(tr("Load selected track to deck 2"));
-        this->load_track_on_deck2_button->setIconSize(QSize(12, 12));
         this->load_track_on_deck2_button->setFixedSize(24, 24);
         this->load_track_on_deck2_button->setFocusPolicy(Qt::NoFocus);
         this->load_track_on_deck2_button->setCheckable(true);
@@ -1142,8 +1143,8 @@ Gui::create_main_window()
 
     QWidget *file_browser_buttons_widget = new QWidget();
     QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
-    QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout(file_browser_buttons_widget);
-    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout(file_browser_buttons_widget);
+    QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
+    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout();
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_3_button);
@@ -1158,12 +1159,12 @@ Gui::create_main_window()
     file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress,  1, 2, Qt::AlignCenter);
     file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 3, Qt::AlignRight);
     file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 4, Qt::AlignRight);
-    file_browser_buttons_widget->setFixedHeight(37);
     file_browser_buttons_layout->setColumnStretch(0, 10);
     file_browser_buttons_layout->setColumnStretch(1, 2);
     file_browser_buttons_layout->setColumnStretch(2, 2);
     file_browser_buttons_layout->setColumnStretch(3, 2);
     file_browser_buttons_layout->setColumnStretch(4, 10);
+    file_browser_buttons_widget->setFixedHeight(37);
 
     // Create layout and group box for file browser.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
@@ -1478,6 +1479,16 @@ Gui::apply_main_window_style()
             this->sampler2_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
+        this->load_track_on_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample1_1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample1_2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample1_3_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample1_4_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_track_on_deck2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample2_1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample2_2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample2_3_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->load_sample2_4_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->file_system_model->set_icons((QApplication::style()->standardIcon(QStyle::SP_FileIcon).pixmap(10, 10)),
                                            (QApplication::style()->standardIcon(QStyle::SP_DirIcon).pixmap(10, 10)));
     }
@@ -1492,6 +1503,16 @@ Gui::apply_main_window_style()
             this->sampler2_buttons_stop[i]->setIcon(QIcon());
         }
         this->refresh_file_browser->setIcon(QIcon());
+        this->load_track_on_deck1_button->setIcon(QIcon());
+        this->load_sample1_1_button->setIcon(QIcon());
+        this->load_sample1_2_button->setIcon(QIcon());
+        this->load_sample1_3_button->setIcon(QIcon());
+        this->load_sample1_4_button->setIcon(QIcon());
+        this->load_track_on_deck2_button->setIcon(QIcon());
+        this->load_sample2_1_button->setIcon(QIcon());
+        this->load_sample2_2_button->setIcon(QIcon());
+        this->load_sample2_3_button->setIcon(QIcon());
+        this->load_sample2_4_button->setIcon(QIcon());
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
         this->file_system_model->set_icons(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation),

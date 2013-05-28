@@ -21,10 +21,18 @@
     <file>pixmaps/dark-stop_white.png</file>
     <file>pixmaps/dark-file_browser_update.png</file>
     <file>pixmaps/dark-file_browser_update_white.png</file>
-    <file>pixmaps/dark-load_file.png</file>
-    <file>pixmaps/dark-load_file_white.png</file>
-    <file>pixmaps/dark-load_sample.png</file>
-    <file>pixmaps/dark-load_sample_white.png</file>
+    <file>pixmaps/dark-load_file_1.png</file>
+    <file>pixmaps/dark-load_file_2.png</file>
+    <file>pixmaps/dark-load_file_white_1.png</file>
+    <file>pixmaps/dark-load_file_white_2.png</file>
+    <file>pixmaps/dark-load_sample_a.png</file>
+    <file>pixmaps/dark-load_sample_b.png</file>
+    <file>pixmaps/dark-load_sample_c.png</file>
+    <file>pixmaps/dark-load_sample_d.png</file>
+    <file>pixmaps/dark-load_sample_white_a.png</file>
+    <file>pixmaps/dark-load_sample_white_b.png</file>
+    <file>pixmaps/dark-load_sample_white_c.png</file>
+    <file>pixmaps/dark-load_sample_white_d.png</file>
     <file>pixmaps/digitalscratch-icon_2decks.png</file>
     <file>pixmaps/digitalscratch-icon.png</file>
     <file>pixmaps/digitalscratch-logo.png</file>

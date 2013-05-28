@@ -348,8 +348,7 @@ QPushButton#Refresh_browser_button
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   height:           24px;
-   width:            24px;
+   padding:          4px;
    image:            url(:/pixmaps/dark-file_browser_update.png);
 }
 QPushButton#Refresh_browser_button:hover
@@ -372,60 +371,172 @@ QPushButton#Refresh_browser_button:checked
    image:            url(:/pixmaps/dark-file_browser_update_white.png);
 }
 
-QPushButton#Load_track_button
+QPushButton#Load_track_button_1
 {
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   height:           24px;
-   width:            24px;
-   image:            url(:/pixmaps/dark-load_file.png);
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_file_1.png);
 }
-QPushButton#Load_track_button:hover
+QPushButton#Load_track_button_1:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-load_file_white.png);
+   image:            url(:/pixmaps/dark-load_file_white_1.png);
 }
-QPushButton#Load_track_button:pressed
+QPushButton#Load_track_button_1:pressed
 {
    color:            black;
    background-color: lightGray;
-   image:            url(:/pixmaps/dark-load_file.png);
+   image:            url(:/pixmaps/dark-load_file_1.png);
 }
-QPushButton#Load_track_button:checked
+QPushButton#Load_track_button_1:checked
 {
    background-color: gray;
    border:           1px solid orange;
-   image:            url(:/pixmaps/dark-load_file_white.png);
+   image:            url(:/pixmaps/dark-load_file_white_1.png);
 }
 
-QPushButton#Load_track_sample_button
+QPushButton#Load_track_button_2
 {
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   image:            url(:/pixmaps/dark-load_file.png);
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_file_2.png);
 }
-QPushButton#Load_track_sample_button:hover
+QPushButton#Load_track_button_2:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-load_file_white.png);
+   image:            url(:/pixmaps/dark-load_file_white_2.png);
 }
-QPushButton#Load_track_sample_button:pressed
+QPushButton#Load_track_button_2:pressed
 {
    color:            black;
    background-color: lightGray;
-   image:            url(:/pixmaps/dark-load_file.png);
+   image:            url(:/pixmaps/dark-load_file_2.png);
 }
-QPushButton#Load_track_sample_button:checked
+QPushButton#Load_track_button_2:checked
 {
    background-color: gray;
    border:           1px solid orange;
-   image:            url(:/pixmaps/dark-load_file_white.png);
+   image:            url(:/pixmaps/dark-load_file_white_2.png);
+}
+
+QPushButton#Load_track_sample_button_a
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_sample_a.png);
+}
+QPushButton#Load_track_sample_button_a:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_sample_white_a.png);
+}
+QPushButton#Load_track_sample_button_a:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_sample_a.png);
+}
+QPushButton#Load_track_sample_button_a:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_sample_white_a.png);
+}
+
+QPushButton#Load_track_sample_button_b
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_sample_b.png);
+}
+QPushButton#Load_track_sample_button_b:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_sample_white_b.png);
+}
+QPushButton#Load_track_sample_button_b:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_sample_b.png);
+}
+QPushButton#Load_track_sample_button_b:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_sample_white_b.png);
+}
+
+QPushButton#Load_track_sample_button_c
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_sample_c.png);
+}
+QPushButton#Load_track_sample_button_c:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_sample_white_c.png);
+}
+QPushButton#Load_track_sample_button_c:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_sample_c.png);
+}
+QPushButton#Load_track_sample_button_c:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_sample_white_c.png);
+}
+
+QPushButton#Load_track_sample_button_d
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_sample_d.png);
+}
+QPushButton#Load_track_sample_button_d:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_sample_white_d.png);
+}
+QPushButton#Load_track_sample_button_d:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_sample_d.png);
+}
+QPushButton#Load_track_sample_button_d:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_sample_white_d.png);
 }
 
 QMessageBox
