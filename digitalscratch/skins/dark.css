@@ -342,6 +342,7 @@ QPushButton#Sampler_stop_buttons:checked
    background-color: gray;
    border:           1px solid orange;
 }
+
 QPushButton#Refresh_browser_button
 {
    background-color: gray;
@@ -353,14 +354,78 @@ QPushButton#Refresh_browser_button
 }
 QPushButton#Refresh_browser_button:hover
 {
-   background-color: lightGray;
+   background-color: transparent;
    border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-file_browser_update_white.png);
+}
+QPushButton#Refresh_browser_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-file_browser_update.png);
 }
 QPushButton#Refresh_browser_button:checked
 {
    background-color: gray;
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-file_browser_update_white.png);
+}
+
+QPushButton#Load_track_button
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   height:           24px;
+   width:            24px;
+   image:            url(:/pixmaps/dark-load_file.png);
+}
+QPushButton#Load_track_button:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_file_white.png);
+}
+QPushButton#Load_track_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_file.png);
+}
+QPushButton#Load_track_button:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_file_white.png);
+}
+
+QPushButton#Load_track_sample_button
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   image:            url(:/pixmaps/dark-load_file.png);
+}
+QPushButton#Load_track_sample_button:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_file_white.png);
+}
+QPushButton#Load_track_sample_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_file.png);
+}
+QPushButton#Load_track_sample_button:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_file_white.png);
 }
 
 QMessageBox

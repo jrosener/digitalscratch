@@ -1035,6 +1035,100 @@ Gui::create_main_window()
     this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
+    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
+
+    this->load_track_on_deck1_button = new QPushButton();
+    this->load_track_on_deck1_button->setObjectName("Load_track_button");
+    this->load_track_on_deck1_button->setToolTip(tr("Load selected track to deck 1"));
+    this->load_track_on_deck1_button->setIconSize(QSize(12, 12));
+    this->load_track_on_deck1_button->setFixedSize(24, 24);
+    this->load_track_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->load_track_on_deck1_button->setCheckable(true);
+    QObject::connect(this->load_track_on_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+
+    this->load_sample1_1_button = new QPushButton();
+    this->load_sample1_1_button->setObjectName("Load_track_sample_button");
+    this->load_sample1_1_button->setToolTip(tr("Load selected track to sample 1"));
+    this->load_sample1_1_button->setIconSize(QSize(10, 10));
+    this->load_sample1_1_button->setFixedSize(18, 18);
+    this->load_sample1_1_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_1_button->setCheckable(true);
+    QObject::connect(this->load_sample1_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
+
+    this->load_sample1_2_button = new QPushButton();
+    this->load_sample1_2_button->setObjectName("Load_track_sample_button");
+    this->load_sample1_2_button->setToolTip(tr("Load selected track to sample 2"));
+    this->load_sample1_2_button->setIconSize(QSize(10, 10));
+    this->load_sample1_2_button->setFixedSize(18, 18);
+    this->load_sample1_2_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_2_button->setCheckable(true);
+    QObject::connect(this->load_sample1_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck1()));
+
+    this->load_sample1_3_button = new QPushButton();
+    this->load_sample1_3_button->setObjectName("Load_track_sample_button");
+    this->load_sample1_3_button->setToolTip(tr("Load selected track to sample 3"));
+    this->load_sample1_3_button->setIconSize(QSize(10, 10));
+    this->load_sample1_3_button->setFixedSize(18, 18);
+    this->load_sample1_3_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_3_button->setCheckable(true);
+    QObject::connect(this->load_sample1_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck1()));
+
+    this->load_sample1_4_button = new QPushButton();
+    this->load_sample1_4_button->setObjectName("Load_track_sample_button");
+    this->load_sample1_4_button->setToolTip(tr("Load selected track to sample 4"));
+    this->load_sample1_4_button->setIconSize(QSize(10, 10));
+    this->load_sample1_4_button->setFixedSize(18, 18);
+    this->load_sample1_4_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_4_button->setCheckable(true);
+    QObject::connect(this->load_sample1_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
+
+    if (this->nb_decks > 1)
+    {
+        this->load_sample2_1_button = new QPushButton();
+        this->load_sample2_1_button->setObjectName("Load_track_sample_button");
+        this->load_sample2_1_button->setToolTip(tr("Load selected track to sample 1"));
+        this->load_sample2_1_button->setIconSize(QSize(10, 10));
+        this->load_sample2_1_button->setFixedSize(18, 18);
+        this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_1_button->setCheckable(true);
+        QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+
+        this->load_sample2_2_button = new QPushButton();
+        this->load_sample2_2_button->setObjectName("Load_track_sample_button");
+        this->load_sample2_2_button->setToolTip(tr("Load selected track to sample 2"));
+        this->load_sample2_2_button->setIconSize(QSize(10, 10));
+        this->load_sample2_2_button->setFixedSize(18, 18);
+        this->load_sample2_2_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_2_button->setCheckable(true);
+        QObject::connect(this->load_sample2_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
+
+        this->load_sample2_3_button = new QPushButton();
+        this->load_sample2_3_button->setObjectName("Load_track_sample_button");
+        this->load_sample2_3_button->setToolTip(tr("Load selected track to sample 3"));
+        this->load_sample2_3_button->setIconSize(QSize(10, 10));
+        this->load_sample2_3_button->setFixedSize(18, 18);
+        this->load_sample2_3_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_3_button->setCheckable(true);
+        QObject::connect(this->load_sample2_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
+
+        this->load_sample2_4_button = new QPushButton();
+        this->load_sample2_4_button->setObjectName("Load_track_sample_button");
+        this->load_sample2_4_button->setToolTip(tr("Load selected track to sample 4"));
+        this->load_sample2_4_button->setIconSize(QSize(10, 10));
+        this->load_sample2_4_button->setFixedSize(18, 18);
+        this->load_sample2_4_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_4_button->setCheckable(true);
+        QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
+
+        this->load_track_on_deck2_button = new QPushButton();
+        this->load_track_on_deck2_button->setObjectName("Load_track_button");
+        this->load_track_on_deck2_button->setToolTip(tr("Load selected track to deck 2"));
+        this->load_track_on_deck2_button->setIconSize(QSize(12, 12));
+        this->load_track_on_deck2_button->setFixedSize(24, 24);
+        this->load_track_on_deck2_button->setFocusPolicy(Qt::NoFocus);
+        this->load_track_on_deck2_button->setCheckable(true);
+        QObject::connect(this->load_track_on_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+    }
 
     // Create progress bar for the refresh button.
     this->refresh_file_browser_progress= new QProgressBar();
@@ -1047,13 +1141,29 @@ Gui::create_main_window()
                      this,                                              SLOT(update_refresh_progress_value(int)));
 
     QWidget *file_browser_buttons_widget = new QWidget();
-    QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser,          0, 0, Qt::AlignCenter);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress, 1, 0, Qt::AlignCenter);
+    QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
+    QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout(file_browser_buttons_widget);
+    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout(file_browser_buttons_widget);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_3_button);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_4_button);
+    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_1_button);
+    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_2_button);
+    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
+    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
+    file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
+    file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 1, Qt::AlignRight);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 2, Qt::AlignCenter);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress,  1, 2, Qt::AlignCenter);
+    file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 3, Qt::AlignRight);
+    file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 4, Qt::AlignRight);
     file_browser_buttons_widget->setFixedHeight(37);
-
-    // Connect function buttons.
-    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
+    file_browser_buttons_layout->setColumnStretch(0, 10);
+    file_browser_buttons_layout->setColumnStretch(1, 2);
+    file_browser_buttons_layout->setColumnStretch(2, 2);
+    file_browser_buttons_layout->setColumnStretch(3, 2);
+    file_browser_buttons_layout->setColumnStretch(4, 10);
 
     // Create layout and group box for file browser.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
@@ -1474,6 +1584,150 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
 }
 
 void
+Gui::select_and_run_sample1_decoding_process_deck1()
+{
+    // Check the button.
+    this->load_sample1_1_button->setEnabled(false);
+    this->load_sample1_1_button->setChecked(true);
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Decode and play sample audio file on sampler 1.
+    this->run_sample_1_decoding_process();
+
+    // Release the button.
+    this->load_sample1_1_button->setEnabled(true);
+    this->load_sample1_1_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample1_decoding_process_deck2()
+{
+    // Check the button.
+    this->load_sample2_1_button->setEnabled(false);
+    this->load_sample2_1_button->setChecked(true);
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Decode and play sample audio file on sampler 1.
+    this->run_sample_1_decoding_process();
+
+    // Release the button.
+    this->load_sample2_1_button->setEnabled(true);
+    this->load_sample2_1_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample2_decoding_process_deck1()
+{
+    // Check the button.
+    this->load_sample1_2_button->setEnabled(false);
+    this->load_sample1_2_button->setChecked(true);
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Decode and play sample audio file on sampler 2.
+    this->run_sample_2_decoding_process();
+
+    // Release the button.
+    this->load_sample1_2_button->setEnabled(true);
+    this->load_sample1_2_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample2_decoding_process_deck2()
+{
+    // Check the button.
+    this->load_sample2_2_button->setEnabled(false);
+    this->load_sample2_2_button->setChecked(true);
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Decode and play sample audio file on sampler 2.
+    this->run_sample_2_decoding_process();
+
+    // Release the button.
+    this->load_sample2_2_button->setEnabled(true);
+    this->load_sample2_2_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample3_decoding_process_deck1()
+{
+    // Check the button.
+    this->load_sample1_3_button->setEnabled(false);
+    this->load_sample1_3_button->setChecked(true);
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Decode and play sample audio file on sampler 3.
+    this->run_sample_3_decoding_process();
+
+    // Release the button.
+    this->load_sample1_3_button->setEnabled(true);
+    this->load_sample1_3_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample3_decoding_process_deck2()
+{
+    // Check the button.
+    this->load_sample2_3_button->setEnabled(false);
+    this->load_sample2_3_button->setChecked(true);
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Decode and play sample audio file on sampler 3.
+    this->run_sample_3_decoding_process();
+
+    // Release the button.
+    this->load_sample2_3_button->setEnabled(true);
+    this->load_sample2_3_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample4_decoding_process_deck1()
+{
+    // Check the button.
+    this->load_sample1_4_button->setEnabled(false);
+    this->load_sample1_4_button->setChecked(true);
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Decode and play sample audio file on sampler 4.
+    this->run_sample_4_decoding_process();
+
+    // Release the button.
+    this->load_sample1_4_button->setEnabled(true);
+    this->load_sample1_4_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_sample4_decoding_process_deck2()
+{
+    // Check the button.
+    this->load_sample2_4_button->setEnabled(false);
+    this->load_sample2_4_button->setChecked(true);
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Decode and play sample audio file on sampler 4.
+    this->run_sample_4_decoding_process();
+
+    // Release the button.
+    this->load_sample2_4_button->setEnabled(true);
+    this->load_sample2_4_button->setChecked(false);
+}
+
+void
 Gui::run_sample_1_decoding_process()
 {
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
@@ -1755,6 +2009,42 @@ Gui::resize_file_browser_columns()
     qDebug() << "Gui::resize_file_browser_columns...";
     this->file_browser->resizeColumnToContents(COLUMN_FILE_NAME);
     qDebug() << "Gui::resize_file_browser_columns...";
+}
+
+void
+Gui::select_and_run_audio_file_decoding_process_deck1()
+{
+    // Check the button.
+    this->load_track_on_deck1_button->setEnabled(false);
+    this->load_track_on_deck1_button->setChecked(true);
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Decode and play selected audio file on deck 1.
+    this->run_audio_file_decoding_process();
+
+    // Release the button.
+    this->load_track_on_deck1_button->setEnabled(true);
+    this->load_track_on_deck1_button->setChecked(false);
+}
+
+void
+Gui::select_and_run_audio_file_decoding_process_deck2()
+{
+    // Check the button.
+    this->load_track_on_deck2_button->setEnabled(false);
+    this->load_track_on_deck2_button->setChecked(true);
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Decode and play selected audio file on deck 2.
+    this->run_audio_file_decoding_process();
+
+    // Release the button.
+    this->load_track_on_deck2_button->setEnabled(true);
+    this->load_track_on_deck2_button->setChecked(false);
 }
 
 void

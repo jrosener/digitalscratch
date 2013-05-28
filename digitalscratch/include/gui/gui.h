@@ -156,6 +156,16 @@ class Gui : QObject
     QGroupBox                     *file_browser_gbox;
     QPushButton                   *refresh_file_browser;
     QProgressBar                  *refresh_file_browser_progress;
+    QPushButton                   *load_track_on_deck1_button;
+    QPushButton                   *load_track_on_deck2_button;
+    QPushButton                   *load_sample1_1_button;
+    QPushButton                   *load_sample2_1_button;
+    QPushButton                   *load_sample1_2_button;
+    QPushButton                   *load_sample2_2_button;
+    QPushButton                   *load_sample1_3_button;
+    QPushButton                   *load_sample2_3_button;
+    QPushButton                   *load_sample1_4_button;
+    QPushButton                   *load_sample2_4_button;
 
  public:
     Gui(Audio_track                    *in_at_1,
@@ -206,7 +216,18 @@ class Gui : QObject
     void accept_refresh_audio_collection_dialog_new_files();
     bool show_error_window(QString in_error_message);
     void done_error_window();
+    void select_and_run_audio_file_decoding_process_deck1();
+    void select_and_run_audio_file_decoding_process_deck2();
     void run_audio_file_decoding_process();
+    void select_and_run_sample1_decoding_process_deck1();
+    void select_and_run_sample2_decoding_process_deck1();
+    void select_and_run_sample3_decoding_process_deck1();
+    void select_and_run_sample4_decoding_process_deck1();
+    void select_and_run_sample1_decoding_process_deck2();
+    void select_and_run_sample2_decoding_process_deck2();
+    void select_and_run_sample3_decoding_process_deck2();
+    void select_and_run_sample4_decoding_process_deck2();
+
     void run_sample_1_decoding_process();
     void run_sample_2_decoding_process();
     void run_sample_3_decoding_process();
