@@ -40,6 +40,13 @@ using namespace std;
 
 class Utils
 {
+ private:
+    static QList<QString> minor_keys;
+    static QList<QString> major_keys;
+
+ private:
+    static void setup_keys();
+
  public:
     // Get a MD5 hash from in_kbytes bytes of the specified file.
     static QString get_file_hash(QString in_path, unsigned int in_kbytes);
@@ -52,6 +59,12 @@ class Utils
 
     // Convert music key as clock number.
     static QString convert_music_key_to_clock_number(QString in_key);
+
+    // Get next music keys (as clock number).
+    static void get_next_music_keys(QString  in_key,
+                                    QString& next_key,
+                                    QString& prev_key,
+                                    QString& next_major_key);
 };
 
 #endif /* UTILS_H_ */

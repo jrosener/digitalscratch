@@ -101,6 +101,8 @@ class Gui : QObject
     QLabel                        *deck1_track_name;
     QLabel                        *deck2_track_name;
     Remaining_time               **decks_remaining_time;
+    QLabel                        *deck1_key;
+    QLabel                        *deck2_key;
     Waveform                      *deck1_waveform;
     Waveform                      *deck2_waveform;
     Vertical_waveform             *deck1_vertical_waveform;
@@ -150,6 +152,7 @@ class Gui : QObject
     QShortcut                     *shortcut_load_sample_file_2;
     QShortcut                     *shortcut_load_sample_file_3;
     QShortcut                     *shortcut_load_sample_file_4;
+    QShortcut                     *shortcut_show_next_keys;
     QShortcut                     *shortcut_fullscreen;
     QShortcut                     *shortcut_help;
     QGroupBox                     *help_groupbox;
@@ -158,6 +161,8 @@ class Gui : QObject
     QProgressBar                  *refresh_file_browser_progress;
     QPushButton                   *load_track_on_deck1_button;
     QPushButton                   *load_track_on_deck2_button;
+    QPushButton                   *show_next_key_from_deck1_button;
+    QPushButton                   *show_next_key_from_deck2_button;
     QPushButton                   *load_sample1_1_button;
     QPushButton                   *load_sample2_1_button;
     QPushButton                   *load_sample1_2_button;
@@ -227,7 +232,6 @@ class Gui : QObject
     void select_and_run_sample2_decoding_process_deck2();
     void select_and_run_sample3_decoding_process_deck2();
     void select_and_run_sample4_decoding_process_deck2();
-
     void run_sample_1_decoding_process();
     void run_sample_2_decoding_process();
     void run_sample_3_decoding_process();
@@ -270,10 +274,13 @@ class Gui : QObject
     void hover_playback(int in_deck_index);
     void unhover_playback(int in_deck_index);
     void can_close();
-    void on_file_browser_expand_collapse(QModelIndex);
+    void on_file_browser_expand(QModelIndex);
     void sync_file_browser_to_audio_collection();
     void on_finished_analyze_audio_collection();
     void update_refresh_progress_value(int in_value);
+    void select_and_show_next_keys_deck1();
+    void select_and_show_next_keys_deck2();
+    void show_next_keys();
 };
 
 #endif /* GUI_H_ */

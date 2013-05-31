@@ -87,6 +87,7 @@ class Audio_track : public QObject
 
  signals:
     void name_changed(QString in_name);
+    void key_changed(QString in_key);
 };
 
 #endif /* AUDIO_TRACK_H_ */

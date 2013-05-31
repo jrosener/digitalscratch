@@ -274,7 +274,11 @@ Audio_track::set_music_key(QString in_key)
 {
     qDebug() << "Audio_track::set_music_key...";
 
-    this->music_key = in_key;
+    if (in_key != this->music_key)
+    {
+        this->music_key = in_key;
+        emit key_changed(this->music_key);
+    }
 
     qDebug() << "Audio_track::set_music_key done.";
 

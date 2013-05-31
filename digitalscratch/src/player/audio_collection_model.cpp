@@ -51,11 +51,13 @@ Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
                                              bool                   in_is_directory,
                                              Audio_collection_item *in_parent)
 {
-    this->parentItem    = in_parent;
-    this->fileHash      = in_file_hash;
-    this->itemData      = in_data;
-    this->fullPath      = in_full_path;
-    this->directoryFlag = in_is_directory;
+    this->parentItem     = in_parent;
+    this->fileHash       = in_file_hash;
+    this->itemData       = in_data;
+    this->fullPath       = in_full_path;
+    this->directoryFlag  = in_is_directory;
+    this->next_key       = false;
+    this->next_major_key = false;
 }
 
 Audio_collection_item::~Audio_collection_item()
@@ -124,6 +126,26 @@ QString Audio_collection_item::get_file_hash()
 bool Audio_collection_item::is_directory()
 {
     return this->directoryFlag;
+}
+
+bool Audio_collection_item::is_a_next_key()
+{
+    return this->next_key;
+}
+
+bool Audio_collection_item::is_a_next_major_key()
+{
+    return this->next_major_key;
+}
+
+void Audio_collection_item::set_next_key(bool is_a_next_key)
+{
+    this->next_key = is_a_next_key;
+}
+
+void Audio_collection_item::set_next_major_key(bool is_a_next_major_key)
+{
+    this->next_major_key = is_a_next_major_key;
 }
 
 void Audio_collection_item::read_from_db()
@@ -297,6 +319,21 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
         else
         {
             return this->directory_icon;
+        }
+    }
+    else if (in_role == Qt::BackgroundColorRole)
+    {
+        if (item->is_a_next_major_key() == true)
+        {
+            return QColor(255, 153, 0); // orange
+        }
+        else if (item->is_a_next_key() == true)
+        {
+            return QColor(0, 153, 0); // green
+        }
+        else
+        {
+            return QVariant();
         }
     }
     else
@@ -516,4 +553,31 @@ int Audio_collection_model::get_nb_new_items()
     }
 
     return nb_items;
+}
+
+void Audio_collection_model::set_next_keys(QString in_next_key,
+                                           QString in_previous_key,
+                                           QString in_next_major_key)
+{
+    // Iterate over all items and set flags to true if they are of next/previous/major keys.
+    foreach (Audio_collection_item *item, this->audio_item_list)
+    {
+        // Reset.
+        item->set_next_key(false);
+        item->set_next_major_key(false);
+
+        if ((item->get_data(COLUMN_KEY) == in_next_key) ||
+            (item->get_data(COLUMN_KEY) == in_previous_key))
+        {
+            // The item is a next or previous key.
+            item->set_next_key(true);
+        }
+        else if (item->get_data(COLUMN_KEY) == in_next_major_key)
+        {
+            // The item is a next major or minor key.
+            item->set_next_major_key(true);
+        }
+    }
+
+    return;
 }

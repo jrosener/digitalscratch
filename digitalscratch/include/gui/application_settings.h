@@ -79,6 +79,8 @@ using namespace std;
 #define KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT   "Q"
 #define KB_LOAD_TRACK_ON_SAMPLER4           "keyboard_shortcuts/kb_load_track_on_sampler4"
 #define KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT   "W"
+#define KB_SHOW_NEXT_KEYS                   "keyboard_shortcuts/kb_show_next_keys"
+#define KB_SHOW_NEXT_KEYS_DEFAULT           "K"
 #define KB_FULLSCREEN                       "keyboard_shortcuts/kb_fullscreen"
 #define KB_FULLSCREEN_DEFAULT               "F"
 #define KB_HELP                             "keyboard_shortcuts/kb_help"

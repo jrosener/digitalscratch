@@ -140,6 +140,7 @@ Gui::Gui(Audio_track                    *in_at_1,
     this->shortcut_load_sample_file_2 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
+    this->shortcut_show_next_keys     = new QShortcut(this->file_browser);
     this->shortcut_fullscreen         = new QShortcut(this->window);
     this->shortcut_help               = new QShortcut(this->window);
 
@@ -258,6 +259,7 @@ Gui::apply_application_settings()
     this->shortcut_load_sample_file_2->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)));
     this->shortcut_load_sample_file_3->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)));
     this->shortcut_load_sample_file_4->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4)));
+    this->shortcut_show_next_keys->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS)));
     this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
     this->shortcut_help->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_HELP)));
 
@@ -737,9 +739,11 @@ Gui::create_main_window()
     // Decks.
     ////////////////////////////////////////////////////////////////////////////
 
-    // Create track name, position and timecode infos.
-    this->deck1_track_name              = new QLabel(tr("Track name"));
-    this->deck1_waveform                = new Waveform(this->at_1, this->window);
+    // Create track name, key, position and timecode infos.
+    this->deck1_track_name = new QLabel();
+    this->deck1_key        = new QLabel();
+    this->deck1_waveform   = new Waveform(this->at_1, this->window);
+    this->deck1_key->setObjectName("KeyValue");
 
     // TODO: work on a vertical waveform.
     //this->deck1_vertical_waveform       = new Vertical_waveform(this->at_1);
@@ -771,20 +775,23 @@ Gui::create_main_window()
     decks1_tcode_infos->addWidget(deck1_tcode_amplitude, 1);
     decks1_tcode_infos->addWidget(deck1_tcode_amplitude_value, 10);
     QHBoxLayout *deck1_remaining_time_layout = new QHBoxLayout;
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->minus, 1, Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->min,   1, Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep1,  1, Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sec,   1, Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep2,  1, Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->msec,  1, Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(new QLabel(), 100);
+    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->minus, 1,   Qt::AlignBottom);
+    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->min,   1,   Qt::AlignBottom);
+    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep1,  1,   Qt::AlignBottom);
+    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sec,   1,   Qt::AlignBottom);
+    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep2,  1,   Qt::AlignBottom);
+    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->msec,  1,   Qt::AlignBottom);
+    deck1_remaining_time_layout->addWidget(this->deck1_key,                      100, Qt::AlignRight);
 
     this->deck1_track_name->setObjectName("TrackName");
     this->deck1_waveform->setObjectName("Waveform");
 
 
-    this->deck2_track_name              = new QLabel(tr("Track name"));
-    this->deck2_waveform                = new Waveform(this->at_2, this->window);
+    this->deck2_track_name = new QLabel();
+    this->deck2_key        = new QLabel();
+    this->deck2_waveform   = new Waveform(this->at_2, this->window);
+    this->deck2_key->setObjectName("KeyValue");
+
     // TODO: work on a vertical waveform.
     //this->deck2_vertical_waveform       = new Vertical_waveform(this->at_2, this->window);
 
@@ -808,13 +815,13 @@ Gui::create_main_window()
     decks2_tcode_infos->addWidget(deck2_tcode_amplitude, 1);
     decks2_tcode_infos->addWidget(deck2_tcode_amplitude_value, 10);
     QHBoxLayout *deck2_remaining_time_layout = new QHBoxLayout;
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->minus, 1, Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->min,   1, Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep1,  1, Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sec,   1, Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep2,  1, Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->msec,  1, Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(new QLabel(), 100);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->minus, 1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->min,   1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep1,  1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sec,   1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep2,  1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->msec,  1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->deck2_key,                      100, Qt::AlignRight);
 
     this->deck2_track_name->setObjectName("TrackName");
     this->deck2_waveform->setObjectName("Waveform");
@@ -1020,8 +1027,8 @@ Gui::create_main_window()
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     // Resize column with file name when expanding/collapsing a directory.
-    QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand_collapse(QModelIndex)));
-    QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand_collapse(QModelIndex)));
+    QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand(QModelIndex)));
+    QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand(QModelIndex)));
 
     // Connect the keyboard shortcut that collapse tree.
     QObject::connect(this->shortcut_collapse_browser, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
@@ -1034,6 +1041,9 @@ Gui::create_main_window()
     QObject::connect(this->shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
     QObject::connect(this->shortcut_load_sample_file_3, SIGNAL(activated()), this, SLOT(run_sample_3_decoding_process()));
     QObject::connect(this->shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
+
+    // Connect the keyboard shortcut to show next audio file according to current music key.
+    QObject::connect(this->shortcut_show_next_keys, SIGNAL(activated()), this, SLOT(show_next_keys()));
 
     // Connect thread states for audio collection read and write to DB.
     QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
@@ -1055,6 +1065,14 @@ Gui::create_main_window()
     this->load_track_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->load_track_on_deck1_button->setCheckable(true);
     QObject::connect(this->load_track_on_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+
+    this->show_next_key_from_deck1_button = new QPushButton();
+    this->show_next_key_from_deck1_button->setObjectName("Show_next_key_button");
+    this->show_next_key_from_deck1_button->setToolTip(tr("Show deck 1 next potential tracks"));
+    this->show_next_key_from_deck1_button->setFixedSize(24, 24);
+    this->show_next_key_from_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->show_next_key_from_deck1_button->setCheckable(true);
+    QObject::connect(this->show_next_key_from_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck1()));
 
     this->load_sample1_1_button = new QPushButton();
     this->load_sample1_1_button->setObjectName("Load_track_sample_button_a");
@@ -1097,6 +1115,14 @@ Gui::create_main_window()
         this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_1_button->setCheckable(true);
         QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+
+        this->show_next_key_from_deck2_button = new QPushButton();
+        this->show_next_key_from_deck2_button->setObjectName("Show_next_key_button");
+        this->show_next_key_from_deck2_button->setToolTip(tr("Show deck 2 next potential tracks"));
+        this->show_next_key_from_deck2_button->setFixedSize(24, 24);
+        this->show_next_key_from_deck2_button->setFocusPolicy(Qt::NoFocus);
+        this->show_next_key_from_deck2_button->setCheckable(true);
+        QObject::connect(this->show_next_key_from_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck2()));
 
         this->load_sample2_2_button = new QPushButton();
         this->load_sample2_2_button->setObjectName("Load_track_sample_button_b");
@@ -1154,16 +1180,20 @@ Gui::create_main_window()
     file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
     file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
     file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
-    file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 1, Qt::AlignRight);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 2, Qt::AlignCenter);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress,  1, 2, Qt::AlignCenter);
-    file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 3, Qt::AlignRight);
-    file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 4, Qt::AlignRight);
-    file_browser_buttons_layout->setColumnStretch(0, 10);
-    file_browser_buttons_layout->setColumnStretch(1, 2);
-    file_browser_buttons_layout->setColumnStretch(2, 2);
-    file_browser_buttons_layout->setColumnStretch(3, 2);
-    file_browser_buttons_layout->setColumnStretch(4, 10);
+    file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
+    file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 3, Qt::AlignCenter);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress,  1, 3, Qt::AlignCenter);
+    file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
+    file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
+    file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
+    file_browser_buttons_layout->setColumnStretch(0, 1);
+    file_browser_buttons_layout->setColumnStretch(1, 100);
+    file_browser_buttons_layout->setColumnStretch(2, 1);
+    file_browser_buttons_layout->setColumnStretch(3, 10);
+    file_browser_buttons_layout->setColumnStretch(4, 1);
+    file_browser_buttons_layout->setColumnStretch(5, 100);
+    file_browser_buttons_layout->setColumnStretch(6, 1);
     file_browser_buttons_widget->setFixedHeight(37);
 
     // Create layout and group box for file browser.
@@ -1314,6 +1344,12 @@ Gui::create_main_window()
                      this->deck1_track_name, SLOT(setText(const QString&)));
     QObject::connect(this->at_2,             SIGNAL(name_changed(QString)),
                      this->deck2_track_name, SLOT(setText(const QString&)));
+
+    // Music key of the track for each deck.
+    QObject::connect(this->at_1,      SIGNAL(key_changed(QString)),
+                     this->deck1_key, SLOT(setText(const QString&)));
+    QObject::connect(this->at_2,      SIGNAL(key_changed(QString)),
+                     this->deck2_key, SLOT(setText(const QString&)));
 
     // Name of samplers.
     QObject::connect(this->at_1_samplers[0], SIGNAL(name_changed(QString)),
@@ -1489,6 +1525,8 @@ Gui::apply_main_window_style()
         this->load_sample2_2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample2_3_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample2_4_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->show_next_key_from_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
+        this->show_next_key_from_deck2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
         this->file_system_model->set_icons((QApplication::style()->standardIcon(QStyle::SP_FileIcon).pixmap(10, 10)),
                                            (QApplication::style()->standardIcon(QStyle::SP_DirIcon).pixmap(10, 10)));
     }
@@ -1513,6 +1551,8 @@ Gui::apply_main_window_style()
         this->load_sample2_2_button->setIcon(QIcon());
         this->load_sample2_3_button->setIcon(QIcon());
         this->load_sample2_4_button->setIcon(QIcon());
+        this->show_next_key_from_deck1_button->setIcon(QIcon());
+        this->show_next_key_from_deck2_button->setIcon(QIcon());
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
         this->file_system_model->set_icons(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation),
@@ -1588,7 +1628,7 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
     {
         samplers = this->dec_2_samplers;
     }
-    if (samplers[in_sampler_index]->run(info.absoluteFilePath()) == false)
+    if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "") == false)
     {
         qWarning() << "Gui::run_sampler_decoding_process: can not decode " << info.absoluteFilePath();
     }
@@ -2017,7 +2057,7 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
 }
 
 void
-Gui::on_file_browser_expand_collapse(QModelIndex)
+Gui::on_file_browser_expand(QModelIndex)
 {
     qDebug() << "Gui::on_file_browser_expand_collapse...";
     this->resize_file_browser_columns();
@@ -2093,7 +2133,7 @@ Gui::run_audio_file_decoding_process()
 
     // Execute decoding if not trying to open the existing track.
     if (info.fileName().compare(deck_track_name->text()) != 0 ) {
-        if (decode_process->run(info.absoluteFilePath()) == false)
+        if (decode_process->run(info.absoluteFilePath(), item->get_data(COLUMN_KEY).toString()) == false)
         {
             qWarning() << "Gui::run_audio_file_decoding_process: can not decode " << info.absoluteFilePath();
         }
@@ -2485,6 +2525,82 @@ Gui::highlight_border_deck_sampler_area(unsigned short int in_deck_index,
     }
 
     qDebug() << "Gui::highlight_border_deck_sampler_area done.";
+
+    return;
+}
+
+void
+Gui::select_and_show_next_keys_deck1()
+{
+    // Check the button.
+    this->show_next_key_from_deck1_button->setEnabled(false);
+    this->show_next_key_from_deck1_button->setChecked(true);
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Show next keys from deck 1.
+    this->show_next_keys();
+
+    // Release the button.
+    this->show_next_key_from_deck1_button->setEnabled(true);
+    this->show_next_key_from_deck1_button->setChecked(false);
+}
+
+void
+Gui::select_and_show_next_keys_deck2()
+{
+    // Check the button.
+    this->show_next_key_from_deck2_button->setEnabled(false);
+    this->show_next_key_from_deck2_button->setChecked(true);
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Show next keys from deck 2.
+    this->show_next_keys();
+
+    // Release the button.
+    this->show_next_key_from_deck2_button->setEnabled(true);
+    this->show_next_key_from_deck2_button->setChecked(false);
+}
+
+void
+Gui::show_next_keys()
+{
+    qDebug() << "Gui::show_next_keys...";
+
+    // Get music key of selected deck/sampler.
+    QString deck_key = this->deck1_key->text();
+    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
+    {
+        deck_key = this->deck2_key->text();
+    }
+
+    // Get next and prev keys and iterate over the full audio collection for highlighting.
+    if (deck_key.length() > 0)
+    {
+        // Collapse all tree.
+        this->file_browser->collapseAll();
+
+        // Get next keys and highlight.
+        QString next_key;
+        QString prev_key;
+        QString oppos_key;
+        Utils::get_next_music_keys(deck_key, next_key, prev_key, oppos_key);
+        this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
+
+        // Expand directories containing file of next keys.
+        // TODO
+        // returns a list of Qmodel index (directories containing file for next key)
+        // QList<*QModelIndex> directories = this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
+//        foreach (QModelIndex *index, result_list)
+//        {
+//            this->file_browser->expand(index);
+//        }
+    }
+
+    qDebug() << "Gui::show_next_keys done.";
 
     return;
 }

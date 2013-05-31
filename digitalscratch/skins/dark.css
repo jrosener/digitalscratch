@@ -200,9 +200,6 @@ QTreeView
    border:        none;
    padding:       2px;
 }
-QTreeView::item {
-   background-color: black;
-}
 QTreeView::item:selected{
    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
 }
@@ -240,6 +237,10 @@ QLabel#RemainingTime
 QLabel#RemainingTimeMsec
 {
    font:       10pt;
+}
+QLabel#KeyValue
+{
+   font:        10pt;
 }
 
 QTabBar::tab
@@ -397,6 +398,34 @@ QPushButton#Load_track_button_1:checked
    background-color: gray;
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-load_file_white_1.png);
+}
+
+QPushButton#Show_next_key_button
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-show_next_key.png);
+}
+QPushButton#Show_next_key_button:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-show_next_key_white.png);
+}
+QPushButton#Show_next_key_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-show_next_key.png);
+}
+QPushButton#Show_next_key_button:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-show_next_key_white.png);
 }
 
 QPushButton#Load_track_button_2

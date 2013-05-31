@@ -109,7 +109,7 @@ QString Utils::get_file_music_key(QString in_path)
     // Decode the audio track.
     Audio_track *at = new Audio_track(10);
     Audio_file_decoding_process *dec = new Audio_file_decoding_process(at);
-    dec->run(in_path);
+    dec->run(in_path, "");
 
     // Compute the music key.
     Audio_track_key_process *key_proc = new Audio_track_key_process(at);
@@ -160,4 +160,120 @@ QString Utils::convert_music_key_to_clock_number(QString in_key)
     key_map.insert("Abm", "1A");
 
     return key_map.value(in_key, "");
+}
+
+QList<QString> Utils::minor_keys;
+QList<QString> Utils::major_keys;
+
+void Utils::setup_keys()
+{
+    minor_keys.append("1A");
+    minor_keys.append("2A");
+    minor_keys.append("3A");
+    minor_keys.append("4A");
+    minor_keys.append("5A");
+    minor_keys.append("6A");
+    minor_keys.append("7A");
+    minor_keys.append("8A");
+    minor_keys.append("9A");
+    minor_keys.append("10A");
+    minor_keys.append("11A");
+    minor_keys.append("12A");
+
+    major_keys.append("1B");
+    major_keys.append("2B");
+    major_keys.append("3B");
+    major_keys.append("4B");
+    major_keys.append("5B");
+    major_keys.append("6B");
+    major_keys.append("7B");
+    major_keys.append("8B");
+    major_keys.append("9B");
+    major_keys.append("10B");
+    major_keys.append("11B");
+    major_keys.append("12B");
+}
+
+void Utils::get_next_music_keys(QString  in_key,
+                                QString& next_key,
+                                QString& prev_key,
+                                QString& next_major_key)
+{
+    QString         result = "";
+    QList<QString> *keys   = NULL;
+
+    // Init minor/major key list if not already done.
+    if (minor_keys.size() == 0)
+    {
+        Utils::setup_keys();
+    }
+
+    // Init returned keys.
+    next_key       = "";
+    prev_key       = "";
+    next_major_key = "";
+
+    if (in_key.length() >= 2)
+    {
+        int index = 0;
+
+        // Try to find music key in minor keys.
+        index = minor_keys.indexOf(in_key);
+
+        if (index == -1)
+        {
+            // Key not found, try to find music key in major keys.
+            index = major_keys.indexOf(in_key);
+
+            if (index == -1)
+            {
+                qWarning() << "Utils::get_next_music_keys: cannot find next key of " << in_key;
+            }
+            else
+            {
+                // Key is major.
+                keys = &major_keys;
+            }
+        }
+        else
+        {
+            // Key is minor.
+            keys = &minor_keys;
+        }
+
+        if (keys != NULL)
+        {
+            // Get the next key from minor or major list.
+            if ((index + 1) > (keys->size() - 1))
+            {
+                next_key = keys->first(); // key is the last one, so the next one is the first in the list.
+            }
+            else
+            {
+                next_key = keys->at(index + 1);
+            }
+
+            // Get the previous key from minor or major list.
+            if ((index - 1) < 0)
+            {
+                prev_key = keys->last(); // key is the first one, so the previous one is the last in the list.
+            }
+            else
+            {
+                prev_key = keys->at(index - 1);
+            }
+
+            // Get the opposite (minor/major) key.
+            if (keys == &minor_keys)
+            {
+                next_major_key = major_keys.at(index);
+            }
+            else
+            {
+                next_major_key = minor_keys.at(index);
+            }
+        }
+    }
+
+    return;
 }

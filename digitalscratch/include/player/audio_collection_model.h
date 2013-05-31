@@ -57,6 +57,8 @@ class Audio_collection_item
     QString                        fullPath;
     bool                           directoryFlag;
     QString                        fileHash;
+    bool                           next_key;
+    bool                           next_major_key;
 
  public:
     Audio_collection_item(const QList<QVariant>       &in_data,
@@ -82,6 +84,11 @@ class Audio_collection_item
     void                   compute_and_store_to_db();
 
     bool                   is_directory();
+
+    bool                   is_a_next_key();
+    bool                   is_a_next_major_key();
+    void                   set_next_key(bool is_a_next_key);
+    void                   set_next_major_key(bool is_a_next_major_key);
 
  private:
     void calculate_audio_data();     // Compute music key, bpm, etc...
@@ -124,6 +131,9 @@ class Audio_collection_model : public QAbstractItemModel
     void concurrent_analyse_audio_collection(); // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
     int  get_nb_items();                        // Get number of files.
     int  get_nb_new_items();                    // Get number of new files (i.e. files with missing data such as music key).
+    void set_next_keys(QString in_next_key,     // Set flags for previous/next keys (for all items).
+                       QString in_previous_key,
+                       QString in_next_major_key);
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);

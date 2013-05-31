@@ -69,7 +69,7 @@ Audio_file_decoding_process::~Audio_file_decoding_process()
 }
 
 bool
-Audio_file_decoding_process::run(QString in_path)
+Audio_file_decoding_process::run(QString in_path, QString in_music_key)
 {
     qDebug() << "Audio_file_decoding_process::run...";
 
@@ -135,6 +135,9 @@ Audio_file_decoding_process::run(QString in_path)
 
     // Set file path.
     this->at->set_fullpath(file_info.absoluteFilePath());
+
+    // Set also the music key.
+    this->at->set_music_key(in_music_key);
 
     qDebug() << "Audio_file_decoding_process::run: done.";
 
