@@ -122,18 +122,19 @@ class Audio_collection_model : public QAbstractItemModel
     QVariant      headerData(int in_section, Qt::Orientation in_orientation, int in_role = Qt::DisplayRole) const;
     QModelIndex   index(int in_row, int in_column, const QModelIndex &in_parent = QModelIndex()) const;
     QModelIndex   parent(const QModelIndex &in_index) const;
+    QModelIndex   parent_from_item(Audio_collection_item &in_item) const;
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
 
-    void begin_db_change();                     // Begin a DB transaction.
-    void commit_db_change();                    // Commit a DB transaction.
-    void concurrent_read_collection_from_db();  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
-    void concurrent_analyse_audio_collection(); // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
-    int  get_nb_items();                        // Get number of files.
-    int  get_nb_new_items();                    // Get number of new files (i.e. files with missing data such as music key).
-    void set_next_keys(QString in_next_key,     // Set flags for previous/next keys (for all items).
-                       QString in_previous_key,
-                       QString in_next_major_key);
+    void begin_db_change();                                     // Begin a DB transaction.
+    void commit_db_change();                                    // Commit a DB transaction.
+    void concurrent_read_collection_from_db();                  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
+    void concurrent_analyse_audio_collection();                 // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
+    int  get_nb_items();                                        // Get number of files.
+    int  get_nb_new_items();                                    // Get number of new files (i.e. files with missing data such as music key).
+    QList<QModelIndex> set_next_keys(QString in_next_key,       // Set flags for previous/next keys (for all items).
+                                     QString in_previous_key,
+                                     QString in_next_major_key);
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);

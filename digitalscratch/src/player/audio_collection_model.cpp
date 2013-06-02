@@ -409,6 +409,18 @@ QModelIndex Audio_collection_model::parent(const QModelIndex &in_index) const
     return createIndex(parentItem->get_row(), 0, parentItem);
 }
 
+QModelIndex Audio_collection_model::parent_from_item(Audio_collection_item &in_item) const
+{
+    Audio_collection_item *parent_item = in_item.get_parent();
+
+    if (parent_item == this->rootItem)
+    {
+        return QModelIndex();
+    }
+
+    return createIndex(parent_item->get_row(), 0, parent_item);
+}
+
 int Audio_collection_model::rowCount(const QModelIndex &in_parent) const
 {
     Audio_collection_item *parentItem;
@@ -555,10 +567,14 @@ int Audio_collection_model::get_nb_new_items()
     return nb_items;
 }
 
-void Audio_collection_model::set_next_keys(QString in_next_key,
-                                           QString in_previous_key,
-                                           QString in_next_major_key)
+QList<QModelIndex>
+Audio_collection_model::set_next_keys(QString in_next_key,
+                                      QString in_previous_key,
+                                      QString in_next_major_key)
 {
+    // Init list of QModelIndex which contains next/previous/opposite key.
+    QList<QModelIndex> dir_list;
+
     // Iterate over all items and set flags to true if they are of next/previous/major keys.
     foreach (Audio_collection_item *item, this->audio_item_list)
     {
@@ -571,13 +587,20 @@ void Audio_collection_model::set_next_keys(QString in_next_key,
         {
             // The item is a next or previous key.
             item->set_next_key(true);
+
+            // Add parent QModelIndex (the dir) to the result list.
+            dir_list.append(this->parent_from_item(*item));
+
         }
         else if (item->get_data(COLUMN_KEY) == in_next_major_key)
         {
             // The item is a next major or minor key.
             item->set_next_major_key(true);
+
+            // Add parent QModelIndex (the dir) to the result list.
+            dir_list.append(this->parent_from_item(*item));
         }
     }
 
-    return;
+    return dir_list;
 }

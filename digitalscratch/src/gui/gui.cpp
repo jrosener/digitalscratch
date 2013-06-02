@@ -2588,16 +2588,13 @@ Gui::show_next_keys()
         QString prev_key;
         QString oppos_key;
         Utils::get_next_music_keys(deck_key, next_key, prev_key, oppos_key);
-        this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
+        QList<QModelIndex> directories = this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
 
         // Expand directories containing file of next keys.
-        // TODO
-        // returns a list of Qmodel index (directories containing file for next key)
-        // QList<*QModelIndex> directories = this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
-//        foreach (QModelIndex *index, result_list)
-//        {
-//            this->file_browser->expand(index);
-//        }
+        foreach (QModelIndex index, directories)
+        {
+            this->file_browser->expand(index);
+        }
     }
 
     qDebug() << "Gui::show_next_keys done.";
