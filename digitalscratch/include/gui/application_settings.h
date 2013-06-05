@@ -39,14 +39,20 @@
 
 using namespace std;
 
-#define APPLICATION_NAME      "digitalscratch"
+#define APPLICATION_NAME          "digitalscratch"
 
-#define BASE_DIR_PATH_CFG     "player/base_dir_path"
+#define MAIN_WIN_SIZE_CFG         "player/main_win_size"
+#define MAIN_WIN_SIZE_CFG_DEFAULT "1024x640"
 
-#define GUI_STYLE_CFG         "player/gui_style_select"
-#define GUI_STYLE_DEFAULT     "default"
-#define GUI_STYLE_DARK        "dark"
-#define GUI_STYLE_DARK_CSS    SKINS_PATH "dark.css"
+#define MAIN_WIN_POS_CFG          "player/main_win_position"
+#define MAIN_WIN_POS_CFG_DEFAULT  "50,50"
+
+#define BASE_DIR_PATH_CFG         "player/base_dir_path"
+
+#define GUI_STYLE_CFG             "player/gui_style_select"
+#define GUI_STYLE_DEFAULT         "default"
+#define GUI_STYLE_DARK            "dark"
+#define GUI_STYLE_DARK_CSS        SKINS_PATH "dark.css"
 
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
@@ -101,6 +107,14 @@ class Application_settings : public QObject
     virtual ~Application_settings();
 
  public:
+    void    set_main_window_size(QSize in_size);
+    QSize   get_main_window_size();
+    QString get_main_window_size_default();
+
+    void    set_main_window_position(QPoint in_pos);
+    QPoint  get_main_window_position();
+    QString get_main_window_position_default();
+
     void    set_tracks_base_dir_path(QString in_tracks_base_dir_path);
     QString get_tracks_base_dir_path();
     QString get_tracks_base_dir_path_default();

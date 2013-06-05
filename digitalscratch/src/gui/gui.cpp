@@ -151,6 +151,12 @@ Gui::Gui(Audio_track                    *in_at_1,
         return;
     }
 
+    // Apply previous window position.
+    this->window->move(this->settings->get_main_window_position());
+
+    // Apply previous window size.
+    this->window->resize(this->settings->get_main_window_size());
+
     // Apply application settings.
     if (this->apply_application_settings() != true)
     {
@@ -166,6 +172,11 @@ Gui::Gui(Audio_track                    *in_at_1,
 Gui::~Gui()
 {
     qDebug() << "Gui::Gui: delete object...";
+
+    // Store size/position of the main window (first go back from fullscreen or maximized mode).
+    this->window->showNormal();
+    this->settings->set_main_window_position(this->window->pos());
+    this->settings->set_main_window_size(this->window->size());
 
     // Stop running threads.
     if (this->file_system_model->concurrent_watcher_store->isRunning() == true)

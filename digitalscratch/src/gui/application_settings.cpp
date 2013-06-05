@@ -34,6 +34,8 @@
 #include "digital_scratch_api.h"
 #include <iostream>
 #include <QDir>
+#include <QSize>
+#include <QPoint>
 
 Application_settings::Application_settings()
 {
@@ -67,6 +69,9 @@ Application_settings::init_settings()
     // General application parameters.
     //
 
+    if (this->settings->contains(MAIN_WIN_SIZE_CFG) == false) {
+        this->settings->setValue(MAIN_WIN_SIZE_CFG, this->get_main_window_size_default());
+    }
     if (this->settings->contains(BASE_DIR_PATH_CFG) == false) {
         this->settings->setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
     }
@@ -150,16 +155,77 @@ Application_settings::init_settings()
     }
 }
 
-QString
-Application_settings::get_tracks_base_dir_path()
+void
+Application_settings::set_main_window_size(QSize in_size)
 {
-    return this->settings->value(BASE_DIR_PATH_CFG).toString();
+    this->settings->setValue(MAIN_WIN_SIZE_CFG,
+                             QString::number(in_size.width()) + "x" + QString::number(in_size.height()));
+}
+
+QSize
+Application_settings::get_main_window_size()
+{
+    QString size(this->settings->value(MAIN_WIN_SIZE_CFG).toString());
+
+    if (size.length() < 3)
+    {
+        // Bad size.
+        size = MAIN_WIN_SIZE_CFG_DEFAULT;
+    }
+
+    int width  = size.split("x")[0].toInt();
+    int height = size.split("x")[1].toInt();
+    return QSize(width, height);
+}
+
+QString
+Application_settings::get_main_window_size_default()
+{
+    return MAIN_WIN_SIZE_CFG_DEFAULT;
+}
+
+
+
+void
+Application_settings::set_main_window_position(QPoint in_pos)
+{
+    this->settings->setValue(MAIN_WIN_POS_CFG,
+                             QString::number(in_pos.x()) + "," + QString::number(in_pos.y()));
+}
+
+QPoint
+Application_settings::get_main_window_position()
+{
+    QString pos(this->settings->value(MAIN_WIN_POS_CFG).toString());
+
+    if (pos.length() < 3)
+    {
+        // Bad position.
+        pos = MAIN_WIN_POS_CFG_DEFAULT;
+    }
+
+    int x = pos.split(",")[0].toInt();
+    int y = pos.split(",")[1].toInt();
+
+    return QPoint(x, y);
+}
+
+QString
+Application_settings::get_main_window_position_default()
+{
+    return MAIN_WIN_POS_CFG_DEFAULT;
 }
 
 void
 Application_settings::set_tracks_base_dir_path(QString in_tracks_base_dir_path)
 {
     this->settings->setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
+}
+
+QString
+Application_settings::get_tracks_base_dir_path()
+{
+    return this->settings->value(BASE_DIR_PATH_CFG).toString();
 }
 
 QString
