@@ -161,6 +161,7 @@ class Gui : QObject
     QProgressBar                  *refresh_file_browser_progress;
     QPushButton                   *load_track_on_deck1_button;
     QPushButton                   *load_track_on_deck2_button;
+    QPushButton                   *restart_on_deck1_button;
     QPushButton                   *show_next_key_from_deck1_button;
     QPushButton                   *show_next_key_from_deck2_button;
     QPushButton                   *load_sample1_1_button;

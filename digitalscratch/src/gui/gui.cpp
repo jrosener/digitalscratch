@@ -797,6 +797,15 @@ Gui::create_main_window()
     this->deck1_track_name->setObjectName("TrackName");
     this->deck1_waveform->setObjectName("Waveform");
 
+    this->restart_on_deck1_button = new QPushButton();
+    this->restart_on_deck1_button->setObjectName("Restart_button");
+    this->restart_on_deck1_button->setToolTip(tr("Jump to start"));
+    this->restart_on_deck1_button->setFixedSize(24, 24);
+    this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->restart_on_deck1_button->setCheckable(true);
+
+    QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
+    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, Qt::AlignLeft);
 
     this->deck2_track_name = new QLabel();
     this->deck2_key        = new QLabel();
@@ -847,6 +856,7 @@ Gui::create_main_window()
     deck1_layout->addWidget(deck1_track_name, 10);
     deck1_layout->addLayout(deck1_remaining_time_layout, 10);
     deck1_layout->addWidget(this->deck1_waveform, 70);
+    deck1_layout->addLayout(deck1_buttons_layout, 10);
     deck1_layout->addLayout(decks1_tcode_infos, 10);
     deck1_general_layout->addLayout(deck1_layout, 90);
     // TODO: work on a vertical waveform.
@@ -1432,7 +1442,8 @@ Gui::create_main_window()
                      this,                 SLOT(deck2_jump_to_position(float)));
 
     // Keyboard shortcut to go back to the beginning of the track.
-    QObject::connect(this->shortcut_go_to_begin, SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
+    QObject::connect(this->shortcut_go_to_begin,    SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
+    QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck_go_to_begin()));
 
     // Keyboard shortcut to set a cue point.
     QObject::connect(this->shortcut_set_cue_point, SIGNAL(activated()), this, SLOT(deck_set_cue_point()));
@@ -2349,11 +2360,31 @@ Gui::deck_go_to_begin()
 
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
+        // Deck 2.
+        // Check the button.
+//        this->restart_on_deck1_button->setEnabled(false);
+//        this->restart_on_deck1_button->setChecked(true);
+
+        // Jump.
         this->playback->jump_to_position(1, 0.0);
+
+        // Release the button.
+//        this->restart_on_deck1_button->setEnabled(true);
+//        this->restart_on_deck1_button->setChecked(false);
     }
     else
     {
+        // Deck 1.
+        // Check the button.
+        this->restart_on_deck1_button->setEnabled(false);
+        this->restart_on_deck1_button->setChecked(true);
+
+        // Jump.
         this->playback->jump_to_position(0, 0.0);
+
+        // Release the button.
+        this->restart_on_deck1_button->setEnabled(true);
+        this->restart_on_deck1_button->setChecked(false);
     }
 
     qDebug() << "Gui::deck_go_to_begin done.";
