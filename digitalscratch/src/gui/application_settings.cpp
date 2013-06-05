@@ -72,6 +72,9 @@ Application_settings::init_settings()
     if (this->settings->contains(MAIN_WIN_SIZE_CFG) == false) {
         this->settings->setValue(MAIN_WIN_SIZE_CFG, this->get_main_window_size_default());
     }
+    if (this->settings->contains(MAIN_WIN_POS_CFG) == false) {
+        this->settings->setValue(MAIN_WIN_POS_CFG, this->get_main_window_position_default());
+    }
     if (this->settings->contains(BASE_DIR_PATH_CFG) == false) {
         this->settings->setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
     }

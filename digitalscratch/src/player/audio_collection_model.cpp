@@ -230,6 +230,18 @@ Audio_collection_model::~Audio_collection_model()
         delete this->rootItem;
     }
 
+    // Stop running threads.
+    if (this->concurrent_watcher_store->isStarted() == true)
+    {
+        this->concurrent_watcher_store->cancel();
+        this->concurrent_watcher_store->waitForFinished();
+    }
+    if (this->concurrent_watcher_read->isStarted() == true)
+    {
+        this->concurrent_watcher_read->cancel();
+        this->concurrent_watcher_read->waitForFinished();
+    }
+
     delete this->concurrent_future;
     delete this->concurrent_watcher_read;
     delete this->concurrent_watcher_store;
@@ -537,8 +549,8 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
     if (data_persist->is_initialized == true)
     {
         // Do not do anything if we are still reading collection from DB.
-        if ((this->concurrent_watcher_read->isRunning()  == false) &&
-            (this->concurrent_watcher_store->isRunning() == false))
+        if ((this->concurrent_watcher_read->isStarted()  == false) &&
+            (this->concurrent_watcher_store->isStarted() == false))
         {
             // Analyze item and store to DB (for the whole collection).
             QFuture<void> future = QtConcurrent::map(this->audio_item_list, &external_analyze_audio_collection);

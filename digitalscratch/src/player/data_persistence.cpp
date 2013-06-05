@@ -57,7 +57,7 @@ Data_persistence::~Data_persistence()
     qDebug() << "Audio_track::~Audio_track: delete object...";
 
     this->mutex.lock();
-    if (this->db.open() == true)
+    if (this->db.isValid() == true)
     {
         this->db.close();
     }
@@ -73,6 +73,7 @@ bool Data_persistence::init_db()
     qDebug() << "Data_persistence::init_db...";
 
     // Create DB.
+    this->mutex.lock();
     this->db = QSqlDatabase::addDatabase("QSQLITE");
     QFileInfo path_info(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
     this->db.setDatabaseName(path_info.absoluteFilePath());
@@ -109,6 +110,8 @@ bool Data_persistence::init_db()
         qWarning() << "Data_persistence::init_db: creating base DB structure failed";
         return false;
     }
+
+    this->mutex.unlock();
 
     qDebug() << "Data_persistence::init_db done.";
 

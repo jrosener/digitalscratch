@@ -178,20 +178,8 @@ Gui::~Gui()
     this->settings->set_main_window_position(this->window->pos());
     this->settings->set_main_window_size(this->window->size());
 
-    // Stop running threads.
-    if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
-    {
-        this->file_system_model->concurrent_watcher_store->cancel();
-        this->file_system_model->concurrent_watcher_store->waitForFinished();
-    }
-    if (this->file_system_model->concurrent_watcher_read->isRunning() == true)
-    {
-        this->file_system_model->concurrent_watcher_read->cancel();
-        this->file_system_model->concurrent_watcher_read->waitForFinished();
-    }
-    delete this->file_system_model;
-
     // Cleanup.
+    delete this->file_system_model;
     delete this->file_browser;
     delete this->config_dialog;
     delete this->window;
@@ -804,8 +792,27 @@ Gui::create_main_window()
     this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->restart_on_deck1_button->setCheckable(true);
 
+    this->cue_set_on_deck1_button1 = new QPushButton();
+    this->cue_set_on_deck1_button1->setObjectName("Cue_set_button1");
+    this->cue_set_on_deck1_button1->setToolTip(tr("Set cue point 1"));
+    this->cue_set_on_deck1_button1->setFixedSize(20, 20);
+    this->cue_set_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
+    this->cue_set_on_deck1_button1->setCheckable(true);
+
+    this->cue_play_on_deck1_button1 = new QPushButton();
+    this->cue_play_on_deck1_button1->setObjectName("Cue_play_button1");
+    this->cue_play_on_deck1_button1->setToolTip(tr("Play cue point 1"));
+    this->cue_play_on_deck1_button1->setFixedSize(20, 20);
+    this->cue_play_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
+    this->cue_play_on_deck1_button1->setCheckable(true);
+
+    QHBoxLayout *deck1_cue_buttons1_layout = new QHBoxLayout();
+    deck1_cue_buttons1_layout->addWidget(this->cue_set_on_deck1_button1);
+    deck1_cue_buttons1_layout->addWidget(this->cue_play_on_deck1_button1);
+
     QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
-    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, Qt::AlignLeft);
+    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, 1, Qt::AlignLeft);
+    deck1_buttons_layout->addLayout(deck1_cue_buttons1_layout,     1);
 
     this->deck2_track_name = new QLabel();
     this->deck2_key        = new QLabel();
@@ -844,7 +851,36 @@ Gui::create_main_window()
     deck2_remaining_time_layout->addWidget(this->deck2_key,                      100, Qt::AlignRight);
 
     this->deck2_track_name->setObjectName("TrackName");
-    this->deck2_waveform->setObjectName("Waveform");
+    this->deck2_waveform->setObjectName("Waveform");   
+
+    this->restart_on_deck2_button = new QPushButton();
+    this->restart_on_deck2_button->setObjectName("Restart_button");
+    this->restart_on_deck2_button->setToolTip(tr("Jump to start"));
+    this->restart_on_deck2_button->setFixedSize(24, 24);
+    this->restart_on_deck2_button->setFocusPolicy(Qt::NoFocus);
+    this->restart_on_deck2_button->setCheckable(true);
+
+    this->cue_set_on_deck2_button1 = new QPushButton();
+    this->cue_set_on_deck2_button1->setObjectName("Cue_set_button1");
+    this->cue_set_on_deck2_button1->setToolTip(tr("Set cue point 1"));
+    this->cue_set_on_deck2_button1->setFixedSize(20, 20);
+    this->cue_set_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
+    this->cue_set_on_deck2_button1->setCheckable(true);
+
+    this->cue_play_on_deck2_button1 = new QPushButton();
+    this->cue_play_on_deck2_button1->setObjectName("Cue_play_button1");
+    this->cue_play_on_deck2_button1->setToolTip(tr("Play cue point 1"));
+    this->cue_play_on_deck2_button1->setFixedSize(20, 20);
+    this->cue_play_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
+    this->cue_play_on_deck2_button1->setCheckable(true);
+
+    QHBoxLayout *deck2_cue_buttons1_layout = new QHBoxLayout();
+    deck2_cue_buttons1_layout->addWidget(this->cue_set_on_deck2_button1);
+    deck2_cue_buttons1_layout->addWidget(this->cue_play_on_deck2_button1);
+
+    QHBoxLayout *deck2_buttons_layout = new QHBoxLayout();
+    deck2_buttons_layout->addWidget(this->restart_on_deck2_button, 1, Qt::AlignLeft);
+    deck2_buttons_layout->addLayout(deck2_cue_buttons1_layout,     1);
 
     // Create horizontal and vertical layout for each deck.
     QHBoxLayout *deck1_general_layout = new QHBoxLayout();
@@ -865,6 +901,7 @@ Gui::create_main_window()
     deck2_layout->addWidget(deck2_track_name, 10);
     deck2_layout->addLayout(deck2_remaining_time_layout, 10);
     deck2_layout->addWidget(this->deck2_waveform, 70);
+    deck2_layout->addLayout(deck2_buttons_layout, 10);
     deck2_layout->addLayout(decks2_tcode_infos, 10);
     deck2_general_layout->addLayout(deck2_layout, 90);
     // TODO: work on a vertical waveform.
@@ -1443,13 +1480,18 @@ Gui::create_main_window()
 
     // Keyboard shortcut to go back to the beginning of the track.
     QObject::connect(this->shortcut_go_to_begin,    SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
-    QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck_go_to_begin()));
+    QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck1_go_to_begin()));
+    QObject::connect(this->restart_on_deck2_button, SIGNAL(clicked()),   this, SLOT(deck2_go_to_begin()));
 
     // Keyboard shortcut to set a cue point.
-    QObject::connect(this->shortcut_set_cue_point, SIGNAL(activated()), this, SLOT(deck_set_cue_point()));
+    QObject::connect(this->shortcut_set_cue_point,   SIGNAL(activated()), this, SLOT(deck_set_cue_point()));
+    QObject::connect(this->cue_set_on_deck1_button1, SIGNAL(clicked()),   this, SLOT(deck1_set_cue_point()));
+    QObject::connect(this->cue_set_on_deck2_button1, SIGNAL(clicked()),   this, SLOT(deck2_set_cue_point()));
 
     // Keyboard shortcut to play from a cue point.
-    QObject::connect(this->shortcut_go_to_cue_point, SIGNAL(activated()), this, SLOT(deck_go_to_cue_point()));
+    QObject::connect(this->shortcut_go_to_cue_point,  SIGNAL(activated()), this, SLOT(deck_go_to_cue_point()));
+    QObject::connect(this->cue_play_on_deck1_button1, SIGNAL(clicked()),   this, SLOT(deck1_go_to_cue_point()));
+    QObject::connect(this->cue_play_on_deck2_button1, SIGNAL(clicked()),   this, SLOT(deck2_go_to_cue_point()));
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2361,33 +2403,63 @@ Gui::deck_go_to_begin()
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
         // Deck 2.
-        // Check the button.
-//        this->restart_on_deck1_button->setEnabled(false);
-//        this->restart_on_deck1_button->setChecked(true);
-
-        // Jump.
         this->playback->jump_to_position(1, 0.0);
-
-        // Release the button.
-//        this->restart_on_deck1_button->setEnabled(true);
-//        this->restart_on_deck1_button->setChecked(false);
     }
     else
     {
         // Deck 1.
-        // Check the button.
-        this->restart_on_deck1_button->setEnabled(false);
-        this->restart_on_deck1_button->setChecked(true);
-
-        // Jump.
         this->playback->jump_to_position(0, 0.0);
-
-        // Release the button.
-        this->restart_on_deck1_button->setEnabled(true);
-        this->restart_on_deck1_button->setChecked(false);
     }
 
     qDebug() << "Gui::deck_go_to_begin done.";
+
+    return;
+}
+
+void
+Gui::deck1_go_to_begin()
+{
+    qDebug() << "Gui::deck1_go_to_begin...";
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Check the button.
+    this->restart_on_deck1_button->setEnabled(false);
+    this->restart_on_deck1_button->setChecked(true);
+
+    // Jump.
+    this->deck_go_to_begin();
+
+    // Release the button.
+    this->restart_on_deck1_button->setEnabled(true);
+    this->restart_on_deck1_button->setChecked(false);
+
+    qDebug() << "Gui::deck1_go_to_begin done.";
+
+    return;
+}
+
+void
+Gui::deck2_go_to_begin()
+{
+    qDebug() << "Gui::deck2_go_to_begin...";
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Check the button.
+    this->restart_on_deck2_button->setEnabled(false);
+    this->restart_on_deck2_button->setChecked(true);
+
+    // Jump.
+    this->deck_go_to_begin();
+
+    // Release the button.
+    this->restart_on_deck2_button->setEnabled(true);
+    this->restart_on_deck2_button->setChecked(false);
+
+    qDebug() << "Gui::deck2_go_to_begin done.";
 
     return;
 }
@@ -2398,12 +2470,14 @@ Gui::deck_set_cue_point()
     qDebug() << "Gui::deck_set_cue_point...";
 
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
-    {
+    {       
+        // Deck 2.
         this->deck2_waveform->move_cue_slider(this->playback->get_position(1));
         this->playback->store_cue_point(1);
     }
     else
     {
+        // Deck 1.
         this->deck1_waveform->move_cue_slider(this->playback->get_position(0));
         this->playback->store_cue_point(0);
     }
@@ -2414,20 +2488,118 @@ Gui::deck_set_cue_point()
 }
 
 void
+Gui::deck1_set_cue_point()
+{
+    qDebug() << "Gui::deck1_set_cue_point...";
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Check the button.
+    this->cue_set_on_deck1_button1->setEnabled(false);
+    this->cue_set_on_deck1_button1->setChecked(true);
+
+    // Set cue point.
+    this->deck_set_cue_point();
+
+    // Release the button.
+    this->cue_set_on_deck1_button1->setEnabled(true);
+    this->cue_set_on_deck1_button1->setChecked(false);
+
+    qDebug() << "Gui::deck1_set_cue_point done.";
+
+    return;
+}
+
+void
+Gui::deck2_set_cue_point()
+{
+    qDebug() << "Gui::deck2_set_cue_point...";
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Check the button.
+    this->cue_set_on_deck2_button1->setEnabled(false);
+    this->cue_set_on_deck2_button1->setChecked(true);
+
+    // Set cue point.
+    this->deck_set_cue_point();
+
+    // Release the button.
+    this->cue_set_on_deck2_button1->setEnabled(true);
+    this->cue_set_on_deck2_button1->setChecked(false);
+
+    qDebug() << "Gui::deck2_set_cue_point done.";
+
+    return;
+}
+
+void
 Gui::deck_go_to_cue_point()
 {
     qDebug() << "Gui::deck_go_to_cue_point...";
 
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
-    {
+    {        
+        // Deck 2.
         this->playback->jump_to_cue_point(1);
     }
     else
     {
+        // Deck 1.
         this->playback->jump_to_cue_point(0);
     }
 
     qDebug() << "Gui::deck_go_to_cue_point done.";
+
+    return;
+}
+
+void
+Gui::deck1_go_to_cue_point()
+{
+    qDebug() << "Gui::deck1_go_to_cue_point...";
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Check the button.
+    this->cue_play_on_deck1_button1->setEnabled(false);
+    this->cue_play_on_deck1_button1->setChecked(true);
+
+    // Jump.
+    this->deck_go_to_cue_point();
+
+    // Release the button.
+    this->cue_play_on_deck1_button1->setEnabled(true);
+    this->cue_play_on_deck1_button1->setChecked(false);
+
+    qDebug() << "Gui::deck1_go_to_cue_point done.";
+
+    return;
+}
+
+void
+Gui::deck2_go_to_cue_point()
+{
+    qDebug() << "Gui::deck2_go_to_cue_point...";
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Check the button.
+    this->cue_play_on_deck2_button1->setEnabled(false);
+    this->cue_play_on_deck2_button1->setChecked(true);
+
+    // Jump.
+    this->deck_go_to_cue_point();
+
+    // Release the button.
+    this->cue_play_on_deck2_button1->setEnabled(true);
+    this->cue_play_on_deck2_button1->setChecked(false);
+
+    qDebug() << "Gui::deck2_go_to_cue_point done.";
 
     return;
 }
