@@ -20,7 +20,7 @@ INSTALLS += target
 ##############################
 
 TEMPLATE = app
-QT += sql
+QT += gui widgets sql concurrent
 CONFIG(test) {
     QT       += testlib
     TARGET    = digitalscratch-test
@@ -195,19 +195,29 @@ win32 {
     DESTDIR_WIN = $${DESTDIR}
     CONFIG(debug, debug|release) {
         DESTDIR_WIN += debug
-        DLLS += %QTDIR%/bin/QtCored4.dll \
-                %QTDIR%/bin/QtGuid4.dll \
-                %QTDIR%/bin/QtSqld4.dll
+        DLLS += %QTDIR%/bin/Qt5Cored.dll \
+                %QTDIR%/bin/Qt5Guid.dll \
+                %QTDIR%/bin/Qt5Widgetsd.dll \
+                %QTDIR%/bin/Qt5Concurrentd.dll \
+                %QTDIR%/bin/icuin49.dll \
+                %QTDIR%/bin/icuuc49.dll \
+                %QTDIR%/bin/icudt49.dll \
+                %QTDIR%/bin/Qt5Sqld.dll
         CONFIG(test) {
-           DLLS += %QTDIR%/bin/QtTestd4.dll
+           DLLS += %QTDIR%/bin/Qt5Testd.dll
         }
     } else {
         DESTDIR_WIN += release
-        DLLS += %QTDIR%/bin/QtCore4.dll \
-                %QTDIR%/bin/QtGui4.dll \
-                %QTDIR%/bin/QtSql4.dll
+        DLLS += %QTDIR%/bin/Qt5Core.dll \
+                %QTDIR%/bin/Qt5Gui.dll \
+                %QTDIR%/bin/Qt5Widgets.dll \
+                %QTDIR%/bin/Qt5Concurrent.dll \
+                %QTDIR%/bin/icuin49.dll \
+                %QTDIR%/bin/icuuc49.dll \
+                %QTDIR%/bin/icudt49.dll \
+                %QTDIR%/bin/Qt5Sql.dll
         CONFIG(test) {
-           DLLS += %QTDIR%/bin/QtTest4.dll
+           DLLS += %QTDIR%/bin/Qt5Test.dll
         }
     }
     DLLS ~= s,/,\\,g

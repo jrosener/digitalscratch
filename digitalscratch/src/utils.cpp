@@ -62,14 +62,14 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 
     // Check if file exists.
     QFile file(in_path);
-    if (file.exists() == FALSE)
+    if (file.exists() == false)
     {
         qWarning() << "Utils::get_file_hash: file " << in_path << " does not exists.";
         return "";
     }
 
     // Open file as binary.
-    if (file.open(QIODevice::ReadOnly) == FALSE)
+    if (file.open(QIODevice::ReadOnly) == false)
     {
         return "";
     }

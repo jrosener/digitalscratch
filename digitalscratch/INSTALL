@@ -10,9 +10,13 @@
 
 -- Building requirements -------------------------------------------------------
 
-[GNU/Linux]
+[Compiler]
 - GCC (g++-4.x):           http://gcc.gnu.org
-- Qt SDK (qt4.x):          http://qt-project.org
+or
+- MS Win SDK 7.1 (VS2010): http://www.microsoft.com/en-us/download/details.aspx?id=8279
+
+[Libraries]
+- Qt SDK (qt5.x):          http://qt-project.org
 - mpg123 library:          http://www.mpg123.de
 - FLAC library:            http://flac.sourceforge.net
 - Digital Scratch library: http://www.digital-scratch.org
@@ -29,7 +33,9 @@
 - libdigitalscratch-dev
 
 [MS Windows]
-- TODO
+- Install MS Win SDK 7.1
+- Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL)
+- Build libdigitalscratch
 
 
 -- Build -----------------------------------------------------------------------
@@ -38,9 +44,16 @@
 - qmake
 - make
 - sudo make install
+=> more info: https://github.com/jrosener/digitalscratch/wiki/Build-DigitalScratch-on-Ubuntu
 
 [MS Windows]
-- TODO
+- Start Qt Creator
+- Load project digitalscratch.pro
+- Use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
+- In Project>>Build section uncheck "Shadow build" for debug and release
+- Right click on project digitalscratch, then "Run qmake", then "build"
+=> more info: https://github.com/jrosener/digitalscratch/wiki/Build-DigitalScratch-on-Windows
+
 
 -- Build test suite ------------------------------------------------------------
 
@@ -49,7 +62,9 @@
 - make
 
 [MS Windows]
-- TODO
+- In Qt Creator, create a new build target based on the "Debug" one.
+- Add to the build steps: CONFIG+=test
+- Right click on project libdigitalscratch, then "Run qmake", then "build"
 
 
 -- Playing requirements --------------------------------------------------------
@@ -63,3 +78,9 @@
 [GNU/Linux]
 - qjackctl
 - digitalscratch
+=> more info: https://github.com/jrosener/digitalscratch/wiki/Run-DigitalScratch-on-Ubuntu
+
+[MS Windows]
+- Install and configure Jack for Windows (http://jackaudio.org/download)
+- Start digitalscratch.exe
+=> more info: https://github.com/jrosener/digitalscratch/wiki/Run-DigitalScratch-on-Windows

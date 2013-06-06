@@ -1,6 +1,7 @@
 #include <QtTest>
 #include <utils_test.h>
 #include <iostream>
+#include <QtConcurrent>
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"

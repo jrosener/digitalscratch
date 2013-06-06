@@ -11,16 +11,21 @@
 
 -- Building requirements ----------------------------------------------------------------
 
-[GNU/Linux]
-- GCC (g++-4.x): http://gcc.gnu.org/
-- Qt SDK (qt4.x): http://qt-project.org
+[Compiler]
+- GCC (g++-4.x):           http://gcc.gnu.org
+or
+- MS Win SDK 7.1 (VS2010): http://www.microsoft.com/en-us/download/details.aspx?id=8279
+
+[Libraries]
+- Qt SDK (qt5.x): http://qt-project.org
 
 [Ubuntu 11.04]
 - build-essential
 - qt-sdk (only qt4-dev-tools is mandatory)
 
 [MS Windows]
-- TODO
+- Install MS Win SDK 7.1
+- Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL)
 
 
 -- Build -----------------------------------------------------------------------
@@ -28,7 +33,13 @@
 [GNU/Linux]
 - qmake
 - make
-- make install
+- sudo make install
+=> more info: https://github.com/jrosener/digitalscratch/wiki/Build-DigitalScratch-on-Ubuntu
 
 [MS Windows]
-- TODO
+- Start Qt Creator
+- Load project libdigitalscratch.pro
+- Use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
+- In Project>>Build section uncheck "Shadow build" for debug and release
+- Right click on project libdigitalscratch, then "Run qmake", then "build"
+=> more info: https://github.com/jrosener/digitalscratch/wiki/Build-DigitalScratch-on-Windows

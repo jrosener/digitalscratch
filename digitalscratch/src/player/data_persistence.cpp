@@ -36,10 +36,10 @@
 #include <QtDebug>
 #include "data_persistence.h"
 #include <QSqlError>
-#include <QDesktopServices>
 #include <QFileInfo>
 #include <QDir>
 #include <QSqlQuery>
+#include <QStandardPaths>
 
 Data_persistence::Data_persistence()
 {
@@ -75,7 +75,8 @@ bool Data_persistence::init_db()
     // Create DB.
     this->mutex.lock();
     this->db = QSqlDatabase::addDatabase("QSQLITE");
-    QFileInfo path_info(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
+    QFileInfo path_info(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
+    QString path(path_info.absoluteFilePath());
     this->db.setDatabaseName(path_info.absoluteFilePath());
 
     // Make sure path exists, if not create it.

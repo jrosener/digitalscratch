@@ -126,7 +126,7 @@ Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
         if (in_end_of_samples > this->get_max_nb_samples())
         {
             qCritical() << "Audio_track::set_end_of_samples: in_end_of_samples too big.";
-            return FALSE;
+            return false;
         }
         else
         {
@@ -139,12 +139,12 @@ Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
     }
     else
     {
-        return FALSE;
+        return false;
     }
 
     qDebug() << "Audio_track::set_end_of_samples done.";
 
-    return TRUE;
+    return true;
 }
 
 unsigned int

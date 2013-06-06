@@ -22,7 +22,7 @@ Data_persistence_Test::Data_persistence_Test()
 void Data_persistence_Test::initTestCase()
 {
     // Remove database file.
-    QFile::remove(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
+    QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
 
     // Get/create a data persistence static instance.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
@@ -46,18 +46,18 @@ void Data_persistence_Test::testCaseStoreAudioTrack()
     at->set_fullpath(fullpath);
     at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
     at->set_music_key("A1");
-    QVERIFY2(data_persist->store_audio_track(at) == true, "audio track store");
+    QVERIFY2(data_persist->store_audio_track(at) == true, "audio track 1 store");
 
     // Store another track.
     fullpath = QString(DATA_DIR) + QString(DATA_TRACK_2);
     at->set_fullpath(fullpath);
     at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
     at->set_music_key("A2");
-    QVERIFY2(data_persist->store_audio_track(at) == true, "audio track store");
+    QVERIFY2(data_persist->store_audio_track(at) == true, "audio track 2 store");
 
     // Modify last track.
     at->set_music_key("A21");
-    QVERIFY2(data_persist->store_audio_track(at) == true, "audio track store");
+    QVERIFY2(data_persist->store_audio_track(at) == true, "change key and store");
 
     // Cleanup.
     delete at;

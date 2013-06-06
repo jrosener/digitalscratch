@@ -77,7 +77,7 @@ Audio_file_decoding_process::run(QString in_path, QString in_music_key)
     if (in_path == NULL)
     {
         qWarning() << "Audio_file_decoding_process::run: path is NULL.";
-        return FALSE;
+        return false;
     }
 
     // Check if file exists.
@@ -86,10 +86,10 @@ Audio_file_decoding_process::run(QString in_path, QString in_music_key)
         delete this->file;
     }
     this->file = new QFile(in_path);
-    if (this->file->exists() == FALSE)
+    if (this->file->exists() == false)
     {
         qWarning() << "Audio_file_decoding_process::run: file does not exists.";
-        return FALSE;
+        return false;
     }
     QFileInfo file_info = QFileInfo(*this->file);
 
@@ -99,19 +99,19 @@ Audio_file_decoding_process::run(QString in_path, QString in_music_key)
     if (extension == MP3_FILE_EXT)
     {
         this->at->reset();
-        if (this->mp3_decode() == FALSE)
+        if (this->mp3_decode() == false)
         {
             qWarning() << "Audio_file_decoding_process::run: can not decode MP3 audio data.";
-            return FALSE;
+            return false;
         }
     }
     else if (extension == FLAC_FILE_EXT)
     {
         this->at->reset();
-        if (this->flac_decode() == FALSE)
+        if (this->flac_decode() == false)
         {
             cerr << "Audio_file_decoding_process::run: can not decode FLAC audio data.";
-            return FALSE;
+            return false;
         }
     }
     /*else if (extension == OGG_FILE_EXT)
@@ -120,14 +120,14 @@ Audio_file_decoding_process::run(QString in_path, QString in_music_key)
         if (this->decode_audio_data_ogg() == FALSE)
         {
             cerr << "Audio_file_decoding_process::run: can not decode OGG audio data.";
-            return FALSE;
+            return false;
         }
     }
     */
     else
     {
         qWarning() << "Audio_file_decoding_process::run: unknown extension type.";
-        return FALSE;
+        return false;
     }
 
     // Set name of the track which is for the moment the name of the file.
@@ -141,7 +141,7 @@ Audio_file_decoding_process::run(QString in_path, QString in_music_key)
 
     qDebug() << "Audio_file_decoding_process::run: done.";
 
-    return TRUE;
+    return true;
 }
 
 bool
@@ -178,7 +178,7 @@ Audio_file_decoding_process::mp3_decode()
         mpg123_close(handle);
         mpg123_delete(handle);
         mpg123_exit();
-        return FALSE;
+        return false;
     }
 
     // Verbosity.
@@ -194,7 +194,7 @@ Audio_file_decoding_process::mp3_decode()
     {
         // Read and store a piece of data
         err = mpg123_read(handle, (unsigned char*)&(samples[read_index]), max_nb_sample_decoded - read_index, &done);
-        read_index += done / sizeof(short signed int);
+        read_index += (unsigned int)done / sizeof(short signed int);
         // We are not in feeder mode, so MPG123_OK, MPG123_ERR and
         // MPG123_NEW_FORMAT are the only possibilities.
         // We do not handle a new format, MPG123_DONE is the end... so abort on
@@ -229,7 +229,7 @@ Audio_file_decoding_process::mp3_decode()
     qDebug() << "Audio_file_decoding_process::mp3_decode: " << this->at->get_end_of_samples()
              << " samples decoded.";
 
-    return TRUE;
+    return true;
 }
 
 FLAC__StreamDecoderWriteStatus
@@ -306,7 +306,7 @@ Audio_file_decoding_process::flac_decode()
     qDebug() << "Audio_file_decoding_process::flac_decode: " << this->at->get_end_of_samples()
              << " samples decoded.";
 
-    return TRUE;
+    return true;
 }
 
 FLAC__StreamDecoderWriteStatus
