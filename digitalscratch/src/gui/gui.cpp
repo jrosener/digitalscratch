@@ -1580,11 +1580,21 @@ Gui::apply_main_window_style()
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
         this->load_track_on_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->restart_on_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaSkipBackward));
+        this->cue_set_on_deck1_button1->setIcon(QIcon());
+        this->cue_set_on_deck1_button1->setText("O");
+        this->cue_play_on_deck1_button1->setIcon(QIcon());
+        this->cue_play_on_deck1_button1->setText(">");
         this->load_sample1_1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample1_2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample1_3_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample1_4_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_track_on_deck2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+        this->restart_on_deck2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaSkipBackward));
+        this->cue_set_on_deck2_button1->setIcon(QIcon());
+        this->cue_set_on_deck2_button1->setText("O");
+        this->cue_play_on_deck2_button1->setIcon(QIcon());
+        this->cue_play_on_deck2_button1->setText(">");
         this->load_sample2_1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample2_2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample2_3_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
@@ -1606,11 +1616,21 @@ Gui::apply_main_window_style()
         }
         this->refresh_file_browser->setIcon(QIcon());
         this->load_track_on_deck1_button->setIcon(QIcon());
+        this->restart_on_deck1_button->setIcon(QIcon());
+        this->cue_set_on_deck1_button1->setIcon(QIcon());
+        this->cue_set_on_deck1_button1->setText("");
+        this->cue_play_on_deck1_button1->setIcon(QIcon());
+        this->cue_play_on_deck1_button1->setText("");
         this->load_sample1_1_button->setIcon(QIcon());
         this->load_sample1_2_button->setIcon(QIcon());
         this->load_sample1_3_button->setIcon(QIcon());
         this->load_sample1_4_button->setIcon(QIcon());
         this->load_track_on_deck2_button->setIcon(QIcon());
+        this->restart_on_deck2_button->setIcon(QIcon());
+        this->cue_set_on_deck2_button1->setIcon(QIcon());
+        this->cue_set_on_deck2_button1->setText("");
+        this->cue_play_on_deck2_button1->setIcon(QIcon());
+        this->cue_play_on_deck2_button1->setText("");
         this->load_sample2_1_button->setIcon(QIcon());
         this->load_sample2_2_button->setIcon(QIcon());
         this->load_sample2_3_button->setIcon(QIcon());
