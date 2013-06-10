@@ -19,9 +19,9 @@ or
 [Libraries]
 - Qt SDK (qt5.x): http://qt-project.org
 
-[Ubuntu 11.04]
+[Ubuntu 13.04]
 - build-essential
-- qt-sdk (only qt4-dev-tools is mandatory)
+- qt5-default
 
 [MS Windows]
 - Install MS Win SDK 7.1
