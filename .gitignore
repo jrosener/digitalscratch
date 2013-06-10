@@ -15,6 +15,7 @@ digitalscratch-test
 # Qt user project #
 ###################
 *.pro.user
+*.pro.user.*
 
 # Makefiles       #
 ###################
