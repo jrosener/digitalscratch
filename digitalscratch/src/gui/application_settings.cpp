@@ -126,6 +126,9 @@ Application_settings::init_settings()
     if (this->settings->contains(KB_PLAY_BEGIN_TRACK_ON_DECK) == false) {
         this->settings->setValue(KB_PLAY_BEGIN_TRACK_ON_DECK, KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
     }
+    if (this->settings->contains(KB_GET_NEXT_TRACK_FROM_DECK) == false) {
+        this->settings->setValue(KB_GET_NEXT_TRACK_FROM_DECK, KB_GET_NEXT_TRACK_FROM_DECK_DEFAULT);
+    }
     if (this->settings->contains(KB_SET_CUE_POINT_ON_DECK) == false) {
         this->settings->setValue(KB_SET_CUE_POINT_ON_DECK, KB_SET_CUE_POINT_ON_DECK_DEFAULT);
     }

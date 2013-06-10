@@ -146,6 +146,7 @@ class Gui : QObject
     QShortcut                     *shortcut_collapse_browser;
     QShortcut                     *shortcut_load_audio_file;
     QShortcut                     *shortcut_go_to_begin;
+    QShortcut                     *shortcut_get_next_audio_tracks;
     QShortcut                     *shortcut_set_cue_point;
     QShortcut                     *shortcut_go_to_cue_point;
     QShortcut                     *shortcut_load_sample_file_1;

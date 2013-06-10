@@ -303,6 +303,12 @@ QLabel#Help
 {
    color: black;
 }
+QLabel#Help_title
+{
+   color:       black;
+   font-weight: bold;
+}
+
 
 QPushButton#Sampler_play_buttons
 {

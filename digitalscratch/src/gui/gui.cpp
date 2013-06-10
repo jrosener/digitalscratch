@@ -130,19 +130,20 @@ Gui::Gui(Audio_track                    *in_at_1,
     this->about_dialog = NULL;
 
     // Init shortcuts.
-    this->shortcut_switch_playback    = new QShortcut(this->window);
-    this->shortcut_collapse_browser   = new QShortcut(this->file_browser);
-    this->shortcut_load_audio_file    = new QShortcut(this->file_browser);
-    this->shortcut_go_to_begin        = new QShortcut(this->window);
-    this->shortcut_set_cue_point      = new QShortcut(this->window);
-    this->shortcut_go_to_cue_point    = new QShortcut(this->window);
-    this->shortcut_load_sample_file_1 = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_2 = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
-    this->shortcut_show_next_keys     = new QShortcut(this->file_browser);
-    this->shortcut_fullscreen         = new QShortcut(this->window);
-    this->shortcut_help               = new QShortcut(this->window);
+    this->shortcut_switch_playback       = new QShortcut(this->window);
+    this->shortcut_collapse_browser      = new QShortcut(this->file_browser);
+    this->shortcut_load_audio_file       = new QShortcut(this->file_browser);
+    this->shortcut_go_to_begin           = new QShortcut(this->window);
+    this->shortcut_get_next_audio_tracks = new QShortcut(this->window);
+    this->shortcut_set_cue_point         = new QShortcut(this->window);
+    this->shortcut_go_to_cue_point       = new QShortcut(this->window);
+    this->shortcut_load_sample_file_1    = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_2    = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_3    = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_4    = new QShortcut(this->file_browser);
+    this->shortcut_show_next_keys        = new QShortcut(this->file_browser);
+    this->shortcut_fullscreen            = new QShortcut(this->window);
+    this->shortcut_help                  = new QShortcut(this->window);
 
     // Create main window.
     if (this->create_main_window() != true)
@@ -252,6 +253,7 @@ Gui::apply_application_settings()
     this->shortcut_collapse_browser->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)));
     this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
     this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
+    this->shortcut_get_next_audio_tracks->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK)));
     this->shortcut_set_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)));
     this->shortcut_go_to_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK)));
     this->shortcut_load_sample_file_1->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)));
@@ -697,7 +699,7 @@ Gui::create_main_window()
 
     // Create button to set full screen.
     QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
-    fullscreen_button->setToolTip(tr("Toggle fullscreen mode"));
+    fullscreen_button->setToolTip("<p>" + tr("Toggle fullscreen mode") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_FULLSCREEN) + "</em>");
     fullscreen_button->setObjectName("Fullscreen_button");
     fullscreen_button->setFocusPolicy(Qt::NoFocus);
 
@@ -714,7 +716,7 @@ Gui::create_main_window()
 
     // Create help button.
     QPushButton *help_button = new QPushButton("   " + tr("&Help"));
-    help_button->setToolTip(tr("Show/hide keyboard shortcuts"));
+    help_button->setToolTip("<p>" + tr("Show/hide keyboard shortcuts") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_HELP) + "</em>");
     help_button->setObjectName("Help_button");
     help_button->setFocusPolicy(Qt::NoFocus);
 
@@ -787,21 +789,21 @@ Gui::create_main_window()
 
     this->restart_on_deck1_button = new QPushButton();
     this->restart_on_deck1_button->setObjectName("Restart_button");
-    this->restart_on_deck1_button->setToolTip(tr("Jump to start"));
+    this->restart_on_deck1_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->restart_on_deck1_button->setFixedSize(24, 24);
     this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->restart_on_deck1_button->setCheckable(true);
 
     this->cue_set_on_deck1_button1 = new QPushButton();
     this->cue_set_on_deck1_button1->setObjectName("Cue_set_button1");
-    this->cue_set_on_deck1_button1->setToolTip(tr("Set cue point 1"));
+    this->cue_set_on_deck1_button1->setToolTip("<p>" + tr("Set cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK) + "</em>");
     this->cue_set_on_deck1_button1->setFixedSize(20, 20);
     this->cue_set_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_set_on_deck1_button1->setCheckable(true);
 
     this->cue_play_on_deck1_button1 = new QPushButton();
     this->cue_play_on_deck1_button1->setObjectName("Cue_play_button1");
-    this->cue_play_on_deck1_button1->setToolTip(tr("Play cue point 1"));
+    this->cue_play_on_deck1_button1->setToolTip("<p>" + tr("Play cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
     this->cue_play_on_deck1_button1->setFixedSize(20, 20);
     this->cue_play_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck1_button1->setCheckable(true);
@@ -855,21 +857,21 @@ Gui::create_main_window()
 
     this->restart_on_deck2_button = new QPushButton();
     this->restart_on_deck2_button->setObjectName("Restart_button");
-    this->restart_on_deck2_button->setToolTip(tr("Jump to start"));
+    this->restart_on_deck2_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->restart_on_deck2_button->setFixedSize(24, 24);
     this->restart_on_deck2_button->setFocusPolicy(Qt::NoFocus);
     this->restart_on_deck2_button->setCheckable(true);
 
     this->cue_set_on_deck2_button1 = new QPushButton();
     this->cue_set_on_deck2_button1->setObjectName("Cue_set_button1");
-    this->cue_set_on_deck2_button1->setToolTip(tr("Set cue point 1"));
+    this->cue_set_on_deck2_button1->setToolTip("<p>" + tr("Set cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK) + "</em>");
     this->cue_set_on_deck2_button1->setFixedSize(20, 20);
     this->cue_set_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_set_on_deck2_button1->setCheckable(true);
 
     this->cue_play_on_deck2_button1 = new QPushButton();
     this->cue_play_on_deck2_button1->setObjectName("Cue_play_button1");
-    this->cue_play_on_deck2_button1->setToolTip(tr("Play cue point 1"));
+    this->cue_play_on_deck2_button1->setToolTip("<p>" + tr("Play cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
     this->cue_play_on_deck2_button1->setFixedSize(20, 20);
     this->cue_play_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck2_button1->setCheckable(true);
@@ -1094,6 +1096,9 @@ Gui::create_main_window()
     // Connect the keyboard shortcut to start decoding process on selected file.
     QObject::connect(this->shortcut_load_audio_file, SIGNAL(activated()), this, SLOT(run_audio_file_decoding_process()));
 
+    // Connect the keyboard shortcut that will highlight next potential tracks.
+    QObject::connect(this->shortcut_get_next_audio_tracks, SIGNAL(activated()), this, SLOT(show_next_keys()));
+
     // Connect keyboard shortcuts to start decoding for the sampler.
     QObject::connect(this->shortcut_load_sample_file_1, SIGNAL(activated()), this, SLOT(run_sample_1_decoding_process()));
     QObject::connect(this->shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
@@ -1118,7 +1123,7 @@ Gui::create_main_window()
 
     this->load_track_on_deck1_button = new QPushButton();
     this->load_track_on_deck1_button->setObjectName("Load_track_button_1");
-    this->load_track_on_deck1_button->setToolTip(tr("Load selected track to deck 1"));
+    this->load_track_on_deck1_button->setToolTip("<p>" + tr("Load selected track to deck 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
     this->load_track_on_deck1_button->setFixedSize(24, 24);
     this->load_track_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->load_track_on_deck1_button->setCheckable(true);
@@ -1126,7 +1131,7 @@ Gui::create_main_window()
 
     this->show_next_key_from_deck1_button = new QPushButton();
     this->show_next_key_from_deck1_button->setObjectName("Show_next_key_button");
-    this->show_next_key_from_deck1_button->setToolTip(tr("Show deck 1 next potential tracks"));
+    this->show_next_key_from_deck1_button->setToolTip("<p>" + tr("Show deck 1 next potential tracks") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK) + "</em>");
     this->show_next_key_from_deck1_button->setFixedSize(24, 24);
     this->show_next_key_from_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->show_next_key_from_deck1_button->setCheckable(true);
@@ -1134,7 +1139,7 @@ Gui::create_main_window()
 
     this->load_sample1_1_button = new QPushButton();
     this->load_sample1_1_button->setObjectName("Load_track_sample_button_a");
-    this->load_sample1_1_button->setToolTip(tr("Load selected track to sample A"));
+    this->load_sample1_1_button->setToolTip("<p>" + tr("Load selected track to sample A") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
     this->load_sample1_1_button->setFixedSize(20, 20);
     this->load_sample1_1_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_1_button->setCheckable(true);
@@ -1142,7 +1147,7 @@ Gui::create_main_window()
 
     this->load_sample1_2_button = new QPushButton();
     this->load_sample1_2_button->setObjectName("Load_track_sample_button_b");
-    this->load_sample1_2_button->setToolTip(tr("Load selected track to sample B"));
+    this->load_sample1_2_button->setToolTip("<p>" + tr("Load selected track to sample B") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
     this->load_sample1_2_button->setFixedSize(20, 20);
     this->load_sample1_2_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_2_button->setCheckable(true);
@@ -1150,7 +1155,7 @@ Gui::create_main_window()
 
     this->load_sample1_3_button = new QPushButton();
     this->load_sample1_3_button->setObjectName("Load_track_sample_button_c");
-    this->load_sample1_3_button->setToolTip(tr("Load selected track to sample C"));
+    this->load_sample1_3_button->setToolTip("<p>" + tr("Load selected track to sample C") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
     this->load_sample1_3_button->setFixedSize(20, 20);
     this->load_sample1_3_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_3_button->setCheckable(true);
@@ -1158,7 +1163,7 @@ Gui::create_main_window()
 
     this->load_sample1_4_button = new QPushButton();
     this->load_sample1_4_button->setObjectName("Load_track_sample_button_d");
-    this->load_sample1_4_button->setToolTip(tr("Load selected track to sample D"));
+    this->load_sample1_4_button->setToolTip("<p>" + tr("Load selected track to sample D") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
     this->load_sample1_4_button->setFixedSize(20, 20);
     this->load_sample1_4_button->setFocusPolicy(Qt::NoFocus);
     this->load_sample1_4_button->setCheckable(true);
@@ -1166,25 +1171,34 @@ Gui::create_main_window()
 
     if (this->nb_decks > 1)
     {
-        this->load_sample2_1_button = new QPushButton();
-        this->load_sample2_1_button->setObjectName("Load_track_sample_button_a");
-        this->load_sample2_1_button->setToolTip(tr("Load selected track to sample A"));
-        this->load_sample2_1_button->setFixedSize(20, 20);
-        this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
-        this->load_sample2_1_button->setCheckable(true);
-        QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+
+        this->load_track_on_deck2_button = new QPushButton();
+        this->load_track_on_deck2_button->setObjectName("Load_track_button_2");
+        this->load_track_on_deck2_button->setToolTip("<p>" + tr("Load selected track to deck 2") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
+        this->load_track_on_deck2_button->setFixedSize(24, 24);
+        this->load_track_on_deck2_button->setFocusPolicy(Qt::NoFocus);
+        this->load_track_on_deck2_button->setCheckable(true);
+        QObject::connect(this->load_track_on_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
 
         this->show_next_key_from_deck2_button = new QPushButton();
         this->show_next_key_from_deck2_button->setObjectName("Show_next_key_button");
-        this->show_next_key_from_deck2_button->setToolTip(tr("Show deck 2 next potential tracks"));
+        this->show_next_key_from_deck2_button->setToolTip("<p>" + tr("Show deck 2 next potential tracks") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK) + "</em>");
         this->show_next_key_from_deck2_button->setFixedSize(24, 24);
         this->show_next_key_from_deck2_button->setFocusPolicy(Qt::NoFocus);
         this->show_next_key_from_deck2_button->setCheckable(true);
         QObject::connect(this->show_next_key_from_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck2()));
 
+        this->load_sample2_1_button = new QPushButton();
+        this->load_sample2_1_button->setObjectName("Load_track_sample_button_a");
+        this->load_sample2_1_button->setToolTip("<p>" + tr("Load selected track to sample A") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
+        this->load_sample2_1_button->setFixedSize(20, 20);
+        this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_1_button->setCheckable(true);
+        QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+
         this->load_sample2_2_button = new QPushButton();
         this->load_sample2_2_button->setObjectName("Load_track_sample_button_b");
-        this->load_sample2_2_button->setToolTip(tr("Load selected track to sample B"));
+        this->load_sample2_2_button->setToolTip("<p>" + tr("Load selected track to sample B") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
         this->load_sample2_2_button->setFixedSize(20, 20);
         this->load_sample2_2_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_2_button->setCheckable(true);
@@ -1192,7 +1206,7 @@ Gui::create_main_window()
 
         this->load_sample2_3_button = new QPushButton();
         this->load_sample2_3_button->setObjectName("Load_track_sample_button_c");
-        this->load_sample2_3_button->setToolTip(tr("Load selected track to sample C"));
+        this->load_sample2_3_button->setToolTip("<p>" + tr("Load selected track to sample C") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
         this->load_sample2_3_button->setFixedSize(20, 20);
         this->load_sample2_3_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_3_button->setCheckable(true);
@@ -1200,19 +1214,11 @@ Gui::create_main_window()
 
         this->load_sample2_4_button = new QPushButton();
         this->load_sample2_4_button->setObjectName("Load_track_sample_button_d");
-        this->load_sample2_4_button->setToolTip(tr("Load selected track to sample D"));
+        this->load_sample2_4_button->setToolTip("<p>" + tr("Load selected track to sample D") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
         this->load_sample2_4_button->setFixedSize(20, 20);
         this->load_sample2_4_button->setFocusPolicy(Qt::NoFocus);
         this->load_sample2_4_button->setCheckable(true);
         QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
-
-        this->load_track_on_deck2_button = new QPushButton();
-        this->load_track_on_deck2_button->setObjectName("Load_track_button_2");
-        this->load_track_on_deck2_button->setToolTip(tr("Load selected track to deck 2"));
-        this->load_track_on_deck2_button->setFixedSize(24, 24);
-        this->load_track_on_deck2_button->setFocusPolicy(Qt::NoFocus);
-        this->load_track_on_deck2_button->setCheckable(true);
-        QObject::connect(this->load_track_on_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
     }
 
     // Create progress bar for the refresh button.
@@ -1286,17 +1292,28 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Create help labels and pixmaps.
-    QLabel *help_switch_deck_lb    = new QLabel(tr("Switch playback"));
+    QLabel *help_display_lb        = new QLabel(tr("Display"));
+    QLabel *help_fullscreen_lb     = new QLabel(tr("Fullscreen"));
+    QLabel *help_fullscreen_value  = new QLabel(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
+    QLabel *help_help_lb           = new QLabel(tr("Help"));
+    QLabel *help_help_value        = new QLabel(this->settings->get_keyboard_shortcut(KB_HELP));
+    QLabel *help_switch_deck_lb    = new QLabel(tr("Switch selected playback"));
     QLabel *help_switch_deck_value = new QLabel(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
-    QLabel *help_deck_lb           = new QLabel(tr("Load/Restart on deck"));
-    QLabel *help_deck_value        = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
+
+    QLabel *help_deck_lb           = new QLabel(tr("Selected deck"));
+    QLabel *help_load_deck_lb      = new QLabel(tr("Load/Restart track"));
+    QLabel *help_load_deck_value   = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
                                                 + "/"
                                                 + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
-    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point on deck"));
+    QLabel *help_next_track_lb     = new QLabel(tr("Highlight next tracks"));
+    QLabel *help_next_track_value  = new QLabel(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
+    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point"));
     QLabel *help_cue_value         = new QLabel(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)
                                                 + "/"
                                                 + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
-    QLabel *help_sample_lb         = new QLabel(tr("Load on sampler 1/2/3/4"));
+
+    QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
+    QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
     QLabel *help_sample_value      = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
                                                 + "/"
                                                 + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
@@ -1304,42 +1321,60 @@ Gui::create_main_window()
                                                 + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
                                                 + "/"
                                                 + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
-    QLabel *help_fullscreen_lb     = new QLabel(tr("Fullscreen"));
-    QLabel *help_fullscreen_value  = new QLabel(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
-    QLabel *help_help_lb           = new QLabel(tr("Help"));
-    QLabel *help_help_value        = new QLabel(this->settings->get_keyboard_shortcut(KB_HELP));
-    QLabel *help_browse_lb1        = new QLabel(tr("Browse files"));
+
+    QLabel *help_browser_lb        = new QLabel(tr("File browser"));
+    QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
     QLabel *help_browse_value1     = new QLabel("Up/Down/Left/Right");
-    QLabel *help_browse_lb2        = new QLabel(tr("Collapse file tree"));
+    QLabel *help_browse_lb2        = new QLabel(tr("Collapse all"));
     QLabel *help_browse_value2     = new QLabel(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
 
-    help_switch_deck_lb->setObjectName("Help");
-    help_cue_lb->setObjectName("Help");
-    help_deck_lb->setObjectName("Help");
-    help_sample_lb->setObjectName("Help");
+
+
+    help_display_lb->setObjectName("Help_title");
     help_fullscreen_lb->setObjectName("Help");
     help_help_lb->setObjectName("Help");
+    help_switch_deck_lb->setObjectName("Help");
+
+    help_deck_lb->setObjectName("Help_title");
+    help_load_deck_lb->setObjectName("Help");
+    help_next_track_lb->setObjectName("Help");
+    help_cue_lb->setObjectName("Help");
+
+    help_sampler_lb->setObjectName("Help_title");
+    help_sample_lb->setObjectName("Help");
+
+    help_browser_lb->setObjectName("Help_title");
     help_browse_lb1->setObjectName("Help");
     help_browse_lb2->setObjectName("Help");
 
     // Setup layout.
     QGridLayout *help_layout = new QGridLayout();
-    help_layout->addWidget(help_switch_deck_lb,    0, 0);
-    help_layout->addWidget(help_switch_deck_value, 0, 1, Qt::AlignLeft);
-    help_layout->addWidget(help_sample_lb,         1, 0);
-    help_layout->addWidget(help_sample_value,      1, 1, Qt::AlignLeft);
-    help_layout->addWidget(help_deck_lb,           0, 2);
-    help_layout->addWidget(help_deck_value,        0, 3, Qt::AlignLeft);
-    help_layout->addWidget(help_cue_lb,            1, 2);
-    help_layout->addWidget(help_cue_value,         1, 3, Qt::AlignLeft);
-    help_layout->addWidget(help_fullscreen_lb,     0, 4);
-    help_layout->addWidget(help_fullscreen_value,  0, 5, Qt::AlignLeft);
-    help_layout->addWidget(help_help_lb,           1, 4);
-    help_layout->addWidget(help_help_value,        1, 5, Qt::AlignLeft);
-    help_layout->addWidget(help_browse_lb1,        0, 6);
-    help_layout->addWidget(help_browse_value1,     0, 7, Qt::AlignLeft);
-    help_layout->addWidget(help_browse_lb2,        1, 6);
-    help_layout->addWidget(help_browse_value2,     1, 7, Qt::AlignLeft);
+
+    help_layout->addWidget(help_display_lb,           0, 0);
+    help_layout->addWidget(help_fullscreen_lb,        1, 0);
+    help_layout->addWidget(help_fullscreen_value,     1, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_help_lb,              2, 0);
+    help_layout->addWidget(help_help_value,           2, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_switch_deck_lb,       3, 0);
+    help_layout->addWidget(help_switch_deck_value,    3, 1, Qt::AlignLeft);
+
+    help_layout->addWidget(help_deck_lb,              0, 2);
+    help_layout->addWidget(help_load_deck_lb,         1, 2);
+    help_layout->addWidget(help_load_deck_value,      1, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_next_track_lb,        2, 2);
+    help_layout->addWidget(help_next_track_value,     2, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_cue_lb,               3, 2);
+    help_layout->addWidget(help_cue_value,            3, 3, Qt::AlignLeft);
+
+    help_layout->addWidget(help_sampler_lb,           0, 4);
+    help_layout->addWidget(help_sample_lb,            1, 4);
+    help_layout->addWidget(help_sample_value,         1, 5, Qt::AlignLeft);
+
+    help_layout->addWidget(help_browser_lb,           0, 6);
+    help_layout->addWidget(help_browse_lb1,           1, 6);
+    help_layout->addWidget(help_browse_value1,        1, 7, Qt::AlignLeft);
+    help_layout->addWidget(help_browse_lb2,           2, 6);
+    help_layout->addWidget(help_browse_value2,        2, 7, Qt::AlignLeft);
 
     help_layout->setColumnStretch(0, 1);
     help_layout->setColumnStretch(1, 5);
