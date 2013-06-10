@@ -22,10 +22,11 @@ or
 - Digital Scratch library: http://www.digital-scratch.org
 - Sample rate library:     http://www.mega-nerd.com/SRC/
 - JACK library:            http://jackaudio.org/
+- LibKeyFinder:            http://www.ibrahimshaath.co.uk/keyfinder/
 
-[Ubuntu 12.10]
+[Ubuntu 13.04]
 - build-essential
-- qt4-sdk (only qt4-dev-tools is mandatory)
+- qt5-default
 - libmpg123-dev
 - libjack-jackd2-dev
 - libsamplerate0-dev
