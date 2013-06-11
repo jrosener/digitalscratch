@@ -944,19 +944,17 @@ Gui::create_main_window()
     {
         this->sampler1_buttons_play[i] = new QPushButton();
         this->sampler1_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler1_buttons_play[i]->setIconSize(QSize(12, 12));
-        this->sampler1_buttons_play[i]->setMaximumWidth(24);
-        this->sampler1_buttons_play[i]->setMaximumHeight(24);
+        this->sampler1_buttons_play[i]->setFixedSize(20, 20);
         this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler1_buttons_play[i]->setCheckable(true);
+        this->sampler1_buttons_play[i]->setToolTip(tr("Play sample from start"));
         this->sampler1_buttons_stop[i] = new QPushButton();
         this->sampler1_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler1_buttons_stop[i]->setIconSize(QSize(12, 12));
-        this->sampler1_buttons_stop[i]->setMaximumWidth(24);
-        this->sampler1_buttons_stop[i]->setMaximumHeight(24);
+        this->sampler1_buttons_stop[i]->setFixedSize(20, 20);
         this->sampler1_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler1_buttons_stop[i]->setCheckable(true);
         this->sampler1_buttons_stop[i]->setChecked(true);
+        this->sampler1_buttons_stop[i]->setToolTip(tr("Stop sample"));
         this->sampler1_trackname[i] = new QLabel(tr("--"));
         this->sampler1_remainingtime[i] = new QLabel("- 00");
 
@@ -989,19 +987,17 @@ Gui::create_main_window()
     {
         this->sampler2_buttons_play[i] = new QPushButton();
         this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler2_buttons_play[i]->setIconSize(QSize(12, 12));
-        this->sampler2_buttons_play[i]->setMaximumWidth(24);
-        this->sampler2_buttons_play[i]->setMaximumHeight(24);
+        this->sampler2_buttons_play[i]->setFixedSize(20, 20);
         this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler2_buttons_play[i]->setCheckable(true);
+        this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
         this->sampler2_buttons_stop[i] = new QPushButton();
         this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler2_buttons_stop[i]->setIconSize(QSize(12, 12));
-        this->sampler2_buttons_stop[i]->setMaximumWidth(24);
-        this->sampler2_buttons_stop[i]->setMaximumHeight(24);
+        this->sampler2_buttons_stop[i]->setFixedSize(20, 20);
         this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler2_buttons_stop[i]->setCheckable(true);
         this->sampler2_buttons_stop[i]->setChecked(true);
+        this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
         this->sampler2_trackname[i] = new QLabel(tr("--"));
         this->sampler2_remainingtime[i] = new QLabel("- 00");
 
