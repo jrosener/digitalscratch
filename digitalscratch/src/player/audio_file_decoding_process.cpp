@@ -149,17 +149,17 @@ Audio_file_decoding_process::mp3_decode()
 {
     qDebug() << "Audio_file_decoding_process::mp3_decode...";
 
-    int            err             = MPG123_OK;
-    mpg123_handle *handle          = NULL;
-    QByteArray     file_name_array = this->file->fileName().toLatin1();
-    char          *file_name       = (char*)file_name_array.constData();
-    int            channels        = 0;
-    int            encoding        = 0;
-    long           rate            = 0;
-    size_t         done            = 0;
-    unsigned int   read_index      = 0;
-    unsigned int   max_nb_sample_decoded = 0;
-    short signed int *samples      = this->at->get_samples();
+    int               err                   = MPG123_OK;
+    mpg123_handle    *handle                = NULL;
+    QByteArray        file_name_array       = this->file->fileName().toUtf8();
+    char             *file_name             = (char*)file_name_array.constData();
+    int               channels              = 0;
+    int               encoding              = 0;
+    long              rate                  = 0;
+    size_t            done                  = 0;
+    unsigned int      read_index            = 0;
+    unsigned int      max_nb_sample_decoded = 0;
+    short signed int *samples               = this->at->get_samples();
 
     // Initialize mpg123.
     err = mpg123_init();
@@ -268,9 +268,8 @@ Audio_file_decoding_process::flac_decode()
     FLAC__bool                     ok              = true;
     FLAC__StreamDecoder           *decoder         = 0;
     FLAC__StreamDecoderInitStatus  init_status;
-    QByteArray                     file_name_array = this->file->fileName().toLatin1();
+    QByteArray                     file_name_array = this->file->fileName().toUtf8();
     char                          *file_name       = (char*)file_name_array.constData();
-
     this->flac_total_samples = 0;
     this->flac_sample_rate   = 0;
     this->flac_channels      = 0;

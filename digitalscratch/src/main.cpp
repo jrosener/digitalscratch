@@ -82,9 +82,6 @@ int main(int argc, char *argv[])
     // Create application.
     QApplication app(argc, argv);
 
-    // Used for file path as UTF8.
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // FIXME: Should be probably removed in Qt5.
-
     // Set max number of simultaneous new threads.
 #ifdef WIN32
     QThreadPool::globalInstance()->setMaxThreadCount(1);
