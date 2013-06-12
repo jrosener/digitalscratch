@@ -758,23 +758,23 @@ Gui::create_main_window()
 
     QLabel *deck1_tcode_speed           = new QLabel(tr("Speed (%): "));
     QLabel *deck1_tcode_speed_value     = new QLabel(tr("000.0"));
-    deck1_tcode_speed->setObjectName("SpeedLabel");
-    deck1_tcode_speed_value->setObjectName("SpeedValue");
+    deck1_tcode_speed->setObjectName("Speed");
+    deck1_tcode_speed_value->setObjectName("Speed");
     // TODO: work on position detection
     //QLabel *deck1_tcode_position        = new QLabel(tr("Position (ms): "));
     //QLabel *deck1_tcode_position_value  = new QLabel(tr("000.000"));
     QLabel *deck1_tcode_amplitude       = new QLabel(tr("Volume (%): "));
     QLabel *deck1_tcode_amplitude_value = new QLabel(tr("000.0"));
-    deck1_tcode_amplitude->setObjectName("VolumeLabel");
-    deck1_tcode_amplitude_value->setObjectName("VolumeValue");
+    deck1_tcode_amplitude->setObjectName("Volume");
+    deck1_tcode_amplitude_value->setObjectName("Volume");
     QHBoxLayout *decks1_tcode_infos = new QHBoxLayout;
-    decks1_tcode_infos->addWidget(deck1_tcode_speed, 1);
-    decks1_tcode_infos->addWidget(deck1_tcode_speed_value, 10);
+    decks1_tcode_infos->addWidget(deck1_tcode_speed,       1, Qt::AlignLeft);
+    decks1_tcode_infos->addWidget(deck1_tcode_speed_value, 2, Qt::AlignLeft);
     // TODO: work on position detection
     //decks1_tcode_infos->addWidget(deck1_tcode_position, 1);
     //decks1_tcode_infos->addWidget(deck1_tcode_position_value, 10);
-    decks1_tcode_infos->addWidget(deck1_tcode_amplitude, 1);
-    decks1_tcode_infos->addWidget(deck1_tcode_amplitude_value, 10);
+    decks1_tcode_infos->addWidget(deck1_tcode_amplitude,       1,  Qt::AlignLeft);
+    decks1_tcode_infos->addWidget(deck1_tcode_amplitude_value, 10, Qt::AlignLeft);
     QHBoxLayout *deck1_remaining_time_layout = new QHBoxLayout;
     deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->minus, 1,   Qt::AlignBottom);
     deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->min,   1,   Qt::AlignBottom);
@@ -826,23 +826,23 @@ Gui::create_main_window()
 
     QLabel *deck2_tcode_speed           = new QLabel(tr("Speed (%): "));
     QLabel *deck2_tcode_speed_value     = new QLabel(tr("000.0"));
-    deck2_tcode_speed->setObjectName("SpeedLabel");
-    deck2_tcode_speed_value->setObjectName("SpeedValue");
+    deck2_tcode_speed->setObjectName("Speed");
+    deck2_tcode_speed_value->setObjectName("Speed");
     // TODO: work on position detection
     //QLabel *deck2_tcode_position        = new QLabel(tr("Position (ms): "));
     //QLabel *deck2_tcode_position_value  = new QLabel(tr("000.000"));
     QLabel *deck2_tcode_amplitude       = new QLabel(tr("Volume (%): "));
     QLabel *deck2_tcode_amplitude_value = new QLabel(tr("000.0"));
-    deck2_tcode_amplitude->setObjectName("VolumeLabel");
-    deck2_tcode_amplitude_value->setObjectName("VolumeValue");
+    deck2_tcode_amplitude->setObjectName("Volume");
+    deck2_tcode_amplitude_value->setObjectName("Volume");
     QHBoxLayout *decks2_tcode_infos = new QHBoxLayout;
-    decks2_tcode_infos->addWidget(deck2_tcode_speed, 1);
-    decks2_tcode_infos->addWidget(deck2_tcode_speed_value, 10);
+    decks2_tcode_infos->addWidget(deck2_tcode_speed,       1, Qt::AlignLeft);
+    decks2_tcode_infos->addWidget(deck2_tcode_speed_value, 2, Qt::AlignLeft);
     // TODO: work on position detection
     //decks2_tcode_infos->addWidget(deck2_tcode_position, 1);
     //decks2_tcode_infos->addWidget(deck2_tcode_position_value, 10);
-    decks2_tcode_infos->addWidget(deck2_tcode_amplitude, 1);
-    decks2_tcode_infos->addWidget(deck2_tcode_amplitude_value, 10);
+    decks2_tcode_infos->addWidget(deck2_tcode_amplitude,       1,  Qt::AlignLeft);
+    decks2_tcode_infos->addWidget(deck2_tcode_amplitude_value, 10, Qt::AlignLeft);
     QHBoxLayout *deck2_remaining_time_layout = new QHBoxLayout;
     deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->minus, 1,   Qt::AlignBottom);
     deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->min,   1,   Qt::AlignBottom);

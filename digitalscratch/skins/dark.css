@@ -226,21 +226,29 @@ QHeaderView::section {
 
 QLabel#TrackName
 {
-   font:        10pt;
+   font:        9pt;
    font-weight: bold;
 }
 QLabel#RemainingTime
 {
-   font:        14pt;
+   font:        12pt;
    font-weight: bold;
 }
 QLabel#RemainingTimeMsec
 {
-   font:       10pt;
+   font: 9pt;
+}
+QLabel#Volume
+{
+   font: 6pt;
+}
+QLabel#Speed
+{
+   font: 6pt;
 }
 QLabel#KeyValue
 {
-   font:        10pt;
+   font: 9pt;
 }
 
 QTabBar::tab
