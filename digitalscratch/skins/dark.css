@@ -665,6 +665,12 @@ QPushButton#Cue_play_button1:checked
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-cue_play_1_white.png);
 }
+QLabel#Cue_point_label
+{
+    border: 1px solid gray;
+    color:  gray;
+    font:   7pt;
+}
 
 QMessageBox
 {

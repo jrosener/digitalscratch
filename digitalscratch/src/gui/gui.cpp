@@ -808,13 +808,22 @@ Gui::create_main_window()
     this->cue_play_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck1_button1->setCheckable(true);
 
+    this->cue_point_label1_deck1 = new QLabel("00:00:000");
+    this->cue_point_label1_deck1->setObjectName("Cue_point_label");
+    this->cue_point_label1_deck1->setFixedWidth(47);
+
     QHBoxLayout *deck1_cue_buttons1_layout = new QHBoxLayout();
-    deck1_cue_buttons1_layout->addWidget(this->cue_set_on_deck1_button1);
-    deck1_cue_buttons1_layout->addWidget(this->cue_play_on_deck1_button1);
+    deck1_cue_buttons1_layout->addWidget(this->cue_set_on_deck1_button1,  1, Qt::AlignLeft);
+    deck1_cue_buttons1_layout->addWidget(this->cue_play_on_deck1_button1, 1, Qt::AlignLeft);
+
+    QVBoxLayout *deck1_cue_points1_layout = new QVBoxLayout();
+    deck1_cue_points1_layout->addLayout(deck1_cue_buttons1_layout);
+    deck1_cue_points1_layout->addWidget(cue_point_label1_deck1, 1, Qt::AlignLeft);
 
     QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
-    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, 1, Qt::AlignLeft);
-    deck1_buttons_layout->addLayout(deck1_cue_buttons1_layout,     1);
+    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, 1, Qt::AlignLeft | Qt::AlignTop);
+    deck1_buttons_layout->addWidget(new QLabel(),                  100);
+    deck1_buttons_layout->addLayout(deck1_cue_points1_layout,      1);
 
     this->deck2_track_name = new QLabel();
     this->deck2_key        = new QLabel();
