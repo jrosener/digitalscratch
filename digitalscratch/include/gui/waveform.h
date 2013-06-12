@@ -52,6 +52,7 @@ class Waveform : public QLabel
     QLabel      *slider;
     int          slider_position_x;
     QLabel      *cue_slider;
+    QLabel      *cue_slider_number;
     int          cue_slider_position_x;
     unsigned int end_of_waveform;
 

@@ -803,7 +803,7 @@ Gui::create_main_window()
 
     this->cue_play_on_deck1_button1 = new QPushButton();
     this->cue_play_on_deck1_button1->setObjectName("Cue_play_button1");
-    this->cue_play_on_deck1_button1->setToolTip("<p>" + tr("Play cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
+    this->cue_play_on_deck1_button1->setToolTip("<p>" + tr("Play from cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
     this->cue_play_on_deck1_button1->setFixedSize(20, 20);
     this->cue_play_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck1_button1->setCheckable(true);
@@ -871,7 +871,7 @@ Gui::create_main_window()
 
     this->cue_play_on_deck2_button1 = new QPushButton();
     this->cue_play_on_deck2_button1->setObjectName("Cue_play_button1");
-    this->cue_play_on_deck2_button1->setToolTip("<p>" + tr("Play cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
+    this->cue_play_on_deck2_button1->setToolTip("<p>" + tr("Play from cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
     this->cue_play_on_deck2_button1->setFixedSize(20, 20);
     this->cue_play_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck2_button1->setCheckable(true);

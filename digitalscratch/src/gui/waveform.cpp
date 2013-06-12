@@ -63,10 +63,13 @@ Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
 
     // Create cue slider.
     this->cue_slider_position_x = 0;
-    this->cue_slider = new QLabel(this);
+    this->cue_slider        = new QLabel(this);
+    this->cue_slider_number = new QLabel(this);
+    this->cue_slider_number->setText("1");
     this->draw_cue_slider();
     this->cue_slider->setObjectName("CueSlider");
     this->cue_slider->setStyleSheet("background-color: white;");
+    this->cue_slider_number->setStyleSheet("background-color: white; color: black; font: 6pt; qproperty-alignment: AlignCenter;");
 
     qDebug() << "Waveform::Waveform: create object done.";
 
@@ -79,8 +82,6 @@ Waveform::~Waveform()
 
     // Delete table of points.
     delete [] this->points;
-
-    // TODO : delete slider and cue_slider ???
 
     qDebug() << "Waveform::Waveform: delete object done.";
 
@@ -265,5 +266,6 @@ Waveform::move_cue_slider(float in_position)
 void
 Waveform::draw_cue_slider()
 {
-    this->cue_slider->setGeometry(this->cue_slider_position_x, 4, 1, this->area_height - 8);
+    this->cue_slider->setGeometry(this->cue_slider_position_x, 0, 1, this->area_height);
+    this->cue_slider_number->setGeometry(this->cue_slider_position_x, 0, 10, 10);
 }
