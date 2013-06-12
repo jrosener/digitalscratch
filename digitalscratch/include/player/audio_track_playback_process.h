@@ -93,8 +93,9 @@ class Audio_track_playback_process : public QObject
     bool jump_to_position(unsigned short int in_deck_index,
                           float              in_position);
 
-    bool store_cue_point(unsigned short int in_deck_index);
-    bool jump_to_cue_point(unsigned short int in_deck_index);
+    bool    store_cue_point(unsigned short int in_deck_index);
+    bool    jump_to_cue_point(unsigned short int in_deck_index);
+    QString get_cue_point_str(unsigned short int in_deck_index);
 
     float get_position(unsigned short int in_deck_index); // 0.0 < position < 1.0
 
@@ -117,10 +118,9 @@ class Audio_track_playback_process : public QObject
                           unsigned short int   in_nb_samples,
                           float              **out_samples);
 
-    bool
-    play_sampler(unsigned short int   in_deck_index,
-                 unsigned short int   in_nb_samples,
-                 float              **out_samples);
+    bool play_sampler(unsigned short int   in_deck_index,
+                      unsigned short int   in_nb_samples,
+                      float              **out_samples);
 
     bool update_remaining_time(unsigned short int in_deck_index);
 

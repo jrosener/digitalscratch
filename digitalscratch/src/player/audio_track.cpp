@@ -38,6 +38,7 @@
 #include <QDir>
 
 #include "audio_track.h"
+#include <utils.h>
 
 Audio_track::Audio_track()
 {
@@ -181,6 +182,15 @@ Audio_track::get_length()
 }
 
 QString
+Audio_track::get_length_str()
+{
+    qDebug() << "Audio_track::get_length_str...";
+    qDebug() << "Audio_track::get_length_str done.";
+
+    return Utils::get_str_time_from_sample_index(this->end_of_samples, SAMPLE_RATE, false);
+}
+
+QString
 Audio_track::get_name()
 {
     qDebug() << "Audio_track::get_name...";
@@ -197,7 +207,7 @@ Audio_track::set_name(QString in_name)
     if (in_name != this->name)
     {
         this->name = in_name;
-        emit name_changed(this->name);
+        emit name_changed("[" + this->get_length_str() + "]  " + this->name);
     }
 
     qDebug() << "Audio_track::set_name done.";

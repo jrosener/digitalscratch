@@ -323,8 +323,7 @@ QPushButton#Sampler_play_buttons
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   height:           24px;
-   width:            24px;
+   padding:          3px;
    image:            url(:/pixmaps/dark-play.png);
 }
 QPushButton#Sampler_play_buttons:hover
@@ -343,8 +342,7 @@ QPushButton#Sampler_stop_buttons
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   height:           24px;
-   width:            24px;
+   padding:          3px;
    image:            url(:/pixmaps/dark-stop.png);
 }
 QPushButton#Sampler_stop_buttons:hover
@@ -615,7 +613,7 @@ QPushButton#Cue_set_button1
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   padding:          4px;
+   padding:          3px;
    image:            url(:/pixmaps/dark-cue_set_1.png);
 }
 QPushButton#Cue_set_button1:hover
@@ -643,7 +641,7 @@ QPushButton#Cue_play_button1
    background-color: gray;
    border:           none;
    border-radius:    0px;
-   padding:          4px;
+   padding:          3px;
    image:            url(:/pixmaps/dark-cue_play_1.png);
 }
 QPushButton#Cue_play_button1:hover

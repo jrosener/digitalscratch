@@ -169,6 +169,7 @@ class Gui : QObject
     QLabel                        *cue_point_label1_deck1;
     QPushButton                   *cue_set_on_deck2_button1;
     QPushButton                   *cue_play_on_deck2_button1;
+    QLabel                        *cue_point_label1_deck2;
     QPushButton                   *show_next_key_from_deck1_button;
     QPushButton                   *show_next_key_from_deck2_button;
     QPushButton                   *load_sample1_1_button;

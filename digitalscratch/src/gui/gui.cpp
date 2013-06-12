@@ -885,13 +885,22 @@ Gui::create_main_window()
     this->cue_play_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck2_button1->setCheckable(true);
 
+    this->cue_point_label1_deck2 = new QLabel("00:00:000");
+    this->cue_point_label1_deck2->setObjectName("Cue_point_label");
+    this->cue_point_label1_deck2->setFixedWidth(47);
+
     QHBoxLayout *deck2_cue_buttons1_layout = new QHBoxLayout();
-    deck2_cue_buttons1_layout->addWidget(this->cue_set_on_deck2_button1);
-    deck2_cue_buttons1_layout->addWidget(this->cue_play_on_deck2_button1);
+    deck2_cue_buttons1_layout->addWidget(this->cue_set_on_deck2_button1,  1, Qt::AlignLeft);
+    deck2_cue_buttons1_layout->addWidget(this->cue_play_on_deck2_button1, 1, Qt::AlignLeft);
+
+    QVBoxLayout *deck2_cue_points1_layout = new QVBoxLayout();
+    deck2_cue_points1_layout->addLayout(deck2_cue_buttons1_layout);
+    deck2_cue_points1_layout->addWidget(cue_point_label1_deck2, 1, Qt::AlignLeft);
 
     QHBoxLayout *deck2_buttons_layout = new QHBoxLayout();
-    deck2_buttons_layout->addWidget(this->restart_on_deck2_button, 1, Qt::AlignLeft);
-    deck2_buttons_layout->addLayout(deck2_cue_buttons1_layout,     1);
+    deck2_buttons_layout->addWidget(this->restart_on_deck2_button, 1, Qt::AlignLeft | Qt::AlignTop);
+    deck2_buttons_layout->addWidget(new QLabel(),                  100);
+    deck2_buttons_layout->addLayout(deck2_cue_points1_layout,      1);
 
     // Create horizontal and vertical layout for each deck.
     QHBoxLayout *deck1_general_layout = new QHBoxLayout();
@@ -953,13 +962,13 @@ Gui::create_main_window()
     {
         this->sampler1_buttons_play[i] = new QPushButton();
         this->sampler1_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler1_buttons_play[i]->setFixedSize(20, 20);
+        this->sampler1_buttons_play[i]->setFixedSize(16, 16);
         this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler1_buttons_play[i]->setCheckable(true);
         this->sampler1_buttons_play[i]->setToolTip(tr("Play sample from start"));
         this->sampler1_buttons_stop[i] = new QPushButton();
         this->sampler1_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler1_buttons_stop[i]->setFixedSize(20, 20);
+        this->sampler1_buttons_stop[i]->setFixedSize(16, 16);
         this->sampler1_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler1_buttons_stop[i]->setCheckable(true);
         this->sampler1_buttons_stop[i]->setChecked(true);
@@ -996,13 +1005,13 @@ Gui::create_main_window()
     {
         this->sampler2_buttons_play[i] = new QPushButton();
         this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler2_buttons_play[i]->setFixedSize(20, 20);
+        this->sampler2_buttons_play[i]->setFixedSize(16, 16);
         this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler2_buttons_play[i]->setCheckable(true);
         this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
         this->sampler2_buttons_stop[i] = new QPushButton();
         this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler2_buttons_stop[i]->setFixedSize(20, 20);
+        this->sampler2_buttons_stop[i]->setFixedSize(16, 16);
         this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
         this->sampler2_buttons_stop[i]->setCheckable(true);
         this->sampler2_buttons_stop[i]->setChecked(true);
@@ -2245,12 +2254,14 @@ Gui::run_audio_file_decoding_process()
     // Get selected deck/sampler.
     unsigned short int deck_index = 0;
     QLabel   *deck_track_name = this->deck1_track_name;
+    QLabel   *deck_cue_point  = this->cue_point_label1_deck1;
     Waveform *deck_waveform   = this->deck1_waveform;
     Audio_file_decoding_process *decode_process = this->dec_1;
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
         deck_index = 1;
         deck_track_name = this->deck2_track_name;
+        deck_cue_point  = this->cue_point_label1_deck2;
         deck_waveform   = this->deck2_waveform;
         decode_process  = this->dec_2;
     }
@@ -2264,17 +2275,21 @@ Gui::run_audio_file_decoding_process()
         else
         {
             this->playback->reset(deck_index);
+            deck_waveform->move_slider(0.0);
 
             // Reset cue point.
             deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
+            deck_cue_point->setText("00:00:000");
         }
     }
     else
     {
         this->playback->reset(deck_index);
+        deck_waveform->move_slider(0.0);
 
         // Reset cue point.
         deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
+        deck_cue_point->setText("00:00:000");
     }
 
     // Update waveforms.
@@ -2534,12 +2549,14 @@ Gui::deck_set_cue_point()
         // Deck 2.
         this->deck2_waveform->move_cue_slider(this->playback->get_position(1));
         this->playback->store_cue_point(1);
+        this->cue_point_label1_deck2->setText(this->playback->get_cue_point_str(1));
     }
     else
     {
         // Deck 1.
         this->deck1_waveform->move_cue_slider(this->playback->get_position(0));
         this->playback->store_cue_point(0);
+        this->cue_point_label1_deck1->setText(this->playback->get_cue_point_str(0));
     }
 
     qDebug() << "Gui::deck_set_cue_point done.";

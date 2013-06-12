@@ -73,6 +73,7 @@ class Audio_track : public QObject
     signed int        get_sample_rate();                                  // Get sample rate.
     unsigned int      get_security_nb_samples();                          // Get number of samples used for decoding security purpose.
     unsigned int      get_length();                                       // Get length of the track (msec).
+    QString           get_length_str();                                   // Get length of the track (min:sec:msec).
     QString           get_name();                                         // Get name of the track.
     bool              set_name(QString in_name);                          // Set name of the track (basically artist+track).
     QString           get_path();                                         // Get path of the track.

@@ -65,6 +65,10 @@ class Utils
                                     QString& next_key,
                                     QString& prev_key,
                                     QString& next_major_key);
+
+    static QString get_str_time_from_sample_index(unsigned int in_sample_index,
+                                                  unsigned int in_sample_rate,
+                                                  bool         in_with_msec);
 };
 
 #endif /* UTILS_H_ */

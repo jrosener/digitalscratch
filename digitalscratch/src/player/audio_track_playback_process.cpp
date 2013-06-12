@@ -34,6 +34,7 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+#include <utils.h>
 
 #include "audio_track_playback_process.h"
 
@@ -724,6 +725,13 @@ Audio_track_playback_process::jump_to_cue_point(unsigned short int in_deck_index
     return true;
 }
 
+QString
+Audio_track_playback_process::get_cue_point_str(unsigned short int in_deck_index)
+{
+    return Utils::get_str_time_from_sample_index(this->cue_points[in_deck_index],
+                                                 this->ats[in_deck_index]->get_sample_rate(),
+                                                 true);
+}
 
 bool
 Audio_track_playback_process::speed_up(float              *io_speed,

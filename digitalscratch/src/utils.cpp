@@ -277,3 +277,32 @@ void Utils::get_next_music_keys(QString  in_key,
 
     return;
 }
+
+QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
+                                              unsigned int in_sample_rate,
+                                              bool         in_with_msec)
+{
+    // Calculate cue point position as min:sec:msec
+    unsigned int msec = (unsigned int)(1000.0 * (float)(in_sample_index) / (2.0 * (float)in_sample_rate));
+    int          sec  = msec / 1000.0;
+    div_t        tmp_division = div(sec, 60);
+    QString min_str  = QString::number(tmp_division.quot);
+    QString sec_str  = QString::number(tmp_division.rem);
+    QString msec_str = QString::number(msec).right(3);
+
+    if (min_str.size() == 1)
+    {
+        min_str = "0" + min_str;
+    }
+    if (sec_str.size() == 1)
+    {
+        sec_str = "0" + sec_str;
+    }
+    QString pos = min_str + ":" + sec_str;
+    if (in_with_msec == true)
+    {
+        pos += ":" + msec_str;
+    }
+
+    return pos;
+}
