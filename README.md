@@ -6,7 +6,8 @@ Digital-Scratch
 [Digital-Scratch](http://www.digital-scratch.org/ "Digital-scratch") is a free software that analyzes motions (rotation speed and direction) of a vinyl disc played by a turntable.  
 It also provide a nice and simple player that plays digital tracks allowing you to mix as you would do it with regular records.
 
-More informations at [http://www.digital-scratch.org](http://www.digital-scratch.org).
+* More informations at [http://www.digital-scratch.org](http://www.digital-scratch.org).
+* Mailing list: digitalscratch@googlegroups.com (to subscribe, send a mail to digitalscratch+subscribe@googlegroups.com)
 
 ### Requirements
 
