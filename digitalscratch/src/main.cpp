@@ -43,9 +43,7 @@
 #include <QThreadPool>
 #include "sound_capture_and_playback_process.h"
 #include <singleton.h>
-
-#define MAX_MINUTES_TRACK   15 // Maximum number of minutes for an audio track
-#define MAX_MINUTES_SAMPLER 1  // Maximum number of minutes for a sample in the sampler
+#include <application_const.h>
 
 // Pass-through function.
 int

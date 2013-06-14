@@ -96,7 +96,6 @@ Waveform::get_area_size()
     // Get current display area size.
     this->area_height = this->frameSize().height() - 1;
     this->area_width  = this->frameSize().width() - 1;
-    qDebug() << "Waveform::get_area_size: Size of area: h=" << this->area_height << "X w=" << this->area_width;
 
     qDebug() << "Waveform::get_area_size done.";
 
@@ -162,16 +161,28 @@ Waveform::paintEvent(QPaintEvent *)
         qDebug() << "Waveform::paintEvent: can not generate polyline";
     }
 
-    // Draw polyline on current area.
     QPainter painter(this);
+
+    // Draw polyline on current area.
     painter.setPen(QColor("grey"));
 //painter.scale(10.0, 1.0);
-    painter.drawPolyline(this->points, POINTS_MAX_SIZE);
+    painter.drawPolyline(this->points, POINTS_MAX_SIZE); // waveform from track
+
+    // Draw minute separators.
+    painter.setPen(QColor(0, 102, 0)); // kind of green
+    painter.drawRect(0, 0, this->area_width, this->area_height);
+    float x = 0.0;
+    for (int i = 0; i < MAX_MINUTES_TRACK; i++)
+    {
+        x = i * (float)this->area_width / (float)MAX_MINUTES_TRACK;
+        painter.drawLine(qRound(x), 0, qRound(x), this->area_height);
+    }
+
     painter.end();
 
-    // Resize sliders height.
-    this->slider->setGeometry(this->slider_position_x, 0, 2, this->area_height);
-    this->draw_cue_slider();
+    // Move sliders.
+    this->move_slider(this->slider_absolute_position);
+    this->move_cue_slider(this->cue_slider_absolute_position);
 
     qDebug() << "Vertical::paintEvent done.";
 
@@ -200,6 +211,9 @@ Waveform::jump_slider(int in_x)
 
         // Emit signal to change position in track.
         emit slider_position_changed((float)in_x / (float)this->area_width);
+
+        // Store absolute position.
+        this->slider_absolute_position = (float)in_x / (float)this->area_width;
     }
 
     qDebug() << "Waveform::jump_slider done.";
@@ -233,6 +247,9 @@ Waveform::move_slider(float in_position)
         return false;
     }
 
+    // Store absolute position.
+    this->slider_absolute_position = in_position;
+
     // Move slider to new position.
     this->slider_position_x = in_position * this->area_width;
     this->slider->setGeometry(this->slider_position_x, 0, 2, this->area_height);
@@ -253,6 +270,9 @@ Waveform::move_cue_slider(float in_position)
         qDebug() << "Waveform::move_cue_slider: can not move cue slider to position =" << in_position;
         return false;
     }
+
+    // Store absolute position.
+    this->cue_slider_absolute_position = in_position;
 
     // Move slider to new position.
     this->cue_slider_position_x = in_position * this->area_width;

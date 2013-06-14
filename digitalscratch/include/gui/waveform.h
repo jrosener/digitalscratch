@@ -51,9 +51,11 @@ class Waveform : public QLabel
     Audio_track *at;
     QLabel      *slider;
     int          slider_position_x;
+    float        slider_absolute_position;
     QLabel      *cue_slider;
     QLabel      *cue_slider_number;
     int          cue_slider_position_x;
+    float        cue_slider_absolute_position;
     unsigned int end_of_waveform;
 
  public:
