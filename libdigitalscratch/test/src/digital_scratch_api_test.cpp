@@ -352,7 +352,7 @@ BOOST_AUTO_TEST_CASE (test_digital_scratch_api_dscratch_analyze_recorded_datas_i
 }
 
 /**
- * Test final_scratch_get_extreme_min() and final_scratch_set_extreme_min().
+ * Test dscratch_get_extreme_min() and dscratch_set_extreme_min().
  *
  * Test Description:
  *      - Create a turntable.
@@ -361,7 +361,7 @@ BOOST_AUTO_TEST_CASE (test_digital_scratch_api_dscratch_analyze_recorded_datas_i
  *      - Set the same value+1.
  *      - Check if the result is value+1.
  */
-BOOST_AUTO_TEST_CASE (test_digital_scratch_api_final_scratch_set_extreme_min)
+BOOST_AUTO_TEST_CASE (test_digital_scratch_api_dscratch_set_extreme_min)
 {
     int   id  = -1;
     float val = 0.0;
@@ -373,15 +373,15 @@ BOOST_AUTO_TEST_CASE (test_digital_scratch_api_final_scratch_set_extreme_min)
                                                 &id), 0);
 
     // Get default value.
-    val = final_scratch_get_extreme_min(id);
+    val = dscratch_get_extreme_min(id);
 
     // Try to set a negative value.
-    BOOST_CHECK_EQUAL(final_scratch_set_extreme_min(id, -val), 1);
-    BOOST_CHECK_EQUAL(final_scratch_get_extreme_min(id), val);
+    BOOST_CHECK_EQUAL(dscratch_set_extreme_min(id, -val), 1);
+    BOOST_CHECK_EQUAL(dscratch_get_extreme_min(id), val);
 
     // Set value + 1
-    BOOST_CHECK_EQUAL(final_scratch_set_extreme_min(id, val+inc), 0);
-    BOOST_CHECK_CLOSE(final_scratch_get_extreme_min(id), val+inc, 0.1);
+    BOOST_CHECK_EQUAL(dscratch_set_extreme_min(id, val+inc), 0);
+    BOOST_CHECK_CLOSE(dscratch_get_extreme_min(id), val+inc, 0.1);
 
     // Cleanup.
     BOOST_CHECK_EQUAL(dscratch_delete_turntable(id), 0);
@@ -395,16 +395,7 @@ BOOST_AUTO_TEST_CASE (test_digital_scratch_api_final_scratch_set_extreme_min)
  */
 BOOST_AUTO_TEST_CASE (test_digital_scratch_api_dscratch_get_version)
 {
-    char *version = NULL;
-
-    BOOST_CHECK_EQUAL(dscratch_get_version(&version), 0);
-    BOOST_CHECK_EQUAL(version, "2.0.0");
-
-    // Cleanup.
-    if (version != NULL)
-    {
-        free(version);
-    }
+    BOOST_CHECK_EQUAL(dscratch_get_version(), "1.2.0");
 }
 
 /**
