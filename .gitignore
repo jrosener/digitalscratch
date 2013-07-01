@@ -7,10 +7,12 @@ release/
 *.so.*
 digitalscratch
 digitalscratch-test
+libdigitalscratch-test
 !digitalscratch/
 *-Debug/
 *-Release/
 *.pdb
+moc_*
 
 # Qt user project #
 ###################

@@ -39,7 +39,7 @@
 #include <algorithm>
 using namespace std;
 
-#include "include/test_utils.h"
+#include "test_utils.h"
 
 void l_create_default_input_samples(vector<float> &tb_1,
                                     vector<float> &tb_2)

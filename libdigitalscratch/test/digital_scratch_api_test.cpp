@@ -39,7 +39,7 @@
 #include <algorithm>
 using namespace std;
 
-#include "include/test_utils.h"
+#include "test_utils.h"
 
 // Include class to test.
 #include <digital_scratch_api.h>

@@ -4,21 +4,30 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
 
-TARGET = digitalscratch
-TEMPLATE = lib
+CONFIG(test) {
+    QT       += testlib
+    TARGET    = libdigitalscratch-test
+    CONFIG   += console
+    CONFIG   -= app_bundle
+}
+else {
+    QT -= core gui
 
-DEFINES += DIGITALSCRATCH_LIBRARY
-VERSION = 1.3.0
-DEFINES += VERSION=$${VERSION}
+    TARGET = digitalscratch
+    TEMPLATE = lib
 
-target.path = /usr/lib
+    DEFINES += DIGITALSCRATCH_LIBRARY
+    VERSION = 1.3.0
+    DEFINES += VERSION=$${VERSION}
 
-include.path = /usr/include
-include.files = src/include/digital_scratch_api.h
+    target.path = /usr/lib
 
-INSTALLS += target include
+    include.path = /usr/include
+    include.files = src/include/digital_scratch_api.h
+
+    INSTALLS += target include
+}
 
 SOURCES += \ 
     src/volume.cpp \
@@ -50,6 +59,24 @@ HEADERS += \
     src/include/coded_vinyl.h \
     src/include/mixvibes_vinyl.h
 
+CONFIG(test) {
+    INCLUDEPATH += test src/include
+
+    SOURCES += test/main_test.cpp \
+               test/controller_test.cpp \
+               #test/test_utils.cpp \
+               #test/speed_test.cpp \
+               #test/position_test.cpp \
+               #test/digital_scratch_test_suite.cpp \
+               #test/digital_scratch_test.cpp \
+               #test/digital_scratch_api_test.cpp \
+               #test/volume_test.cpp \               
+               #test/coded_vinyl_test.cpp
+
+    HEADERS += test/controller_test.h
+               #test/test_utils.h
+}
+
 OTHER_FILES += \
     AUTHORS \
     README \
@@ -69,17 +96,19 @@ OTHER_FILES += \
 
 ############################
 # Copy dll and .h for windows build
-win32 {
-    CONFIG(debug, debug|release) {
-        OUT_PWD_WIN = $${OUT_PWD}/debug
-    } else {
-        OUT_PWD_WIN = $${OUT_PWD}/release
+CONFIG(!test) {
+    win32 {
+        CONFIG(debug, debug|release) {
+            OUT_PWD_WIN = $${OUT_PWD}/debug
+        } else {
+            OUT_PWD_WIN = $${OUT_PWD}/release
+        }
+        OUT_PWD_WIN ~= s,/,\\,g
+        PWD_WIN = $${PWD}
+        PWD_WIN ~= s,/,\\,g
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.lib) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.dll) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch_api.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
     }
-    OUT_PWD_WIN ~= s,/,\\,g
-    PWD_WIN = $${PWD}
-    PWD_WIN ~= s,/,\\,g
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.lib) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.dll) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch_api.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
 }
 ############################

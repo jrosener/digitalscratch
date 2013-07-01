@@ -1,46 +1,20 @@
-/*============================================================================*/
-/*                                                                            */
-/*                                                                            */
-/*                           Digital Scratch System                           */
-/*                                    Tests                                   */
-/*                                                                            */
-/*                                                                            */
-/*----------------------------------------------------[ controller_test.cpp ]-*/
-/*                                                                            */
-/*  Copyright (C) 2003-2007                                                   */
-/*                Julien Rosener <julien.rosener@digital-scratch.org>         */
-/*                                                                            */
-/*----------------------------------------------------------------( License )-*/
-/*                                                                            */
-/*  This program is free software; you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */
-/*  the Free Software Foundation; either version 2 of the License, or         */
-/*  (at your option) any later version.                                       */
-/*                                                                            */
-/*  This program is distributed in the hope that it will be useful,           */
-/*  but WITHOUT ANY WARRANTY; without even the implied warranty of            */
-/*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              */
-/*  GNU General Public License for more details.                              */
-/*                                                                            */
-/*  You should have received a copy of the GNU General Public License         */
-/*  along with this program; if not, write to the Free Software               */
-/*  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA */
-/*                                                                            */
-/*------------------------------------------------------------( Description )-*/
-/*                                                                            */
-/*                        Digital-scratch Tests                               */
-/*                   Unit tests for Controller class                          */
-/*                                                                            */
-/*============================================================================*/
-
-#include <iostream>
-using namespace std;
-
-// Include class to test.
+#include <QString>
+#include <QtTest>
+#include <controller_test.h>
 #include <controller.h>
+#include <iostream>
 
-// Use Boost.Test
-#include <boost/test/auto_unit_test.hpp>
+Controller_Test::Controller_Test()
+{
+}
+
+void Controller_Test::initTestCase()
+{
+}
+
+void Controller_Test::cleanupTestCase()
+{
+}
 
 /**
  * Test Controller::Controller().
@@ -50,20 +24,20 @@ using namespace std;
  *      - Check if controller name was correctly stored.
  *      - Check if speed, position and volume are correctly initialized.
  */
-BOOST_AUTO_TEST_CASE (test_controller_constructor)
+void Controller_Test::testCaseConstructor()
 {
     Controller *ctrl = new Controller("controller_name");
     float speed    = 0.0;
     float volume   = 0.0;
     float position = 0.0;
 
-    BOOST_CHECK_EQUAL(ctrl->get_name(), "controller_name");
-    BOOST_CHECK_EQUAL(ctrl->get_playing_parameters(&speed, &volume, &position), false);
-    BOOST_CHECK_EQUAL(speed, 0.0);
-    BOOST_CHECK_EQUAL(volume, 0.0);
-    BOOST_CHECK_EQUAL(position, 0.0);
-    BOOST_CHECK_EQUAL(ctrl->get_max_nb_no_new_speed_found(), 1);
-    BOOST_CHECK_EQUAL(ctrl->get_max_nb_cycle_before_starting(), 1);
+    QVERIFY2(ctrl->get_name() == "controller_name", "name");
+    QVERIFY2(ctrl->get_playing_parameters(&speed, &volume, &position) == false, "playing parameters");
+    QVERIFY2(speed    == 0.0, "speed");
+    QVERIFY2(volume   == 0.0, "volume");
+    QVERIFY2(position == 0.0, "position");
+    QVERIFY2(ctrl->get_max_nb_no_new_speed_found()    == 1, "max nb no new speed found");
+    QVERIFY2(ctrl->get_max_nb_cycle_before_starting() == 1, "max nb cycle before starting");
 
     // Cleanup
     delete ctrl;
@@ -78,14 +52,20 @@ BOOST_AUTO_TEST_CASE (test_controller_constructor)
  *      - Put an empty name using set_name(""), check if it return false and
  *        if the name is not set.
  */
-BOOST_AUTO_TEST_CASE (test_controller_set_name)
+void Controller_Test::testControllerSetName()
 {
     Controller *ctrl = new Controller("controller_name");
 
-    BOOST_CHECK_EQUAL(ctrl->get_name(), "controller_name");
+    // Default name.
+    QVERIFY2(ctrl->get_name() == "controller_name", "get default name");
 
-    BOOST_CHECK_EQUAL(ctrl->set_name(""), false);
-    BOOST_CHECK_EQUAL(ctrl->get_name(), "controller_name");
+    // Wrong name.
+    QVERIFY2(ctrl->set_name("") == false, "set wrong name");
+    QVERIFY2(ctrl->get_name() == "controller_name", "get default name again");
+    
+    // New name.
+    QVERIFY2(ctrl->set_name("test_name") == true, "set correct name");
+    QVERIFY2(ctrl->get_name() == "test_name", "get new name");
 
     // Cleanup
     delete ctrl;
