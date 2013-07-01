@@ -100,9 +100,9 @@ bool l_get_coded_vinyl(int           turntable_id,
 
 /********************************* API functions ******************************/
 
-int dscratch_create_turntable(char *name,
-                              char *coded_vinyl_type,
-                              int  *turntable_id)
+int dscratch_create_turntable(const char *name,
+                              const char *coded_vinyl_type,
+                              int        *turntable_id)
 {
     // Error if no name is provided.
     if (name == NULL || Utils::to_string(name) == "")

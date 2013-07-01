@@ -63,17 +63,19 @@ CONFIG(test) {
     INCLUDEPATH += test src/include
 
     SOURCES += test/main_test.cpp \
+               test/test_utils.cpp \
                test/controller_test.cpp \
-               #test/test_utils.cpp \
+               test/digital_scratch_api_test.cpp
                #test/speed_test.cpp \
                #test/position_test.cpp \
                #test/digital_scratch_test_suite.cpp \
                #test/digital_scratch_test.cpp \
-               #test/digital_scratch_api_test.cpp \
                #test/volume_test.cpp \               
                #test/coded_vinyl_test.cpp
 
-    HEADERS += test/controller_test.h
+    HEADERS += test/test_utils.h \
+               test/controller_test.h \
+               test/digital_scratch_api_test.h
                #test/test_utils.h
 }
 

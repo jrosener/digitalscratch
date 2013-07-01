@@ -94,9 +94,9 @@ extern "C" {
  *
  * @return 0 if all is OK, otherwise 1.
  */
-DLLIMPORT int dscratch_create_turntable(char *name,
-                                        char *coded_vinyl_type,
-                                        int  *turntable_id);
+DLLIMPORT int dscratch_create_turntable(const char *name,
+                                        const char *coded_vinyl_type,
+                                        int        *turntable_id);
 
 /**
  * Remove the specified turntable from turntable list and delete (deallocate
