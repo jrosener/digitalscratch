@@ -14,11 +14,11 @@ void l_create_default_input_samples(vector<float> &tb_1,
     tb_2.reserve(5);
 
     // Fill tables with default values.
-    tb_1.push_back(0.0); tb_2.push_back(0.5);
-    tb_1.push_back(0.1); tb_2.push_back(0.6);
-    tb_1.push_back(0.2); tb_2.push_back(0.7);
-    tb_1.push_back(0.3); tb_2.push_back(0.8);
-    tb_1.push_back(0.4); tb_2.push_back(0.9);
+    tb_1.push_back(0.0f); tb_2.push_back(0.5f);
+    tb_1.push_back(0.1f); tb_2.push_back(0.6f);
+    tb_1.push_back(0.2f); tb_2.push_back(0.7f);
+    tb_1.push_back(0.3f); tb_2.push_back(0.8f);
+    tb_1.push_back(0.4f); tb_2.push_back(0.9f);
 
     return;
 }
@@ -87,8 +87,8 @@ int l_read_input_samples_from_file(const char    *file_name,
     {
         if (line.find_first_of('>') == string::npos) // Not a line with buffer size.
         {
-            d1 = strtod (line.c_str(), &p_end);
-            d2 = strtod (p_end, NULL);
+            d1 = (float)strtod (line.c_str(), &p_end);
+            d2 = (float)strtod (p_end, NULL);
             tb_1.push_back(d1);
             tb_2.push_back(d2);
             i++;

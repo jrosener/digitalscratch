@@ -5,7 +5,7 @@
 using std::vector;
 
 // Timecode file name.
-#define TIMECODE_FILE_1 "data/timecode_1.txt" /** sp=1.0 dir=1 pos=? buf=225x50 */
+#define TIMECODE_FILE_1 "test/data/timecode_1.txt" /** sp=1.0 dir=1 pos=? buf=225x50 */
 
 /**
  * This function create 2 tables of float with 5 parameters.

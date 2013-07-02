@@ -10,6 +10,7 @@ CONFIG(test) {
     TARGET    = libdigitalscratch-test
     CONFIG   += console
     CONFIG   -= app_bundle
+    VERSION   = 1.0.0
 }
 else {
     QT -= core gui
@@ -18,8 +19,7 @@ else {
     TEMPLATE = lib
 
     DEFINES += DIGITALSCRATCH_LIBRARY
-    VERSION = 1.3.0
-    DEFINES += VERSION=$${VERSION}
+    VERSION  = 1.3.0
 
     target.path = /usr/lib
 
@@ -28,6 +28,7 @@ else {
 
     INSTALLS += target include
 }
+DEFINES += VERSION=$${VERSION}
 
 SOURCES += \ 
     src/volume.cpp \
@@ -111,6 +112,32 @@ CONFIG(!test) {
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.lib) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.dll) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch_api.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
+    }
+}
+
+CONFIG(test) {
+    win32 {
+        DESTDIR_WIN = $${DESTDIR}
+        CONFIG(debug, debug|release) {
+            DESTDIR_WIN += debug
+            DLLS = %QTDIR%/bin/Qt5Cored.dll \
+                   %QTDIR%/bin/icuin49.dll \
+                   %QTDIR%/bin/icuuc49.dll \
+                   %QTDIR%/bin/icudt49.dll \
+                   %QTDIR%/bin/Qt5Testd.dll
+        } else {
+            DESTDIR_WIN += release
+            DLLS = %QTDIR%/bin/Qt5Core.dll \
+                   %QTDIR%/bin/icuin49.dll \
+                   %QTDIR%/bin/icuuc49.dll \
+                   %QTDIR%/bin/icudt49.dll \
+                   %QTDIR%/bin/Qt5Test.dll
+        }
+        DLLS ~= s,/,\\,g
+        DESTDIR_WIN ~= s,/,\\,g
+        for(FILE, DLLS){
+            QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_WIN}) $$escape_expand(\\n\\t)
+        }
     }
 }
 ############################

@@ -82,7 +82,7 @@
 /**********************************Trace levels********************************/
 
 //#define DISPLAY_CODE_LINE                // Display code line at each traces (warning decrease performances !)
-#define TRACE_ERROR                   0  // error message
+//#define TRACE_ERROR                   0  // error message
 //#define TRACE_THREAD                  1  // thread management
 //#define TRACE_OBJECT_LIFE             2  // object construction/destruction
 //#define TRACE_OBJECT_ATTRIBUTS_CHANGE 3  // object attributs management

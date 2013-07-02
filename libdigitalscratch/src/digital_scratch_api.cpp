@@ -482,19 +482,19 @@ int dscratch_get_turntable_name(int    turntable_id,
     }
 
     // Get name from Controller.
-    char *controller_name = (char*)tab_turntable[turntable_id]->get_name().c_str();
+    string controller_name = tab_turntable[turntable_id]->get_name();
 
     // Size of result.
-    size = strlen(controller_name)+1;
+    size = controller_name.length() + 1;
 
     // Allocate memory for resulting string.
     name = (char*)malloc(sizeof(char) * size);
 
     // Put turntable name in resulting string.
     #ifdef WIN32
-        strncpy_s(name, size, controller_name, size);
+        strncpy_s(name, size, controller_name.c_str(), size);
     #else
-        strncpy(name, controller_name, size);
+        strncpy(name, controller_name.c_str(), size);
     #endif
 
     // Return turntable name
