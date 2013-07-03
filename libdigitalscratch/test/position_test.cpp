@@ -1,47 +1,27 @@
-/*============================================================================*/
-/*                                                                            */
-/*                                                                            */
-/*                           Digital Scratch System                           */
-/*                                    Tests                                   */
-/*                                                                            */
-/*                                                                            */
-/*------------------------------------------------------[ position_test.cpp ]-*/
-/*                                                                            */
-/*  Copyright (C) 2003-2007                                                   */
-/*                Julien Rosener <julien.rosener@digital-scratch.org>         */
-/*                                                                            */
-/*----------------------------------------------------------------( License )-*/
-/*                                                                            */
-/*  This program is free software; you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */
-/*  the Free Software Foundation; either version 2 of the License, or         */
-/*  (at your option) any later version.                                       */
-/*                                                                            */
-/*  This program is distributed in the hope that it will be useful,           */
-/*  but WITHOUT ANY WARRANTY; without even the implied warranty of            */
-/*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              */
-/*  GNU General Public License for more details.                              */
-/*                                                                            */
-/*  You should have received a copy of the GNU General Public License         */
-/*  along with this program; if not, write to the Free Software               */
-/*  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA */
-/*                                                                            */
-/*------------------------------------------------------------( Description )-*/
-/*                                                                            */
-/*                        Digital-scratch Tests                               */
-/*                     Unit tests for Position class                          */
-/*                                                                            */
-/*============================================================================*/
-
+#include <QtTest>
+#include <string>
+#include <fstream>
 #include <iostream>
+#include <algorithm>
+
 using namespace std;
 
-// Include class to test.
+#include "test_utils.h"
 #include <position.h>
+#include <position_test.h>
 
-// Use Boost.Test
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
+Position_Test::Position_Test()
+{
+}
+
+void Position_Test::initTestCase()
+{
+}
+
+void Position_Test::cleanupTestCase()
+{
+}
+
 
 /**
  * Test Position::Position().
@@ -51,12 +31,12 @@ using namespace std;
  *      - Check if turntable name was correctly stored by Position object.
  *      - Check if value is correctly initialized.
  */
-BOOST_AUTO_TEST_CASE (test_position_constructor)
+void Position_Test::testCase_constructor()
 {
     Position *pos = new Position("turntable_name");
 
-    BOOST_CHECK_EQUAL(pos->get_turntable_name(), "turntable_name");
-    BOOST_CHECK_EQUAL(pos->get_value(), 0.0);
+    QVERIFY2(pos->get_turntable_name() == "turntable_name", "get name");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 0.0f) == true, "get default position");
 
     // Cleanup
     delete pos;
@@ -75,31 +55,31 @@ BOOST_AUTO_TEST_CASE (test_position_constructor)
  *      - Check if set_value(2.5) return true and if the value is not set.
  *      - Check if set_value(5.3) return false and if the value is not set.
  */
-BOOST_AUTO_TEST_CASE (test_position_set_value)
+void Position_Test::testCase_set_value()
 {
     Position *pos = new Position("turntable_name");
 
-    BOOST_CHECK_EQUAL(pos->get_turntable_name(), "turntable_name");
+    QVERIFY2(pos->get_turntable_name() == "turntable_name", "get name");
 
-    BOOST_CHECK_EQUAL(pos->set_value(-1.0), false);
-    BOOST_CHECK(pos->get_value() != -1.0);
+    QVERIFY2(pos->set_value(-1.0) == false,                   "set negative value");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), -1.0f) == false, "negative value not set");
 
-    BOOST_CHECK_EQUAL(pos->set_value(NO_NEW_POSITION_FOUND), true);
-    BOOST_CHECK_EQUAL(pos->get_value(), NO_NEW_POSITION_FOUND);
+    QVERIFY2(pos->set_value(NO_NEW_POSITION_FOUND) == true, "set no new position");
+    QVERIFY2(pos->get_value() == NO_NEW_POSITION_FOUND,     "get no new position");
 
-    BOOST_CHECK_EQUAL(pos->set_value(2.4), true);
-    BOOST_CHECK(pos->get_value() != 2.4);
+    QVERIFY2(pos->set_value(2.4) == true, "set correct value 1");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 2.4f) == false, "check value 1 not stored");
 
-    BOOST_CHECK_EQUAL(pos->set_value(3.3), true);
-    BOOST_CHECK_CLOSE(pos->get_value(), (float)3.3, 0.1);
+    QVERIFY2(pos->set_value(3.3) == true,           "set correct value 2");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 3.3f), "check correct value 2");
 
-    BOOST_CHECK_EQUAL(pos->set_value(2.5), true);
-    BOOST_CHECK(pos->get_value() != 2.5);
-    BOOST_CHECK_CLOSE(pos->get_value(), (float)3.3, 0.1);
+    QVERIFY2(pos->set_value(2.5) == true,                    "set correct value 3");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 2.5f) == false, "check value 3 not stored");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 3.3f) == true,  "check previous value");
 
-    BOOST_CHECK_EQUAL(pos->set_value(5.3), false);
-    BOOST_CHECK(pos->get_value() != 5.3);
-    BOOST_CHECK_CLOSE(pos->get_value(), (float)3.3, 0.1);
+    QVERIFY2(pos->set_value(5.3) == false,                   "bad value");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 5.3f) == false, "bad value not stored");
+    QVERIFY2(qFuzzyCompare(pos->get_value(), 3.3f) == true,  "previous value still there");
 
     // Cleanup
     delete pos;
@@ -115,15 +95,17 @@ BOOST_AUTO_TEST_CASE (test_position_set_value)
  *      - Check if set_turntable_name("left_turntable") return true and if the
  *        name is set.
  */
-BOOST_AUTO_TEST_CASE (test_position_set_turntable_name)
+void Position_Test::testCase_set_turntable_name()
 {
     Position *pos = new Position("turntable_name");
 
-    BOOST_CHECK_EQUAL(pos->get_turntable_name(), "turntable_name");
-    BOOST_CHECK_EQUAL(pos->set_turntable_name(""), false);
-    BOOST_CHECK(pos->get_turntable_name() != "");
-    BOOST_CHECK_EQUAL(pos->set_turntable_name("left_turntable"), true);
-    BOOST_CHECK_EQUAL(pos->get_turntable_name(), "left_turntable");
+    QVERIFY2(pos->get_turntable_name() == "turntable_name", "get name");
+    
+    QVERIFY2(pos->set_turntable_name("") == false, "set empty name");
+    QVERIFY2(pos->get_turntable_name() != "",      "name not set");
+    
+    QVERIFY2(pos->set_turntable_name("left_turntable") == true, "set correct name");
+    QVERIFY2(pos->get_turntable_name() == "left_turntable",     "check correct name");
 
     // Cleanup
     delete pos;

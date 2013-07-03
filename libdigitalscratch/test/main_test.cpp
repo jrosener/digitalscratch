@@ -1,5 +1,7 @@
- #include <controller_test.h>
- #include <digital_scratch_api_test.h>
+#include <controller_test.h>
+#include <digital_scratch_api_test.h>
+#include <speed_test.h>
+#include <position_test.h>
 
 int main(int argc, char** argv)
 {
@@ -12,6 +14,14 @@ int main(int argc, char** argv)
       DigitalScratchApi_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
-   
+   {
+      Speed_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
+   {
+      Position_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
+
    return status;
 }
