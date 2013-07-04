@@ -68,16 +68,17 @@ CONFIG(test) {
                test/controller_test.cpp \
                test/digital_scratch_api_test.cpp \
                test/speed_test.cpp \
-               test/position_test.cpp
-               #test/digital_scratch_test.cpp \
-               #test/volume_test.cpp \               
-               #test/coded_vinyl_test.cpp
+               test/position_test.cpp \
+               test/digital_scratch_test.cpp \
+               test/volume_test.cpp
 
     HEADERS += test/test_utils.h \
                test/controller_test.h \
                test/digital_scratch_api_test.h \
                test/speed_test.h \
-               test/position_test.h
+               test/position_test.h \
+               test/digital_scratch_test.h \
+               test/volume_test.h
 }
 
 OTHER_FILES += \

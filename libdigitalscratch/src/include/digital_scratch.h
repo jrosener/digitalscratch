@@ -58,8 +58,8 @@
 #define SLOW_SPEED     2
 
 // Default values
-#define DEFAULT_MAX_SPEED_DIFF             0.05
-#define DEFAULT_MAX_SLOW_SPEED             0.5
+#define DEFAULT_MAX_SPEED_DIFF             0.05f
+#define DEFAULT_MAX_SLOW_SPEED             0.5f
 #define DEFAULT_MAX_NB_BUFFER              5
 #define DEFAULT_MAX_NB_SPEED_FOR_STABILITY 3
 
