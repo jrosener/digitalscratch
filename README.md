@@ -1,18 +1,19 @@
 Digital-Scratch
 --------------
 
-### A vinyl turntable emulation software
+### A vinyl turntable emulation software for DJ
 
-[Digital-Scratch](http://www.digital-scratch.org/ "Digital-scratch") is a free software that analyzes motions (rotation speed and direction) of a vinyl disc played by a turntable.  
-It also provide a nice and simple player that plays digital tracks allowing you to mix as you would do it with regular records.
+[Digital-Scratch](http://www.digital-scratch.org/ "Digital-scratch") is a free software for DJs. It analyzes motions (rotation speed and direction) of a vinyl disc played by a turntable. It also provide a nice and simple player that plays digital tracks allowing you to mix as you would do it with regular records.  
+
+__In other words__: with Digital-Scratch you can mix your digital file collection with regular vinyl turntables.
 
 * More informations at [http://www.digital-scratch.org](http://www.digital-scratch.org).
 * Mailing list: digitalscratch@googlegroups.com (to subscribe, send a mail to digitalscratch+subscribe@googlegroups.com)
 
 ### Requirements
 
-* 1 or 2 timecoded vinyl disc, ([Serato Scrath Live](http://serato.com/scratchlive), [Final Scratch](http://en.wikipedia.org/wiki/Final_Scratch),...)
-* 1 or 2 vinyl turntables
+* 1 or 2 timecoded vinyl disc, ([Serato Scratch Live](http://serato.com/scratchlive), [Final Scratch](http://en.wikipedia.org/wiki/Final_Scratch),...)
+* 1 or 2 vinyl turntables and a mixer
 * A GNU/Linux or MS Windows computer
 * A sound card driven by [JACK](http://jackaudio.org/) providing 1 or 2 stereo inputs
 
@@ -34,6 +35,17 @@ _digitalscratch_ (audio player) is based on:
 * [Sample rate library](http://www.mega-nerd.com/SRC/)
 * [JACK](http://jackaudio.org/)
 * [LibKeyFinder](http://www.ibrahimshaath.co.uk/keyfinder/)
+
+Install
+--------------
+
+### Ubuntu
+    sudo add-apt-repository ppa:julien-rosener/digitalscratch
+    sudo apt-get update
+    sudo apt-get install digitalscratch
+
+### MS Windows
+See [download page](http://jrosener.github.io/digitalscratch/download.html)
 
 Build
 --------------
@@ -65,17 +77,6 @@ Build
     * For each prohect, use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
     * Then in Project>>Build section uncheck "Shadow build" for debug and release.
     * Right click on project libdigitalscratch and digitalscratch, then "Run qmake", then "build"
-
-Package install
---------------
-
-### Ubuntu
-    sudo add-apt-repository ppa:julien-rosener/digitalscratch
-    sudo apt-get update
-    sudo apt-get install digitalscratch
-
-### MS Windows
-See [download page](http://jrosener.github.io/digitalscratch/download.html)
 
 License
 --------------
