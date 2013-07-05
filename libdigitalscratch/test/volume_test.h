@@ -15,4 +15,6 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCase_constructor();
+    void testCase_set_value();
+    void testCase_set_turntable_name();
 };
