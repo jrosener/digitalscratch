@@ -59,6 +59,7 @@
 #include "audio_collection_model.h"
 #include "utils.h"
 #include "singleton.h"
+#include "keyfinder_api.h"
 
 Gui::Gui(Audio_track                    *in_at_1,
          Audio_track                    *in_at_2,
@@ -565,20 +566,57 @@ Gui::show_about_window()
     QLabel *credit = new QLabel(tr("Copyright (C) 2003-2013 Julien Rosener"));
     credit->setAlignment(Qt::AlignHCenter);
 
-    QLabel *license = new QLabel(tr("This program is free software; you can redistribute it and/or modify <br/> \
-                                     it under the terms of the GNU General Public License as published by <br/> \
-                                     the Free Software Foundation; either version 3 of the License, or <br/> \
+    QLabel *license = new QLabel(tr("This program is free software; you can redistribute it and/or modify <br/>\
+                                     it under the terms of the GNU General Public License as published by <br/>\
+                                     the Free Software Foundation; either version 3 of the License, or <br/>\
                                      (at your option) any later version.<br/><br/>"));
     license->setTextFormat(Qt::RichText);
+    license->setAlignment(Qt::AlignHCenter);
 
     QLabel *built = new QLabel("<b>" + tr("Built with:") + "</b>");
     built->setTextFormat(Qt::RichText);
-    QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8());
-    QLabel *libmpg123_version = new QLabel("- libmpg123");
-    QLabel *libFLAC_version = new QLabel((QString("- libFLAC v") + QString(FLAC__VERSION_STRING)).toUtf8());
-    QLabel *libsamplerate_version = new QLabel((QString("- ") + QString(src_get_version())).toUtf8());
-    QLabel *libjack_version = new QLabel((QString("- libjack v") + QString(jack_get_version_string())).toUtf8());
-    QLabel *qt_version = new QLabel((QString("- Qt v") + QString(qVersion())).toUtf8());
+    QLabel *qt_version                = new QLabel((QString("- Qt v") + QString(qVersion())).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://qt-project.org\">http://qt-project.org</a>");
+    QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
+    QLabel *libmpg123_version         = new QLabel(QString("- libmpg123")
+                                                   + ", <a style=\"color: grey\" href=\"http://www.mpg123.de\">http://www.mpg123.de</a>");
+    QLabel *libFLAC_version           = new QLabel((QString("- libFLAC v") + QString(FLAC__VERSION_STRING)).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://flac.sourceforge.net\">http://flac.sourceforge.net</a>");
+    QLabel *libsamplerate_version     = new QLabel((QString("- ") + QString(src_get_version())).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://www.mega-nerd.com/SRC/\">http://www.mega-nerd.com/SRC/</a>");
+    QLabel *libjack_version           = new QLabel((QString("- libjack v") + QString(jack_get_version_string())).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://jackaudio.org\">http://jackaudio.org</a>");
+    QLabel *libkeyfinder_version      = new QLabel((QString("- libkeyfinder v") + QString(kfinder_get_version())).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://www.ibrahimshaath.co.uk/keyfinder/\">http://www.ibrahimshaath.co.uk/keyfinder/</a>");
+
+    qt_version->setTextFormat(Qt::RichText);
+    qt_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    qt_version->setOpenExternalLinks(true);
+
+    libdigitalscratch_version->setTextFormat(Qt::RichText);
+    libdigitalscratch_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libdigitalscratch_version->setOpenExternalLinks(true);
+
+    libmpg123_version->setTextFormat(Qt::RichText);
+    libmpg123_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libmpg123_version->setOpenExternalLinks(true);
+
+    libFLAC_version->setTextFormat(Qt::RichText);
+    libFLAC_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libFLAC_version->setOpenExternalLinks(true);
+
+    libsamplerate_version->setTextFormat(Qt::RichText);
+    libsamplerate_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libsamplerate_version->setOpenExternalLinks(true);
+
+    libjack_version->setTextFormat(Qt::RichText);
+    libjack_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libjack_version->setOpenExternalLinks(true);
+
+    libkeyfinder_version->setTextFormat(Qt::RichText);
+    libkeyfinder_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libkeyfinder_version->setOpenExternalLinks(true);
 
     QLabel *credits = new QLabel("<br/><b>" + tr("Credits:") + "</b>");
     credits->setTextFormat(Qt::RichText);
@@ -600,12 +638,13 @@ Gui::show_about_window()
     layout->addWidget(credit);
     layout->addWidget(license);
     layout->addWidget(built);
+    layout->addWidget(qt_version);
     layout->addWidget(libdigitalscratch_version);
     layout->addWidget(libmpg123_version);
     layout->addWidget(libFLAC_version);
     layout->addWidget(libsamplerate_version);
     layout->addWidget(libjack_version);
-    layout->addWidget(qt_version);
+    layout->addWidget(libkeyfinder_version);
     layout->addWidget(credits);
     layout->addWidget(icons);
     layout->addWidget(button);
