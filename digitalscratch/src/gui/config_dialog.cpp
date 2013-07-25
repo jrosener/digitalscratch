@@ -41,10 +41,12 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QtDebug>
+#include <QMessageBox>
 #include "config_dialog.h"
 #include <digital_scratch_api.h>
 #include <iostream>
 #include <singleton.h>
+#include <utils.h>
 
 Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
 {
@@ -452,11 +454,81 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(shortcut_reset_to_default, 8, 0, Qt::AlignLeft);
     QObject::connect(shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
 
+    // Signal send ShortCutQLabels when a new value is there.
+    QObject::connect(this->kb_switch_playback,          SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_load_track_on_deck,       SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_play_begin_track_on_deck, SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_get_next_track_from_deck, SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_set_cue_point_on_deck,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_play_cue_point_on_deck,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_fullscreen,               SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_collapse_browse,          SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_load_track_on_sampler1,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_load_track_on_sampler2,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_load_track_on_sampler3,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_load_track_on_sampler4,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_help,                     SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+
     // Create tab.
     QWidget *shortcuts_tab = new QWidget(this);
     shortcuts_tab->setLayout(shortcuts_layout);
 
     return shortcuts_tab;
+}
+
+bool Config_dialog::is_duplicate_shortcut(const QString& in_value)
+{
+    // For each shortcut label, check if the provided shortcut already exists.
+    if ((this->kb_switch_playback->text().compare(in_value,          Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_deck->text().compare(in_value,       Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_begin_track_on_deck->text().compare(in_value, Qt::CaseInsensitive) == 0) ||
+        (this->kb_get_next_track_from_deck->text().compare(in_value, Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point_on_deck->text().compare(in_value,    Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point_on_deck->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_fullscreen->text().compare(in_value,               Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler1->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler2->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler3->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler4->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_help->text().compare(in_value,                     Qt::CaseInsensitive) == 0))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void Config_dialog::validate_and_set_shortcut(const QString& in_value)
+{
+    // Get keyboard shortcut label to work on.
+    QObject *sender_obj = sender();
+    ShortcutQLabel *label = qobject_cast<ShortcutQLabel*>(sender_obj);
+    if(label != 0)
+    {
+        // Check if new shortcut is duplicate.
+        if (this->is_duplicate_shortcut(in_value) == true)
+        {
+            // Shortcut already exists, show an error and revert label.
+            QMessageBox msg_box;
+            msg_box.setWindowTitle("DigitalScratch");
+            msg_box.setText("<h2>" + tr("Error") + "</h2>"
+                            + "<br/>"
+                            + "Keyboard shortcut [ " + in_value  + " ] already exists, please set another one.");
+            msg_box.setStandardButtons(QMessageBox::Close);
+            msg_box.setIcon(QMessageBox::Warning);
+            msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
+            msg_box.setWindowIcon(QIcon(ICON_2));
+            msg_box.exec();
+
+            // Then put back the old shortcut.
+            label->set_old_text();
+        }
+        else
+        {
+            // Shortcut is correct, set it in the label.
+            label->setText(in_value);
+        }
+    }
 }
 
 void Config_dialog::fill_tab_shortcuts()
@@ -598,6 +670,12 @@ ShortcutQLabel::~ShortcutQLabel()
 }
 
 void
+ShortcutQLabel::set_old_text()
+{
+    this->setText(this->old_text);
+}
+
+void
 ShortcutQLabel::start_capture()
 {
     // Store current text to get it back if cancel.
@@ -624,7 +702,7 @@ ShortcutQLabel::cancel_capture()
     this->releaseMouse();
 
     // Keep previous shortcut.
-    this->setText(this->old_text);
+    this->set_old_text();
 
     qDebug() << "ShortcutQLabel::cancel_capture: keyboard capture canceled";
 
@@ -638,8 +716,8 @@ ShortcutQLabel::finish_capture(int in_key)
     this->releaseKeyboard();
     this->releaseMouse();
 
-    // Set new shortcut.
-    this->setText(QKeySequence(in_key).toString(QKeySequence::NativeText));
+    // Send an event to main config tab to check if this shortcut is not a duplicate.
+    emit this->new_value(QKeySequence(in_key).toString(QKeySequence::NativeText));
 
     qDebug() << "ShortcutQLabel::cancel_capture: keyboard capture done with " << QKeySequence(in_key).toString(QKeySequence::NativeText);
 

@@ -38,6 +38,8 @@
 #include <audio_track.h>
 #include <audio_file_decoding_process.h>
 #include <audio_track_key_process.h>
+#include <application_settings.h>
+#include <singleton.h>
 
 QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 {   
@@ -305,4 +307,19 @@ QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
     }
 
     return pos;
+}
+
+QString Utils::get_current_stylesheet_css()
+{
+    QString result = "";
+
+    // Get reference on application settings.
+    Application_settings *settings = &Singleton<Application_settings>::get_instance();
+
+    if (settings->get_gui_style() == QString(GUI_STYLE_DARK))
+    {
+        result = Utils::file_read_all_text(GUI_STYLE_DARK_CSS);
+    }
+
+    return result;
 }

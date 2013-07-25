@@ -180,6 +180,15 @@ class Gui : QObject
     QPushButton                   *load_sample2_3_button;
     QPushButton                   *load_sample1_4_button;
     QPushButton                   *load_sample2_4_button;
+    QLabel                        *help_fullscreen_value;
+    QLabel                        *help_help_value;
+    QLabel                        *help_switch_deck_value;
+    QLabel                        *help_load_deck_value;
+    QLabel                        *help_next_track_value;
+    QLabel                        *help_cue_value;
+    QLabel                        *help_sample_value;
+    QLabel                        *help_browse_value1;
+    QLabel                        *help_browse_value2;
 
  public:
     Gui(Audio_track                    *in_at_1,
@@ -214,8 +223,8 @@ class Gui : QObject
     void    highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                                bool               switch_on);
     void    resize_file_browser_columns();
-    QString get_stylesheet_css();
     void    analyze_audio_collection(bool is_all_files);
+    void    set_help_shortcut_value();
 
  private slots:
     bool show_config_window();

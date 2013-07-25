@@ -55,6 +55,7 @@ class ShortcutQLabel : public QLabel
  public:
     ShortcutQLabel(QWidget *parent=0);
     virtual ~ShortcutQLabel();
+    void set_old_text();
 
  private:
     bool    capturing;
@@ -67,6 +68,7 @@ class ShortcutQLabel : public QLabel
 
  signals:
     void clicked();
+    void new_value(QString in_value);
 
  protected:
     void mousePressEvent(QMouseEvent *in_mouse_event);
@@ -136,6 +138,7 @@ class Config_dialog : public QDialog
     int      get_max_nb_speed_for_stability_slider();
     void     set_nb_cycle_before_changing_direction_slider(int in_value);
     int      get_nb_cycle_before_changing_direction_slider();
+    bool     is_duplicate_shortcut(const QString& in_value);
 
  private slots:
     bool show_browse_window();
@@ -147,6 +150,7 @@ class Config_dialog : public QDialog
     void set_slow_speed_algo_usage_value(int in_value);
     void set_max_nb_speed_for_stability_value(int in_value);
     void set_nb_cycle_before_changing_direction_value(int in_value);
+    void validate_and_set_shortcut(const QString& in_value);
 };
 
 #endif /* CONFIG_DIALOG_H_ */

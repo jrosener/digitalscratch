@@ -69,6 +69,9 @@ class Utils
     static QString get_str_time_from_sample_index(unsigned int in_sample_index,
                                                   unsigned int in_sample_rate,
                                                   bool         in_with_msec);
+
+    // Get current CSS string stylesheet.
+    static QString get_current_stylesheet_css();
 };
 
 #endif /* UTILS_H_ */

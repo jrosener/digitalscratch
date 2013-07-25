@@ -265,6 +265,9 @@ Gui::apply_application_settings()
     this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
     this->shortcut_help->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_HELP)));
 
+    // Set shortcut value in help bottom span.
+    this->set_help_shortcut_value();
+
     qDebug() << "Gui::apply_application_settings done.";
 
     return true;
@@ -689,7 +692,7 @@ Gui::show_error_window(QString in_error_message)
                     + "<br/><br/>" + "Please fix this issue and restart DigitalScratch.");
     msg_box.setStandardButtons(QMessageBox::Close);
     msg_box.setIcon(QMessageBox::Critical);
-    msg_box.setStyleSheet(this->get_stylesheet_css());
+    msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
     if (this->nb_decks > 1)
     {
         msg_box.setWindowIcon(QIcon(ICON_2));
@@ -705,19 +708,6 @@ Gui::show_error_window(QString in_error_message)
     qDebug() << "Gui::show_error_window done.";
 
     return true;
-}
-
-QString
-Gui::get_stylesheet_css()
-{
-    QString result = "";
-
-    if (this->window_style == QString(GUI_STYLE_DARK))
-    {
-        result = Utils::file_read_all_text(GUI_STYLE_DARK_CSS);
-    }
-
-    return result;
 }
 
 bool
@@ -1347,41 +1337,31 @@ Gui::create_main_window()
     // Create help labels and pixmaps.
     QLabel *help_display_lb        = new QLabel(tr("Display"));
     QLabel *help_fullscreen_lb     = new QLabel(tr("Fullscreen"));
-    QLabel *help_fullscreen_value  = new QLabel(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
+    this->help_fullscreen_value    = new QLabel();
     QLabel *help_help_lb           = new QLabel(tr("Help"));
-    QLabel *help_help_value        = new QLabel(this->settings->get_keyboard_shortcut(KB_HELP));
+    this->help_help_value          = new QLabel();
     QLabel *help_switch_deck_lb    = new QLabel(tr("Switch selected playback"));
-    QLabel *help_switch_deck_value = new QLabel(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
+    this->help_switch_deck_value   = new QLabel();
 
     QLabel *help_deck_lb           = new QLabel(tr("Selected deck"));
     QLabel *help_load_deck_lb      = new QLabel(tr("Load/Restart track"));
-    QLabel *help_load_deck_value   = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
-                                                + "/"
-                                                + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
+    this->help_load_deck_value     = new QLabel();
     QLabel *help_next_track_lb     = new QLabel(tr("Highlight next tracks"));
-    QLabel *help_next_track_value  = new QLabel(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
+    this->help_next_track_value    = new QLabel();
     QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point"));
-    QLabel *help_cue_value         = new QLabel(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)
-                                                + "/"
-                                                + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+    this->help_cue_value           = new QLabel();
 
     QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
     QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
-    QLabel *help_sample_value      = new QLabel(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
-                                                + "/"
-                                                + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
-                                                + "/"
-                                                + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
-                                                + "/"
-                                                + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
+    this->help_sample_value        = new QLabel();
 
     QLabel *help_browser_lb        = new QLabel(tr("File browser"));
     QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
-    QLabel *help_browse_value1     = new QLabel("Up/Down/Left/Right");
+    this->help_browse_value1       = new QLabel();
     QLabel *help_browse_lb2        = new QLabel(tr("Collapse all"));
-    QLabel *help_browse_value2     = new QLabel(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
+    this->help_browse_value2       = new QLabel();
 
-
+    this->set_help_shortcut_value();
 
     help_display_lb->setObjectName("Help_title");
     help_fullscreen_lb->setObjectName("Help");
@@ -1620,6 +1600,30 @@ Gui::create_main_window()
 }
 
 void
+Gui::set_help_shortcut_value()
+{
+    this->help_fullscreen_value->setText(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
+    this->help_help_value->setText(this->settings->get_keyboard_shortcut(KB_HELP));
+    this->help_switch_deck_value->setText(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
+    this->help_load_deck_value->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
+                                        + "/"
+                                        + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
+    this->help_next_track_value->setText(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
+    this->help_cue_value->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)
+                                  + "/"
+                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+    this->help_sample_value->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
+                                     + "/"
+                                     + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
+                                     + "/"
+                                     + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
+                                     + "/"
+                                     + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
+    this->help_browse_value1->setText("Up/Down/Left/Right");
+    this->help_browse_value2->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
+}
+
+void
 Gui::can_close()
 {
     qDebug() << "Gui::can_close...";
@@ -1631,7 +1635,7 @@ Gui::can_close()
     msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msg_box.setIcon(QMessageBox::Question);
     msg_box.setDefaultButton(QMessageBox::Cancel);
-    msg_box.setStyleSheet(this->get_stylesheet_css());
+    msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
     if (this->nb_decks > 1)
     {
         msg_box.setWindowIcon(QIcon(ICON_2));
@@ -1732,7 +1736,7 @@ Gui::apply_main_window_style()
     }
 
     // Change main window skin (using CSS).
-    this->window->setStyleSheet(this->get_stylesheet_css());
+    this->window->setStyleSheet(Utils::get_current_stylesheet_css());
 
     qDebug() << "Gui::apply_main_window_style done.";
 
