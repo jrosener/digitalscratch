@@ -1,8 +1,21 @@
 echo off
 SETLOCAL EnableDelayedExpansion
 REM
-REM Tools for packaging DigitalScratch software as a setup installation file.
+REM Tools for packaging DigitalScratch software as a MSI setup installation file.
 REM
+
+echo.
+echo ----------------------------------------------------------------------------------
+echo  Setup environment ...
+echo ----------------------------------------------------------------------------------
+echo.
+set CURDIR=%CD%
+set QTDIR=C:\Qt\Qt5.0.2\5.0.2\msvc2010_opengl
+call "%QTDIR%\bin\qtenv2.bat"
+call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x86
+cd /D %CURDIR% 
+
+echo QTDIR=%QTDIR%
 
 echo.
 echo ----------------------------------------------------------------------------------
@@ -14,14 +27,6 @@ if !errorlevel! neq 0 goto error
 set VERSION=%VERSION: =%
 SET OUTPUT_MSI=digitalscratch-%VERSION%.msi
 echo Creating %OUTPUT_MSI%...
-
-echo.
-echo ----------------------------------------------------------------------------------
-echo  Setup environment ...
-echo ----------------------------------------------------------------------------------
-echo.
-call "C:\Qt\4.8.4\bin\qtvars.bat"
-call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x86
 
 echo.
 echo ----------------------------------------------------------------------------------
