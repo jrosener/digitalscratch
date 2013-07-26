@@ -103,11 +103,11 @@ echo ""
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
+export OTHERMIRROR="deb $PPAURL/$PPAPATH/ubuntu $DISTRIB main | deb $PPAURL/$PPAPATH_LIBKEYFINDER/ubuntu $DISTRIB main"
 if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
 then
     pbuilder-dist $DISTRIB create
 fi
-export OTHERMIRROR="deb $PPAURL/$PPAPATH/ubuntu $DISTRIB main; deb $PPAURL/$PPAPATH_LIBKEYFINDER/ubuntu $DISTRIB main"
 pbuilder-dist $DISTRIB update
 echo ""
 echo ""
