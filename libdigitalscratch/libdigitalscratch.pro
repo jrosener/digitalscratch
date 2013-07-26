@@ -4,13 +4,13 @@
 #
 #-------------------------------------------------
 
+VERSION = 1.3.0
 
 CONFIG(test) {
     QT       += testlib
     TARGET    = libdigitalscratch-test
     CONFIG   += console
     CONFIG   -= app_bundle
-    VERSION   = 1.0.0
 }
 else {
     QT -= core gui
@@ -19,7 +19,6 @@ else {
     TEMPLATE = lib
 
     DEFINES += DIGITALSCRATCH_LIBRARY
-    VERSION  = 1.3.0
 
     target.path = /usr/lib
 
