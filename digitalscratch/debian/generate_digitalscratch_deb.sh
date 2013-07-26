@@ -30,8 +30,10 @@ fi
 # Select PPA
 if [[ $1 == test ]] ; then
     PPAPATH=julien-rosener/digitalscratch-test
+    PPAPATH_LIBKEYFINDER=julien-rosener/keyfinder-test
 elif [[ $1 == prod ]] ; then
     PPAPATH=julien-rosener/digitalscratch
+    PPAPATH_LIBKEYFINDER=julien-rosener/keyfinder
 else
     usage
 fi
@@ -100,10 +102,12 @@ echo ""
 
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
-cp $ORIGDIR/.pbuilderrc ~/
-check_error
 cd $WORKINGPATH/$SOURCEDIR
-export OTHERMIRROR="deb $PPAURL/$PPAPATH/ubuntu $DISTRIB main"
+if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
+then
+    pbuilder-dist $DISTRIB create
+fi
+export OTHERMIRROR="deb $PPAURL/$PPAPATH/ubuntu $DISTRIB main; deb $PPAURL/$PPAPATH_LIBKEYFINDER/ubuntu $DISTRIB main"
 pbuilder-dist $DISTRIB update
 echo ""
 echo ""
@@ -122,7 +126,7 @@ check_error
 echo ""
 echo ""
 
-echo "************ Upload source.changes on Launchpad at $PPAPATH *************"
+echo "************ Upload source.changes on Launchpad at ppa:$PPAPATH *************"
 dput -f ppa:$PPAPATH *source.changes
 check_error
 echo ""
