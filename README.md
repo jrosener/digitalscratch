@@ -51,32 +51,34 @@ Build
 --------------
 
 ### Ubuntu 13.04 (raring)
-    # Install build tools
+
+#### Install build tools
     sudo apt-get install build-essential qt5-default libmpg123-dev libjack-jackd2-dev libsamplerate0-dev libflac-dev
-    
-    # Compile and install libdigitalscratch
+
+#### Compile and install _libdigitalscratch_
     cd libdigitalscratch
     qmake
     make
     sudo make install
-    
-    # Compile and install digitalscratch player
+
+#### Compile and install _digitalscratch_ player
     cd ../digitalscratch
     qmake
     make
     sudo make install
     
 ### MS Windows
-    # Install build environment
-    * Install MS Win SDK 7.1
-    * Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator
+
+#### Install build environment
+* Install Microsoft Windows SDK 7.1
+* Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator
     
-    # Compile libdigitalscratch and digitalscratch player
-    * Start Qt Creator
-    * Load project libdigitalscratch.pro and digitalscratch.pro
-    * For each prohect, use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
-    * Then in Project>>Build section uncheck "Shadow build" for debug and release.
-    * Right click on project libdigitalscratch and digitalscratch, then "Run qmake", then "build"
+#### Compile _libdigitalscratch_ and _digitalscratch_ player
+* Start Qt Creator
+* Load project `libdigitalscratch.pro` and `digitalscratch.pro`
+* For each prohect, use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
+* Then in "Project >> Build" section uncheck "Shadow build" for debug and release.
+* Right click on project libdigitalscratch and digitalscratch, then "Run qmake", then "build"
 
 License
 --------------
