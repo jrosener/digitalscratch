@@ -17,7 +17,7 @@ __In other words__: with Digital-Scratch you can mix your digital file collectio
 * A GNU/Linux or MS Windows computer
 * A sound card driven by [JACK](http://jackaudio.org/) providing 1 or 2 stereo inputs
 
-### Architecture
+### Software architecture
 
 The core motion detection is done by an SDK built as a shared library: _libdigitalscratch_. It can be integrated with various kind of controllable software player.
 
@@ -45,7 +45,7 @@ Install
     sudo apt-get install digitalscratch
 
 ### MS Windows
-See [download page](http://jrosener.github.io/digitalscratch/download.html)
+See the download page: [http://www.digital-scratch.org/download.html](http://www.digital-scratch.org/download.html)
 
 Build
 --------------
@@ -70,8 +70,8 @@ Build
 ### MS Windows
 
 #### Install build environment
-* Install Microsoft Windows SDK 7.1
-* Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator
+* Install the [Microsoft Windows SDK 7.1](http://www.microsoft.com/en-us/download/details.aspx?id=8279)
+* Install [Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator](http://qt-project.org/downloads)
     
 #### Compile _libdigitalscratch_ and _digitalscratch_ player
 * Start Qt Creator
