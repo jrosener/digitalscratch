@@ -53,7 +53,9 @@ Build
 ### Ubuntu 13.04 (raring)
 
 #### Install build tools
-    sudo apt-get install build-essential qt5-default libmpg123-dev libjack-jackd2-dev libsamplerate0-dev libflac-dev
+    sudo apt-add-repository ppa:julien-rosener/digitalscratch
+    sudo apt-get update
+    sudo apt-get install build-essential qt5-default libmpg123-dev libjack-jackd2-dev libsamplerate0-dev libflac-dev libkeyfinder-dev
 
 #### Compile and install _libdigitalscratch_
     cd libdigitalscratch
