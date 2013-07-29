@@ -78,7 +78,7 @@ Build
 #### Compile _libdigitalscratch_ and _digitalscratch_ player
 * Start Qt Creator
 * Load project `libdigitalscratch.pro` and `digitalscratch.pro`
-* For each prohect, use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
+* For each projects, use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
 * Then in "Project >> Build" section uncheck "Shadow build" for debug and release.
 * Right click on project libdigitalscratch and digitalscratch, then "Run qmake", then "build"
 
