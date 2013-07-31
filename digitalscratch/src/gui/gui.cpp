@@ -628,6 +628,13 @@ Gui::show_about_window()
     icons->setTextInteractionFlags(Qt::TextBrowserInteraction);
     icons->setOpenExternalLinks(true);
 
+    QLabel *help = new QLabel("<br/><b>" + tr("Help:") + "</b>");
+    help->setTextFormat(Qt::RichText);
+    QLabel *wiki = new QLabel("- Online help: <a style=\"color: grey\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
+    wiki->setTextFormat(Qt::RichText);
+    wiki->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    wiki->setOpenExternalLinks(true);
+
     // Close button.
     QDialogButtonBox *button = new QDialogButtonBox(QDialogButtonBox::Close);
     QObject::connect(button, SIGNAL(rejected()), this, SLOT(done_about_window()));
@@ -650,6 +657,8 @@ Gui::show_about_window()
     layout->addWidget(libkeyfinder_version);
     layout->addWidget(credits);
     layout->addWidget(icons);
+    layout->addWidget(help);
+    layout->addWidget(wiki);
     layout->addWidget(button);
 
     // Put layout in dialog.
@@ -1354,6 +1363,11 @@ Gui::create_main_window()
     QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
     QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
     this->help_sample_value        = new QLabel();
+    QLabel *help_online_lb         = new QLabel(tr("Online wiki help"));
+    QLabel *help_url_lb            = new QLabel("<a style=\"color: white\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
+    help_url_lb->setTextFormat(Qt::RichText);
+    help_url_lb->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    help_url_lb->setOpenExternalLinks(true);
 
     QLabel *help_browser_lb        = new QLabel(tr("File browser"));
     QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
@@ -1375,6 +1389,8 @@ Gui::create_main_window()
 
     help_sampler_lb->setObjectName("Help_title");
     help_sample_lb->setObjectName("Help");
+    help_online_lb->setObjectName("Help_title");
+    help_url_lb->setObjectName("Help_url");
 
     help_browser_lb->setObjectName("Help_title");
     help_browse_lb1->setObjectName("Help");
@@ -1402,6 +1418,8 @@ Gui::create_main_window()
     help_layout->addWidget(help_sampler_lb,           0, 4);
     help_layout->addWidget(help_sample_lb,            1, 4);
     help_layout->addWidget(help_sample_value,         1, 5, Qt::AlignLeft);
+    help_layout->addWidget(help_online_lb,            3, 4);
+    help_layout->addWidget(help_url_lb,               3, 5, 1, 3, Qt::AlignLeft);
 
     help_layout->addWidget(help_browser_lb,           0, 6);
     help_layout->addWidget(help_browse_lb1,           1, 6);

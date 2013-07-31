@@ -316,7 +316,11 @@ QLabel#Help_title
    color:       black;
    font-weight: bold;
 }
-
+QLabel#Help_url
+{
+   background: DarkSlateGray;
+   padding:    2px;
+}
 
 QPushButton#Sampler_play_buttons
 {
