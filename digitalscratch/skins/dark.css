@@ -680,3 +680,81 @@ QMessageBox
    messagebox-question-icon:           url(:/pixmaps/dark-help_white.png);
    messagebox-critical-icon:           url(:/pixmaps/dark-error_white.png);
 }
+
+QSplitter::handle
+{
+    border: 1px solid gray;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+QScrollBar:vertical {
+    border     : 1px solid grey;
+    background : transparent;
+    width      : 15px;
+    margin     : 15px 0 15px 0;
+}
+QScrollBar::handle:vertical {
+    border     : 1px solid black;
+    background : lightGray;
+    min-height : 20px;
+}
+QScrollBar::add-line:vertical {
+    border              : 1px solid grey;
+    background          : grey;
+    height              : 13px;
+    subcontrol-position : bottom;
+    subcontrol-origin   : margin;
+}
+QScrollBar::sub-line:vertical {
+    border              : 1px solid grey;
+    background          : grey;
+    height              : 13px;
+    subcontrol-position : top;
+    subcontrol-origin   : margin;
+}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    border     : 1px solid grey;
+    width      : 3px;
+    height     : 3px;
+    background : lightGray;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background : none;
+}
+
+
+QScrollBar:horizontal {
+     border     : 1px solid grey;
+     background : transparent;
+     height     : 15px;
+     margin     : 0px 15px 0 15px;
+}
+QScrollBar::handle:horizontal {
+    border     : 1px solid black;
+    background : lightGray;
+    min-width  : 20px;
+}
+QScrollBar::add-line:horizontal {
+    border              : 1px solid grey;
+    background          : grey;
+    width               : 13px;
+    subcontrol-position : right;
+    subcontrol-origin   : margin;
+}
+QScrollBar::sub-line:horizontal {
+    border              : 1px solid grey;
+    background          : grey;
+    width               : 13px;
+    subcontrol-position : left;
+    subcontrol-origin   : margin;
+}
+QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+    border     : 1px solid grey;
+    width      : 3px;
+    height     : 3px;
+    background : lightGray;
+}
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background : none;
+}

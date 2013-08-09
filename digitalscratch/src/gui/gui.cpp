@@ -53,6 +53,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QCommandLinkButton>
+#include <QSplitter>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -115,10 +116,14 @@ Gui::Gui(Audio_track                    *in_at_1,
     }
 
     // Creates dynamic widgets.
-    this->file_system_model = new Audio_collection_model();
+    this->folder_system_model = new QFileSystemModel();
+    this->folder_browser      = new QTreeView();
+    this->folder_browser->setModel(this->folder_system_model);
 
-    this->file_browser = new QTreeView();
+    this->file_system_model = new Audio_collection_model();
+    this->file_browser      = new QTreeView();
     this->file_browser->setModel(this->file_system_model);
+
     this->file_browser_gbox = new QGroupBox();
 
     this->decks_remaining_time    = new Remaining_time* [2];
@@ -181,6 +186,8 @@ Gui::~Gui()
     this->settings->set_main_window_size(this->window->size());
 
     // Cleanup.
+    delete this->folder_system_model;
+    delete this->folder_browser;
     delete this->file_system_model;
     delete this->file_browser;
     delete this->config_dialog;
@@ -205,6 +212,7 @@ Gui::apply_application_settings()
     }
 
     // Change base path for tracks browser.
+    this->set_folder_browser_base_path(this->settings->get_tracks_base_dir_path());
     this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
 
     // Apply motion detection settings for all turntables.
@@ -1135,8 +1143,14 @@ Gui::create_main_window()
     // File browser.
     ////////////////////////////////////////////////////////////////////////////
 
-    // Customize file browser display.
-    this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    // Customize folder and playlist browser.
+    this->folder_browser->setColumnHidden(1, true);
+    this->folder_browser->setColumnHidden(2, true);
+    this->folder_browser->setColumnHidden(3, true);
+    this->folder_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->folder_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     // Resize column with file name when expanding/collapsing a directory.
     QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand(QModelIndex)));
@@ -1315,9 +1329,17 @@ Gui::create_main_window()
     // Create layout and group box for file browser.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
     file_browser_layout->addWidget(file_browser_buttons_widget);
-    file_browser_layout->addWidget(this->file_browser);
+
+    QSplitter *splitter = new QSplitter();
+    splitter->addWidget(this->folder_browser);
+    splitter->addWidget(this->file_browser);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 4);
+    file_browser_layout->addWidget(splitter);
+
     this->set_file_browser_title();
     this->file_browser_gbox->setLayout(file_browser_layout);
+
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1757,6 +1779,26 @@ Gui::apply_main_window_style()
     this->window->setStyleSheet(Utils::get_current_stylesheet_css());
 
     qDebug() << "Gui::apply_main_window_style done.";
+
+    return true;
+}
+
+bool
+Gui::set_folder_browser_base_path(QString in_path)
+{
+    qDebug() << "Gui::set_folder_browser_base_path...";
+
+    // Change path of the model and set file extension filters.
+    this->folder_system_model->setRootPath(in_path);
+    QStringList name_filter;
+    name_filter << "*.m3u" << "*.pls" << "*.xspf";
+    this->folder_system_model->setNameFilters(name_filter);
+    this->folder_system_model->setNameFilterDisables(false);
+
+    // Change root path of file browser.
+    this->folder_browser->setRootIndex(this->folder_system_model->index(in_path));
+
+    qDebug() << "Gui::set_folder_browser_base_path done.";
 
     return true;
 }

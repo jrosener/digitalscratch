@@ -114,6 +114,7 @@ class Gui : QObject
     Config_dialog                 *config_dialog;
     QString                        window_style;
     QTreeView                     *file_browser;
+    QTreeView                     *folder_browser;
     QDialog                       *about_dialog;
     QDialog                       *refresh_audio_collection_dialog;
     QDialog                       *error_dialog;
@@ -139,6 +140,7 @@ class Gui : QObject
     Audio_track_playback_process  *playback;
     unsigned short int             nb_decks;
     Sound_card_access_rules       *sound_card;
+    QFileSystemModel              *folder_system_model;
     Audio_collection_model        *file_system_model;
     int                           *dscratch_ids;
     Application_settings          *settings;
@@ -210,6 +212,7 @@ class Gui : QObject
     bool    create_main_window();
     bool    apply_main_window_style();
     bool    set_file_browser_base_path(QString in_path);
+    bool    set_folder_browser_base_path(QString in_path);
     bool    set_file_browser_title();
     bool    restart_sound_card(short unsigned int in_nb_channels);
     bool    apply_application_settings();
