@@ -327,6 +327,7 @@ class Gui : QObject
     void unhover_playback(int in_deck_index);
     void can_close();
     void on_file_browser_expand(QModelIndex);
+    void on_file_browser_double_click(QModelIndex in_model_index);
     void sync_file_browser_to_audio_collection();
     void on_finished_analyze_audio_collection();
     void update_refresh_progress_value(int in_value);

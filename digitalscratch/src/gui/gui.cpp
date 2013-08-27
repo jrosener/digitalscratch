@@ -54,6 +54,7 @@
 #include <QPushButton>
 #include <QCommandLinkButton>
 #include <QSplitter>
+#include <QModelIndexList>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -1157,6 +1158,9 @@ Gui::create_main_window()
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
+    // Open folder or playlist from file browser on double click.
+    QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
+
     // Resize column with file name when expanding/collapsing a directory.
     QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand(QModelIndex)));
     QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand(QModelIndex)));
@@ -1812,7 +1816,6 @@ Gui::set_folder_browser_base_path(QString in_path)
     qDebug() << "Gui::set_folder_browser_base_path...";
 
     // Change path of the model and set file extension filters.
-    //this->folder_system_model->setRootPath(in_path);
     this->folder_system_model->setRootPath("");
     QStringList name_filter;
     name_filter << "*.m3u" << "*.pls" << "*.xspf";
@@ -1820,11 +1823,13 @@ Gui::set_folder_browser_base_path(QString in_path)
     this->folder_system_model->setNameFilterDisables(false);
 
     // Change root path of file browser.
-    //this->folder_browser->setRootIndex(this->folder_system_model->index(in_path));
     this->folder_browser->setRootIndex(this->folder_system_model->index(""));
+    this->folder_browser->update();
 
-    // TODO: do not set a root path (root of the file system)
-    //       and automatically select (highlight) the base path
+    // Preselect the base path.
+    this->folder_browser->collapseAll();
+    this->folder_browser->setCurrentIndex(this->folder_system_model->index(in_path));
+    this->folder_browser->setExpanded(this->folder_system_model->index(in_path), true);
 
     qDebug() << "Gui::set_folder_browser_base_path done.";
 
@@ -1842,6 +1847,9 @@ Gui::set_file_browser_base_path(QString in_path)
     // Change root path of file browser.
     this->file_browser->setRootIndex(QModelIndex());
     this->file_system_model->set_root_path(in_path);
+
+    this->file_system_model->concurrent_watcher_read->cancel();
+    this->file_system_model->concurrent_watcher_read->waitForFinished();
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
 
@@ -2323,9 +2331,20 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
 void
 Gui::on_file_browser_expand(QModelIndex)
 {
-    qDebug() << "Gui::on_file_browser_expand_collapse...";
+    qDebug() << "Gui::on_file_browser_expand...";
     this->resize_file_browser_columns();
-    qDebug() << "Gui::on_file_browser_expand_collapse...";
+    qDebug() << "Gui::on_file_browser_expand...";
+}
+
+void
+Gui::on_file_browser_double_click(QModelIndex in_model_index)
+{
+    qDebug() << "Gui::on_file_browser_double_click...";
+
+    // Open selected directory in file browser.
+    this->set_file_browser_base_path(this->folder_system_model->filePath(in_model_index));
+
+    qDebug() << "Gui::on_file_browser_double_click...";
 }
 
 void
