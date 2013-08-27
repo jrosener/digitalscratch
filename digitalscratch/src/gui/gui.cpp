@@ -116,12 +116,15 @@ Gui::Gui(Audio_track                    *in_at_1,
     }
 
     // Creates dynamic widgets.
+    this->treeview_icon_provider = new TreeViewIconProvider();
     this->folder_system_model = new QFileSystemModel();
-    this->folder_browser      = new QTreeView();
+    this->folder_system_model->setIconProvider(this->treeview_icon_provider);
+    this->folder_browser = new QTreeView();
     this->folder_browser->setModel(this->folder_system_model);
 
     this->file_system_model = new Audio_collection_model();
-    this->file_browser      = new QTreeView();
+    //this->file_system_model->setIconProvider(this->treeview_icon_provider); // TODO: replace set_icon with that
+    this->file_browser = new QTreeView();
     this->file_browser->setModel(this->file_system_model);
 
     this->file_browser_gbox = new QGroupBox();
@@ -186,6 +189,7 @@ Gui::~Gui()
     this->settings->set_main_window_size(this->window->size());
 
     // Cleanup.
+    delete this->treeview_icon_provider;
     delete this->folder_system_model;
     delete this->folder_browser;
     delete this->file_system_model;
@@ -1147,6 +1151,7 @@ Gui::create_main_window()
     this->folder_browser->setColumnHidden(1, true);
     this->folder_browser->setColumnHidden(2, true);
     this->folder_browser->setColumnHidden(3, true);
+    this->folder_browser->setHeaderHidden(true);
     this->folder_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->folder_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -1330,16 +1335,20 @@ Gui::create_main_window()
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
     file_browser_layout->addWidget(file_browser_buttons_widget);
 
-    QSplitter *splitter = new QSplitter();
-    splitter->addWidget(this->folder_browser);
-    splitter->addWidget(this->file_browser);
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 4);
-    file_browser_layout->addWidget(splitter);
+    QFrame* horiz_line = new QFrame();
+    horiz_line->setFrameShape(QFrame::HLine);
+    horiz_line->setObjectName("Horizontal_line");
+    file_browser_layout->addWidget(horiz_line);
+
+    QSplitter *vert_splitter = new QSplitter();
+    vert_splitter->addWidget(this->folder_browser);
+    vert_splitter->addWidget(this->file_browser);
+    vert_splitter->setStretchFactor(0, 1);
+    vert_splitter->setStretchFactor(1, 4);
+    file_browser_layout->addWidget(vert_splitter);
 
     this->set_file_browser_title();
     this->file_browser_gbox->setLayout(file_browser_layout);
-
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1733,6 +1742,12 @@ Gui::apply_main_window_style()
         this->load_sample2_4_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->show_next_key_from_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
         this->show_next_key_from_deck2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
+
+        QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
+        if (icon_prov != NULL)
+        {
+            ((TreeViewIconProvider*)icon_prov)->set_default_icons();
+        }
         this->file_system_model->set_icons((QApplication::style()->standardIcon(QStyle::SP_FileIcon).pixmap(10, 10)),
                                            (QApplication::style()->standardIcon(QStyle::SP_DirIcon).pixmap(10, 10)));
     }
@@ -1771,6 +1786,14 @@ Gui::apply_main_window_style()
         this->show_next_key_from_deck2_button->setIcon(QIcon());
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
+        QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
+        if (icon_prov != NULL)
+        {
+            ((TreeViewIconProvider*)icon_prov)->set_icons(QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_DRIVE_SUFFIX).scaledToWidth(10,      Qt::SmoothTransformation)),
+                                                          QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10,     Qt::SmoothTransformation)),
+                                                          QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation)),
+                                                          QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FILE_SUFFIX).scaledToWidth(10,       Qt::SmoothTransformation)));
+        }
         this->file_system_model->set_icons(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation),
                                            QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation));
     }
@@ -1789,14 +1812,19 @@ Gui::set_folder_browser_base_path(QString in_path)
     qDebug() << "Gui::set_folder_browser_base_path...";
 
     // Change path of the model and set file extension filters.
-    this->folder_system_model->setRootPath(in_path);
+    //this->folder_system_model->setRootPath(in_path);
+    this->folder_system_model->setRootPath("");
     QStringList name_filter;
     name_filter << "*.m3u" << "*.pls" << "*.xspf";
     this->folder_system_model->setNameFilters(name_filter);
     this->folder_system_model->setNameFilterDisables(false);
 
     // Change root path of file browser.
-    this->folder_browser->setRootIndex(this->folder_system_model->index(in_path));
+    //this->folder_browser->setRootIndex(this->folder_system_model->index(in_path));
+    this->folder_browser->setRootIndex(this->folder_system_model->index(""));
+
+    // TODO: do not set a root path (root of the file system)
+    //       and automatically select (highlight) the base path
 
     qDebug() << "Gui::set_folder_browser_base_path done.";
 
@@ -3068,4 +3096,86 @@ PlaybackQGroupBox::leaveEvent(QEvent *in_event)
     qDebug() << "PlaybackQGroupBox::leaveEvent done.";
 
     return;
+}
+
+TreeViewIconProvider::TreeViewIconProvider()
+{
+    this->set_default_icons();
+}
+
+TreeViewIconProvider::~TreeViewIconProvider()
+{
+}
+
+void TreeViewIconProvider::set_icons(const QIcon &drive,
+                                     const QIcon &folder,
+                                     const QIcon &file,
+                                     const QIcon &other)
+{
+    this->drive  = drive;
+    this->folder = folder;
+    this->file   = file;
+    this->other  = other;
+}
+
+void TreeViewIconProvider::set_default_icons()
+{
+    this->drive  = QIcon(QApplication::style()->standardIcon(QStyle::SP_DriveHDIcon));
+    this->folder = QIcon(QApplication::style()->standardIcon(QStyle::SP_DirIcon));
+    this->file   = QIcon(QApplication::style()->standardIcon(QStyle::SP_FileIcon));
+    this->other  = QIcon(QApplication::style()->standardIcon(QStyle::SP_FileIcon));
+}
+
+QIcon TreeViewIconProvider::icon(IconType type) const
+{
+    if (type == TreeViewIconProvider::Drive)
+    {
+        return this->drive;
+    }
+    else if (type == TreeViewIconProvider::Folder)
+    {
+        return this->folder;
+    }
+    else if (type == TreeViewIconProvider::File)
+    {
+        return this->file;
+    }
+
+    return this->other;
+}
+
+QIcon TreeViewIconProvider::icon(const QFileInfo &info) const
+{
+    if (info.isRoot() == true)
+    {
+        return this->drive;
+    }
+    else if (info.isDir() == true)
+    {
+        return this->folder;
+    }
+    else if (info.isFile() == true)
+    {
+        return this->file;
+    }
+
+    return this->other;
+}
+
+QString TreeViewIconProvider::type(const QFileInfo &info) const
+{
+    if (info.isRoot() == true)
+    {
+        return QString("Drive");
+    }
+    else if (info.isDir() == true)
+    {
+        return QString("Folder");
+    }
+    else if (info.isFile() == true)
+    {
+        return QString("File");
+    }
+
+    return QString("File");
 }

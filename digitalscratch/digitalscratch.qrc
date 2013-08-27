@@ -2,6 +2,8 @@
 <qresource>
     <file>pixmaps/dark-audio_file_white.png</file>
     <file>pixmaps/dark-folder_white.png</file>
+    <file>pixmaps/dark-drive_white.png</file>
+    <file>pixmaps/dark-file_white.png</file>
     <file>pixmaps/dark-branch_closed.png</file>
     <file>pixmaps/dark-branch_open.png</file>
     <file>pixmaps/dark-branch_vline.png</file>

@@ -54,6 +54,7 @@
 #include <application_const.h>
 #include <audio_collection_model.h>
 #include <QProgressBar>
+#include <QFileIconProvider>
 
 using namespace std;
 
@@ -87,6 +88,29 @@ class PlaybackQGroupBox : public QGroupBox
        void selected();
        void hover();
        void unhover();
+};
+
+class TreeViewIconProvider : public QFileIconProvider
+{
+    public:
+        TreeViewIconProvider();
+        virtual ~TreeViewIconProvider();
+
+    private:
+        QIcon drive;
+        QIcon folder;
+        QIcon file;
+        QIcon other;
+
+    public:
+        QIcon   icon(IconType type) const;
+        QIcon   icon(const QFileInfo &info) const;
+        QString type(const QFileInfo &info) const;
+        void    set_icons(const QIcon &drive,
+                          const QIcon &folder,
+                          const QIcon &file,
+                          const QIcon &other);
+        void    set_default_icons();
 };
 
 class Gui : QObject
@@ -142,6 +166,7 @@ class Gui : QObject
     Sound_card_access_rules       *sound_card;
     QFileSystemModel              *folder_system_model;
     Audio_collection_model        *file_system_model;
+    TreeViewIconProvider          *treeview_icon_provider;
     int                           *dscratch_ids;
     Application_settings          *settings;
     QShortcut                     *shortcut_switch_playback;
