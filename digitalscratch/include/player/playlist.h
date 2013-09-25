@@ -34,6 +34,7 @@
 #define PLAYLIST_H_
 
 #include <QObject>
+#include <QString>
 #include <application_const.h>
 using namespace std;
 
@@ -41,9 +42,18 @@ class Playlist : public QObject
 {
     Q_OBJECT
 
+ private:
+    QString        name;
+    QList<QString> tracklist;
+
  public:
-    Playlist();
+    Playlist(const QString &in_name);
     virtual ~Playlist();
+
+ public:
+    QString        get_name();
+    QList<QString> get_tracklist();
+    void           add_track(const QString &in_filename);
 };
 
 #endif /* PLAYLIST_H_ */

@@ -53,3 +53,23 @@ Playlist_persistence::~Playlist_persistence()
 
     return;
 }
+
+bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist)
+{
+    qDebug() << "Playlist_persistence::read_m3u...";
+
+    // Check parameters.
+    if (io_playlist == NULL)
+    {
+        return false;
+    }
+
+    // Populate list of audio track.
+    // TODO
+    io_playlist->add_track(QString("track1"));
+    io_playlist->add_track(QString("track2"));
+
+    qDebug() << "Playlist_persistence::read_m3u done.";
+
+    return true;
+}

@@ -35,9 +35,12 @@
 #include <QtDebug>
 #include "playlist.h"
 
-Playlist::Playlist()
+Playlist::Playlist(const QString &in_name)
 {
     qDebug() << "Playlist::Playlist: create object...";
+
+    this->name = in_name;
+    this->tracklist.clear();
 
     qDebug() << "Playlist::Playlist: create object done";
 
@@ -52,4 +55,20 @@ Playlist::~Playlist()
     qDebug() << "Playlist::~Playlist: delete object done.";
 
     return;
+}
+
+QString Playlist::get_name()
+{
+    return this->name;
+}
+
+QList<QString> Playlist::get_tracklist()
+{
+    return this->tracklist;
+}
+
+void Playlist::add_track(const QString &in_filename)
+{
+    // TODO: check for duplicate.
+    this->tracklist.append(in_filename);
 }

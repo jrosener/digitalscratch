@@ -40,9 +40,12 @@ class Playlist_persistence : public QObject
 {
     Q_OBJECT
 
- public:
+  public:
     Playlist_persistence();
     virtual ~Playlist_persistence();
+
+  public:
+    bool read_m3u(QString in_file_name, Playlist *&io_playlist);
 };
 
 #endif /* PLAYLIST_PERSISTENCE_H_ */
