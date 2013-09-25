@@ -53,7 +53,9 @@ HEADERS += include/gui/config_dialog.h \
            include/player/audio_track_key_process.h \
            include/utils.h \
            include/application_const.h \
-           include/singleton.h
+           include/singleton.h \
+           include/player/playlist.h \
+           include/player/playlist_persistence.h
            
 SOURCES += src/main.cpp \
            src/gui/config_dialog.cpp \
@@ -72,7 +74,9 @@ SOURCES += src/main.cpp \
            src/player/data_persistence.cpp \
            src/player/audio_collection_model.cpp \
            src/player/audio_track_key_process.cpp \
-           src/utils.cpp
+           src/utils.cpp \
+           src/player/playlist.cpp \
+           src/player/playlist_persistence.cpp
 
 CONFIG(test) {
     INCLUDEPATH += test
@@ -82,13 +86,15 @@ CONFIG(test) {
     HEADERS += test/audio_track_test.h \
                test/audio_file_decoding_process_test.h \
                test/utils_test.h \
-               test/data_persistence_test.h
+               test/data_persistence_test.h \
+               test/playlist_persistence_test.h
 
     SOURCES += test/main_test.cpp \
                test/audio_track_test.cpp \
                test/audio_file_decoding_process_test.cpp \
                test/utils_test.cpp \
-               test/data_persistence_test.cpp
+               test/data_persistence_test.cpp \
+               test/playlist_persistence_test.cpp
 }
 
 
