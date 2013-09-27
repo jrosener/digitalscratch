@@ -62,13 +62,13 @@ QString Playlist::get_name()
     return this->name;
 }
 
-QList<QString> Playlist::get_tracklist()
+QStringList Playlist::get_tracklist()
 {
     return this->tracklist;
 }
 
 void Playlist::add_track(const QString &in_filename)
 {
-    // TODO: check for duplicate.
     this->tracklist.append(in_filename);
+    this->tracklist.removeDuplicates();
 }

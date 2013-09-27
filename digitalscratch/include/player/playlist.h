@@ -35,6 +35,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <application_const.h>
 using namespace std;
 
@@ -43,17 +44,17 @@ class Playlist : public QObject
     Q_OBJECT
 
  private:
-    QString        name;
-    QList<QString> tracklist;
+    QString     name;
+    QStringList tracklist;
 
  public:
     Playlist(const QString &in_name);
     virtual ~Playlist();
 
  public:
-    QString        get_name();
-    QList<QString> get_tracklist();
-    void           add_track(const QString &in_filename);
+    QString     get_name();
+    QStringList get_tracklist();
+    void        add_track(const QString &in_filename);
 };
 
 #endif /* PLAYLIST_H_ */

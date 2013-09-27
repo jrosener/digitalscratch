@@ -36,6 +36,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include <QTextCodec>
+#include <QUrl>
+#include <QDesktopServices>
 #include "playlist_persistence.h"
 
 Playlist_persistence::Playlist_persistence()
@@ -77,9 +80,9 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
 
     // Populate list of audio track.
     QFile file(in_file_name);
-    if (file.open(QIODevice::ReadOnly) == true)
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
     {
-        // Set current path to the one from the playlist file.
+        // Set current path to the one from the playlist file. Needed for relative track file path.
         QString old_path = QDir::currentPath();
         QDir::setCurrent(path);
 
@@ -93,13 +96,27 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
             // Skip comment lines.
             if (line.startsWith("#") == false)
             {
+                // Check if file exists.
                 QFileInfo line_info(line);
-
-                // Skip tracks that does not exists.
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
                     io_playlist->add_track(line_info.absoluteFilePath());
+                }
+                else
+                {
+                    // File does not exist, maybe because path is a URI.
+                    line = QUrl::fromUserInput(line).toLocalFile();
+                    if (line.length() > 0)
+                    {
+                        // Try to check again if it exists.
+                        QFileInfo uri_info(line);
+                        if (uri_info.exists() == true)
+                        {
+                            // Add track path to playlist object.
+                            io_playlist->add_track(uri_info.absoluteFilePath());
+                        }
+                    }
                 }
             }
         }
