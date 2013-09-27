@@ -7,7 +7,7 @@
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"
 #define DATA_TRACK_2 "track_2.mp3"
-#define DATA_TRACK_3 "track_3.mp3"
+#define DATA_TRACK_3 "track_éèà@ù&_3.mp3"
 
 
 Audio_track_Test::Audio_track_Test()

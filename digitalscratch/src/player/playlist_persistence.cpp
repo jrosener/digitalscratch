@@ -33,6 +33,9 @@
 
 #include <iostream>
 #include <QtDebug>
+#include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include "playlist_persistence.h"
 
 Playlist_persistence::Playlist_persistence()
@@ -63,11 +66,48 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
     {
         return false;
     }
+    if (QFile::exists(in_file_name) == false)
+    {
+        return false;
+    }
+
+    // Get path of playlist file.
+    QFileInfo file_info(in_file_name);
+    QString   path(file_info.absolutePath());
 
     // Populate list of audio track.
-    // TODO
-    io_playlist->add_track(QString("track1"));
-    io_playlist->add_track(QString("track2"));
+    QFile file(in_file_name);
+    if (file.open(QIODevice::ReadOnly) == true)
+    {
+        // Set current path to the one from the playlist file.
+        QString old_path = QDir::currentPath();
+        QDir::setCurrent(path);
+
+        // Iterate over lines in playlist file.
+        QTextStream stream(&file);
+        while (stream.atEnd() == false)
+        {
+            // Get line.
+            QString line = stream.readLine();
+
+            // Skip comment lines.
+            if (line.startsWith("#") == false)
+            {
+                QFileInfo line_info(line);
+
+                // Skip tracks that does not exists.
+                if (line_info.exists() == true)
+                {
+                    // Add track path to playlist object.
+                    io_playlist->add_track(line_info.absoluteFilePath());
+                }
+            }
+        }
+
+        // Put back the current path;
+        QDir::setCurrent(old_path);
+    }
+    file.close();
 
     qDebug() << "Playlist_persistence::read_m3u done.";
 
