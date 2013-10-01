@@ -2341,8 +2341,23 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
 {
     qDebug() << "Gui::on_file_browser_double_click...";
 
-    // Open selected directory in file browser.
-    this->set_file_browser_base_path(this->folder_system_model->filePath(in_model_index));
+    // Get path (file for a playlist, or just a directory).
+    QString path = this->folder_system_model->filePath(in_model_index);
+
+    QFileInfo file_info(path);
+    if (file_info.isFile() == true)
+    {
+        // It is a playlist, parse it and show track list in file browser.
+        if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
+        {
+            // TODO open M3U playlist
+        }
+    }
+    else
+    {
+        // It is a directory, open selected directory in file browser.
+        this->set_file_browser_base_path(path);
+    }
 
     qDebug() << "Gui::on_file_browser_double_click...";
 }
