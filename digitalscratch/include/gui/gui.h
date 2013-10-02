@@ -41,6 +41,9 @@
 #include <QString>
 #include <QFileSystemModel>
 #include <QShortcut>
+#include <QProgressBar>
+#include <QFileIconProvider>
+
 #include "config_dialog.h"
 #include "audio_track.h"
 #include "audio_file_decoding_process.h"
@@ -51,10 +54,9 @@
 #include "vertical_waveform.h"
 #include "remaining_time.h"
 #include "application_settings.h"
-#include <application_const.h>
-#include <audio_collection_model.h>
-#include <QProgressBar>
-#include <QFileIconProvider>
+#include "application_const.h"
+#include "audio_collection_model.h"
+#include "playlist.h"
 
 using namespace std;
 
@@ -236,10 +238,10 @@ class Gui : QObject
  private:
     bool    create_main_window();
     bool    apply_main_window_style();
-    bool    set_file_browser_playlist_tracks(QStringList in_tracklist);
+    bool    set_file_browser_playlist_tracks(Playlist *in_playlist);
     bool    set_file_browser_base_path(QString in_path);
     bool    set_folder_browser_base_path(QString in_path);
-    bool    set_file_browser_title();
+    bool    set_file_browser_title(QString in_title);
     bool    restart_sound_card(short unsigned int in_nb_channels);
     bool    apply_application_settings();
     void    run_sampler_decoding_process(unsigned short int in_deck_index,

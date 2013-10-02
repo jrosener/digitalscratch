@@ -1353,7 +1353,7 @@ Gui::create_main_window()
     vert_splitter->setStretchFactor(1, 4);
     file_browser_layout->addWidget(vert_splitter);
 
-    this->set_file_browser_title();
+    this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
     this->file_browser_gbox->setLayout(file_browser_layout);
 
 
@@ -1844,7 +1844,7 @@ Gui::set_file_browser_base_path(QString in_path)
     qDebug() << "Gui::set_file_browser_base_path...";
 
     // Set base path as title to file browser.
-    this->set_file_browser_title();
+    this->set_file_browser_title(in_path);
 
     // Change root path of file browser.
     this->file_browser->setRootIndex(QModelIndex());
@@ -1862,16 +1862,16 @@ Gui::set_file_browser_base_path(QString in_path)
 }
 
 bool
-Gui::set_file_browser_playlist_tracks(QStringList in_tracklist)
+Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
 {
     qDebug() << "Gui::set_file_browser_playlist_tracks...";
 
     // Set base path as title to file browser.
-    this->set_file_browser_title(); // FIXME put the name of the playlist, aka the file name.
+    this->set_file_browser_title(in_playlist->get_name());
 
     // Set list of tracks to the file browser.
     this->file_browser->setRootIndex(QModelIndex());
-    this->file_system_model->set_tracklist(in_tracklist);
+    this->file_system_model->set_tracklist(in_playlist->get_tracklist());
 
     // Get file info from DB.
     this->file_system_model->concurrent_watcher_read->cancel();
@@ -1893,12 +1893,12 @@ Gui::sync_file_browser_to_audio_collection()
 }
 
 bool
-Gui::set_file_browser_title()
+Gui::set_file_browser_title(QString in_title)
 {
     qDebug() << "Gui::set_file_browser_title...";
 
     // Change file browser title (which contains base dir for tracks).
-    this->file_browser_gbox->setTitle(tr("File browser") + " [" + this->settings->get_tracks_base_dir_path() + "]");
+    this->file_browser_gbox->setTitle(tr("File browser") + " [" + in_title + "]");
 
     qDebug() << "Gui::set_file_browser_title done.";
 
@@ -2377,12 +2377,12 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
         if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
         {
             // Open M3U playlist
-            Playlist             *playlist         = new Playlist("playlist");
+            Playlist             *playlist         = new Playlist(file_info.baseName());
             Playlist_persistence *playlist_persist = new Playlist_persistence();
             if (playlist_persist->read_m3u(path, playlist) == true)
             {
                 // Populate file browser.
-                this->set_file_browser_playlist_tracks(playlist->get_tracklist());
+                this->set_file_browser_playlist_tracks(playlist);
             }
             else
             {
