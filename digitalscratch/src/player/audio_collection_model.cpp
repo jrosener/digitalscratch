@@ -284,6 +284,24 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     return this->get_root_index();
 }
 
+QModelIndex Audio_collection_model::set_tracklist(QStringList in_tracklist)
+{
+    // Clean collection.
+    this->beginResetModel();
+    this->endResetModel();
+
+    // Create root item which is the collection header.
+    this->create_header();
+
+    // Reset internal list of audio files (item pointers).
+    this->audio_item_list.clear();
+
+    // Fill the model.
+    this->setup_model_data_from_tracklist(in_tracklist, this->rootItem);
+
+    return this->get_root_index();
+}
+
 QModelIndex Audio_collection_model::get_root_index()
 {
     if (this->rootItem != NULL)
@@ -497,6 +515,49 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
             in_item->append_child(dir_item);
 
             this->setup_model_data(file_info.absoluteFilePath(), dir_item);
+        }
+    }
+}
+
+void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_tracklist, Audio_collection_item *in_item)
+{
+    // Iterate over tracklist.
+    for (int i = 0; i < in_tracklist.size(); i++)
+    {
+        QFileInfo file_info(in_tracklist.at(i));
+        if (file_info.exists() == true)
+        {
+            // Prepare data to show for the item.
+            QString displayed_path(file_info.fileName());
+            QList<QVariant> line;
+            line << displayed_path << "";
+
+            // Add a child item.
+            if (file_info.isDir() == false)
+            {
+                // It is a file, add the item.
+                Audio_collection_item *file_item = new Audio_collection_item(line,
+                                                                             Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
+                                                                             file_info.absoluteFilePath(),
+                                                                             false,
+                                                                             in_item);
+                in_item->append_child(file_item);
+
+                // Add the item's reference to a list (useful for future parsing).
+                this->audio_item_list << file_item;
+            }
+            else
+            {
+                // It is a directory, add the item and analyze file under it.
+                Audio_collection_item *dir_item = new Audio_collection_item(line,
+                                                                            "",
+                                                                            file_info.absoluteFilePath(),
+                                                                            true,
+                                                                            in_item);
+                in_item->append_child(dir_item);
+
+                this->setup_model_data(file_info.absoluteFilePath(), dir_item);
+            }
         }
     }
 }

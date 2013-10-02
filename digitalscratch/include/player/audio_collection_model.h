@@ -115,6 +115,7 @@ class Audio_collection_model : public QAbstractItemModel
     ~Audio_collection_model();
 
     QModelIndex   set_root_path(QString in_root_path);
+    QModelIndex   set_tracklist(QStringList in_tracklist);
     QModelIndex   get_root_index();
 
     QVariant      data(const QModelIndex &in_index, int in_role) const;
@@ -141,6 +142,7 @@ class Audio_collection_model : public QAbstractItemModel
 
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);
+    void setup_model_data_from_tracklist(QStringList in_tracklist, Audio_collection_item *in_item);
     void create_header();
 };
 

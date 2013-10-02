@@ -62,6 +62,8 @@
 #include "utils.h"
 #include "singleton.h"
 #include "keyfinder_api.h"
+#include "playlist.h"
+#include "playlist_persistence.h"
 
 Gui::Gui(Audio_track                    *in_at_1,
          Audio_track                    *in_at_2,
@@ -1848,12 +1850,36 @@ Gui::set_file_browser_base_path(QString in_path)
     this->file_browser->setRootIndex(QModelIndex());
     this->file_system_model->set_root_path(in_path);
 
+    // Get file info from DB.
     this->file_system_model->concurrent_watcher_read->cancel();
     this->file_system_model->concurrent_watcher_read->waitForFinished();
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
 
     qDebug() << "Gui::set_file_browser_base_path done.";
+
+    return true;
+}
+
+bool
+Gui::set_file_browser_playlist_tracks(QStringList in_tracklist)
+{
+    qDebug() << "Gui::set_file_browser_playlist_tracks...";
+
+    // Set base path as title to file browser.
+    this->set_file_browser_title(); // FIXME put the name of the playlist, aka the file name.
+
+    // Set list of tracks to the file browser.
+    this->file_browser->setRootIndex(QModelIndex());
+    this->file_system_model->set_tracklist(in_tracklist);
+
+    // Get file info from DB.
+    this->file_system_model->concurrent_watcher_read->cancel();
+    this->file_system_model->concurrent_watcher_read->waitForFinished();
+    this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
+                                                                   // Call sync_file_browser_to_audio_collection() when it's done.
+
+    qDebug() << "Gui::set_file_browser_playlist_tracks done.";
 
     return true;
 }
@@ -2350,7 +2376,22 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
         // It is a playlist, parse it and show track list in file browser.
         if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
         {
-            // TODO open M3U playlist
+            // Open M3U playlist
+            Playlist             *playlist         = new Playlist("playlist");
+            Playlist_persistence *playlist_persist = new Playlist_persistence();
+            if (playlist_persist->read_m3u(path, playlist) == true)
+            {
+                // Populate file browser.
+                this->set_file_browser_playlist_tracks(playlist->get_tracklist());
+            }
+            else
+            {
+                qWarning() << "Gui::on_file_browser_double_click: can not open playlist " << qPrintable(path);
+            }
+
+            // Cleanup.
+            delete playlist;
+            delete playlist_persist;
         }
     }
     else

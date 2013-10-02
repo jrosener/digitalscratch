@@ -236,6 +236,7 @@ class Gui : QObject
  private:
     bool    create_main_window();
     bool    apply_main_window_style();
+    bool    set_file_browser_playlist_tracks(QStringList in_tracklist);
     bool    set_file_browser_base_path(QString in_path);
     bool    set_folder_browser_base_path(QString in_path);
     bool    set_file_browser_title();
