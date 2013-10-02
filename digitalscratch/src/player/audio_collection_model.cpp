@@ -475,7 +475,10 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
 {
     // Create a Qdir based on input path.
     QStringList filters;
-    filters << "*.mp3" << "*.flac";
+    for (int i = 0; i < Utils::audio_file_extensions.size(); i++)
+    {
+        filters << (QString("*.") + Utils::audio_file_extensions.at(i));
+    }
     QDir dir(in_path);
     dir.setNameFilters(filters);
     dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
@@ -535,16 +538,19 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
             // Add a child item.
             if (file_info.isDir() == false)
             {
-                // It is a file, add the item.
-                Audio_collection_item *file_item = new Audio_collection_item(line,
-                                                                             Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
-                                                                             file_info.absoluteFilePath(),
-                                                                             false,
-                                                                             in_item);
-                in_item->append_child(file_item);
+                if (Utils::audio_file_extensions.contains(file_info.suffix(), Qt::CaseInsensitive) == true)
+                {
+                    // It is a file (mp3 or flac), add the item.
+                    Audio_collection_item *file_item = new Audio_collection_item(line,
+                                                                                 Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
+                                                                                 file_info.absoluteFilePath(),
+                                                                                 false,
+                                                                                 in_item);
+                    in_item->append_child(file_item);
 
-                // Add the item's reference to a list (useful for future parsing).
-                this->audio_item_list << file_item;
+                    // Add the item's reference to a list (useful for future parsing).
+                    this->audio_item_list << file_item;
+                }
             }
             else
             {

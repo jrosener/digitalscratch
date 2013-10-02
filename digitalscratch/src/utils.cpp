@@ -35,12 +35,17 @@
 #include <algorithm>
 #include <QtDebug>
 #include <QFile>
+#include <QStringList>
 #include <audio_track.h>
 #include <audio_file_decoding_process.h>
 #include <audio_track_key_process.h>
 #include <application_settings.h>
 #include <singleton.h>
 
+// Global static data.
+QStringList Utils::audio_file_extensions = QStringList() << "mp3" << "flac";
+
+// Static utils functions.
 QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 {   
     qDebug() << "Utils::get_file_hash...";

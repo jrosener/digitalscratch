@@ -40,6 +40,9 @@ using namespace std;
 
 class Utils
 {
+ public:
+    static QStringList audio_file_extensions;
+
  private:
     static QList<QString> minor_keys;
     static QList<QString> major_keys;

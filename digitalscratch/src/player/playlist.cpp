@@ -69,7 +69,6 @@ QStringList Playlist::get_tracklist()
 
 void Playlist::add_track(const QString &in_filename)
 {
-    // FIXME : filter on extensions mp3 and flac
     this->tracklist.append(in_filename);
     this->tracklist.removeDuplicates();
 }

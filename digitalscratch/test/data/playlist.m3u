@@ -1,7 +1,7 @@
 #EXTM3U
 #EXTINF:2316,
 # full path
-D:/git/master/digitalscratch/test/data/track_1.mp3
+/home/julien/digital-scratch/master/digitalscratch/test/data/track_1.mp3
 #EXTINF:2316, -
 # relative path
 track_2.mp3
@@ -10,10 +10,10 @@ track_2.mp3
 track_2.mp3
 #EXTINF:2316, -
 # file does not exists
-file:///D:/git/master/digitalscratch/test/data/track_does_not_exists.mp3
+file:///home/julien/digital-scratch/master/digitalscratch/test/data/track_does_not_exists.mp3
 #EXTINF:2316, -
 # uri style path
-file:///D:/git/master/digitalscratch/test/data/track_%C3%A9%C3%A8%C3%A0%40%C3%B9%26_3.mp3
+file:///home/julien/digital-scratch/master/digitalscratch/test/data/track_%C3%A9%C3%A8%C3%A0%40%C3%B9%26_3.mp3
 #EXTINF:2316, -
 # special chars
-track_ιθΰ@ω&_4.mp3
+track_Γ©Γ¨Γ @ΓΉ&_4.mp3
