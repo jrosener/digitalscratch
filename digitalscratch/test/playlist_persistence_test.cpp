@@ -38,7 +38,7 @@ Playlist_persistence_Test::Playlist_persistence_Test()
 void Playlist_persistence_Test::initTestCase()
 {
     // Init playlist and persistence process.
-    this->playlist         = new Playlist("playlist");
+    this->playlist         = new Playlist("base_path", "playlist");
     this->playlist_persist = new Playlist_persistence();
 
     // Create a test playlist file.

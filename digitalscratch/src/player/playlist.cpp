@@ -35,11 +35,12 @@
 #include <QtDebug>
 #include "playlist.h"
 
-Playlist::Playlist(const QString &in_name)
+Playlist::Playlist(const QString &in_basepath, const QString &in_name)
 {
     qDebug() << "Playlist::Playlist: create object...";
 
-    this->name = in_name;
+    this->basepath = in_basepath;
+    this->name     = in_name;
     this->tracklist.clear();
 
     qDebug() << "Playlist::Playlist: create object done";
@@ -55,6 +56,11 @@ Playlist::~Playlist()
     qDebug() << "Playlist::~Playlist: delete object done.";
 
     return;
+}
+
+QString Playlist::get_basepath()
+{
+    return this->basepath;
 }
 
 QString Playlist::get_name()

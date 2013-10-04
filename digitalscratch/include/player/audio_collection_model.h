@@ -42,6 +42,7 @@
 #include <QFutureWatcher>
 #include <QPixmap>
 #include <QList>
+#include "playlist.h"
 
 using namespace std;
 
@@ -50,8 +51,9 @@ using namespace std;
 
 class Audio_collection_item
 {
- private:
+ public:
     QList<Audio_collection_item*>  childItems;
+ private:
     QList<QVariant>                itemData;
     Audio_collection_item         *parentItem;
     QString                        fullPath;
@@ -68,10 +70,10 @@ class Audio_collection_item
                                 Audio_collection_item *in_parent       = 0);
     ~Audio_collection_item();
 
-    void                   append_child(Audio_collection_item *in_item);
-    Audio_collection_item *get_child(int in_row);
-    int                    get_child_count() const;
-    Audio_collection_item *get_parent();
+    void                           append_child(Audio_collection_item *in_item);
+    Audio_collection_item         *get_child(int in_row);
+    int                            get_child_count() const;
+    Audio_collection_item         *get_parent();
 
     int                    get_row() const;
     int                    get_column_count() const;
@@ -115,7 +117,7 @@ class Audio_collection_model : public QAbstractItemModel
     ~Audio_collection_model();
 
     QModelIndex   set_root_path(QString in_root_path);
-    QModelIndex   set_tracklist(QStringList in_tracklist);
+    QModelIndex   set_playlist(Playlist *in_playlist);
     QModelIndex   get_root_index();
 
     QVariant      data(const QModelIndex &in_index, int in_role) const;
@@ -126,6 +128,7 @@ class Audio_collection_model : public QAbstractItemModel
     QModelIndex   parent_from_item(Audio_collection_item &in_item) const;
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
+    void          sort(int in_column, Qt::SortOrder in_order);
 
     void begin_db_change();                                     // Begin a DB transaction.
     void commit_db_change();                                    // Commit a DB transaction.
@@ -143,7 +146,7 @@ class Audio_collection_model : public QAbstractItemModel
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);
     void setup_model_data_from_tracklist(QStringList in_tracklist, Audio_collection_item *in_item);
-    void create_header();
+    void create_header(QString in_path);
 };
 
 #endif /* AUDIO_COLLECTION_MODEL_H_ */

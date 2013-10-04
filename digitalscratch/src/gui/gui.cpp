@@ -126,7 +126,6 @@ Gui::Gui(Audio_track                    *in_at_1,
     this->folder_browser->setModel(this->folder_system_model);
 
     this->file_system_model = new Audio_collection_model();
-    //this->file_system_model->setIconProvider(this->treeview_icon_provider); // TODO: replace set_icon with that
     this->file_browser = new QTreeView();
     this->file_browser->setModel(this->file_system_model);
 
@@ -1159,6 +1158,10 @@ Gui::create_main_window()
     this->folder_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->file_browser->header()->setSortIndicatorShown(true);
+    this->file_browser->header()->setSectionsClickable(true);
+    QObject::connect(this->file_browser->header(), SIGNAL(sectionClicked(int)), this, SLOT(on_file_browser_header_click(int)));
+
 
     // Open folder or playlist from file browser on double click.
     QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
@@ -1871,7 +1874,7 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
 
     // Set list of tracks to the file browser.
     this->file_browser->setRootIndex(QModelIndex());
-    this->file_system_model->set_tracklist(in_playlist->get_tracklist());
+    this->file_system_model->set_playlist(in_playlist);
 
     // Get file info from DB.
     this->file_system_model->concurrent_watcher_read->cancel();
@@ -2363,6 +2366,16 @@ Gui::on_file_browser_expand(QModelIndex)
 }
 
 void
+Gui::on_file_browser_header_click(int in_index)
+{    
+    // Get the order.
+    Qt::SortOrder order = this->file_browser->header()->sortIndicatorOrder();
+
+    // Sort the items.
+    this->file_browser->sortByColumn(in_index, order);
+}
+
+void
 Gui::on_file_browser_double_click(QModelIndex in_model_index)
 {
     qDebug() << "Gui::on_file_browser_double_click...";
@@ -2377,7 +2390,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
         if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
         {
             // Open M3U playlist
-            Playlist             *playlist         = new Playlist(file_info.baseName());
+            Playlist             *playlist         = new Playlist(file_info.absolutePath(), file_info.baseName());
             Playlist_persistence *playlist_persist = new Playlist_persistence();
             if (playlist_persist->read_m3u(path, playlist) == true)
             {

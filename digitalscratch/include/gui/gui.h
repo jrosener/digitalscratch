@@ -337,6 +337,7 @@ class Gui : QObject
     void select_and_show_next_keys_deck1();
     void select_and_show_next_keys_deck2();
     void show_next_keys();
+    void on_file_browser_header_click(int in_index);
 };
 
 #endif /* GUI_H_ */

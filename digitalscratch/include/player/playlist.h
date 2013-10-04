@@ -44,14 +44,16 @@ class Playlist : public QObject
     Q_OBJECT
 
  private:
+    QString     basepath;
     QString     name;
     QStringList tracklist;
 
  public:
-    Playlist(const QString &in_name);
+    Playlist(const QString &in_basepath, const QString &in_name);
     virtual ~Playlist();
 
  public:
+    QString     get_basepath();
     QString     get_name();
     QStringList get_tracklist();
     void        add_track(const QString &in_filename);

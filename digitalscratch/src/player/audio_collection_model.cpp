@@ -214,7 +214,7 @@ void Audio_collection_item::store_to_db()
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)
 {
     this->rootItem = NULL;
-    this->create_header();
+    this->create_header("");
     this->audio_item_list.clear();
 
     // Init thread tools.
@@ -254,7 +254,7 @@ void Audio_collection_model::set_icons(QPixmap in_audio_file_icon,
     this->directory_icon  = in_directory_icon;
 }
 
-void Audio_collection_model::create_header()
+void Audio_collection_model::create_header(QString in_path)
 {
     // Create root item which is the collection header.
     QList<QVariant> rootData;
@@ -263,7 +263,7 @@ void Audio_collection_model::create_header()
     {
         delete this->rootItem;
     }
-    this->rootItem = new Audio_collection_item(rootData);
+    this->rootItem = new Audio_collection_item(rootData, "", in_path, false, 0);
 }
 
 QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
@@ -273,7 +273,7 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     this->endResetModel();
 
     // Create root item which is the collection header.
-    this->create_header();
+    this->create_header(in_root_path);
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
@@ -284,20 +284,20 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     return this->get_root_index();
 }
 
-QModelIndex Audio_collection_model::set_tracklist(QStringList in_tracklist)
+QModelIndex Audio_collection_model::set_playlist(Playlist *in_playlist)
 {
     // Clean collection.
     this->beginResetModel();
     this->endResetModel();
 
     // Create root item which is the collection header.
-    this->create_header();
+    this->create_header(in_playlist->get_basepath());
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
 
     // Fill the model.
-    this->setup_model_data_from_tracklist(in_tracklist, this->rootItem);
+    this->setup_model_data_from_tracklist(in_playlist->get_tracklist(), this->rootItem);
 
     return this->get_root_index();
 }
@@ -323,6 +323,122 @@ int Audio_collection_model::columnCount(const QModelIndex &in_parent) const
     else
     {
         return rootItem->get_column_count();
+    }
+}
+
+struct Audio_collection_item_key_comparer
+{
+  bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
+  {
+      QString key       = in_item_a->get_data(COLUMN_KEY).toString();
+      QString other_key = in_item_b->get_data(COLUMN_KEY).toString();
+
+      if ((key.size() >= 2) && (other_key.size() >= 2))
+      {
+          // First compare one or 2 first number digits. If there are same, Compare the last letter.
+          int     key_digits = 0;
+          QString key_letter = "";
+          if (key.size() == 2)
+          {
+              // Like "2B".
+              key_digits = key.left(1).toInt();
+              key_letter = key.right(1);
+          }
+          if (key.size() == 3)
+          {
+              // Like "11A".
+              key_digits = key.left(2).toInt();
+              key_letter = key.right(1);
+          }
+
+          int     other_key_digits = 0;
+          QString other_key_letter = "";
+          if (other_key.size() == 2)
+          {
+              // Like "2B".
+              other_key_digits = other_key.left(1).toInt();
+              other_key_letter = other_key.right(1);
+          }
+          if (other_key.size() == 3)
+          {
+              // Like "11A".
+              other_key_digits = other_key.left(2).toInt();
+              other_key_letter = other_key.right(1);
+          }
+
+          if (key_digits != other_key_digits)
+          {
+              // Digits are different, compare on it.
+              return key_digits < other_key_digits;
+          }
+          else
+          {
+              // Digits are same, compare letter.
+              return key_letter < other_key_letter;
+          }
+      }
+      else
+      {
+          return key < other_key;
+      }
+  }
+};
+
+struct Audio_collection_item_name_comparer
+{
+  bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
+  {
+      QString name       = in_item_a->get_data(COLUMN_FILE_NAME).toString();
+      QString other_name = in_item_b->get_data(COLUMN_FILE_NAME).toString();
+
+      return name < other_name;
+  }
+};
+
+void Audio_collection_model::sort(int in_column, Qt::SortOrder in_order)
+{
+    // FIXME sort keys directory per directory (and not for the full list), actually sort childItems recursively
+    // Then rebuild the full structure with parents and childs.
+    // So for the moment, do not sort if there are item with childs.
+    bool do_sort = true;
+    foreach (Audio_collection_item *item, this->rootItem->childItems)
+    {
+        if (item->get_child_count() > 0)
+        {
+            do_sort = false;
+        }
+    }
+
+    // Sort audio item list.
+    if (do_sort == true)
+    {
+        if (in_column == COLUMN_KEY)
+        {
+            qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_key_comparer());
+        }
+        else if (in_column == COLUMN_FILE_NAME)
+        {
+            qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_name_comparer());
+        }
+
+        // Clean and populate rows based on audio item list.
+        this->beginRemoveRows(this->get_root_index(), 1, this->rowCount());
+        this->endRemoveRows();
+        this->rootItem->childItems.clear();
+        if (in_order == Qt::AscendingOrder)
+        {
+            foreach (Audio_collection_item *item, this->audio_item_list)
+            {
+                this->rootItem->append_child(item);
+            }
+        }
+        else
+        {
+            for (int i = (this->audio_item_list.count() - 1); i >= 0; i--)
+            {
+                this->rootItem->append_child(this->audio_item_list.at(i));
+            }
+        }
     }
 }
 
@@ -431,7 +547,7 @@ QModelIndex Audio_collection_model::parent(const QModelIndex &in_index) const
     Audio_collection_item *childItem  = static_cast<Audio_collection_item*>(in_index.internalPointer());
     Audio_collection_item *parentItem = childItem->get_parent();
 
-    if (parentItem == this->rootItem)
+    if ((parentItem == this->rootItem) || (parentItem == NULL))
     {
         return QModelIndex();
     }
