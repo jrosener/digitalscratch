@@ -1846,6 +1846,10 @@ Gui::set_file_browser_base_path(QString in_path)
 {
     qDebug() << "Gui::set_file_browser_base_path...";
 
+    // Stop any running file analysis.
+    this->file_system_model->concurrent_watcher_read->cancel();
+    this->file_system_model->concurrent_watcher_read->waitForFinished();
+
     // Set base path as title to file browser.
     this->set_file_browser_title(in_path);
 
@@ -1854,8 +1858,6 @@ Gui::set_file_browser_base_path(QString in_path)
     this->file_system_model->set_root_path(in_path);
 
     // Get file info from DB.
-    this->file_system_model->concurrent_watcher_read->cancel();
-    this->file_system_model->concurrent_watcher_read->waitForFinished();
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
 
@@ -1869,6 +1871,10 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
 {
     qDebug() << "Gui::set_file_browser_playlist_tracks...";
 
+    // Stop any running file analysis.
+    this->file_system_model->concurrent_watcher_read->cancel();
+    this->file_system_model->concurrent_watcher_read->waitForFinished();
+
     // Set base path as title to file browser.
     this->set_file_browser_title(in_playlist->get_name());
 
@@ -1877,8 +1883,6 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
     this->file_system_model->set_playlist(in_playlist);
 
     // Get file info from DB.
-    this->file_system_model->concurrent_watcher_read->cancel();
-    this->file_system_model->concurrent_watcher_read->waitForFinished();
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
 
@@ -2420,6 +2424,7 @@ void
 Gui::resize_file_browser_columns()
 {
     qDebug() << "Gui::resize_file_browser_columns...";
+    this->file_browser->resizeColumnToContents(COLUMN_KEY);
     this->file_browser->resizeColumnToContents(COLUMN_FILE_NAME);
     qDebug() << "Gui::resize_file_browser_columns...";
 }

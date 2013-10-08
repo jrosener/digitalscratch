@@ -214,7 +214,7 @@ void Audio_collection_item::store_to_db()
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)
 {
     this->rootItem = NULL;
-    this->create_header("");
+    this->create_header("", false);
     this->audio_item_list.clear();
 
     // Init thread tools.
@@ -254,11 +254,16 @@ void Audio_collection_model::set_icons(QPixmap in_audio_file_icon,
     this->directory_icon  = in_directory_icon;
 }
 
-void Audio_collection_model::create_header(QString in_path)
+void Audio_collection_model::create_header(QString in_path, bool in_show_path)
 {
     // Create root item which is the collection header.
     QList<QVariant> rootData;
     rootData << tr("Track") << tr("Key");
+    if (in_show_path == true)
+    {
+        rootData << tr("Path");
+    }
+
     if (this->rootItem != NULL)
     {
         delete this->rootItem;
@@ -273,7 +278,7 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     this->endResetModel();
 
     // Create root item which is the collection header.
-    this->create_header(in_root_path);
+    this->create_header(in_root_path, false);
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
@@ -291,7 +296,7 @@ QModelIndex Audio_collection_model::set_playlist(Playlist *in_playlist)
     this->endResetModel();
 
     // Create root item which is the collection header.
-    this->create_header(in_playlist->get_basepath());
+    this->create_header(in_playlist->get_basepath(), true);
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
@@ -328,71 +333,117 @@ int Audio_collection_model::columnCount(const QModelIndex &in_parent) const
 
 struct Audio_collection_item_key_comparer
 {
-  bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
-  {
-      QString key       = in_item_a->get_data(COLUMN_KEY).toString();
-      QString other_key = in_item_b->get_data(COLUMN_KEY).toString();
+    bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
+    {
+        QString key       = in_item_a->get_data(COLUMN_KEY).toString();
+        QString other_key = in_item_b->get_data(COLUMN_KEY).toString();
 
-      if ((key.size() >= 2) && (other_key.size() >= 2))
-      {
-          // First compare one or 2 first number digits. If there are same, Compare the last letter.
-          int     key_digits = 0;
-          QString key_letter = "";
-          if (key.size() == 2)
-          {
-              // Like "2B".
-              key_digits = key.left(1).toInt();
-              key_letter = key.right(1);
-          }
-          if (key.size() == 3)
-          {
-              // Like "11A".
-              key_digits = key.left(2).toInt();
-              key_letter = key.right(1);
-          }
+        if ((key.size() >= 2) && (other_key.size() >= 2))
+        {
+            // First compare one or 2 first number digits. If there are same, Compare the last letter.
+            int     key_digits = 0;
+            QString key_letter = "";
+            if (key.size() == 2)
+            {
+                // Like "2B".
+                key_digits = key.left(1).toInt();
+                key_letter = key.right(1);
+            }
+            if (key.size() == 3)
+            {
+                // Like "11A".
+                key_digits = key.left(2).toInt();
+                key_letter = key.right(1);
+            }
 
-          int     other_key_digits = 0;
-          QString other_key_letter = "";
-          if (other_key.size() == 2)
-          {
-              // Like "2B".
-              other_key_digits = other_key.left(1).toInt();
-              other_key_letter = other_key.right(1);
-          }
-          if (other_key.size() == 3)
-          {
-              // Like "11A".
-              other_key_digits = other_key.left(2).toInt();
-              other_key_letter = other_key.right(1);
-          }
+            int     other_key_digits = 0;
+            QString other_key_letter = "";
+            if (other_key.size() == 2)
+            {
+                // Like "2B".
+                other_key_digits = other_key.left(1).toInt();
+                other_key_letter = other_key.right(1);
+            }
+            if (other_key.size() == 3)
+            {
+                // Like "11A".
+                other_key_digits = other_key.left(2).toInt();
+                other_key_letter = other_key.right(1);
+            }
 
-          if (key_digits != other_key_digits)
-          {
-              // Digits are different, compare on it.
-              return key_digits < other_key_digits;
-          }
-          else
-          {
-              // Digits are same, compare letter.
-              return key_letter < other_key_letter;
-          }
-      }
-      else
-      {
-          return key < other_key;
-      }
-  }
+            if (key_digits != other_key_digits)
+            {
+                // Digits are different, compare on it.
+                return key_digits < other_key_digits;
+            }
+            else
+            {
+                // Digits are same, compare letter.
+                return key_letter < other_key_letter;
+            }
+        }
+        else
+        {
+            return key < other_key;
+        }
+    }
 };
 
 struct Audio_collection_item_name_comparer
 {
-  bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
-  {
-      QString name       = in_item_a->get_data(COLUMN_FILE_NAME).toString();
-      QString other_name = in_item_b->get_data(COLUMN_FILE_NAME).toString();
+    bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
+    {
+        QString name       = in_item_a->get_data(COLUMN_FILE_NAME).toString();
+        QString other_name = in_item_b->get_data(COLUMN_FILE_NAME).toString();
 
-      return name < other_name;
-  }
+        return name < other_name;
+    }
+};
+
+struct Audio_collection_item_path_comparer
+{
+    bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
+    {
+        QString path       = in_item_a->get_data(COLUMN_PATH).toString();
+        QString other_path = in_item_b->get_data(COLUMN_PATH).toString();
+
+        // Extract common part of both paths.
+        QString common_path("");
+        int     i = 1;
+        bool    end_of_common = false;
+        while ((i <= path.length()) && (i <= other_path.length()) && (end_of_common == false))
+        {
+            if (path.left(i) == other_path.left(i))
+            {
+                // Common part of 2 paths.
+                common_path = path.left(i);
+            }
+            else
+            {
+                // End of common part.
+                end_of_common = true;
+            }
+            i++;
+        }
+
+        // If common part is the full part for one of the path, then the full path is higher.
+        // It results that file in dir are placed after files in subdirs.
+        if (common_path.length() > 0)
+        {
+            if (common_path == path)
+            {
+                return false;
+            }
+            else if (common_path == other_path)
+            {
+                return true;
+            }
+
+        }
+
+        // In all other cases we are doing a basic paths compare.
+        return path < other_path;
+    }
 };
 
 void Audio_collection_model::sort(int in_column, Qt::SortOrder in_order)
@@ -419,6 +470,10 @@ void Audio_collection_model::sort(int in_column, Qt::SortOrder in_order)
         else if (in_column == COLUMN_FILE_NAME)
         {
             qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_name_comparer());
+        }
+        else if (in_column == COLUMN_PATH)
+        {
+            qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_path_comparer());
         }
 
         // Clean and populate rows based on audio item list.
@@ -649,7 +704,7 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
             // Prepare data to show for the item.
             QString displayed_path(file_info.fileName());
             QList<QVariant> line;
-            line << displayed_path << "";
+            line << displayed_path << "" << file_info.absolutePath();
 
             // Add a child item.
             if (file_info.isDir() == false)

@@ -48,6 +48,7 @@ using namespace std;
 
 #define COLUMN_FILE_NAME 0
 #define COLUMN_KEY       1
+#define COLUMN_PATH      2
 
 class Audio_collection_item
 {
@@ -146,7 +147,7 @@ class Audio_collection_model : public QAbstractItemModel
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);
     void setup_model_data_from_tracklist(QStringList in_tracklist, Audio_collection_item *in_item);
-    void create_header(QString in_path);
+    void create_header(QString in_path, bool in_show_path);
 };
 
 #endif /* AUDIO_COLLECTION_MODEL_H_ */
