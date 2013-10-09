@@ -522,8 +522,7 @@ Gui::show_refresh_audio_collection_dialog()
     else
     {
         // Analyzis already running. Cancel it.
-        this->file_system_model->concurrent_watcher_store->cancel();
-        this->file_system_model->concurrent_watcher_store->waitForFinished();
+        this->file_system_model->stop_concurrent_analyse_audio_collection();
     }
 
     qDebug() << "Gui::show_refresh_audio_collection_dialog done.";
@@ -1874,8 +1873,8 @@ Gui::set_file_browser_base_path(QString in_path)
     qDebug() << "Gui::set_file_browser_base_path...";
 
     // Stop any running file analysis.
-    this->file_system_model->concurrent_watcher_read->cancel();
-    this->file_system_model->concurrent_watcher_read->waitForFinished();
+    this->file_system_model->stop_concurrent_read_collection_from_db();
+    this->file_system_model->stop_concurrent_analyse_audio_collection();
 
     // Show progress bar.
     this->progress_label->setText(tr("Opening ") + in_path + "...");
@@ -1903,8 +1902,8 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
     qDebug() << "Gui::set_file_browser_playlist_tracks...";
 
     // Stop any running file analysis.
-    this->file_system_model->concurrent_watcher_read->cancel();
-    this->file_system_model->concurrent_watcher_read->waitForFinished();
+    this->file_system_model->stop_concurrent_read_collection_from_db();
+    this->file_system_model->stop_concurrent_analyse_audio_collection();
 
     // Show progress bar.
     this->progress_label->setText(tr("Opening ") + in_playlist->get_name() + "...");
@@ -2404,19 +2403,9 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
 void
 Gui::on_progress_cancel_button_click()
 {
-    // Stop running process (file analysis).
-    if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
-    {
-        this->file_system_model->concurrent_watcher_store->cancel();
-        this->file_system_model->concurrent_watcher_store->waitForFinished();
-    }
-
-    // Stop running process (reading file info from DB).
-    if (this->file_system_model->concurrent_watcher_read->isRunning() == true)
-    {
-        this->file_system_model->concurrent_watcher_read->cancel();
-        this->file_system_model->concurrent_watcher_read->waitForFinished();
-    }
+    // Stop any running file analysis.
+    this->file_system_model->stop_concurrent_read_collection_from_db();
+    this->file_system_model->stop_concurrent_analyse_audio_collection();
 }
 
 void

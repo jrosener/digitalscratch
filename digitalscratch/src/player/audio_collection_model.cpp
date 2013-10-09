@@ -778,6 +778,15 @@ void Audio_collection_model::concurrent_read_collection_from_db()
     }
 }
 
+void Audio_collection_model::stop_concurrent_read_collection_from_db()
+{
+    if (this->concurrent_watcher_read->isRunning() == true)
+    {
+        this->concurrent_watcher_read->cancel();
+        this->concurrent_watcher_read->waitForFinished();
+    }
+}
+
 void external_analyze_audio_collection(Audio_collection_item *&in_audio_item)
 {
     // Only a wrapper to analyze and store data of an audio item object.
@@ -802,6 +811,15 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
         {
             this->concurrent_watcher_store->finished();
         }
+    }
+}
+
+void Audio_collection_model::stop_concurrent_analyse_audio_collection()
+{
+    if (this->concurrent_watcher_store->isRunning() == true)
+    {
+        this->concurrent_watcher_store->cancel();
+        this->concurrent_watcher_store->waitForFinished();
     }
 }
 

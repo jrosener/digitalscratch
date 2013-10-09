@@ -134,7 +134,9 @@ class Audio_collection_model : public QAbstractItemModel
     void begin_db_change();                                     // Begin a DB transaction.
     void commit_db_change();                                    // Commit a DB transaction.
     void concurrent_read_collection_from_db();                  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
+    void stop_concurrent_read_collection_from_db();             // Stop concurrent_read_collection_from_db().
     void concurrent_analyse_audio_collection();                 // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
+    void stop_concurrent_analyse_audio_collection();            // Stop concurrent_analyse_audio_collection().
     int  get_nb_items();                                        // Get number of files.
     int  get_nb_new_items();                                    // Get number of new files (i.e. files with missing data such as music key).
     QList<QModelIndex> set_next_keys(QString in_next_key,       // Set flags for previous/next keys (for all items).
