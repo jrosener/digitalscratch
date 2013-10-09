@@ -188,7 +188,10 @@ class Gui : QObject
     QGroupBox                     *help_groupbox;
     QGroupBox                     *file_browser_gbox;
     QPushButton                   *refresh_file_browser;
-    QProgressBar                  *refresh_file_browser_progress;
+    QProgressBar                  *progress_bar;
+    QLabel                        *progress_label;
+    QPushButton                   *progress_cancel_button;
+    QGroupBox                     *progress_groupbox;
     QPushButton                   *load_track_on_deck1_button;
     QPushButton                   *load_track_on_deck2_button;
     QPushButton                   *restart_on_deck1_button;
@@ -338,6 +341,7 @@ class Gui : QObject
     void select_and_show_next_keys_deck2();
     void show_next_keys();
     void on_file_browser_header_click(int in_index);
+    void on_progress_cancel_button_click();
 };
 
 #endif /* GUI_H_ */

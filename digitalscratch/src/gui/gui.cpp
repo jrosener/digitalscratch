@@ -355,7 +355,8 @@ Gui::analyze_audio_collection(bool is_all_files)
     this->settings->set_audio_collection_full_refresh(is_all_files);
 
     // Show progress bar.
-    this->refresh_file_browser_progress->setVisible(true);
+    this->progress_label->setText(tr("Analysing audio collection..."));
+    this->progress_groupbox->show();
 
     // Compute data on file collection and store them to DB.
     this->file_system_model->concurrent_analyse_audio_collection();
@@ -364,15 +365,21 @@ Gui::analyze_audio_collection(bool is_all_files)
 void
 Gui::update_refresh_progress_value(int in_value)
 {
-    this->refresh_file_browser_progress->setValue(in_value);
-    this->file_browser->update();
+    this->progress_bar->setValue(in_value);
+
+    if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
+    {
+        // Refresh file browser during running file analyzis and storage.
+        this->file_browser->update();
+    }
 }
 
 void
 Gui::on_finished_analyze_audio_collection()
 {
     // Hide progress bar.
-    this->refresh_file_browser_progress->setVisible(false);
+    this->progress_label->setText("");
+    this->progress_groupbox->hide();
 
     // Refresh file browser.
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
@@ -1146,7 +1153,7 @@ Gui::create_main_window()
 
 
     ////////////////////////////////////////////////////////////////////////////
-    // File browser.
+    // Folder, playlist and file browser.
     ////////////////////////////////////////////////////////////////////////////
 
     // Customize folder and playlist browser.
@@ -1301,16 +1308,7 @@ Gui::create_main_window()
         QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
     }
 
-    // Create progress bar for the refresh button.
-    this->refresh_file_browser_progress= new QProgressBar();
-    this->refresh_file_browser_progress->hide();
-    this->refresh_file_browser_progress->setFixedSize(20, 4);
-    this->refresh_file_browser_progress->setTextVisible(false);
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
-                     this->refresh_file_browser_progress,               SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
-                     this,                                              SLOT(update_refresh_progress_value(int)));
-
+    // File browser buttons.
     QWidget *file_browser_buttons_widget = new QWidget();
     QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
     QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
@@ -1327,7 +1325,6 @@ Gui::create_main_window()
     file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
     file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
     file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 3, Qt::AlignCenter);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser_progress,  1, 3, Qt::AlignCenter);
     file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
     file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
     file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
@@ -1359,24 +1356,8 @@ Gui::create_main_window()
     this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
     this->file_browser_gbox->setLayout(file_browser_layout);
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Playlist.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // TODO implement playlist
-    //QGroupBox *playlist_gbox = new QGroupBox(tr("Playlist"));
-    //playlist_gbox->setLayout(playlist_layout);
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // General file layout.
-    ////////////////////////////////////////////////////////////////////////////
-
     QHBoxLayout *file_layout = new QHBoxLayout();
     file_layout->addWidget(this->file_browser_gbox, 50);
-    // TODO implement playlist
-    // file_layout->addWidget(playlist_gbox, 50);
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1436,7 +1417,7 @@ Gui::create_main_window()
     help_browse_lb1->setObjectName("Help");
     help_browse_lb2->setObjectName("Help");
 
-    // Setup layout.
+    // Main help layout.
     QGridLayout *help_layout = new QGridLayout();
 
     help_layout->addWidget(help_display_lb,           0, 0);
@@ -1484,15 +1465,46 @@ Gui::create_main_window()
     // Put help horizontal layout in help group box.
     this->help_groupbox->setLayout(help_layout);
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Bottom bar.
-    ////////////////////////////////////////////////////////////////////////////
-
     // Create bottom horizontal layout.
     QHBoxLayout *bottom_layout = new QHBoxLayout;
 
     // Put help group box and configuration in bottom layout.
     bottom_layout->addWidget(this->help_groupbox);
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Bottom progress bar layout.
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Create groupbox for progress bar.
+    this->progress_groupbox = new QGroupBox();
+    this->progress_groupbox->hide();
+    this->progress_groupbox->setObjectName("Progress");
+
+    // Create progress bar.
+    this->progress_bar = new QProgressBar(this->progress_groupbox);
+    this->progress_bar->setObjectName("Progress");
+
+    // Create cancel button.
+    this->progress_cancel_button = new QPushButton(this->progress_groupbox);
+    this->progress_cancel_button->setObjectName("Progress");
+    this->progress_cancel_button->setFixedSize(16, 16);
+    this->progress_cancel_button->setFocusPolicy(Qt::NoFocus);
+    this->progress_cancel_button->setToolTip(tr("Cancel execution"));
+    QObject::connect(this->progress_cancel_button, SIGNAL(clicked()), this, SLOT(on_progress_cancel_button_click()));
+
+    // Create label.
+    this->progress_label = new QLabel(this->progress_groupbox);
+    this->progress_label->setObjectName("Progress");
+
+    // Create layout for progress bar.
+    QHBoxLayout *progress_layout = new QHBoxLayout;
+    progress_layout->addWidget(this->progress_bar);
+    progress_layout->addWidget(this->progress_cancel_button);
+    progress_layout->addWidget(this->progress_label);
+    this->progress_groupbox->setLayout(progress_layout);
+    QHBoxLayout *status_layout = new QHBoxLayout;
+    status_layout->addWidget(this->progress_groupbox);
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Make connections.
@@ -1619,6 +1631,18 @@ Gui::create_main_window()
     QObject::connect(this->cue_play_on_deck1_button1, SIGNAL(clicked()),   this, SLOT(deck1_go_to_cue_point()));
     QObject::connect(this->cue_play_on_deck2_button1, SIGNAL(clicked()),   this, SLOT(deck2_go_to_cue_point()));
 
+    // Progress for file analyzis and storage.
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
+                     this->progress_bar,                                SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
+                     this,                                              SLOT(update_refresh_progress_value(int)));
+
+    // Progress for reading file dsta from storage.
+    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressRangeChanged(int,int)),
+                     this->progress_bar,                               SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressValueChanged(int)),
+                     this,                                             SLOT(update_refresh_progress_value(int)));
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Main window.
@@ -1648,6 +1672,7 @@ Gui::create_main_window()
     main_layout->addLayout(sampler_layout, 5);
     main_layout->addLayout(file_layout,    65);
     main_layout->addLayout(bottom_layout,  0);
+    main_layout->addLayout(status_layout,  0);
 
     // Display main window.
     this->window->show();
@@ -1751,6 +1776,7 @@ Gui::apply_main_window_style()
         this->load_sample2_4_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->show_next_key_from_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
         this->show_next_key_from_deck2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
+        this->progress_cancel_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
 
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
         if (icon_prov != NULL)
@@ -1793,6 +1819,7 @@ Gui::apply_main_window_style()
         this->load_sample2_4_button->setIcon(QIcon());
         this->show_next_key_from_deck1_button->setIcon(QIcon());
         this->show_next_key_from_deck2_button->setIcon(QIcon());
+        this->progress_cancel_button->setIcon(QIcon());
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
@@ -1850,6 +1877,10 @@ Gui::set_file_browser_base_path(QString in_path)
     this->file_system_model->concurrent_watcher_read->cancel();
     this->file_system_model->concurrent_watcher_read->waitForFinished();
 
+    // Show progress bar.
+    this->progress_label->setText(tr("Opening ") + in_path + "...");
+    this->progress_groupbox->show();
+
     // Set base path as title to file browser.
     this->set_file_browser_title(in_path);
 
@@ -1875,6 +1906,10 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
     this->file_system_model->concurrent_watcher_read->cancel();
     this->file_system_model->concurrent_watcher_read->waitForFinished();
 
+    // Show progress bar.
+    this->progress_label->setText(tr("Opening ") + in_playlist->get_name() + "...");
+    this->progress_groupbox->show();
+
     // Set base path as title to file browser.
     this->set_file_browser_title(in_playlist->get_name());
 
@@ -1895,8 +1930,13 @@ void
 Gui::sync_file_browser_to_audio_collection()
 {
     // Reset file browser root node to audio collection model's root.
+    this->file_browser->update();
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
     this->resize_file_browser_columns();
+
+    // Hide progress bar.
+    this->progress_label->setText("");
+    this->progress_groupbox->hide();
 }
 
 bool
@@ -2359,6 +2399,24 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
     qDebug() << "Gui::on_sampler_button_play_click done.";
 
     return;
+}
+
+void
+Gui::on_progress_cancel_button_click()
+{
+    // Stop running process (file analysis).
+    if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
+    {
+        this->file_system_model->concurrent_watcher_store->cancel();
+        this->file_system_model->concurrent_watcher_store->waitForFinished();
+    }
+
+    // Stop running process (reading file info from DB).
+    if (this->file_system_model->concurrent_watcher_read->isRunning() == true)
+    {
+        this->file_system_model->concurrent_watcher_read->cancel();
+        this->file_system_model->concurrent_watcher_read->waitForFinished();
+    }
 }
 
 void

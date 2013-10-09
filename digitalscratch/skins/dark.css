@@ -322,6 +322,55 @@ QLabel#Help_url
    padding:    2px;
 }
 
+QGroupBox#Progress
+{
+   border:           none;
+   border-radius:    0px;
+   background-color: transparent;
+   font:             7pt;
+}
+QLabel#Progress
+{
+   color:            #bfbbbf;
+}
+QProgressBar#Progress
+{
+   color:            #bfbbbf;
+}
+QPushButton#Progress
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-stop.png);
+}
+QPushButton#Progress:hover
+{
+   background-color: lightGray;
+   border:           1px solid orange;
+}
+QPushButton#Progress:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+}
+QProgressBar#Progress
+{
+   border:        1px solid orange;
+   border-radius: 1px;
+   text-align:    center;
+   font:          7pt;
+   height:        11px;
+   padding:       2px;
+   color:         white;
+}
+QProgressBar#Progress::chunk
+{
+   background-color: grey;
+}
+
+
 QPushButton#Sampler_play_buttons
 {
    background-color: gray;
