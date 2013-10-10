@@ -65,19 +65,40 @@
 #include "playlist.h"
 #include "playlist_persistence.h"
 
-Gui::Gui(Audio_track                    *in_at_1,
-         Audio_track                    *in_at_2,
-         Audio_track                  ***in_at_samplers,
-         unsigned short int              in_nb_samplers,
-         Audio_file_decoding_process    *in_dec_1,
-         Audio_file_decoding_process    *in_dec_2,
-         Audio_file_decoding_process  ***in_dec_samplers,
-         Playback_parameters            *in_params_1,
-         Playback_parameters            *in_params_2,
-         Audio_track_playback_process   *in_playback,
-         unsigned short int              in_nb_decks,
-         Sound_card_access_rules        *in_sound_card,
-         int                            *in_dscratch_ids)
+
+// Pass-through function.
+int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
+                                  void                          *in_data)
+{
+    qDebug() << "Gui::capture_and_playback_callback...";
+
+    // Call process for consuming captured data and preparing playback ones.
+    Sound_capture_and_playback_process *capture_and_playback = static_cast<Sound_capture_and_playback_process*>(in_data);
+
+    if (capture_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
+    {
+        qWarning() << "capture_and_playback_callback: can not run capture and playback process";
+    }
+
+    qDebug() << "Gui::capture_and_playback_callback done.";
+
+    return 0;
+}
+
+Gui::Gui(Audio_track                        *in_at_1,
+         Audio_track                        *in_at_2,
+         Audio_track                      ***in_at_samplers,
+         unsigned short int                  in_nb_samplers,
+         Audio_file_decoding_process        *in_dec_1,
+         Audio_file_decoding_process        *in_dec_2,
+         Audio_file_decoding_process      ***in_dec_samplers,
+         Playback_parameters                *in_params_1,
+         Playback_parameters                *in_params_2,
+         Audio_track_playback_process       *in_playback,
+         unsigned short int                  in_nb_decks,
+         Sound_card_access_rules            *in_sound_card,
+         Sound_capture_and_playback_process *in_capture_and_playback,
+         int                                *in_dscratch_ids)
 {
     qDebug() << "Gui::Gui: create object...";
 
@@ -93,29 +114,31 @@ Gui::Gui(Audio_track                    *in_at_1,
         in_params_1      == NULL ||
         in_params_2      == NULL ||
         in_playback      == NULL ||
-        in_sound_card    == NULL)
+        in_sound_card    == NULL ||
+        in_capture_and_playback == NULL)
     {
         qFatal("Gui::Gui: Incorrect parameters.");
         return;
     }
     else
     {
-        this->settings       = &Singleton<Application_settings>::get_instance();
-        this->at_1           = in_at_1;
-        this->at_2           = in_at_2;
-        this->at_1_samplers  = in_at_samplers[0];
-        this->at_2_samplers  = in_at_samplers[1];
-        this->nb_samplers    = in_nb_samplers;
-        this->dec_1          = in_dec_1;
-        this->dec_2          = in_dec_2;
-        this->dec_1_samplers = in_dec_samplers[0];
-        this->dec_2_samplers = in_dec_samplers[1];
-        this->params_1       = in_params_1;
-        this->params_2       = in_params_2;
-        this->playback       = in_playback;
-        this->nb_decks       = in_nb_decks;
-        this->sound_card     = in_sound_card;
-        this->dscratch_ids   = in_dscratch_ids;
+        this->settings         = &Singleton<Application_settings>::get_instance();
+        this->at_1             = in_at_1;
+        this->at_2             = in_at_2;
+        this->at_1_samplers    = in_at_samplers[0];
+        this->at_2_samplers    = in_at_samplers[1];
+        this->nb_samplers      = in_nb_samplers;
+        this->dec_1            = in_dec_1;
+        this->dec_2            = in_dec_2;
+        this->dec_1_samplers   = in_dec_samplers[0];
+        this->dec_2_samplers   = in_dec_samplers[1];
+        this->params_1         = in_params_1;
+        this->params_2         = in_params_2;
+        this->playback         = in_playback;
+        this->nb_decks         = in_nb_decks;
+        this->sound_card       = in_sound_card;
+        this->capture_and_play = in_capture_and_playback;
+        this->dscratch_ids     = in_dscratch_ids;
     }
 
     // Creates dynamic widgets.
@@ -285,6 +308,90 @@ Gui::apply_application_settings()
     qDebug() << "Gui::apply_application_settings done.";
 
     return true;
+}
+
+void
+Gui::start_capture_and_playback()
+{
+    qDebug() << "Gui::start_capture_and_playback...";
+
+    // Start sound card for capture and playback.
+    if ((this->sound_card->is_running() == false) &&
+        (this->sound_card->start(&capture_and_playback_callback, (void*)this->capture_and_play) == false))
+    {
+        qWarning() << "Main: can not start sound card.";
+        this->start_capture_button->setChecked(false);
+        this->stop_capture_button->setChecked(true);
+    }
+    else
+    {
+        this->start_capture_button->setChecked(true);
+        this->stop_capture_button->setChecked(false);
+    }
+
+    qDebug() << "Gui::start_capture_and_playback done.";
+
+    return;
+}
+
+void
+Gui::stop_capture_and_playback()
+{
+    qDebug() << "Gui::stop_capture_and_playback...";
+
+    // Stop sound card for capture and playback.
+    if ((this->sound_card->is_running() == true) &&
+        (this->can_stop_capture_and_playback() == true) &&
+        (this->sound_card->stop() == false))
+    {
+        qWarning() << "Main: can not stop sound card.";
+        this->stop_capture_button->setChecked(false);
+        this->start_capture_button->setChecked(true);
+    }
+    else
+    {
+        this->stop_capture_button->setChecked(true);
+        this->start_capture_button->setChecked(false);
+    }
+
+    qDebug() << "Gui::stop_capture_and_playback done.";
+
+    return;
+}
+
+bool
+Gui::can_stop_capture_and_playback()
+{
+    qDebug() << "Gui::can_stop_capture_and_playback...";
+
+    // Show a pop-up asking to confirm to stop capture.
+    QMessageBox msg_box;
+    msg_box.setWindowTitle("DigitalScratch");
+    msg_box.setText(tr("Do you really want to stop turntable motion detection ?"));
+    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setIcon(QMessageBox::Question);
+    msg_box.setDefaultButton(QMessageBox::Cancel);
+    msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
+    {
+        msg_box.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        msg_box.setWindowIcon(QIcon(ICON));
+    }
+
+    qDebug() << "Gui::can_stop_capture_and_playback done";
+
+    // Close request confirmed.
+    if (msg_box.exec() == QMessageBox::Ok)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool
@@ -761,6 +868,14 @@ Gui::create_main_window()
     fullscreen_button->setObjectName("Fullscreen_button");
     fullscreen_button->setFocusPolicy(Qt::NoFocus);
 
+    // Create Stop capture button.
+    this->stop_capture_button = new QPushButton(tr("S&TOP"));
+    this->stop_capture_button->setToolTip("<p>" + tr("Stop turntable motion detection") + "</p>");
+    this->stop_capture_button->setObjectName("Capture_buttons");
+    this->stop_capture_button->setFocusPolicy(Qt::NoFocus);
+    this->stop_capture_button->setCheckable(true);
+    this->stop_capture_button->setChecked(true);
+
     // Create DigitalScratch logo.
     QPushButton *logo = new QPushButton();
     logo->setToolTip(tr("About DigitalScratch..."));
@@ -771,6 +886,14 @@ Gui::create_main_window()
     logo->setMaximumHeight(35);
     logo->setFlat(true);
     logo->setFocusPolicy(Qt::NoFocus);
+
+    // Create Start capture button.
+    this->start_capture_button = new QPushButton(tr("ST&ART"));
+    this->start_capture_button->setToolTip("<p>" + tr("Start turntable motion detection") + "</p>");
+    this->start_capture_button->setObjectName("Capture_buttons");
+    this->start_capture_button->setFocusPolicy(Qt::NoFocus);
+    this->start_capture_button->setCheckable(true);
+    this->start_capture_button->setChecked(false);
 
     // Create help button.
     QPushButton *help_button = new QPushButton("   " + tr("&Help"));
@@ -788,11 +911,13 @@ Gui::create_main_window()
     QHBoxLayout *top_layout = new QHBoxLayout();
 
     // Put configuration button and logo in configuration layout.
-    top_layout->addWidget(config_button,     1,   Qt::AlignLeft);
-    top_layout->addWidget(fullscreen_button, 1,   Qt::AlignLeft);
-    top_layout->addWidget(logo,              100, Qt::AlignCenter);
-    top_layout->addWidget(help_button,       1,   Qt::AlignRight);
-    top_layout->addWidget(quit_button,       1,   Qt::AlignRight);
+    top_layout->addWidget(config_button,              1,   Qt::AlignLeft);
+    top_layout->addWidget(fullscreen_button,          1,   Qt::AlignLeft);
+    top_layout->addWidget(this->stop_capture_button,  100, Qt::AlignRight);
+    top_layout->addWidget(logo,                       1,   Qt::AlignCenter);
+    top_layout->addWidget(this->start_capture_button, 100, Qt::AlignLeft);
+    top_layout->addWidget(help_button,                1,   Qt::AlignRight);
+    top_layout->addWidget(quit_button,                1,   Qt::AlignRight);
 
     ////////////////////////////////////////////////////////////////////////////
     // Decks.
@@ -1516,8 +1641,14 @@ Gui::create_main_window()
     QObject::connect(fullscreen_button,         SIGNAL(clicked()),   this, SLOT(set_fullscreen()));
     QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
 
+    // Stop capture.
+    QObject::connect(this->stop_capture_button, SIGNAL(clicked()), this, SLOT(stop_capture_and_playback()));
+
     // Open about window.
     QObject::connect(logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
+
+    // Start capture.
+    QObject::connect(this->start_capture_button, SIGNAL(clicked()), this, SLOT(start_capture_and_playback()));
 
     // Help button.
     QObject::connect(help_button,         SIGNAL(clicked()),   this, SLOT(show_help()));

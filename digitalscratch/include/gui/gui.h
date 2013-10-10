@@ -57,6 +57,7 @@
 #include "application_const.h"
 #include "audio_collection_model.h"
 #include "playlist.h"
+#include "sound_capture_and_playback_process.h"
 
 using namespace std;
 
@@ -120,122 +121,126 @@ class Gui : QObject
     Q_OBJECT
 
  private:
-    PlaybackQGroupBox             *deck1_gbox;
-    PlaybackQGroupBox             *deck2_gbox;
-    PlaybackQGroupBox             *sampler1_gbox;
-    PlaybackQGroupBox             *sampler2_gbox;
-    QLabel                        *deck1_track_name;
-    QLabel                        *deck2_track_name;
-    Remaining_time               **decks_remaining_time;
-    QLabel                        *deck1_key;
-    QLabel                        *deck2_key;
-    Waveform                      *deck1_waveform;
-    Waveform                      *deck2_waveform;
-    Vertical_waveform             *deck1_vertical_waveform;
-    Vertical_waveform             *deck2_vertical_waveform;
-    QGraphicsView                 *deck1_view;
-    QGraphicsView                 *deck2_view;
-    QGraphicsScene                *deck1_scene;
-    QWidget                       *window;
-    Config_dialog                 *config_dialog;
-    QString                        window_style;
-    QTreeView                     *file_browser;
-    QTreeView                     *folder_browser;
-    QDialog                       *about_dialog;
-    QDialog                       *refresh_audio_collection_dialog;
-    QDialog                       *error_dialog;
-    Audio_track                   *at_1;
-    Audio_track                   *at_2;
-    Audio_track                  **at_1_samplers;
-    Audio_track                  **at_2_samplers;
-    unsigned short int             nb_samplers;
-    Audio_file_decoding_process   *dec_1;
-    Audio_file_decoding_process   *dec_2;
-    Audio_file_decoding_process  **dec_1_samplers;
-    Audio_file_decoding_process  **dec_2_samplers;
-    QPushButton                  **sampler1_buttons_play;
-    QPushButton                  **sampler1_buttons_stop;
-    QLabel                       **sampler1_trackname;
-    QLabel                       **sampler1_remainingtime;
-    QPushButton                  **sampler2_buttons_play;
-    QPushButton                  **sampler2_buttons_stop;
-    QLabel                       **sampler2_trackname;
-    QLabel                       **sampler2_remainingtime;
-    Playback_parameters           *params_1;
-    Playback_parameters           *params_2;
-    Audio_track_playback_process  *playback;
-    unsigned short int             nb_decks;
-    Sound_card_access_rules       *sound_card;
-    QFileSystemModel              *folder_system_model;
-    Audio_collection_model        *file_system_model;
-    TreeViewIconProvider          *treeview_icon_provider;
-    int                           *dscratch_ids;
-    Application_settings          *settings;
-    QShortcut                     *shortcut_switch_playback;
-    QShortcut                     *shortcut_collapse_browser;
-    QShortcut                     *shortcut_load_audio_file;
-    QShortcut                     *shortcut_go_to_begin;
-    QShortcut                     *shortcut_get_next_audio_tracks;
-    QShortcut                     *shortcut_set_cue_point;
-    QShortcut                     *shortcut_go_to_cue_point;
-    QShortcut                     *shortcut_load_sample_file_1;
-    QShortcut                     *shortcut_load_sample_file_2;
-    QShortcut                     *shortcut_load_sample_file_3;
-    QShortcut                     *shortcut_load_sample_file_4;
-    QShortcut                     *shortcut_show_next_keys;
-    QShortcut                     *shortcut_fullscreen;
-    QShortcut                     *shortcut_help;
-    QGroupBox                     *help_groupbox;
-    QGroupBox                     *file_browser_gbox;
-    QPushButton                   *refresh_file_browser;
-    QProgressBar                  *progress_bar;
-    QLabel                        *progress_label;
-    QPushButton                   *progress_cancel_button;
-    QGroupBox                     *progress_groupbox;
-    QPushButton                   *load_track_on_deck1_button;
-    QPushButton                   *load_track_on_deck2_button;
-    QPushButton                   *restart_on_deck1_button;
-    QPushButton                   *restart_on_deck2_button;
-    QPushButton                   *cue_set_on_deck1_button1;
-    QPushButton                   *cue_play_on_deck1_button1;
-    QLabel                        *cue_point_label1_deck1;
-    QPushButton                   *cue_set_on_deck2_button1;
-    QPushButton                   *cue_play_on_deck2_button1;
-    QLabel                        *cue_point_label1_deck2;
-    QPushButton                   *show_next_key_from_deck1_button;
-    QPushButton                   *show_next_key_from_deck2_button;
-    QPushButton                   *load_sample1_1_button;
-    QPushButton                   *load_sample2_1_button;
-    QPushButton                   *load_sample1_2_button;
-    QPushButton                   *load_sample2_2_button;
-    QPushButton                   *load_sample1_3_button;
-    QPushButton                   *load_sample2_3_button;
-    QPushButton                   *load_sample1_4_button;
-    QPushButton                   *load_sample2_4_button;
-    QLabel                        *help_fullscreen_value;
-    QLabel                        *help_help_value;
-    QLabel                        *help_switch_deck_value;
-    QLabel                        *help_load_deck_value;
-    QLabel                        *help_next_track_value;
-    QLabel                        *help_cue_value;
-    QLabel                        *help_sample_value;
-    QLabel                        *help_browse_value1;
-    QLabel                        *help_browse_value2;
+    PlaybackQGroupBox                  *deck1_gbox;
+    PlaybackQGroupBox                  *deck2_gbox;
+    PlaybackQGroupBox                  *sampler1_gbox;
+    PlaybackQGroupBox                  *sampler2_gbox;
+    QLabel                             *deck1_track_name;
+    QLabel                             *deck2_track_name;
+    Remaining_time                    **decks_remaining_time;
+    QLabel                             *deck1_key;
+    QLabel                             *deck2_key;
+    Waveform                           *deck1_waveform;
+    Waveform                           *deck2_waveform;
+    Vertical_waveform                  *deck1_vertical_waveform;
+    Vertical_waveform                  *deck2_vertical_waveform;
+    QGraphicsView                      *deck1_view;
+    QGraphicsView                      *deck2_view;
+    QGraphicsScene                     *deck1_scene;
+    QWidget                            *window;
+    Config_dialog                      *config_dialog;
+    QString                             window_style;
+    QTreeView                          *file_browser;
+    QTreeView                          *folder_browser;
+    QDialog                            *about_dialog;
+    QDialog                            *refresh_audio_collection_dialog;
+    QDialog                            *error_dialog;
+    Audio_track                        *at_1;
+    Audio_track                        *at_2;
+    Audio_track                       **at_1_samplers;
+    Audio_track                       **at_2_samplers;
+    unsigned short int                  nb_samplers;
+    Audio_file_decoding_process        *dec_1;
+    Audio_file_decoding_process        *dec_2;
+    Audio_file_decoding_process       **dec_1_samplers;
+    Audio_file_decoding_process       **dec_2_samplers;
+    QPushButton                       **sampler1_buttons_play;
+    QPushButton                       **sampler1_buttons_stop;
+    QLabel                            **sampler1_trackname;
+    QLabel                            **sampler1_remainingtime;
+    QPushButton                       **sampler2_buttons_play;
+    QPushButton                       **sampler2_buttons_stop;
+    QLabel                            **sampler2_trackname;
+    QLabel                            **sampler2_remainingtime;
+    Playback_parameters                *params_1;
+    Playback_parameters                *params_2;
+    Audio_track_playback_process       *playback;
+    unsigned short int                  nb_decks;
+    Sound_card_access_rules            *sound_card;
+    Sound_capture_and_playback_process *capture_and_play;
+    QFileSystemModel                   *folder_system_model;
+    Audio_collection_model             *file_system_model;
+    TreeViewIconProvider               *treeview_icon_provider;
+    int                                *dscratch_ids;
+    Application_settings               *settings;
+    QShortcut                          *shortcut_switch_playback;
+    QShortcut                          *shortcut_collapse_browser;
+    QShortcut                          *shortcut_load_audio_file;
+    QShortcut                          *shortcut_go_to_begin;
+    QShortcut                          *shortcut_get_next_audio_tracks;
+    QShortcut                          *shortcut_set_cue_point;
+    QShortcut                          *shortcut_go_to_cue_point;
+    QShortcut                          *shortcut_load_sample_file_1;
+    QShortcut                          *shortcut_load_sample_file_2;
+    QShortcut                          *shortcut_load_sample_file_3;
+    QShortcut                          *shortcut_load_sample_file_4;
+    QShortcut                          *shortcut_show_next_keys;
+    QShortcut                          *shortcut_fullscreen;
+    QShortcut                          *shortcut_help;
+    QGroupBox                          *help_groupbox;
+    QGroupBox                          *file_browser_gbox;
+    QPushButton                        *refresh_file_browser;
+    QProgressBar                       *progress_bar;
+    QLabel                             *progress_label;
+    QPushButton                        *progress_cancel_button;
+    QGroupBox                          *progress_groupbox;
+    QPushButton                        *load_track_on_deck1_button;
+    QPushButton                        *load_track_on_deck2_button;
+    QPushButton                        *restart_on_deck1_button;
+    QPushButton                        *restart_on_deck2_button;
+    QPushButton                        *cue_set_on_deck1_button1;
+    QPushButton                        *cue_play_on_deck1_button1;
+    QLabel                             *cue_point_label1_deck1;
+    QPushButton                        *cue_set_on_deck2_button1;
+    QPushButton                        *cue_play_on_deck2_button1;
+    QLabel                             *cue_point_label1_deck2;
+    QPushButton                        *show_next_key_from_deck1_button;
+    QPushButton                        *show_next_key_from_deck2_button;
+    QPushButton                        *load_sample1_1_button;
+    QPushButton                        *load_sample2_1_button;
+    QPushButton                        *load_sample1_2_button;
+    QPushButton                        *load_sample2_2_button;
+    QPushButton                        *load_sample1_3_button;
+    QPushButton                        *load_sample2_3_button;
+    QPushButton                        *load_sample1_4_button;
+    QPushButton                        *load_sample2_4_button;
+    QLabel                             *help_fullscreen_value;
+    QLabel                             *help_help_value;
+    QLabel                             *help_switch_deck_value;
+    QLabel                             *help_load_deck_value;
+    QLabel                             *help_next_track_value;
+    QLabel                             *help_cue_value;
+    QLabel                             *help_sample_value;
+    QLabel                             *help_browse_value1;
+    QLabel                             *help_browse_value2;
+    QPushButton                        *start_capture_button;
+    QPushButton                        *stop_capture_button;
 
  public:
-    Gui(Audio_track                    *in_at_1,
-        Audio_track                    *in_at_2,
-        Audio_track                  ***in_at_samplers,
-        unsigned short int              in_nb_samplers,
-        Audio_file_decoding_process    *in_dec_1,
-        Audio_file_decoding_process    *in_dec_2,
-        Audio_file_decoding_process  ***in_dec_samplers,
-        Playback_parameters            *in_params_1,
-        Playback_parameters            *in_params_2,
-        Audio_track_playback_process   *in_playback,
-        unsigned short int              in_nb_decks,
-        Sound_card_access_rules        *in_sound_card,
-        int                            *in_dscratch_ids);
+    Gui(Audio_track                        *in_at_1,
+        Audio_track                        *in_at_2,
+        Audio_track                      ***in_at_samplers,
+        unsigned short int                  in_nb_samplers,
+        Audio_file_decoding_process        *in_dec_1,
+        Audio_file_decoding_process        *in_dec_2,
+        Audio_file_decoding_process      ***in_dec_samplers,
+        Playback_parameters                *in_params_1,
+        Playback_parameters                *in_params_2,
+        Audio_track_playback_process       *in_playback,
+        unsigned short int                  in_nb_decks,
+        Sound_card_access_rules            *in_sound_card,
+        Sound_capture_and_playback_process *in_capture_and_playback,
+        int                                *in_dscratch_ids);
     virtual ~Gui();
 
  private:
@@ -259,6 +264,7 @@ class Gui : QObject
     void    resize_file_browser_columns();
     void    analyze_audio_collection(bool is_all_files);
     void    set_help_shortcut_value();
+    bool    can_stop_capture_and_playback();
 
  private slots:
     bool show_config_window();
@@ -342,6 +348,8 @@ class Gui : QObject
     void show_next_keys();
     void on_file_browser_header_click(int in_index);
     void on_progress_cancel_button_click();
+    void start_capture_and_playback();
+    void stop_capture_and_playback();
 };
 
 #endif /* GUI_H_ */

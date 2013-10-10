@@ -63,6 +63,7 @@ class Sound_card_access_rules : public QObject
     AUDIO_CALLBACK_TYPE      callback;
     unsigned short int       nb_channels;
     void                    *callback_param;
+    bool                     running;
 
  public:
     jack_port_t        **input_port;
@@ -77,6 +78,7 @@ class Sound_card_access_rules : public QObject
                void                *in_callback_param);
     bool restart();
     bool stop();
+    bool is_running();
     bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
                            float              **out_buffer_1,
                            float              **out_buffer_2,

@@ -101,6 +101,34 @@ QPushButton#Fullscreen_button:pressed
    image:            url(:/pixmaps/dark-fullscreen.png);
 }
 
+QPushButton#Capture_buttons
+{
+   color:            black;
+   background-color: gray;
+   padding:          5px;
+   border:           none;
+   border-radius:    0px;
+   height:           12px;
+   min-width:        40px;
+}
+QPushButton#Capture_buttons:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+}
+QPushButton#Capture_buttons:pressed
+{
+   color:            black;
+   background-color: lightGray;
+}
+QPushButton#Capture_buttons:checked
+{
+   color:            #f2f2ed;
+   background-color: gray;
+   border:           1px solid orange;
+}
+
 QPushButton#Help_button
 {
    color:            black;

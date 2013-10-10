@@ -51,6 +51,7 @@ Sound_card_access_rules::Sound_card_access_rules(unsigned short int in_nb_channe
     this->callback = NULL;
     this->callback_param = NULL;
     ptr = this;
+    this->running = false;
 
     qDebug() << "Sound_card_access_rules::Sound_card_access_rules: create object done.";
 
@@ -84,6 +85,9 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
     const char      *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
     const char      *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
 
+    // Init.
+    this->running = false;
+
     // Check parameters.
     if (in_callback == NULL)
     {
@@ -99,8 +103,8 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
         if (status & JackServerFailed)
         {
             qWarning() << "Sound_card_access_rules::start: Unable to connect to JACK server.";
-            emit error_msg(QString("Can not connect to JACK server, please configure/start Jack server properly."));
         }
+        emit error_msg(QString("Can not connect to JACK server, please configure/start Jack server properly."));
         return false;
     }
     if (status & JackServerStarted)
@@ -215,6 +219,7 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
     // Everything is OK, keep callback parameters.
     this->callback       = in_callback;
     this->callback_param = in_callback_param;
+    this->running        = true;
 
     return true;
 }
@@ -228,7 +233,12 @@ Sound_card_access_rules::restart()
     {
         if (this->start(this->callback, this->callback_param) == false)
         {
+            this->running = false;
             qWarning() << "Sound_card_access_rules::restart: can not restart jack client.";
+        }
+        else
+        {
+            this->running = true;
         }
     }
 
@@ -243,15 +253,25 @@ Sound_card_access_rules::stop()
     qDebug() << "Sound_card_access_rules::stop...";
 
     // Stop the stream.
-    if (jack_client_close(this->stream) != 0)
+    if ((this->running == true) && (jack_client_close(this->stream) != 0))
     {
         qWarning() << "Sound_card_access_rules::stop: can not close Jack client.";
         return false;
+    }
+    else
+    {
+        this->running = false;
     }
 
     qDebug() << "Sound_card_access_rules::stop: done.";
 
     return true;
+}
+
+bool
+Sound_card_access_rules::is_running()
+{
+    return this->running;
 }
 
 bool

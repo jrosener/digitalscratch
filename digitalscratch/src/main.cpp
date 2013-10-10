@@ -45,26 +45,6 @@
 #include <singleton.h>
 #include <application_const.h>
 
-// Pass-through function.
-int
-capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
-                              void                          *in_data)
-{
-    qDebug() << "Main::capture_and_playback_callback...";
-
-    // Call process for consuming captured data and preparing playback ones.
-    Sound_capture_and_playback_process *capture_and_playback = static_cast<Sound_capture_and_playback_process*>(in_data);
-
-    if (capture_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
-    {
-        qWarning() << "capture_and_playback_callback: can not run capture and playback process";
-    }
-
-    qDebug() << "Main::capture_and_playback_callback done.";
-
-    return 0;
-}
-
 int main(int argc, char *argv[])
 {
     unsigned short int nb_decks    = 2;
@@ -177,13 +157,8 @@ int main(int argc, char *argv[])
                        playback,
                        nb_decks,
                        sound_card,
+                       capture_and_playback,
                        dscratch_ids);
-
-    // Start sound card for capture and playback.
-    if(sound_card->start(&capture_and_playback_callback, (void*)capture_and_playback) == false)
-    {
-        qWarning() << "Main: can not start sound card.";
-    }
 
     // Forward the quit call.
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
