@@ -55,6 +55,8 @@
 #include <QCommandLinkButton>
 #include <QSplitter>
 #include <QModelIndexList>
+#include <QAction>
+#include <QMenu>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -1293,6 +1295,61 @@ Gui::create_main_window()
     this->file_browser->header()->setSectionsClickable(true);
     QObject::connect(this->file_browser->header(), SIGNAL(sectionClicked(int)), this, SLOT(on_file_browser_header_click(int)));
 
+    // Add context menu for file browser (load track and samples).
+    QAction *load_on_deck_1_action = new QAction(tr("Load on deck 1"), this);
+    load_on_deck_1_action->setStatusTip(tr("Load selected track to deck 1"));
+    connect(load_on_deck_1_action, SIGNAL(triggered()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+    QAction *load_on_deck_2_action = new QAction(tr("Load on deck 2"), this);
+    load_on_deck_2_action->setStatusTip(tr("Load selected track to deck 2"));
+    connect(load_on_deck_2_action, SIGNAL(triggered()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+    QAction *load_on_sampler_1A_action = new QAction(tr("Sampler A"), this);
+    load_on_sampler_1A_action->setStatusTip(tr("Load selected track to sampler A"));
+    connect(load_on_sampler_1A_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
+    QAction *load_on_sampler_1B_action = new QAction(tr("Sampler B"), this);
+    load_on_sampler_1B_action->setStatusTip(tr("Load selected track to sampler B"));
+    connect(load_on_sampler_1B_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample2_decoding_process_deck1()));
+    QAction *load_on_sampler_1C_action = new QAction(tr("Sampler C"), this);
+    load_on_sampler_1C_action->setStatusTip(tr("Load selected track to sampler C"));
+    connect(load_on_sampler_1C_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample3_decoding_process_deck1()));
+    QAction *load_on_sampler_1D_action = new QAction(tr("Sampler D"), this);
+    load_on_sampler_1D_action->setStatusTip(tr("Load selected track to sampler D"));
+    connect(load_on_sampler_1D_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
+    QAction *load_on_sampler_2A_action = new QAction(tr("Sampler A"), this);
+    load_on_sampler_2A_action->setStatusTip(tr("Load selected track to sampler A"));
+    connect(load_on_sampler_2A_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+    QAction *load_on_sampler_2B_action = new QAction(tr("Sampler B"), this);
+    load_on_sampler_2B_action->setStatusTip(tr("Load selected track to sampler B"));
+    connect(load_on_sampler_2B_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
+    QAction *load_on_sampler_2C_action = new QAction(tr("Sampler C"), this);
+    load_on_sampler_2C_action->setStatusTip(tr("Load selected track to sampler C"));
+    connect(load_on_sampler_2C_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
+    QAction *load_on_sampler_2D_action = new QAction(tr("Sampler D"), this);
+    load_on_sampler_2D_action->setStatusTip(tr("Load selected track to sampler D"));
+    connect(load_on_sampler_2D_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
+
+    QAction *load_on_sampler_1_action = new QAction(tr("Load on sampler 1"), this);
+    load_on_sampler_1_action->setStatusTip(tr("Load selected track to sampler 1"));
+    QMenu *load_on_sampler_1_submenu = new QMenu();
+    load_on_sampler_1_action->setMenu(load_on_sampler_1_submenu);
+    load_on_sampler_1_submenu->addAction(load_on_sampler_1A_action);
+    load_on_sampler_1_submenu->addAction(load_on_sampler_1B_action);
+    load_on_sampler_1_submenu->addAction(load_on_sampler_1C_action);
+    load_on_sampler_1_submenu->addAction(load_on_sampler_1D_action);
+
+    QAction *load_on_sampler_2_action = new QAction(tr("Load on sampler 2"), this);
+    load_on_sampler_2_action->setStatusTip(tr("Load selected track to sampler 2"));
+    QMenu *load_on_sampler_2_submenu = new QMenu();
+    load_on_sampler_2_action->setMenu(load_on_sampler_2_submenu);
+    load_on_sampler_2_submenu->addAction(load_on_sampler_2A_action);
+    load_on_sampler_2_submenu->addAction(load_on_sampler_2B_action);
+    load_on_sampler_2_submenu->addAction(load_on_sampler_2C_action);
+    load_on_sampler_2_submenu->addAction(load_on_sampler_2D_action);
+
+    this->file_browser->setContextMenuPolicy(Qt::ActionsContextMenu);
+    this->file_browser->addAction(load_on_deck_1_action);
+    this->file_browser->addAction(load_on_deck_2_action);
+    this->file_browser->addAction(load_on_sampler_1_action);
+    this->file_browser->addAction(load_on_sampler_2_action);
 
     // Open folder or playlist from file browser on double click.
     QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
