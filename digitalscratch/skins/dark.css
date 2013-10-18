@@ -840,3 +840,14 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 QFrame#Horizontal_line {
     color : gray;
 }
+
+QMenu
+{
+    background-color: black;
+    border: 1px solid orange;
+}
+
+QMenu::item:selected
+{
+    background-color: #654321;
+}

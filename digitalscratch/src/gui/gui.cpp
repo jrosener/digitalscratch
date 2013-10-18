@@ -1329,7 +1329,7 @@ Gui::create_main_window()
 
     QAction *load_on_sampler_1_action = new QAction(tr("Load on sampler 1"), this);
     load_on_sampler_1_action->setStatusTip(tr("Load selected track to sampler 1"));
-    QMenu *load_on_sampler_1_submenu = new QMenu();
+    QMenu *load_on_sampler_1_submenu = new QMenu(this->file_browser);
     load_on_sampler_1_action->setMenu(load_on_sampler_1_submenu);
     load_on_sampler_1_submenu->addAction(load_on_sampler_1A_action);
     load_on_sampler_1_submenu->addAction(load_on_sampler_1B_action);
@@ -1338,7 +1338,7 @@ Gui::create_main_window()
 
     QAction *load_on_sampler_2_action = new QAction(tr("Load on sampler 2"), this);
     load_on_sampler_2_action->setStatusTip(tr("Load selected track to sampler 2"));
-    QMenu *load_on_sampler_2_submenu = new QMenu();
+    QMenu *load_on_sampler_2_submenu = new QMenu(this->file_browser);
     load_on_sampler_2_action->setMenu(load_on_sampler_2_submenu);
     load_on_sampler_2_submenu->addAction(load_on_sampler_2A_action);
     load_on_sampler_2_submenu->addAction(load_on_sampler_2B_action);
@@ -2150,25 +2150,28 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
     QFileInfo info(item->get_full_path());
     qDebug() << "Gui::run_sampler_decoding_process: selected item: " << info.absoluteFilePath();
 
-    // Execute decoding.
-    Audio_file_decoding_process **samplers = NULL;
-    if (in_deck_index == 0)
+    if (info.isFile() == true)
     {
-        samplers = this->dec_1_samplers;
-    }
-    else
-    {
-        samplers = this->dec_2_samplers;
-    }
-    if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "") == false)
-    {
-        qWarning() << "Gui::run_sampler_decoding_process: can not decode " << info.absoluteFilePath();
-    }
-    else
-    {
-        this->playback->reset_sampler(in_deck_index, in_sampler_index);
-        this->set_sampler_state(in_deck_index, in_sampler_index, false);
-        this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
+        // Execute decoding.
+        Audio_file_decoding_process **samplers = NULL;
+        if (in_deck_index == 0)
+        {
+            samplers = this->dec_1_samplers;
+        }
+        else
+        {
+            samplers = this->dec_2_samplers;
+        }
+        if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "") == false)
+        {
+            qWarning() << "Gui::run_sampler_decoding_process: can not decode " << info.absoluteFilePath();
+        }
+        else
+        {
+            this->playback->reset_sampler(in_deck_index, in_sampler_index);
+            this->set_sampler_state(in_deck_index, in_sampler_index, false);
+            this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
+        }
     }
 
     qDebug() << "Gui::run_sampler_decoding_process done.";
@@ -2710,26 +2713,38 @@ Gui::run_audio_file_decoding_process()
     QFileInfo info(item->get_full_path());
     qDebug() << "Gui::run_audio_file_decoding_process: selected item: " << info.absoluteFilePath();
 
-    // Get selected deck/sampler.
-    unsigned short int deck_index = 0;
-    QLabel   *deck_track_name = this->deck1_track_name;
-    QLabel   *deck_cue_point  = this->cue_point_label1_deck1;
-    Waveform *deck_waveform   = this->deck1_waveform;
-    Audio_file_decoding_process *decode_process = this->dec_1;
-    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
+    if (info.isFile() == true)
     {
-        deck_index = 1;
-        deck_track_name = this->deck2_track_name;
-        deck_cue_point  = this->cue_point_label1_deck2;
-        deck_waveform   = this->deck2_waveform;
-        decode_process  = this->dec_2;
-    }
-
-    // Execute decoding if not trying to open the existing track.
-    if (info.fileName().compare(deck_track_name->text()) != 0 ) {
-        if (decode_process->run(info.absoluteFilePath(), item->get_data(COLUMN_KEY).toString()) == false)
+        // Get selected deck/sampler.
+        unsigned short int deck_index = 0;
+        QLabel   *deck_track_name = this->deck1_track_name;
+        QLabel   *deck_cue_point  = this->cue_point_label1_deck1;
+        Waveform *deck_waveform   = this->deck1_waveform;
+        Audio_file_decoding_process *decode_process = this->dec_1;
+        if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
         {
-            qWarning() << "Gui::run_audio_file_decoding_process: can not decode " << info.absoluteFilePath();
+            deck_index = 1;
+            deck_track_name = this->deck2_track_name;
+            deck_cue_point  = this->cue_point_label1_deck2;
+            deck_waveform   = this->deck2_waveform;
+            decode_process  = this->dec_2;
+        }
+
+        // Execute decoding if not trying to open the existing track.
+        if (info.fileName().compare(deck_track_name->text()) != 0 ) {
+            if (decode_process->run(info.absoluteFilePath(), item->get_data(COLUMN_KEY).toString()) == false)
+            {
+                qWarning() << "Gui::run_audio_file_decoding_process: can not decode " << info.absoluteFilePath();
+            }
+            else
+            {
+                this->playback->reset(deck_index);
+                deck_waveform->move_slider(0.0);
+
+                // Reset cue point.
+                deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
+                deck_cue_point->setText("00:00:000");
+            }
         }
         else
         {
@@ -2740,20 +2755,11 @@ Gui::run_audio_file_decoding_process()
             deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
             deck_cue_point->setText("00:00:000");
         }
-    }
-    else
-    {
-        this->playback->reset(deck_index);
-        deck_waveform->move_slider(0.0);
 
-        // Reset cue point.
-        deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
-        deck_cue_point->setText("00:00:000");
+        // Update waveforms.
+        deck_waveform->update();
+    //    this->deck1_vertical_waveform->update();
     }
-
-    // Update waveforms.
-    deck_waveform->update();
-//    this->deck1_vertical_waveform->update();
 
     qDebug() << "Gui::run_audio_file_decoding_process done.";
 
