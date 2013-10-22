@@ -77,7 +77,6 @@ cd ../../
 git archive --format zip --output $WORKINGPATH/archive.zip master
 unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR
 check_error
-cd debian
 echo ""
 echo ""
 
@@ -88,6 +87,7 @@ echo ""
 echo ""
 
 echo "************************* Update changelog ******************************"
+cd dist/ubuntu/debian
 ORIGDIR=$(pwd)
 cd $WORKINGPATH/$SOURCEDIR
 debchange --newversion $VERSIONPACKAGE --distribution $DISTRIB
