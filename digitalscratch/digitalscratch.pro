@@ -249,15 +249,15 @@ OTHER_FILES += \
     INSTALL \
     COPYING \
     AUTHORS \
-    debian/changelog \
-    debian/rules \
-    debian/README \
-    debian/generate_digitalscratch_deb.sh \
-    debian/docs \
-    debian/digitalscratch.desktop \
-    debian/copyright \
-    debian/control \
-    debian/compat \
+    dist/ubuntu/generate_digitalscratch_deb.sh \
+    dist/ubuntu/debian/changelog \
+    dist/ubuntu/debian/rules \
+    dist/ubuntu/debian/README \
+    dist/ubuntu/debian/docs \
+    dist/ubuntu/debian/digitalscratch.desktop \
+    dist/ubuntu/debian/copyright \
+    dist/ubuntu/debian/control \
+    dist/ubuntu/debian/compat \
     skins/dark.css
 
 RESOURCES += \
