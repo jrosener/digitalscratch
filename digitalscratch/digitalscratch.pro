@@ -20,7 +20,15 @@ INSTALLS += target
 ##############################
 
 TEMPLATE = app
-QT += gui widgets sql concurrent
+
+contains(QT_VERSION, ^4\\.[0-9]\\..*) {
+    #Qt 4.x
+    QT += gui sql
+}
+else {
+    # Qt 5 and more
+    QT += gui widgets sql concurrent
+}
 CONFIG(test) {
     QT       += testlib
     TARGET    = digitalscratch-test

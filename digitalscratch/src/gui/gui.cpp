@@ -1292,7 +1292,11 @@ Gui::create_main_window()
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->header()->setSortIndicatorShown(true);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    this->file_browser->header()->setClickable(true);
+#else
     this->file_browser->header()->setSectionsClickable(true);
+#endif
     QObject::connect(this->file_browser->header(), SIGNAL(sectionClicked(int)), this, SLOT(on_file_browser_header_click(int)));
 
     // Add context menu for file browser (load track and samples).

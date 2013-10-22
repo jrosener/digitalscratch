@@ -39,7 +39,11 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QSqlQuery>
-#include <QStandardPaths>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  #include <QDesktopServices>
+#else
+  #include <QStandardPaths>
+#endif
 
 Data_persistence::Data_persistence()
 {
@@ -75,7 +79,11 @@ bool Data_persistence::init_db()
     // Create DB.
     this->mutex.lock();
     this->db = QSqlDatabase::addDatabase("QSQLITE");
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QFileInfo path_info(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
+#else
     QFileInfo path_info(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
+#endif
     QString path(path_info.absoluteFilePath());
     this->db.setDatabaseName(path_info.absoluteFilePath());
 

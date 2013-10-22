@@ -64,7 +64,10 @@ int main(int argc, char *argv[])
 #ifdef WIN32
     QThreadPool::globalInstance()->setMaxThreadCount(1);
 #else
-    QThreadPool::globalInstance()->setMaxThreadCount(QThreadPool::globalInstance()->maxThreadCount() - 1);
+    if (QThreadPool::globalInstance()->maxThreadCount() > 1)
+    {
+        QThreadPool::globalInstance()->setMaxThreadCount(QThreadPool::globalInstance()->maxThreadCount() - 1);
+    }
 #endif
 
     // Application settings management.
