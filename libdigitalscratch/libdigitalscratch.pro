@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-VERSION = 1.3.0
+VERSION = 1.4.0b
 
 CONFIG(test) {
     QT       += testlib
@@ -86,16 +86,16 @@ OTHER_FILES += \
     NEWS \
     INSTALL \
     COPYING \
-    debian/rules \
-    debian/libdigitalscratch-dev.install \
-    debian/libdigitalscratch-dev.dirs \
-    debian/libdigitalscratch1.install \
-    debian/generate_libdigitalscratch_deb.sh \
-    debian/docs \
-    debian/copyright \
-    debian/control \
-    debian/compat \
-    debian/changelog
+    dist/ubuntu/generate_libdigitalscratch_deb.sh \
+    dist/ubuntu/debian/rules \
+    dist/ubuntu/debian/libdigitalscratch-dev.install \
+    dist/ubuntu/debian/libdigitalscratch-dev.dirs \
+    dist/ubuntu/debian/libdigitalscratch1.install \
+    dist/ubuntu/debian/docs \
+    dist/ubuntu/debian/copyright \
+    dist/ubuntu/debian/control \
+    dist/ubuntu/debian/compat \
+    dist/ubuntu/debian/changelog
 
 ############################
 # Copy dll and .h for windows build
