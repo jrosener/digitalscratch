@@ -131,7 +131,7 @@ echo ""
 echo ""
 
 echo "************ Upload source.changes on Launchpad at ppa:$PPAPATH *************"
-#dput -f ppa:$PPAPATH *source.changes
+dput -f ppa:$PPAPATH *source.changes
 check_error
 echo ""
 echo ""
