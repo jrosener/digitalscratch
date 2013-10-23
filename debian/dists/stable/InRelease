@@ -1,0 +1,51 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Origin: Julien Rosener
+Label: DigitalScratch Debian APT repository
+Codename: stable
+Date: Wed, 23 Oct 2013 12:25:10 UTC
+Architectures: amd64 i386
+Components: main
+Description: DigitalScratch Debian APT repository
+MD5Sum:
+ 02e3d9fd723c0fde852d705d47a320cb 1533 main/binary-amd64/Packages
+ dbf5fcae94699d0fcd5d77178063f422 704 main/binary-amd64/Packages.gz
+ 91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 main/binary-i386/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 main/binary-i386/Packages.gz
+ 32122f38610f15b8026cd7f4be3176d6 152 main/binary-i386/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 main/source/Sources
+ 7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
+ 2ff39146106909a270e85c9c0d138f28 154 main/source/Release
+SHA1:
+ 56c109daa89989c24eb583e72edcdc0193917945 1533 main/binary-amd64/Packages
+ f1d379c2bfcaa580be0cba26be0068ab4b1db2f8 704 main/binary-amd64/Packages.gz
+ db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/binary-i386/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/binary-i386/Packages.gz
+ aca0e76982209e8c4be03047232e3ecc2606ffb5 152 main/binary-i386/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/source/Sources
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
+ 7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
+SHA256:
+ 5d9bbca4150c651a6ffe27c39449f24c935554a750df454347f47030b75e95ac 1533 main/binary-amd64/Packages
+ 5620c00f75ad581c54da053c0538b3d4b129bacc3693cc1a91a38ab5fa5cf298 704 main/binary-amd64/Packages.gz
+ e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/binary-i386/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/binary-i386/Packages.gz
+ a768893c28dcc669ffc5552b2b2a9e97c4a1e6c199091942e82e409a1feb0637 152 main/binary-i386/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/source/Sources
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/source/Sources.gz
+ 061233eff9824877355156ac18c76d341310ced9007d0fdeed814e8dcc713fc0 154 main/source/Release
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQEcBAEBAgAGBQJSZ8AmAAoJEJ1a+q4YMfpR9MYH/ir3V5fOyabo29WT3hewY1oO
+QGVp8RgIYQuorbTPo6Lo0+xB1Ng6RGPl6nIVHzRh0e1DY4meygLA+ImlaAZ8wthV
+fJUSXMRVcgereIpMRtLyqqnGXC7tpytCTeq1MdhvqlqoMpzQEtcTFLByfW1JufxH
+nJiAtCJLl0wj2yoou2q6auZH9ZRzd4pYGF3cfUuoHYV4YdCWFNDtJI6U/N1YOAKA
+BgJCMeqe04pMln/8h3SnvQZFDO8Tfki+OHakWOzKfdrMvOSZVr05pxqS6ztAicnn
+ccFH2V1U9iMLKsgXZtN7dtizOwHa2WbPBwd8ZIic4ZVeMKbmoihiLt7lwECeMgs=
+=ojHT
+-----END PGP SIGNATURE-----

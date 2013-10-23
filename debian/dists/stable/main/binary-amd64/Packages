@@ -1,0 +1,39 @@
+Package: libkeyfinder-dev
+Source: libkeyfinder
+Version: 0.11.0-1
+Architecture: amd64
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 37
+Depends: libkeyfinder0 (= 0.11.0-1)
+Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
+Priority: extra
+Section: libdevel
+Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_amd64.deb
+Size: 3384
+SHA256: 71d9c430f58343beaa8f971f97197f2b4644cbd5f7278cbf958a80d8808575fd
+SHA1: 0413f740d4f677c8d4cbf13d3157ca856fc0f8d0
+MD5sum: 110a64c1a444d9f1a2a22ffbe1fe7919
+Description: Key estimation library for DJs
+ libKeyFinder can be used to estimate the musical key of digital recordings.
+ .
+ This package contains the header file and library needed by software which
+ uses KeyFinder library.
+
+Package: libkeyfinder0
+Source: libkeyfinder
+Version: 0.11.0-1
+Architecture: amd64
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 184
+Depends: libfftw3-3, libboost-system1.49.0 (>= 1.49.0-1), libboost-thread1.49.0 (>= 1.49.0-1), libc6 (>= 2.2.5), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
+Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
+Priority: extra
+Section: libs
+Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_amd64.deb
+Size: 64348
+SHA256: fb4cb93639b432be96b90642fab2b6bfcd217bb697fab080c4fab50ee15ac9af
+SHA1: 943fad13e597efc995d2b47aa3d809c7abedf703
+MD5sum: c45f8965c4cca21d947be89532d76820
+Description: Key estimation library for DJs
+ libKeyFinder can be used to estimate the musical key of digital recordings.
+

@@ -1,0 +1,5 @@
+Component: main
+Origin: Julien Rosener
+Label: DigitalScratch Debian APT repository
+Architecture: i386
+Description: DigitalScratch Debian APT repository

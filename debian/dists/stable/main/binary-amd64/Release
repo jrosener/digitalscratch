@@ -1,0 +1,5 @@
+Component: main
+Origin: Julien Rosener
+Label: DigitalScratch Debian APT repository
+Architecture: amd64
+Description: DigitalScratch Debian APT repository
