@@ -9,10 +9,10 @@ Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libdevel
 Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_amd64.deb
-Size: 3384
-SHA256: 71d9c430f58343beaa8f971f97197f2b4644cbd5f7278cbf958a80d8808575fd
-SHA1: 0413f740d4f677c8d4cbf13d3157ca856fc0f8d0
-MD5sum: 110a64c1a444d9f1a2a22ffbe1fe7919
+Size: 3332
+SHA256: a4bf5538ba41506c02f9d36dd160ab61c3f07f707ecd147cfa4264db80c391ef
+SHA1: 25b556ff894cb0b20e01b006ccb8cbe5c4c1db0b
+MD5sum: b5108c6a5c17291fe54ae9baba28e4a6
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
  .
@@ -30,10 +30,10 @@ Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libs
 Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_amd64.deb
-Size: 64348
-SHA256: fb4cb93639b432be96b90642fab2b6bfcd217bb697fab080c4fab50ee15ac9af
-SHA1: 943fad13e597efc995d2b47aa3d809c7abedf703
-MD5sum: c45f8965c4cca21d947be89532d76820
+Size: 64308
+SHA256: 5addd94c178943a56c9773f6d02095eca0affef6d26d39db65627b234b7e4b5b
+SHA1: 45d85598a66e489fcba762596ab198ea588a381e
+MD5sum: dddc2777ea3b930add661a61058cd3a1
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
 
