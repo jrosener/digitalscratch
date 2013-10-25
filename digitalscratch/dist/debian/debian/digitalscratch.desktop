@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=DigitalScratch
+GenericName=DJ player
+Comment=A digital DJ player controlled by vinyl turntable
+Exec=digitalscratch
+Terminal=false
+Type=Application
+Icon=digitalscratch-icon_2decks
+Categories=AudioVideo;Audio;

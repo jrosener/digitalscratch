@@ -251,13 +251,22 @@ OTHER_FILES += \
     AUTHORS \
     dist/ubuntu/generate_digitalscratch_deb.sh \
     dist/ubuntu/debian/changelog \
-    dist/ubuntu/debian/rules \
-    dist/ubuntu/debian/README \
-    dist/ubuntu/debian/docs \
-    dist/ubuntu/debian/digitalscratch.desktop \
-    dist/ubuntu/debian/copyright \
-    dist/ubuntu/debian/control \
     dist/ubuntu/debian/compat \
+    dist/ubuntu/debian/control \
+    dist/ubuntu/debian/copyright \
+    dist/ubuntu/debian/digitalscratch.desktop \
+    dist/ubuntu/debian/digitalscratch.install \
+    dist/ubuntu/debian/docs \
+    dist/ubuntu/debian/rules \
+    dist/debian/generate_digitalscratch_deb.sh \
+    dist/debian/debian/changelog \
+    dist/debian/debian/compat \
+    dist/debian/debian/control \
+    dist/debian/debian/copyright \
+    dist/debian/debian/digitalscratch.desktop \
+    dist/debian/debian/digitalscratch.install \
+    dist/debian/debian/docs \
+    dist/debian/debian/rules \
     skins/dark.css
 
 RESOURCES += \

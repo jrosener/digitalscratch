@@ -1,0 +1,73 @@
+digitalscratch (1.3.0-1) stable; urgency=low
+
+  * features:
+     - added audio collection analyzis (musical key detection,...)
+     - added musical key support using KeyFinder
+     - highlight next/prev/opposite track based on musical key
+  * configuration:
+     - check for duplicated keyboard shortcuts
+  * graphics:
+     - added cue point number and time on waveform
+     - added buttons to control cue point, music key and track loading
+     - added length and play time of the track
+     - resized sampler and deck elements
+     - stored size and position of main window
+  * bugs:
+     - fixed error when reading audio file containing unicode chars
+  * build:
+     - ported to Qt5 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 30 Jul 2013 08:43:28 +0200
+
+digitalscratch (1.2.0-1) stable; urgency=low
+
+  * configuration:
+     - added configuration dialog for keyboard shortcuts
+     - modified configuration dialog for motion parameters
+  * graphics:
+     - added a top bar with main buttons (config, fullscreen,...)
+     - added a fullscreen option
+     - added a bottom bar for help section
+     - updated all application icons
+  * bugs:
+     - fixed a Jack crash
+     - fixed icon issue in Ubuntu Unity
+     - fixed a playback issue when playing backward after end of a track
+  * build:
+     - ported to Windows 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Fri, 22 Feb 2013 00:25:40 +0100
+
+digitalscratch (1.1.0-1) stable; urgency=low
+
+  * cue point support:
+     - one cue point could be set per deck
+     - playback could be restarted from cue point
+  * refactored keyboard shortcuts:
+     - shortcuts are defined in config file (help area dynamically updated)
+     - space key is the default shortcut to switch playback selection
+     - shortcuts now trigger actions on selected playback
+  * configuration:
+     - added vinyl type as preference
+  * graphics:
+     - selected playback is highlighted
+     - moving mouse over a playback area highlight it
+     - switched application icon from png to svg
+  * license:
+     - switched from GPL V2 to GPL V3 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 13 Dec 2012 18:42:32 +0100
+
+digitalscratch (1.0.0-1) stable; urgency=low
+
+  * First Digital Scratch player release, features:
+     - read mp3 and flac files
+     - speed and direction driven by libdigitalscratch
+     - sound timestretched using libsamplerate
+     - tracks waveform visual
+     - work with 1 or 2 turntables
+     - jack integration
+     - support Serato Scratch Live CV02 vinyl disc
+
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 12 May 2011 17:16:25 +0200

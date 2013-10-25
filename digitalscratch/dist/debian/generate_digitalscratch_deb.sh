@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# Generate Debian packages: libdigitalscratch
+# Generate Debian packages: digitalscratch
 ################################################################################
 
 # Error checking
@@ -15,7 +15,7 @@ function check_error {
 # Usage
 function usage {
     echo ""
-    echo "Usage: generate_libdigitalscratch_deb.sh [archi]"
+    echo "Usage: generate_digitalscratch_deb.sh [archi]"
     echo ""
     echo "    [archi]  'amd64' or 'i386'"
     echo ""
@@ -43,7 +43,7 @@ echo ""
 echo ""
 
 echo "************************* Get version from .pro ************************"
-VERSION=$(cat ../../libdigitalscratch.pro | grep 'VERSION =' | cut -d'=' -f2 | tr -d ' ')
+VERSION=$(cat ../../digitalscratch.pro | grep 'VERSION =' | cut -d'=' -f2 | tr -d ' ')
 echo VERSION = $VERSION
 check_error
 echo ""
@@ -53,13 +53,12 @@ echo "*************************** Prepare environment *************************"
 # Main vars
 REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
 VERSIONPACKAGE=$VERSION-1
-WORKINGPATH=$HOME/libdigitalscratch_$VERSION-make_package
-SOURCEDIR=libdigitalscratch_source
-TARPACK=libdigitalscratch_$VERSION.orig.tar.gz
+WORKINGPATH=$HOME/digitalscratch_$VERSION-make_package
+SOURCEDIR=digitalscratch_source
+TARPACK=digitalscratch_$VERSION.orig.tar.gz
 ORIGDIR=$(pwd)
 DISTRIB=stable
-DEBBIN=libdigitalscratch1_${VERSIONPACKAGE}_${ARCHI}.deb
-DEBDEV=libdigitalscratch-dev_${VERSIONPACKAGE}_${ARCHI}.deb
+DEBBIN=digitalscratch_${VERSIONPACKAGE}_${ARCHI}.deb
 export DEBEMAIL=julien.rosener@digital-scratch.org
 export DEBFULLNAME="Julien Rosener"
 export EDITOR=vim
@@ -107,6 +106,7 @@ echo ""
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
+export OTHERMIRROR="deb http://www.digital-scratch.org/debian/ stable main"
 sudo pbuilder --clean
 sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB
 echo ""
@@ -121,12 +121,8 @@ echo ""
 
 echo "************ Show content of packages *********"
 cp /var/cache/pbuilder/result/${DEBBIN} $WORKINGPATH
-cp /var/cache/pbuilder/result/${DEBDEV} $WORKINGPATH
 echo "$WORKINGPATH/${DEBBIN}"
 dpkg -c $WORKINGPATH/${DEBBIN}
-echo ""
-echo "$WORKINGPATH/${DEBDEV}"
-dpkg -c $WORKINGPATH/${DEBDEV}
 check_error
 cd ../
 echo ""
@@ -136,7 +132,6 @@ echo "************ Install package to local apt repo $REPOPATH *************"
 cd $ORIGDIR
 cd $REPOPATH
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBBIN}
-reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBDEV}
 check_error
 cd $ORIGDIR
 echo ""
