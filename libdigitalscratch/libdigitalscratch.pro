@@ -90,12 +90,25 @@ OTHER_FILES += \
     dist/ubuntu/debian/rules \
     dist/ubuntu/debian/libdigitalscratch-dev.install \
     dist/ubuntu/debian/libdigitalscratch-dev.dirs \
+    dist/ubuntu/debian/libdigitalscratch1.dirs \
     dist/ubuntu/debian/libdigitalscratch1.install \
     dist/ubuntu/debian/docs \
     dist/ubuntu/debian/copyright \
     dist/ubuntu/debian/control \
     dist/ubuntu/debian/compat \
-    dist/ubuntu/debian/changelog
+    dist/ubuntu/debian/changelog \
+    dist/debian/generate_libdigitalscratch_deb.sh \
+    dist/debian/debian/changelog \
+    dist/debian/debian/compat \
+    dist/debian/debian/control \
+    dist/debian/debian/copyright \
+    dist/debian/debian/docs \
+    dist/debian/debian/libdigitalscratch1.dirs \
+    dist/debian/debian/libdigitalscratch1.install \
+    dist/debian/debian/libdigitalscratch-dev.dirs \
+    dist/debian/debian/libdigitalscratch-dev.install \
+    dist/debian/debian/rules
+
 
 ############################
 # Copy dll and .h for windows build
