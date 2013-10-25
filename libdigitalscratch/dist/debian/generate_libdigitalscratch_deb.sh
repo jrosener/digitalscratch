@@ -37,7 +37,7 @@ else
 fi
 
 echo "****************************** Install tools ****************************"
-sudo apt-get install packaging-dev build-essential dh-make reprepo
+sudo apt-get install packaging-dev build-essential dh-make reprepro
 check_error
 echo ""
 echo ""
@@ -51,7 +51,7 @@ echo ""
 
 echo "*************************** Prepare environment *************************"
 # Main vars
-REPOPATH=../../../gh-pages/debian/
+REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
 VERSIONPACKAGE=$VERSION-1
 WORKINGPATH=$HOME/libdigitalscratch_$VERSION-make_package
 DEBPATH=$WORKINGPATH/deb
@@ -59,7 +59,7 @@ SOURCEDIR=libdigitalscratch_source
 TARPACK=libdigitalscratch_$VERSION.orig.tar.gz
 ORIGDIR=$(pwd)
 DISTRIB=stable
-DEBBIN=libdigitalscratch0_${VERSIONPACKAGE}_${ARCHI}.deb
+DEBBIN=libdigitalscratch1_${VERSIONPACKAGE}_${ARCHI}.deb
 DEBDEV=libdigitalscratch-dev_${VERSIONPACKAGE}_${ARCHI}.deb
 export DEBEMAIL=julien.rosener@digital-scratch.org
 export DEBFULLNAME="Julien Rosener"
