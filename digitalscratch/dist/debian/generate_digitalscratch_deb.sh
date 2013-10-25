@@ -106,9 +106,8 @@ echo ""
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
-export OTHERMIRROR="deb http://www.digital-scratch.org/debian/ stable main"
 sudo pbuilder --clean
-sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB
+sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB --othermirror "deb [trusted=yes] http://www.digital-scratch.org/debian/ stable main" --allow-untrusted
 echo ""
 echo ""
 
