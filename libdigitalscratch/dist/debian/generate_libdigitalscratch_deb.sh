@@ -135,6 +135,8 @@ echo ""
 echo "************ Install package to local apt repo $REPOPATH *************"
 cd $ORIGDIR
 cd $REPOPATH
+reprepro remove $DISTRIB libdigitalscratch1
+reprepro remove $DISTRIB libdigitalscratch-dev
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBBIN}
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBDEV}
 check_error

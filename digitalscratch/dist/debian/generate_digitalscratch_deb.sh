@@ -130,6 +130,7 @@ echo ""
 echo "************ Install package to local apt repo $REPOPATH *************"
 cd $ORIGDIR
 cd $REPOPATH
+reprepro remove $DISTRIB digitalscratch
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBBIN}
 check_error
 cd $ORIGDIR
