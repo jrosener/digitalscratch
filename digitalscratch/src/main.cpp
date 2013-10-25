@@ -30,6 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
+#include <QtDebug>
 #include <QApplication>
 #include <QTextCodec>
 #include "gui.h"
