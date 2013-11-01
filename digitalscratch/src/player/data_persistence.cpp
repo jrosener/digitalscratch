@@ -155,6 +155,7 @@ bool Data_persistence::create_db_structure()
             result = query.exec("CREATE TABLE IF NOT EXISTS \"CUE_POINT\" "
                                 "(\"id_cuepoint\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
                                 "\"id_track\" INTEGER  NOT NULL  , "
+                                "\"number\" INTEGER  NOT NULL  , "
                                 "\"position\" INTEGER NOT NULL , "
                                 "FOREIGN KEY(id_track) REFERENCES TRACK(id_track));");
         }
@@ -273,7 +274,7 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
     return result;
 }
 
-bool Data_persistence::get_audio_track(Audio_track *in_at)
+bool Data_persistence::get_audio_track(Audio_track *io_at)
 {
     // Init result.
     bool result = true;
