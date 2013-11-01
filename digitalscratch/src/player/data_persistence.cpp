@@ -282,8 +282,8 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
     qDebug() << "Data_persistence::get_audio_track...";
 
     // Check input parameter.
-    if ((in_at == NULL) ||
-        (in_at->get_hash().size() == 0))
+    if ((io_at == NULL) ||
+        (io_at->get_hash().size() == 0))
     {
         qWarning() << "Can not get audio track: hash not specified.";
         result = false;
@@ -296,7 +296,7 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + io_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qWarning() << "SELECT track failed: " << query.lastError().text();
@@ -305,9 +305,9 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
         else if (query.next() == true) // Check if there is a record.
         {
             // The audio track exists, fill the returned object.
-            in_at->set_music_key(query.value(0).toString());
-            in_at->set_music_key_tag(query.value(1).toString());
-            in_at->set_fullpath(query.value(2).toString() + "/" + query.value(3).toString());
+            io_at->set_music_key(query.value(0).toString());
+            io_at->set_music_key_tag(query.value(1).toString());
+            io_at->set_fullpath(query.value(2).toString() + "/" + query.value(3).toString());
         }
         else
         {
