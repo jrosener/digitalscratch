@@ -64,6 +64,8 @@ class Data_persistence : public QObject
     bool store_audio_track(Audio_track *in_at); // Insert (or update if exists) an audio track in DB.
     bool get_audio_track(Audio_track *io_at);   // Get and fill the audio track specified by io_at->get_hash().
 
+    bool store_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int in_position);
+
  private:
     bool init_db();
     bool create_db_structure();

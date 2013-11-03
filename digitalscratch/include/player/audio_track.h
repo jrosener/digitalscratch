@@ -39,7 +39,6 @@
 #include <application_const.h>
 using namespace std;
 
-#define SAMPLE_RATE         44100                  // Fixed sample rate.
 #define SECURITY_NB_SAMPLES (2 * 10 * SAMPLE_RATE) // Number of samples added at the end of *samples for
                                                    //  decoding purpose.
 

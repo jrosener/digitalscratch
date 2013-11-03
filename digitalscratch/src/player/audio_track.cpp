@@ -59,7 +59,7 @@ Audio_track::Audio_track(short unsigned int in_max_minutes)
     qDebug() << "Audio_track::Audio_trac(in_max_minutes): create object...";
 
     // Create table of sample base of number of minutes.
-    this->max_nb_samples = in_max_minutes * 2 * 60 * SAMPLE_RATE;
+    this->max_nb_samples = in_max_minutes * NB_SAMPLES_PER_MIN;
     // Add also several seconds more, which is used to put more infos in decoding step.
     this->samples = new short signed int[this->max_nb_samples + this->get_security_nb_samples()];
     this->reset();

@@ -30,10 +30,14 @@
 /*                                                                            */
 /*============================================================================*/
 
-#define MAX_MINUTES_TRACK   15 // Maximum number of minutes for an audio track
-#define MAX_MINUTES_SAMPLER 1  // Maximum number of minutes for a sample in the sampler
+#define SAMPLE_RATE         44100             // Fixed sample rate.
+#define NB_SAMPLES_PER_MIN  2*60*SAMPLE_RATE  // How much samples for 1 minute.
+#define MAX_MINUTES_TRACK   15                // Maximum number of minutes for an audio track
+#define MAX_MINUTES_SAMPLER 1                 // Maximum number of minutes for a sample in the sampler
 
-#define FILE_HASH_SIZE 200     // Size (in kbytes) used to create file hash.
+#define FILE_HASH_SIZE      200               // Size (in kbytes) used to create file hash.
+
+#define MAX_NB_CUE_POINTS   4                 // Number of cue points per deck.
 
 // GUI image/icons
 #define SKINS_PATH              ":/skins/"
