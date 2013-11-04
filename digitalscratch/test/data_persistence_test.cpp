@@ -22,7 +22,11 @@ Data_persistence_Test::Data_persistence_Test()
 void Data_persistence_Test::initTestCase()
 {
     // Remove database file.
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QFile::remove(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
+#else
     QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
+#endif
 
     // Get/create a data persistence static instance.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
@@ -150,4 +154,52 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
     // Cleanup.
     delete at_to_store;
     delete at_from_db;
+}
+
+void Data_persistence_Test::testCaseStoreAndGetCuePoint()
+{
+    // Get DB instance.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+
+    // Precondition: store a track (if not already there).
+    Audio_track *at = new Audio_track();
+    QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
+    at->set_fullpath(fullpath);
+    at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at->set_music_key("A1");
+    QVERIFY2(data_persist->store_audio_track(at) == true, "store audio track");
+
+    // Store cue point: wrong params.
+    Audio_track *at_wrong = new Audio_track();
+    QVERIFY2(data_persist->store_cue_point(at_wrong, 1, 1234)  == false, "wrong audio track");
+    QVERIFY2(data_persist->store_cue_point(at,       0, 1234)  == false, "bad cue point number");
+    QVERIFY2(data_persist->store_cue_point(at,       MAX_NB_CUE_POINTS + 1, 1234)                      == false, "too high cue point number");
+    QVERIFY2(data_persist->store_cue_point(at,       1, (MAX_MINUTES_TRACK * NB_SAMPLES_PER_MIN) + 1)  == false, "bad cue point position");
+
+    // Store a cue point for this track.
+    QVERIFY2(data_persist->store_cue_point(at, 1, 1234)  == true,  "store cue point 1");
+    QVERIFY2(data_persist->store_cue_point(at, 2, 4567)  == true,  "store cue point 2");
+    QVERIFY2(data_persist->store_cue_point(at, 3, 8910)  == true,  "store cue point 3");
+    QVERIFY2(data_persist->store_cue_point(at, 4, 1112)  == true,  "store cue point 4");
+
+    // Get cue point: wrong params.
+    unsigned int position = 0;
+    QVERIFY2(data_persist->get_cue_point(at_wrong, 1, position) == false, "wrong audio track");
+    QVERIFY2(data_persist->get_cue_point(at,       0, position) == false, "bad cue point number");
+    QVERIFY2(data_persist->get_cue_point(at,       MAX_NB_CUE_POINTS + 1, position) == false, "too high cue point number");
+
+    // Get cue point.
+    QVERIFY2(data_persist->get_cue_point(at, 1, position) == true,  "get cue point 1");
+    QVERIFY2(position == 1234, "position 1");
+
+    // Update cue point.
+    QVERIFY2(data_persist->store_cue_point(at, 1, 1314)  == true,  "update cue point 1");
+
+    // Get updated cue point.
+    QVERIFY2(data_persist->get_cue_point(at, 1, position) == true,  "get updated cue point 1");
+    QVERIFY2(position == 1314, "updated position 1");
+
+    // Cleanup.
+    delete at;
+    delete at_wrong;
 }

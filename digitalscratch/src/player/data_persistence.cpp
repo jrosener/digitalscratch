@@ -84,7 +84,6 @@ bool Data_persistence::init_db()
 #else
     QFileInfo path_info(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
 #endif
-    QString path(path_info.absoluteFilePath());
     this->db.setDatabaseName(path_info.absoluteFilePath());
 
     // Make sure path exists, if not create it.
@@ -334,6 +333,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     // Check input parameter.
     if ((in_at == NULL) ||
         (in_at->get_hash().size() == 0) ||
+        (in_number == 0) ||
         (in_number > MAX_NB_CUE_POINTS) ||
         (in_position > (MAX_MINUTES_TRACK * NB_SAMPLES_PER_MIN)))
     {
@@ -358,7 +358,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
         {
             // Audio track found, search for the cue point.
             QSqlQuery query_cuepoint = this->db.exec(
-                      "SELECT id_cuepoint, position FROM CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + in_number + "\"");
+                      "SELECT id_cuepoint, position FROM CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
             if (query_cuepoint.lastError().isValid())
             {
                 qWarning() << "SELECT cue_point failed: " << query_cuepoint.lastError().text();
@@ -411,6 +411,72 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     }
 
     qDebug() << "Data_persistence::store_cue_point done.";
+
+    return result;
+}
+
+bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int &out_position)
+{
+    // Init result.
+    bool result = true;
+
+    qDebug() << "Data_persistence::get_cue_point...";
+
+    // Check input parameter.
+    if ((in_at == NULL) ||
+        (in_at->get_hash().size() == 0) ||
+        (in_number == 0) ||
+        (in_number > MAX_NB_CUE_POINTS))
+    {
+        qWarning() << "Can not get cue point: wrong params.";
+        result = false;
+    }
+
+    // Search the audio track (based on its hash) in DB.
+    if ((result == true) &&
+        (this->is_initialized == true))
+    {
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        if (query.lastError().isValid())
+        {
+            qWarning() << "SELECT track failed: " << query.lastError().text();
+            result = false;
+        }
+        else if (query.next() == true) // Check if there is a record.
+        {
+            // The audio track exists, look for the specified cue point.
+            QSqlQuery query_cue_point = this->db.exec(
+                        "SELECT position FROM CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
+            if (query_cue_point.lastError().isValid())
+            {
+                qWarning() << "SELECT cue point failed: " << query_cue_point.lastError().text();
+                result = false;
+            }
+            else if (query_cue_point.next() == true) // Check if there is a record.
+            {
+                // The cue point exists, get position.
+                out_position = query_cue_point.value(0).toInt();
+            }
+            else
+            {
+                // Cue point not found.
+                result = false;
+            }
+        }
+        else
+        {
+            // Audio track not found.
+            result = false;
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
+    }
+
+    qDebug() << "Data_persistence::get_cue_point done.";
 
     return result;
 }

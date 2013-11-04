@@ -61,10 +61,15 @@ class Data_persistence : public QObject
     bool commit_transaction();
     bool rollback_transaction();
 
-    bool store_audio_track(Audio_track *in_at); // Insert (or update if exists) an audio track in DB.
-    bool get_audio_track(Audio_track *io_at);   // Get and fill the audio track specified by io_at->get_hash().
+    bool store_audio_track(Audio_track *in_at);     // Insert (or update if exists) an audio track in DB.
+    bool get_audio_track(Audio_track *io_at);       // Get and fill the audio track specified by io_at->get_hash().
 
-    bool store_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int in_position);
+    bool store_cue_point(Audio_track  *in_at,       // Insert (or update) a cue point in DB.
+                         unsigned int  in_number,
+                         unsigned int  in_position);
+    bool get_cue_point(Audio_track  *in_at,         // Get the in_number cue point of an audio track.
+                       unsigned int  in_number,
+                       unsigned int &out_position);
 
  private:
     bool init_db();
