@@ -344,64 +344,72 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     if ((result == true) &&
         (this->is_initialized == true))
     {
-        // Ensure no other thread can access the DB connection.
-        this->mutex.lock();
-
-        // Try to get audio track from Db.
-        QSqlQuery query_at = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
-        if (query_at.lastError().isValid())
+        // Create audio track if not already in DB.
+        if (this->store_audio_track(in_at) == false)
         {
-            qWarning() << "SELECT track failed: " << query_at.lastError().text();
             result = false;
         }
-        else if (query_at.next() == true) // Check if there is a record.
+        else
         {
-            // Audio track found, search for the cue point.
-            QSqlQuery query_cuepoint = this->db.exec(
-                      "SELECT id_cuepoint, position FROM CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
-            if (query_cuepoint.lastError().isValid())
+            // Ensure no other thread can access the DB connection.
+            this->mutex.lock();
+
+            // Get audio track id from Db.
+            QSqlQuery query_at = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+            if (query_at.lastError().isValid())
             {
-                qWarning() << "SELECT cue_point failed: " << query_cuepoint.lastError().text();
+                qWarning() << "SELECT track failed: " << query_at.lastError().text();
                 result = false;
             }
-            else if (query_cuepoint.next() == true) // Check if there is a record.
+            else if (query_at.next() == true) // Check if there is a record.
             {
-                // The cue point already exists, update it if the position changed.
-                if (query_cuepoint.value(1) != in_position)
+                // Audio track found, search for the cue point.
+                QSqlQuery query_cuepoint = this->db.exec(
+                          "SELECT id_cuepoint, position FROM CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
+                if (query_cuepoint.lastError().isValid())
                 {
-                    int id_cuepoint = query_cuepoint.value(0).toInt();
-                    query_cuepoint.prepare("UPDATE CUE_POINT SET position = :position WHERE id_cuepoint = :id_cuepoint");
+                    qWarning() << "SELECT cue_point failed: " << query_cuepoint.lastError().text();
+                    result = false;
+                }
+                else if (query_cuepoint.next() == true) // Check if there is a record.
+                {
+                    // The cue point already exists, update it if the position changed.
+                    if (query_cuepoint.value(1) != in_position)
+                    {
+                        int id_cuepoint = query_cuepoint.value(0).toInt();
+                        query_cuepoint.prepare("UPDATE CUE_POINT SET position = :position WHERE id_cuepoint = :id_cuepoint");
+                        query_cuepoint.bindValue(":position", in_position);
+                        query_cuepoint.bindValue(":id_cuepoint", id_cuepoint);
+                        query_cuepoint.exec();
+
+                        if (query_cuepoint.lastError().isValid())
+                        {
+                            qWarning() << "UPDATE cue point failed: " << query_cuepoint.lastError().text();
+                            result = false;
+                        }
+                    }
+                }
+                else
+                {
+                    // No existing cue point found, insert it in DB.
+                    query_cuepoint.prepare("INSERT INTO CUE_POINT (id_track, number, position) "
+                                  "VALUES (:id_track, :number, :position)");
+                    query_cuepoint.bindValue(":id_track", query_at.value(0));
+                    query_cuepoint.bindValue(":number",   in_number);
                     query_cuepoint.bindValue(":position", in_position);
-                    query_cuepoint.bindValue(":id_cuepoint", id_cuepoint);
                     query_cuepoint.exec();
 
                     if (query_cuepoint.lastError().isValid())
                     {
-                        qWarning() << "UPDATE cue point failed: " << query_cuepoint.lastError().text();
+                        qWarning() << "INSERT cue point failed: " << query_cuepoint.lastError().text();
                         result = false;
                     }
                 }
             }
-            else
-            {
-                // No existing cue point found, insert it in DB.
-                query_cuepoint.prepare("INSERT INTO CUE_POINT (id_track, number, position) "
-                              "VALUES (:id_track, :number, :position)");
-                query_cuepoint.bindValue(":id_track", query_at.value(0));
-                query_cuepoint.bindValue(":number",   in_number);
-                query_cuepoint.bindValue(":position", in_position);
-                query_cuepoint.exec();
 
-                if (query_cuepoint.lastError().isValid())
-                {
-                    qWarning() << "INSERT cue point failed: " << query_cuepoint.lastError().text();
-                    result = false;
-                }
-            }
+            // Release the DB connection.
+            this->mutex.unlock();
         }
-
-        // Release the DB connection.
-        this->mutex.unlock();
     }
     else
     {

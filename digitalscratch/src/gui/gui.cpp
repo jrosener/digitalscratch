@@ -2166,7 +2166,7 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
         {
             samplers = this->dec_2_samplers;
         }
-        if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "") == false)
+        if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "", "") == false)
         {
             qWarning() << "Gui::run_sampler_decoding_process: can not decode " << info.absoluteFilePath();
         }
@@ -2736,29 +2736,19 @@ Gui::run_audio_file_decoding_process()
 
         // Execute decoding if not trying to open the existing track.
         if (info.fileName().compare(deck_track_name->text()) != 0 ) {
-            if (decode_process->run(info.absoluteFilePath(), item->get_data(COLUMN_KEY).toString()) == false)
+            if (decode_process->run(info.absoluteFilePath(), item->get_file_hash(), item->get_data(COLUMN_KEY).toString()) == false)
             {
                 qWarning() << "Gui::run_audio_file_decoding_process: can not decode " << info.absoluteFilePath();
             }
-            else
-            {
-                this->playback->reset(deck_index);
-                deck_waveform->move_slider(0.0);
-
-                // Reset cue point.
-                deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
-                deck_cue_point->setText("00:00:000");
-            }
         }
-        else
-        {
-            this->playback->reset(deck_index);
-            deck_waveform->move_slider(0.0);
 
-            // Reset cue point.
-            deck_waveform->move_cue_slider(this->playback->get_position(deck_index));
-            deck_cue_point->setText("00:00:000");
-        }
+        // Reset playback process.
+        this->playback->reset(deck_index);
+        deck_waveform->move_slider(0.0);
+
+        // Reset cue point.
+        deck_waveform->move_cue_slider(this->playback->get_cue_point(deck_index));
+        deck_cue_point->setText(this->playback->get_cue_point_str(deck_index));
 
         // Update waveforms.
         deck_waveform->update();

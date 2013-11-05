@@ -69,7 +69,7 @@ Audio_file_decoding_process::~Audio_file_decoding_process()
 }
 
 bool
-Audio_file_decoding_process::run(QString in_path, QString in_music_key)
+Audio_file_decoding_process::run(const QString &in_path, const QString &in_file_hash, const QString &in_music_key)
 {
     qDebug() << "Audio_file_decoding_process::run...";
 
@@ -138,6 +138,9 @@ Audio_file_decoding_process::run(QString in_path, QString in_music_key)
 
     // Set also the music key.
     this->at->set_music_key(in_music_key);
+
+    // Set file hash.
+    this->at->set_hash(in_file_hash);
 
     qDebug() << "Audio_file_decoding_process::run: done.";
 

@@ -64,8 +64,9 @@ class Audio_file_decoding_process
     Audio_file_decoding_process(Audio_track *in_at);
     virtual ~Audio_file_decoding_process();
 
-    bool run(QString in_path,
-             QString in_music_key);    // Make decoding of the audio file depending of its extension.
+    bool run(const QString &in_path,
+             const QString &in_file_hash,
+             const QString &in_music_key);    // Make decoding of the audio file depending of its extension.
 
  private:   
     bool mp3_decode();                 // Make mp3 decoding and id3 (artist + track name).

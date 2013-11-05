@@ -35,6 +35,8 @@
 #include <iostream>
 #include <algorithm>
 #include <utils.h>
+#include <data_persistence.h>
+#include <singleton.h>
 
 #include "audio_track_playback_process.h"
 
@@ -136,8 +138,8 @@ Audio_track_playback_process::reset(unsigned short int in_index)
     qDebug() << "Audio_track_playback_process::reset...";
 
     this->current_samples[in_index] = 0;
-    this->cue_points[in_index]      = 0;
     this->remaining_times[in_index] = 0;
+    this->read_cue_point(in_index);
 
     // Reset libsamplerate.
     if (this->src_state[in_index] != NULL)
@@ -699,17 +701,41 @@ Audio_track_playback_process::jump_to_position(unsigned short int in_deck_index,
     return true;
 }
 
+float
+Audio_track_playback_process::get_cue_point(unsigned short int in_deck_index)
+{
+    qDebug() << "Audio_track_playback_process::get_cue_point";
+    qDebug() << "Audio_track_playback_process::get_cue_point done.";
+
+    return this->sample_index_to_float(in_deck_index, this->cue_points[in_deck_index]);
+}
+
+bool
+Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index)
+{
+    qDebug() << "Audio_track_playback_process::read_cue_point";
+
+    // Get cue point from DB.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    unsigned int position = 0;
+    data_persist->get_cue_point(this->ats[in_deck_index], 1, position);
+    this->cue_points[in_deck_index] = position;
+
+    qDebug() << "Audio_track_playback_process::read_cue_point done.";
+
+    return true;
+}
+
 bool
 Audio_track_playback_process::store_cue_point(unsigned short int in_deck_index)
 {
-    qDebug() << "Audio_track_playback_process::store_cue_point";
-
     // Store cue point.
     this->cue_points[in_deck_index] = this->current_samples[in_deck_index];
 
-    qDebug() << "Audio_track_playback_process::store_cue_point done.";
+    // Store it also to DB.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
 
-    return true;
+    return data_persist->store_cue_point(this->ats[in_deck_index], 1, this->cue_points[in_deck_index]);
 }
 
 bool
@@ -786,6 +812,13 @@ Audio_track_playback_process::get_position(unsigned short int in_deck_index)
     qDebug() << "Audio_track_playback_process::get_position...";
     qDebug() << "Audio_track_playback_process::get_position done.";
 
-    return (float)((float)this->current_samples[in_deck_index] / (float)this->ats[in_deck_index]->get_max_nb_samples());
+    return this->sample_index_to_float(in_deck_index, this->current_samples[in_deck_index]);
 }
 
+float
+Audio_track_playback_process::sample_index_to_float(unsigned short int in_deck_index,
+                                                    unsigned int       in_sample_index)
+{
+    // Convert a sample index to a float position (from 0.0 to 1.0).
+    return (float)((float)in_sample_index / (float)this->ats[in_deck_index]->get_max_nb_samples());
+}

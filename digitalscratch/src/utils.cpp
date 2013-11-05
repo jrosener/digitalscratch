@@ -116,7 +116,7 @@ QString Utils::get_file_music_key(QString in_path)
     // Decode the audio track.
     Audio_track *at = new Audio_track(10);
     Audio_file_decoding_process *dec = new Audio_file_decoding_process(at);
-    dec->run(in_path, "");
+    dec->run(in_path, "", "");
 
     // Compute the music key.
     Audio_track_key_process *key_proc = new Audio_track_key_process(at);
@@ -289,7 +289,7 @@ QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
                                               unsigned int in_sample_rate,
                                               bool         in_with_msec)
 {
-    // Calculate cue point position as min:sec:msec
+    // Calculate sample index position as min:sec:msec
     unsigned int msec = (unsigned int)(1000.0 * (float)(in_sample_index) / (2.0 * (float)in_sample_rate));
     int          sec  = msec / 1000.0;
     div_t        tmp_division = div(sec, 60);
@@ -308,6 +308,14 @@ QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
     QString pos = min_str + ":" + sec_str;
     if (in_with_msec == true)
     {
+        if (msec_str.size() == 1)
+        {
+            msec_str = "0" + msec_str;
+        }
+        if (msec_str.size() == 2)
+        {
+            msec_str = "0" + msec_str;
+        }
         pos += ":" + msec_str;
     }
 
