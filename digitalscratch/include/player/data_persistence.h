@@ -66,10 +66,10 @@ class Data_persistence : public QObject
 
     bool store_cue_point(Audio_track  *in_at,       // Insert (or update) a cue point in DB.
                          unsigned int  in_number,
-                         unsigned int  in_position);
+                         unsigned int  in_position_msec);
     bool get_cue_point(Audio_track  *in_at,         // Get the in_number cue point of an audio track.
                        unsigned int  in_number,
-                       unsigned int &out_position);
+                       unsigned int &out_position_msec);
 
  private:
     bool init_db();

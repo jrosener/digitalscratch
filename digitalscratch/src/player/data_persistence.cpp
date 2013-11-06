@@ -323,7 +323,7 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
     return result;
 }
 
-bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int in_position)
+bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int in_position_msec)
 {
     // Init result.
     bool result = true;
@@ -335,7 +335,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
         (in_at->get_hash().size() == 0) ||
         (in_number == 0) ||
         (in_number > MAX_NB_CUE_POINTS) ||
-        (in_position > (MAX_MINUTES_TRACK * NB_SAMPLES_PER_MIN)))
+        (in_position_msec > in_at->get_length()))
     {
         result = false;
     }
@@ -374,11 +374,11 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
                 else if (query_cuepoint.next() == true) // Check if there is a record.
                 {
                     // The cue point already exists, update it if the position changed.
-                    if (query_cuepoint.value(1) != in_position)
+                    if (query_cuepoint.value(1) != in_position_msec)
                     {
                         int id_cuepoint = query_cuepoint.value(0).toInt();
                         query_cuepoint.prepare("UPDATE CUE_POINT SET position = :position WHERE id_cuepoint = :id_cuepoint");
-                        query_cuepoint.bindValue(":position", in_position);
+                        query_cuepoint.bindValue(":position", in_position_msec);
                         query_cuepoint.bindValue(":id_cuepoint", id_cuepoint);
                         query_cuepoint.exec();
 
@@ -396,7 +396,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
                                   "VALUES (:id_track, :number, :position)");
                     query_cuepoint.bindValue(":id_track", query_at.value(0));
                     query_cuepoint.bindValue(":number",   in_number);
-                    query_cuepoint.bindValue(":position", in_position);
+                    query_cuepoint.bindValue(":position", in_position_msec);
                     query_cuepoint.exec();
 
                     if (query_cuepoint.lastError().isValid())
@@ -423,7 +423,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     return result;
 }
 
-bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int &out_position)
+bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int &out_position_msec)
 {
     // Init result.
     bool result = true;
@@ -466,7 +466,7 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
             else if (query_cue_point.next() == true) // Check if there is a record.
             {
                 // The cue point exists, get position.
-                out_position = query_cue_point.value(0).toInt();
+                out_position_msec = query_cue_point.value(0).toInt();
             }
             else
             {

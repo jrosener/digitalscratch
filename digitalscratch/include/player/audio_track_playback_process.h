@@ -153,6 +153,12 @@ class Audio_track_playback_process : public QObject
     float sample_index_to_float(unsigned short int in_deck_index,
                                 unsigned int       in_sample_index);
 
+    unsigned int sample_index_to_msec(unsigned short int in_deck_index,
+                                      unsigned int       in_sample_index);
+
+    unsigned int msec_to_sample_index(unsigned short int in_deck_index,
+                                      unsigned int       in_position_msec);
+
  signals:
     void remaining_time_changed(unsigned int in_remaining_time, int in_index);
     void sampler_remaining_time_changed(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);

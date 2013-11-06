@@ -719,7 +719,7 @@ Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index)
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     unsigned int position = 0;
     data_persist->get_cue_point(this->ats[in_deck_index], 1, position);
-    this->cue_points[in_deck_index] = position;
+    this->cue_points[in_deck_index] = this->msec_to_sample_index(in_deck_index, position);
 
     qDebug() << "Audio_track_playback_process::read_cue_point done.";
 
@@ -735,7 +735,9 @@ Audio_track_playback_process::store_cue_point(unsigned short int in_deck_index)
     // Store it also to DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
 
-    return data_persist->store_cue_point(this->ats[in_deck_index], 1, this->cue_points[in_deck_index]);
+    return data_persist->store_cue_point(this->ats[in_deck_index],
+                                         1,
+                                         this->sample_index_to_msec(in_deck_index, this->cue_points[in_deck_index]));
 }
 
 bool
@@ -749,14 +751,6 @@ Audio_track_playback_process::jump_to_cue_point(unsigned short int in_deck_index
     qDebug() << "Audio_track_playback_process::jump_to_cue_point done.";
 
     return true;
-}
-
-QString
-Audio_track_playback_process::get_cue_point_str(unsigned short int in_deck_index)
-{
-    return Utils::get_str_time_from_sample_index(this->cue_points[in_deck_index],
-                                                 this->ats[in_deck_index]->get_sample_rate(),
-                                                 true);
 }
 
 bool
@@ -815,10 +809,34 @@ Audio_track_playback_process::get_position(unsigned short int in_deck_index)
     return this->sample_index_to_float(in_deck_index, this->current_samples[in_deck_index]);
 }
 
+QString
+Audio_track_playback_process::get_cue_point_str(unsigned short int in_deck_index)
+{
+    return Utils::get_str_time_from_sample_index(this->cue_points[in_deck_index],
+                                                 this->ats[in_deck_index]->get_sample_rate(),
+                                                 true);
+}
+
 float
 Audio_track_playback_process::sample_index_to_float(unsigned short int in_deck_index,
                                                     unsigned int       in_sample_index)
 {
     // Convert a sample index to a float position (from 0.0 to 1.0).
     return (float)((float)in_sample_index / (float)this->ats[in_deck_index]->get_max_nb_samples());
+}
+
+unsigned int
+Audio_track_playback_process::sample_index_to_msec(unsigned short int in_deck_index,
+                                                   unsigned int       in_sample_index)
+{
+    // Convert a sample index to milliseconds.
+    return qRound((1000.0 * (float)in_sample_index) / (2.0 * (float)this->ats[in_deck_index]->get_sample_rate()));
+}
+
+unsigned int
+Audio_track_playback_process::msec_to_sample_index(unsigned short int in_deck_index,
+                                                   unsigned int       in_position_msec)
+{
+    // Convert a position from msec to sample index.
+    return qRound(((float)in_position_msec * 2.0 * (float)this->ats[in_deck_index]->get_sample_rate()) / 1000.0);
 }

@@ -4,6 +4,7 @@
 #include <singleton.h>
 #include <QDesktopServices>
 #include <utils.h>
+#include <audio_file_decoding_process.h>
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"
@@ -163,10 +164,12 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
 
     // Precondition: store a track (if not already there).
     Audio_track *at = new Audio_track();
+    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at);
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
-    at->set_fullpath(fullpath);
-    at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
-    at->set_music_key("A1");
+//    at->set_fullpath(fullpath);
+//    at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+//    at->set_music_key("A1");
+    decoder->run(fullpath, Utils::get_file_hash(fullpath, FILE_HASH_SIZE), "A1");
     QVERIFY2(data_persist->store_audio_track(at) == true, "store audio track");
 
     // Store cue point: wrong params.
@@ -174,7 +177,7 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     QVERIFY2(data_persist->store_cue_point(at_wrong, 1, 1234)  == false, "wrong audio track");
     QVERIFY2(data_persist->store_cue_point(at,       0, 1234)  == false, "bad cue point number");
     QVERIFY2(data_persist->store_cue_point(at,       MAX_NB_CUE_POINTS + 1, 1234)                      == false, "too high cue point number");
-    QVERIFY2(data_persist->store_cue_point(at,       1, (MAX_MINUTES_TRACK * NB_SAMPLES_PER_MIN) + 1)  == false, "bad cue point position");
+    QVERIFY2(data_persist->store_cue_point(at,       1, at->get_length() + 1)  == false, "bad cue point position");
 
     // Store a cue point for this track.
     QVERIFY2(data_persist->store_cue_point(at, 1, 1234)  == true,  "store cue point 1");
@@ -202,4 +205,5 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     // Cleanup.
     delete at;
     delete at_wrong;
+    delete decoder;
 }

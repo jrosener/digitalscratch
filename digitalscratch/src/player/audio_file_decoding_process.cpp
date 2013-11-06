@@ -69,7 +69,9 @@ Audio_file_decoding_process::~Audio_file_decoding_process()
 }
 
 bool
-Audio_file_decoding_process::run(const QString &in_path, const QString &in_file_hash, const QString &in_music_key)
+Audio_file_decoding_process::run(const QString &in_path,
+                                 const QString &in_file_hash,
+                                 const QString &in_music_key)
 {
     qDebug() << "Audio_file_decoding_process::run...";
 
