@@ -13,6 +13,7 @@ libdigitalscratch-test
 *-Release/
 *.pdb
 moc_*
+digitalscratch/test/data/playlist.m3u
 
 # Qt user project #
 ###################
