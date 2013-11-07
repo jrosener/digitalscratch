@@ -61,15 +61,18 @@ Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
     this->slider->setObjectName("Slider");
     this->slider->setStyleSheet("background-color: orange;");
 
-    // Create cue slider.
-    this->cue_slider_position_x = 0;
-    this->cue_slider        = new QLabel(this);
-    this->cue_slider_number = new QLabel(this);
-    this->cue_slider_number->setText("1");
-    this->draw_cue_slider();
-    this->cue_slider->setObjectName("CueSlider");
-    this->cue_slider->setStyleSheet("background-color: white;");
-    this->cue_slider_number->setStyleSheet("background-color: white; color: black; font: 6pt; qproperty-alignment: AlignCenter;");
+    // Create cue sliders.
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->cue_sliders << new QLabel(this);
+        this->cue_sliders_number << new QLabel(QString::number(i + 1), this);
+        this->cue_sliders[i]->setObjectName("CueSlider");
+        this->cue_sliders[i]->setStyleSheet("background-color: white;");
+        this->cue_sliders_number[i]->setStyleSheet("background-color: white; color: black; font: 6pt; qproperty-alignment: AlignCenter;");
+        this->cue_sliders_position_x << 0;
+        this->cue_sliders_absolute_position << 0.0;
+        this->draw_cue_slider(i);
+    }
 
     qDebug() << "Waveform::Waveform: create object done.";
 
@@ -182,7 +185,10 @@ Waveform::paintEvent(QPaintEvent *)
 
     // Move sliders.
     this->move_slider(this->slider_absolute_position);
-    this->move_cue_slider(this->cue_slider_absolute_position);
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->move_cue_slider(i, this->cue_sliders_absolute_position[i]);
+    }
 
     qDebug() << "Vertical::paintEvent done.";
 
@@ -260,7 +266,7 @@ Waveform::move_slider(float in_position)
 }
 
 bool
-Waveform::move_cue_slider(float in_position)
+Waveform::move_cue_slider(unsigned short int in_cue_point_num, float in_position)
 {
     qDebug() << "Waveform::move_cue_slider...";
 
@@ -272,11 +278,11 @@ Waveform::move_cue_slider(float in_position)
     }
 
     // Store absolute position.
-    this->cue_slider_absolute_position = in_position;
+    this->cue_sliders_absolute_position[in_cue_point_num] = in_position;
 
     // Move slider to new position.
-    this->cue_slider_position_x = in_position * this->area_width;
-    this->draw_cue_slider();
+    this->cue_sliders_position_x[in_cue_point_num] = in_position * this->area_width;
+    this->draw_cue_slider(in_cue_point_num);
 
     qDebug() << "Waveform::move_cue_slider done.";
 
@@ -284,8 +290,19 @@ Waveform::move_cue_slider(float in_position)
 }
 
 void
-Waveform::draw_cue_slider()
+Waveform::draw_cue_slider(unsigned short int in_cue_point_num)
 {
-    this->cue_slider->setGeometry(this->cue_slider_position_x, 0, 1, this->area_height);
-    this->cue_slider_number->setGeometry(this->cue_slider_position_x, 0, 10, 10);
+    // Show cue slider if defined.
+    if (this->cue_sliders_position_x[in_cue_point_num] > 0)
+    {
+        this->cue_sliders[in_cue_point_num]->setGeometry(this->cue_sliders_position_x[in_cue_point_num], 0, 1, this->area_height);
+        this->cue_sliders_number[in_cue_point_num]->setGeometry(this->cue_sliders_position_x[in_cue_point_num], 0, 10, 10);
+        this->cue_sliders[in_cue_point_num]->show();
+        this->cue_sliders_number[in_cue_point_num]->show();
+    }
+    else
+    {
+        this->cue_sliders[in_cue_point_num]->hide();
+        this->cue_sliders_number[in_cue_point_num]->hide();
+    }
 }

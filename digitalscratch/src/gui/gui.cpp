@@ -2747,7 +2747,7 @@ Gui::run_audio_file_decoding_process()
         deck_waveform->move_slider(0.0);
 
         // Reset cue point.
-        deck_waveform->move_cue_slider(this->playback->get_cue_point(deck_index));
+        deck_waveform->move_cue_slider(0, this->playback->get_cue_point(deck_index));
         deck_cue_point->setText(this->playback->get_cue_point_str(deck_index));
 
         // Update waveforms.
@@ -3006,14 +3006,14 @@ Gui::deck_set_cue_point()
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {       
         // Deck 2.
-        this->deck2_waveform->move_cue_slider(this->playback->get_position(1));
+        this->deck2_waveform->move_cue_slider(0, this->playback->get_position(1));
         this->playback->store_cue_point(1);
         this->cue_point_label1_deck2->setText(this->playback->get_cue_point_str(1));
     }
     else
     {
         // Deck 1.
-        this->deck1_waveform->move_cue_slider(this->playback->get_position(0));
+        this->deck1_waveform->move_cue_slider(0, this->playback->get_position(0));
         this->playback->store_cue_point(0);
         this->cue_point_label1_deck1->setText(this->playback->get_cue_point_str(0));
     }

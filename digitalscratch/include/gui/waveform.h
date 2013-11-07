@@ -46,33 +46,33 @@ class Waveform : public QLabel
     Q_OBJECT
 
  private:
-    int          area_height;
-    int          area_width;
-    Audio_track *at;
-    QLabel      *slider;
-    int          slider_position_x;
-    float        slider_absolute_position;
-    QLabel      *cue_slider;
-    QLabel      *cue_slider_number;
-    int          cue_slider_position_x;
-    float        cue_slider_absolute_position;
-    unsigned int end_of_waveform;
+    int            area_height;
+    int            area_width;
+    Audio_track   *at;
+    QLabel        *slider;
+    int            slider_position_x;
+    float          slider_absolute_position;
+    QList<QLabel*> cue_sliders;
+    QList<QLabel*> cue_sliders_number;
+    QList<int>     cue_sliders_position_x;
+    QList<float>   cue_sliders_absolute_position;
+    unsigned int   end_of_waveform;
 
  public:
-    QPointF     *points; // Table of points to display.
+    QPointF *points; // Table of points to display.
 
  public:
     Waveform(Audio_track *in_at, QWidget *in_parent = 0);
     ~Waveform();
 
-    bool move_slider(float in_position);     // Position is between 0.0 and 1.0.
-    bool move_cue_slider(float in_position); // Position is between 0.0 and 1.0.
+    bool move_slider(float in_position);                                      // Position is between 0.0 and 1.0.
+    bool move_cue_slider(unsigned short in_cue_point_num, float in_position); // Position is between 0.0 and 1.0.
 
  private:
     void get_area_size();
     bool jump_slider(int in_x);
     bool generate_polyline();
-    void draw_cue_slider();
+    void draw_cue_slider(unsigned short in_cue_point_num);
 
  protected:
     virtual void paintEvent(QPaintEvent *);
