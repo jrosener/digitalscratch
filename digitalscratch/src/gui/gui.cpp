@@ -1304,8 +1304,11 @@ Gui::create_main_window()
     load_on_deck_1_action->setStatusTip(tr("Load selected track to deck 1"));
     connect(load_on_deck_1_action, SIGNAL(triggered()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
     QAction *load_on_deck_2_action = new QAction(tr("Load on deck 2"), this);
-    load_on_deck_2_action->setStatusTip(tr("Load selected track to deck 2"));
-    connect(load_on_deck_2_action, SIGNAL(triggered()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+    if (this->nb_decks > 1)
+    {
+        load_on_deck_2_action->setStatusTip(tr("Load selected track to deck 2"));
+        connect(load_on_deck_2_action, SIGNAL(triggered()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+    }
     QAction *load_on_sampler_1A_action = new QAction(tr("Sampler A"), this);
     load_on_sampler_1A_action->setStatusTip(tr("Load selected track to sampler A"));
     connect(load_on_sampler_1A_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
@@ -1318,19 +1321,6 @@ Gui::create_main_window()
     QAction *load_on_sampler_1D_action = new QAction(tr("Sampler D"), this);
     load_on_sampler_1D_action->setStatusTip(tr("Load selected track to sampler D"));
     connect(load_on_sampler_1D_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
-    QAction *load_on_sampler_2A_action = new QAction(tr("Sampler A"), this);
-    load_on_sampler_2A_action->setStatusTip(tr("Load selected track to sampler A"));
-    connect(load_on_sampler_2A_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
-    QAction *load_on_sampler_2B_action = new QAction(tr("Sampler B"), this);
-    load_on_sampler_2B_action->setStatusTip(tr("Load selected track to sampler B"));
-    connect(load_on_sampler_2B_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
-    QAction *load_on_sampler_2C_action = new QAction(tr("Sampler C"), this);
-    load_on_sampler_2C_action->setStatusTip(tr("Load selected track to sampler C"));
-    connect(load_on_sampler_2C_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
-    QAction *load_on_sampler_2D_action = new QAction(tr("Sampler D"), this);
-    load_on_sampler_2D_action->setStatusTip(tr("Load selected track to sampler D"));
-    connect(load_on_sampler_2D_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
-
     QAction *load_on_sampler_1_action = new QAction(tr("Load on sampler 1"), this);
     load_on_sampler_1_action->setStatusTip(tr("Load selected track to sampler 1"));
     QMenu *load_on_sampler_1_submenu = new QMenu(this->file_browser);
@@ -1341,19 +1331,40 @@ Gui::create_main_window()
     load_on_sampler_1_submenu->addAction(load_on_sampler_1D_action);
 
     QAction *load_on_sampler_2_action = new QAction(tr("Load on sampler 2"), this);
-    load_on_sampler_2_action->setStatusTip(tr("Load selected track to sampler 2"));
-    QMenu *load_on_sampler_2_submenu = new QMenu(this->file_browser);
-    load_on_sampler_2_action->setMenu(load_on_sampler_2_submenu);
-    load_on_sampler_2_submenu->addAction(load_on_sampler_2A_action);
-    load_on_sampler_2_submenu->addAction(load_on_sampler_2B_action);
-    load_on_sampler_2_submenu->addAction(load_on_sampler_2C_action);
-    load_on_sampler_2_submenu->addAction(load_on_sampler_2D_action);
+    if (this->nb_decks > 1)
+    {
+        QAction *load_on_sampler_2A_action = new QAction(tr("Sampler A"), this);
+        load_on_sampler_2A_action->setStatusTip(tr("Load selected track to sampler A"));
+        connect(load_on_sampler_2A_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+        QAction *load_on_sampler_2B_action = new QAction(tr("Sampler B"), this);
+        load_on_sampler_2B_action->setStatusTip(tr("Load selected track to sampler B"));
+        connect(load_on_sampler_2B_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
+        QAction *load_on_sampler_2C_action = new QAction(tr("Sampler C"), this);
+        load_on_sampler_2C_action->setStatusTip(tr("Load selected track to sampler C"));
+        connect(load_on_sampler_2C_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
+        QAction *load_on_sampler_2D_action = new QAction(tr("Sampler D"), this);
+        load_on_sampler_2D_action->setStatusTip(tr("Load selected track to sampler D"));
+        connect(load_on_sampler_2D_action, SIGNAL(triggered()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
+        load_on_sampler_2_action->setStatusTip(tr("Load selected track to sampler 2"));
+        QMenu *load_on_sampler_2_submenu = new QMenu(this->file_browser);
+        load_on_sampler_2_action->setMenu(load_on_sampler_2_submenu);
+        load_on_sampler_2_submenu->addAction(load_on_sampler_2A_action);
+        load_on_sampler_2_submenu->addAction(load_on_sampler_2B_action);
+        load_on_sampler_2_submenu->addAction(load_on_sampler_2C_action);
+        load_on_sampler_2_submenu->addAction(load_on_sampler_2D_action);
+    }
 
     this->file_browser->setContextMenuPolicy(Qt::ActionsContextMenu);
     this->file_browser->addAction(load_on_deck_1_action);
-    this->file_browser->addAction(load_on_deck_2_action);
+    if (this->nb_decks > 1)
+    {
+        this->file_browser->addAction(load_on_deck_2_action);
+    }
     this->file_browser->addAction(load_on_sampler_1_action);
-    this->file_browser->addAction(load_on_sampler_2_action);
+    if (this->nb_decks > 1)
+    {
+        this->file_browser->addAction(load_on_sampler_2_action);
+    }
 
     // Open folder or playlist from file browser on double click.
     QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
@@ -1443,7 +1454,6 @@ Gui::create_main_window()
 
     if (this->nb_decks > 1)
     {
-
         this->load_track_on_deck2_button = new QPushButton();
         this->load_track_on_deck2_button->setObjectName("Load_track_button_2");
         this->load_track_on_deck2_button->setToolTip("<p>" + tr("Load selected track to deck 2") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
@@ -1497,29 +1507,38 @@ Gui::create_main_window()
     QWidget *file_browser_buttons_widget = new QWidget();
     QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
     QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
-    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout();
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_3_button);
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_4_button);
-    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_1_button);
-    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_2_button);
-    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
-    file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
+    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout();
+    if (this->nb_decks > 1)
+    {
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_1_button);
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_2_button);
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
+    }
     file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
     file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
     file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
     file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 3, Qt::AlignCenter);
-    file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
-    file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
-    file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
+    if (this->nb_decks > 1)
+    {
+        file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
+        file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
+        file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
+    }
     file_browser_buttons_layout->setColumnStretch(0, 1);
     file_browser_buttons_layout->setColumnStretch(1, 100);
     file_browser_buttons_layout->setColumnStretch(2, 1);
     file_browser_buttons_layout->setColumnStretch(3, 10);
-    file_browser_buttons_layout->setColumnStretch(4, 1);
-    file_browser_buttons_layout->setColumnStretch(5, 100);
-    file_browser_buttons_layout->setColumnStretch(6, 1);
+    if (this->nb_decks > 1)
+    {
+        file_browser_buttons_layout->setColumnStretch(4, 1);
+        file_browser_buttons_layout->setColumnStretch(5, 100);
+        file_browser_buttons_layout->setColumnStretch(6, 1);
+    }
     file_browser_buttons_widget->setFixedHeight(37);
 
     // Create layout and group box for file browser.
@@ -1998,18 +2017,26 @@ Gui::apply_main_window_style()
         this->load_sample1_2_button->setIcon(QIcon());
         this->load_sample1_3_button->setIcon(QIcon());
         this->load_sample1_4_button->setIcon(QIcon());
-        this->load_track_on_deck2_button->setIcon(QIcon());
-        this->restart_on_deck2_button->setIcon(QIcon());
-        this->cue_set_on_deck2_button1->setIcon(QIcon());
-        this->cue_set_on_deck2_button1->setText("");
-        this->cue_play_on_deck2_button1->setIcon(QIcon());
-        this->cue_play_on_deck2_button1->setText("");
-        this->load_sample2_1_button->setIcon(QIcon());
-        this->load_sample2_2_button->setIcon(QIcon());
-        this->load_sample2_3_button->setIcon(QIcon());
-        this->load_sample2_4_button->setIcon(QIcon());
+
+        if (nb_decks > 1)
+        {
+            this->load_track_on_deck2_button->setIcon(QIcon());
+            this->restart_on_deck2_button->setIcon(QIcon());
+            this->cue_set_on_deck2_button1->setIcon(QIcon());
+            this->cue_set_on_deck2_button1->setText("");
+            this->cue_play_on_deck2_button1->setIcon(QIcon());
+            this->cue_play_on_deck2_button1->setText("");
+            this->load_sample2_1_button->setIcon(QIcon());
+            this->load_sample2_2_button->setIcon(QIcon());
+            this->load_sample2_3_button->setIcon(QIcon());
+            this->load_sample2_4_button->setIcon(QIcon());
+        }
+
         this->show_next_key_from_deck1_button->setIcon(QIcon());
-        this->show_next_key_from_deck2_button->setIcon(QIcon());
+        if (nb_decks > 1)
+        {
+            this->show_next_key_from_deck2_button->setIcon(QIcon());
+        }
         this->progress_cancel_button->setIcon(QIcon());
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
