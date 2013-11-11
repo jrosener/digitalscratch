@@ -135,6 +135,24 @@ Application_settings::init_settings()
     if (this->settings->contains(KB_PLAY_CUE_POINT1_ON_DECK) == false) {
         this->settings->setValue(KB_PLAY_CUE_POINT1_ON_DECK, KB_PLAY_CUE_POINT1_ON_DECK_DEFAULT);
     }
+    if (this->settings->contains(KB_SET_CUE_POINT2_ON_DECK) == false) {
+        this->settings->setValue(KB_SET_CUE_POINT2_ON_DECK, KB_SET_CUE_POINT2_ON_DECK_DEFAULT);
+    }
+    if (this->settings->contains(KB_PLAY_CUE_POINT2_ON_DECK) == false) {
+        this->settings->setValue(KB_PLAY_CUE_POINT2_ON_DECK, KB_PLAY_CUE_POINT2_ON_DECK_DEFAULT);
+    }
+    if (this->settings->contains(KB_SET_CUE_POINT3_ON_DECK) == false) {
+        this->settings->setValue(KB_SET_CUE_POINT3_ON_DECK, KB_SET_CUE_POINT3_ON_DECK_DEFAULT);
+    }
+    if (this->settings->contains(KB_PLAY_CUE_POINT3_ON_DECK) == false) {
+        this->settings->setValue(KB_PLAY_CUE_POINT3_ON_DECK, KB_PLAY_CUE_POINT3_ON_DECK_DEFAULT);
+    }
+    if (this->settings->contains(KB_SET_CUE_POINT4_ON_DECK) == false) {
+        this->settings->setValue(KB_SET_CUE_POINT4_ON_DECK, KB_SET_CUE_POINT4_ON_DECK_DEFAULT);
+    }
+    if (this->settings->contains(KB_PLAY_CUE_POINT4_ON_DECK) == false) {
+        this->settings->setValue(KB_PLAY_CUE_POINT4_ON_DECK, KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT);
+    }
     if (this->settings->contains(KB_COLLAPSE_BROWSER) == false) {
         this->settings->setValue(KB_COLLAPSE_BROWSER, KB_COLLAPSE_BROWSER_DEFAULT);
     }
