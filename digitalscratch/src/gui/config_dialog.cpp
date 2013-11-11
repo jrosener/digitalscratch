@@ -537,8 +537,8 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_load_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK));
     this->kb_play_begin_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
     this->kb_get_next_track_from_deck->setText(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
-    this->kb_set_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK));
-    this->kb_play_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+    this->kb_set_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK));
+    this->kb_play_cue_point_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK));
     this->kb_fullscreen->setText(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
     this->kb_collapse_browse->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
     this->kb_load_track_on_sampler1->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1));
@@ -585,8 +585,8 @@ void Config_dialog::reset_shortcuts()
     this->kb_load_track_on_deck->setText(KB_LOAD_TRACK_ON_DECK_DEFAULT);
     this->kb_play_begin_track_on_deck->setText(KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
     this->kb_get_next_track_from_deck->setText(KB_GET_NEXT_TRACK_FROM_DECK_DEFAULT);
-    this->kb_set_cue_point_on_deck->setText(KB_SET_CUE_POINT_ON_DECK_DEFAULT);
-    this->kb_play_cue_point_on_deck->setText(KB_PLAY_CUE_POINT_ON_DECK_DEFAULT);
+    this->kb_set_cue_point_on_deck->setText(KB_SET_CUE_POINT1_ON_DECK_DEFAULT);
+    this->kb_play_cue_point_on_deck->setText(KB_PLAY_CUE_POINT1_ON_DECK_DEFAULT);
     this->kb_fullscreen->setText(KB_FULLSCREEN_DEFAULT);
     this->kb_collapse_browse->setText(KB_COLLAPSE_BROWSER_DEFAULT);
     this->kb_load_track_on_sampler1->setText(KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
@@ -628,8 +628,8 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK,       this->kb_load_track_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK, this->kb_play_begin_track_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK, this->kb_get_next_track_from_deck->text());
-    this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK,    this->kb_set_cue_point_on_deck->text());
-    this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK,   this->kb_play_cue_point_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK,    this->kb_set_cue_point_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK,   this->kb_play_cue_point_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_FULLSCREEN,               this->kb_fullscreen->text());
     this->settings->set_keyboard_shortcut(KB_COLLAPSE_BROWSER,         this->kb_collapse_browse->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1,   this->kb_load_track_on_sampler1->text());

@@ -294,8 +294,8 @@ Gui::apply_application_settings()
     this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
     this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
     this->shortcut_get_next_audio_tracks->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK)));
-    this->shortcut_set_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)));
-    this->shortcut_go_to_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK)));
+    this->shortcut_set_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK)));
+    this->shortcut_go_to_cue_point->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK)));
     this->shortcut_load_sample_file_1->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)));
     this->shortcut_load_sample_file_2->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)));
     this->shortcut_load_sample_file_3->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)));
@@ -981,14 +981,14 @@ Gui::create_main_window()
 
     this->cue_set_on_deck1_button1 = new QPushButton();
     this->cue_set_on_deck1_button1->setObjectName("Cue_set_button1");
-    this->cue_set_on_deck1_button1->setToolTip("<p>" + tr("Set cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK) + "</em>");
+    this->cue_set_on_deck1_button1->setToolTip("<p>" + tr("Set cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK) + "</em>");
     this->cue_set_on_deck1_button1->setFixedSize(20, 20);
     this->cue_set_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_set_on_deck1_button1->setCheckable(true);
 
     this->cue_play_on_deck1_button1 = new QPushButton();
     this->cue_play_on_deck1_button1->setObjectName("Cue_play_button1");
-    this->cue_play_on_deck1_button1->setToolTip("<p>" + tr("Play from cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
+    this->cue_play_on_deck1_button1->setToolTip("<p>" + tr("Play from cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK) + "</em>");
     this->cue_play_on_deck1_button1->setFixedSize(20, 20);
     this->cue_play_on_deck1_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck1_button1->setCheckable(true);
@@ -1058,14 +1058,14 @@ Gui::create_main_window()
 
     this->cue_set_on_deck2_button1 = new QPushButton();
     this->cue_set_on_deck2_button1->setObjectName("Cue_set_button1");
-    this->cue_set_on_deck2_button1->setToolTip("<p>" + tr("Set cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK) + "</em>");
+    this->cue_set_on_deck2_button1->setToolTip("<p>" + tr("Set cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK) + "</em>");
     this->cue_set_on_deck2_button1->setFixedSize(20, 20);
     this->cue_set_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_set_on_deck2_button1->setCheckable(true);
 
     this->cue_play_on_deck2_button1 = new QPushButton();
     this->cue_play_on_deck2_button1->setObjectName("Cue_play_button1");
-    this->cue_play_on_deck2_button1->setToolTip("<p>" + tr("Play from cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK) + "</em>");
+    this->cue_play_on_deck2_button1->setToolTip("<p>" + tr("Play from cue point 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK) + "</em>");
     this->cue_play_on_deck2_button1->setFixedSize(20, 20);
     this->cue_play_on_deck2_button1->setFocusPolicy(Qt::NoFocus);
     this->cue_play_on_deck2_button1->setCheckable(true);
@@ -1902,9 +1902,9 @@ Gui::set_help_shortcut_value()
                                         + "/"
                                         + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
     this->help_next_track_value->setText(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
-    this->help_cue_value->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT_ON_DECK)
+    this->help_cue_value->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK)
                                   + "/"
-                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT_ON_DECK));
+                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK));
     this->help_sample_value->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
                                      + "/"
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
