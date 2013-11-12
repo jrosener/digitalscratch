@@ -148,7 +148,10 @@ Audio_track_playback_process::reset(unsigned short int in_index)
 
     this->current_samples[in_index] = 0;
     this->remaining_times[in_index] = 0;
-    this->read_cue_point(in_index);
+    for (int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->read_cue_point(in_index, i);
+    }
 
     // Reset libsamplerate.
     if (this->src_state[in_index] != NULL)
@@ -711,24 +714,24 @@ Audio_track_playback_process::jump_to_position(unsigned short int in_deck_index,
 }
 
 float
-Audio_track_playback_process::get_cue_point(unsigned short int in_deck_index)
+Audio_track_playback_process::get_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number)
 {
     qDebug() << "Audio_track_playback_process::get_cue_point";
     qDebug() << "Audio_track_playback_process::get_cue_point done.";
 
-    return this->sample_index_to_float(in_deck_index, this->cue_points[in_deck_index][0]);
+    return this->sample_index_to_float(in_deck_index, this->cue_points[in_deck_index][in_cue_point_number]);
 }
 
 bool
-Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index)
+Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number)
 {
     qDebug() << "Audio_track_playback_process::read_cue_point";
 
     // Get cue point from DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     unsigned int position = 0;
-    data_persist->get_cue_point(this->ats[in_deck_index], 0, position);
-    this->cue_points[in_deck_index][0] = this->msec_to_sample_index(in_deck_index, position);
+    data_persist->get_cue_point(this->ats[in_deck_index], in_cue_point_number, position);
+    this->cue_points[in_deck_index][in_cue_point_number] = this->msec_to_sample_index(in_deck_index, position);
 
     qDebug() << "Audio_track_playback_process::read_cue_point done.";
 
@@ -819,9 +822,9 @@ Audio_track_playback_process::get_position(unsigned short int in_deck_index)
 }
 
 QString
-Audio_track_playback_process::get_cue_point_str(unsigned short int in_deck_index)
+Audio_track_playback_process::get_cue_point_str(unsigned short int in_deck_index, unsigned short in_cue_point_number)
 {
-    return Utils::get_str_time_from_sample_index(this->cue_points[in_deck_index][0],
+    return Utils::get_str_time_from_sample_index(this->cue_points[in_deck_index][in_cue_point_number],
                                                  this->ats[in_deck_index]->get_sample_rate(),
                                                  true);
 }
