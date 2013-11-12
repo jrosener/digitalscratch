@@ -178,8 +178,8 @@ class Gui : QObject
     QShortcut                          *shortcut_load_audio_file;
     QShortcut                          *shortcut_go_to_begin;
     QShortcut                          *shortcut_get_next_audio_tracks;
-    QShortcut                          *shortcut_set_cue_point;
-    QShortcut                          *shortcut_go_to_cue_point;
+    QShortcut                          *shortcut_set_cue_point1;
+    QShortcut                          *shortcut_go_to_cue_point1;
     QShortcut                          *shortcut_load_sample_file_1;
     QShortcut                          *shortcut_load_sample_file_2;
     QShortcut                          *shortcut_load_sample_file_3;
@@ -326,9 +326,9 @@ class Gui : QObject
     void deck_go_to_begin();
     void deck1_go_to_begin();
     void deck2_go_to_begin();
-    void deck_set_cue_point();
-    void deck1_set_cue_point();
-    void deck2_set_cue_point();
+    void deck_set_cue_point(int in_cue_point_number);
+    void deck1_set_cue_point(int in_cue_point_number);
+    void deck2_set_cue_point(int in_cue_point_number);
     void deck_go_to_cue_point();
     void deck1_go_to_cue_point();
     void deck2_go_to_cue_point();
