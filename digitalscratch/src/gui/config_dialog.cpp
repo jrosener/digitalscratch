@@ -393,18 +393,17 @@ QWidget *Config_dialog::init_tab_shortcuts()
 {
     QGridLayout *shortcuts_layout = new QGridLayout(this);
 
-    QLabel *kb_switch_playback_label = new QLabel(tr("Switch playback"), this);
-    this->kb_switch_playback->setMinimumWidth(180);
-    shortcuts_layout->addWidget(kb_switch_playback_label, 1, 0);
-    shortcuts_layout->addWidget(this->kb_switch_playback, 1, 1, Qt::AlignVCenter);
-
     QLabel *kb_load_track_on_deck_label = new QLabel(tr("Load track"), this);
-    shortcuts_layout->addWidget(kb_load_track_on_deck_label, 2, 0);
-    shortcuts_layout->addWidget(this->kb_load_track_on_deck, 2, 1, Qt::AlignVCenter);
+    shortcuts_layout->addWidget(kb_load_track_on_deck_label, 1, 0);
+    shortcuts_layout->addWidget(this->kb_load_track_on_deck, 1, 1, Qt::AlignVCenter);
 
     QLabel *kb_play_begin_track_on_deck_label = new QLabel(tr("Restart track"), this);
-    shortcuts_layout->addWidget(kb_play_begin_track_on_deck_label, 3, 0);
-    shortcuts_layout->addWidget(this->kb_play_begin_track_on_deck, 3, 1, Qt::AlignVCenter);
+    shortcuts_layout->addWidget(kb_play_begin_track_on_deck_label, 2, 0);
+    shortcuts_layout->addWidget(this->kb_play_begin_track_on_deck, 2, 1, Qt::AlignVCenter);
+
+    QLabel *kb_get_next_track_from_deck_label = new QLabel(tr("Highlight next tracks"), this);
+    shortcuts_layout->addWidget(kb_get_next_track_from_deck_label, 3, 0);
+    shortcuts_layout->addWidget(this->kb_get_next_track_from_deck, 3, 1, Qt::AlignVCenter);
 
     QLabel *kb_set_cue_point1_on_deck_label = new QLabel(tr("Set cue point 1"), this);
     shortcuts_layout->addWidget(kb_set_cue_point1_on_deck_label, 4, 0);
@@ -438,51 +437,47 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(kb_play_cue_point4_on_deck_label, 11, 0);
     shortcuts_layout->addWidget(this->kb_play_cue_point4_on_deck, 11, 1, Qt::AlignVCenter);
 
-    QLabel *kb_fullscreen_label = new QLabel(tr("Full-screen"), this);
-    this->kb_fullscreen->setMinimumWidth(180);
-    shortcuts_layout->addWidget(kb_fullscreen_label, 1, 3);
-    shortcuts_layout->addWidget(this->kb_fullscreen, 1, 4, Qt::AlignVCenter);
-
-    QLabel *kb_get_next_track_from_deck_label = new QLabel(tr("Highlight next tracks"), this);
-    shortcuts_layout->addWidget(kb_get_next_track_from_deck_label, 2, 3);
-    shortcuts_layout->addWidget(this->kb_get_next_track_from_deck, 2, 4, Qt::AlignVCenter);
-
-    QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"), this);
-    this->kb_collapse_browse->setMinimumWidth(180);
-    shortcuts_layout->addWidget(kb_collapse_browse_label, 3, 3);
-    shortcuts_layout->addWidget(this->kb_collapse_browse, 3, 4, Qt::AlignVCenter);
-
     QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"), this);
-    shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 4, 3);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 4, 4, Qt::AlignVCenter);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 1, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 1, 4, Qt::AlignVCenter);
 
     QLabel *kb_load_track_on_sampler2_label = new QLabel(tr("Load track on sampler 2"), this);
-    shortcuts_layout->addWidget(kb_load_track_on_sampler2_label, 5, 3);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler2, 5, 4, Qt::AlignVCenter);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler2_label, 2, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler2, 2, 4, Qt::AlignVCenter);
 
     QLabel *kb_load_track_on_sampler3_label = new QLabel(tr("Load track on sampler 3"), this);
-    shortcuts_layout->addWidget(kb_load_track_on_sampler3_label, 6, 3);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler3, 6, 4, Qt::AlignVCenter);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler3_label, 3, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler3, 3, 4, Qt::AlignVCenter);
 
     QLabel *kb_load_track_on_sampler4_label = new QLabel(tr("Load track on sampler 4"), this);
-    shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 7, 3);
-    shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 7, 4, Qt::AlignVCenter);
+    shortcuts_layout->addWidget(kb_load_track_on_sampler4_label, 4, 3);
+    shortcuts_layout->addWidget(this->kb_load_track_on_sampler4, 4, 4, Qt::AlignVCenter);
+
+    QLabel *kb_switch_playback_label = new QLabel(tr("Switch playback"), this);
+    shortcuts_layout->addWidget(kb_switch_playback_label, 6, 3);
+    shortcuts_layout->addWidget(this->kb_switch_playback, 6, 4, Qt::AlignVCenter);
+
+    QLabel *kb_fullscreen_label = new QLabel(tr("Full-screen"), this);
+    shortcuts_layout->addWidget(kb_fullscreen_label, 7, 3);
+    shortcuts_layout->addWidget(this->kb_fullscreen, 7, 4, Qt::AlignVCenter);
+
+    QLabel *kb_collapse_browse_label = new QLabel(tr("Collapse file browser"), this);
+    shortcuts_layout->addWidget(kb_collapse_browse_label, 8, 3);
+    shortcuts_layout->addWidget(this->kb_collapse_browse, 8, 4, Qt::AlignVCenter);
 
     QLabel *kb_help_label = new QLabel(tr("Help"), this);
-    this->kb_help->setMinimumWidth(180);
-    shortcuts_layout->addWidget(kb_help_label, 8, 3);
-    shortcuts_layout->addWidget(this->kb_help, 8, 4, Qt::AlignVCenter);
-
-    shortcuts_layout->setColumnStretch(0, 0);
-    shortcuts_layout->setColumnStretch(1, 15);
-    shortcuts_layout->setColumnStretch(2, 10);
-    shortcuts_layout->setColumnStretch(3, 0);
-    shortcuts_layout->setColumnStretch(4, 15);
+    shortcuts_layout->addWidget(kb_help_label, 9, 3);
+    shortcuts_layout->addWidget(this->kb_help, 9, 4, Qt::AlignVCenter);
 
     QPushButton *shortcut_reset_to_default = new QPushButton(this);
     shortcut_reset_to_default->setText(tr("Reset to default"));
     shortcuts_layout->addWidget(shortcut_reset_to_default, 11, 4, Qt::AlignRight);
     QObject::connect(shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
+
+    // Force space between shortcuts columns.
+    shortcuts_layout->setColumnMinimumWidth(1, 150);
+    shortcuts_layout->setColumnMinimumWidth(2, 50);
+    shortcuts_layout->setColumnMinimumWidth(4, 150);
 
     // Signal send ShortCutQLabels when a new value is there.
     QObject::connect(this->kb_switch_playback,           SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));

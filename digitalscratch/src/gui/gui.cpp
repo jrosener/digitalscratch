@@ -1582,7 +1582,7 @@ Gui::create_main_window()
     this->help_load_deck_value     = new QLabel();
     QLabel *help_next_track_lb     = new QLabel(tr("Highlight next tracks"));
     this->help_next_track_value    = new QLabel();
-    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point"));
+    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point 1/2/3/4"));
     this->help_cue_value           = new QLabel();
 
     QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
@@ -1904,7 +1904,16 @@ Gui::set_help_shortcut_value()
     this->help_next_track_value->setText(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
     this->help_cue_value->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK)
                                   + "/"
-                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK));
+                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK)
+                                  + ", " + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT2_ON_DECK)
+                                  + "/"
+                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT2_ON_DECK)
+                                  + ", " + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT3_ON_DECK)
+                                  + "/"
+                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT3_ON_DECK)
+                                  + ", " + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT4_ON_DECK)
+                                  + "/"
+                                  + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT4_ON_DECK));
     this->help_sample_value->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
                                      + "/"
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
