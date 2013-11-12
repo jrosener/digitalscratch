@@ -333,8 +333,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     // Check input parameter.
     if ((in_at == NULL) ||
         (in_at->get_hash().size() == 0) ||
-        (in_number == 0) ||
-        (in_number > MAX_NB_CUE_POINTS) ||
+        (in_number >= MAX_NB_CUE_POINTS) ||
         (in_position_msec > in_at->get_length()))
     {
         result = false;
@@ -433,8 +432,7 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
     // Check input parameter.
     if ((in_at == NULL) ||
         (in_at->get_hash().size() == 0) ||
-        (in_number == 0) ||
-        (in_number > MAX_NB_CUE_POINTS))
+        (in_number >= MAX_NB_CUE_POINTS))
     {
         qWarning() << "Can not get cue point: wrong params.";
         result = false;

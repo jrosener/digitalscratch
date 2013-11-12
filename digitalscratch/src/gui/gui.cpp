@@ -3043,14 +3043,14 @@ Gui::deck_set_cue_point()
     {       
         // Deck 2.
         this->deck2_waveform->move_cue_slider(0, this->playback->get_position(1));
-        this->playback->store_cue_point(1);
+        this->playback->store_cue_point(1, 0);
         this->cue_point_label1_deck2->setText(this->playback->get_cue_point_str(1));
     }
     else
     {
         // Deck 1.
         this->deck1_waveform->move_cue_slider(0, this->playback->get_position(0));
-        this->playback->store_cue_point(0);
+        this->playback->store_cue_point(0, 0);
         this->cue_point_label1_deck1->setText(this->playback->get_cue_point_str(0));
     }
 
@@ -3115,12 +3115,12 @@ Gui::deck_go_to_cue_point()
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {        
         // Deck 2.
-        this->playback->jump_to_cue_point(1);
+        this->playback->jump_to_cue_point(1, 0);
     }
     else
     {
         // Deck 1.
-        this->playback->jump_to_cue_point(0);
+        this->playback->jump_to_cue_point(0, 0);
     }
 
     qDebug() << "Gui::deck_go_to_cue_point done.";

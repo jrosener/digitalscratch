@@ -55,7 +55,7 @@ class Audio_track_playback_process : public QObject
     Audio_track         ***at_samplers;             // Table of nb_decks samplers.
     Playback_parameters  **params;                  // Table of nb_decks playback parameters.
     unsigned int          *current_samples;         // Table of nb_decks playback current_sample.
-    unsigned int          *cue_points;              // Table of nb_decks playback cue point.
+    unsigned int         **cue_points;              // Table of nb_decks playback cue points.
     unsigned int          *remaining_times;         // Table of nb_decks remaining time (in msec).
     unsigned int          *sampler_current_samples; // Table of (nb_decks * nb_samplers) playback current_sample.
     unsigned int          *sampler_remaining_times; // Table of (nb_decks * nb_samplers) remaining time (in msec).
@@ -95,8 +95,8 @@ class Audio_track_playback_process : public QObject
 
     float    get_cue_point(unsigned short int in_deck_index);
     bool     read_cue_point(unsigned short int in_deck_index);
-    bool     store_cue_point(unsigned short int in_deck_index);
-    bool     jump_to_cue_point(unsigned short int in_deck_index);
+    bool     store_cue_point(unsigned short int in_deck_index, unsigned short in_cue_point_number);
+    bool     jump_to_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number);
     QString  get_cue_point_str(unsigned short int in_deck_index);
 
     float get_position(unsigned short int in_deck_index); // 0.0 < position < 1.0

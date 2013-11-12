@@ -171,32 +171,30 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
 
     // Store cue point: wrong params.
     Audio_track *at_wrong = new Audio_track(15);
-    QVERIFY2(data_persist->store_cue_point(at_wrong, 1, 1234)  == false, "wrong audio track");
-    QVERIFY2(data_persist->store_cue_point(at,       0, 1234)  == false, "bad cue point number");
-    QVERIFY2(data_persist->store_cue_point(at,       MAX_NB_CUE_POINTS + 1, 1234) == false, "too high cue point number");
-    QVERIFY2(data_persist->store_cue_point(at,       1, at->get_length() + 1)     == false, "bad cue point position");
+    QVERIFY2(data_persist->store_cue_point(at_wrong, 0, 1234)  == false, "wrong audio track");
+    QVERIFY2(data_persist->store_cue_point(at,       MAX_NB_CUE_POINTS , 1234) == false, "too high cue point number");
+    QVERIFY2(data_persist->store_cue_point(at,       0, at->get_length() + 1)     == false, "bad cue point position");
 
     // Store a cue point for this track.
-    QVERIFY2(data_persist->store_cue_point(at, 1, 1234)  == true,  "store cue point 1");
-    QVERIFY2(data_persist->store_cue_point(at, 2, 4567)  == true,  "store cue point 2");
-    QVERIFY2(data_persist->store_cue_point(at, 3, 8910)  == true,  "store cue point 3");
-    QVERIFY2(data_persist->store_cue_point(at, 4, 1112)  == true,  "store cue point 4");
+    QVERIFY2(data_persist->store_cue_point(at, 0, 1234)  == true,  "store cue point 1");
+    QVERIFY2(data_persist->store_cue_point(at, 1, 4567)  == true,  "store cue point 2");
+    QVERIFY2(data_persist->store_cue_point(at, 2, 8910)  == true,  "store cue point 3");
+    QVERIFY2(data_persist->store_cue_point(at, 3, 1112)  == true,  "store cue point 4");
 
     // Get cue point: wrong params.
     unsigned int position = 0;
-    QVERIFY2(data_persist->get_cue_point(at_wrong, 1, position) == false, "wrong audio track");
-    QVERIFY2(data_persist->get_cue_point(at,       0, position) == false, "bad cue point number");
-    QVERIFY2(data_persist->get_cue_point(at,       at->get_length() + 1, position) == false, "too high cue point number");
+    QVERIFY2(data_persist->get_cue_point(at_wrong, 0, position) == false, "wrong audio track");
+    QVERIFY2(data_persist->get_cue_point(at,       MAX_NB_CUE_POINTS, position) == false, "too high cue point number");
 
     // Get cue point.
-    QVERIFY2(data_persist->get_cue_point(at, 1, position) == true,  "get cue point 1");
+    QVERIFY2(data_persist->get_cue_point(at, 0, position) == true,  "get cue point 1");
     QVERIFY2(position == 1234, "position 1");
 
     // Update cue point.
-    QVERIFY2(data_persist->store_cue_point(at, 1, 1314)  == true,  "update cue point 1");
+    QVERIFY2(data_persist->store_cue_point(at, 0, 1314)  == true,  "update cue point 1");
 
     // Get updated cue point.
-    QVERIFY2(data_persist->get_cue_point(at, 1, position) == true,  "get updated cue point 1");
+    QVERIFY2(data_persist->get_cue_point(at, 0, position) == true,  "get updated cue point 1");
     QVERIFY2(position == 1314, "updated position 1");
 
     // Cleanup.
