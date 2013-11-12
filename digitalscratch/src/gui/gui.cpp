@@ -211,8 +211,11 @@ Gui::~Gui()
     qDebug() << "Gui::Gui: delete object...";
 
     // Store size/position of the main window (first go back from fullscreen or maximized mode).
-    this->window->showNormal();
-    this->settings->set_main_window_position(this->window->pos());
+    if (this->window->isFullScreen() == true)
+    {
+        this->window->showNormal();
+    }
+    this->settings->set_main_window_position(this->window->mapToGlobal(QPoint(0, 0)));
     this->settings->set_main_window_size(this->window->size());
 
     // Cleanup.
