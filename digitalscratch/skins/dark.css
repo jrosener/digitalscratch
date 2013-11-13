@@ -689,7 +689,7 @@ QPushButton#Restart_button:checked
    image:            url(:/pixmaps/dark-restart_white.png);
 }
 
-QPushButton#Cue_set_button1
+QPushButton#Cue_set_button0
 {
    background-color: gray;
    border:           none;
@@ -697,20 +697,20 @@ QPushButton#Cue_set_button1
    padding:          3px;
    image:            url(:/pixmaps/dark-cue_set_1.png);
 }
-QPushButton#Cue_set_button1:hover
+QPushButton#Cue_set_button0:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
    image:            url(:/pixmaps/dark-cue_set_1_white.png);
 }
-QPushButton#Cue_set_button1:pressed
+QPushButton#Cue_set_button0:pressed
 {
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_set_1.png);
 }
-QPushButton#Cue_set_button1:checked
+QPushButton#Cue_set_button0:checked
 {
    background-color: gray;
    border:           1px solid orange;

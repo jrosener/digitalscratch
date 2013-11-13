@@ -198,9 +198,9 @@ class Gui : QObject
     QPushButton                        *load_track_on_deck2_button;
     QPushButton                        *restart_on_deck1_button;
     QPushButton                        *restart_on_deck2_button;
-    QPushButton                        *cue_set_on_deck1_button1;
-    QPushButton                        *cue_play_on_deck1_button1;
-    QLabel                             *cue_point_label1_deck1;
+    QPushButton                       **cue_set_on_deck1_buttons;
+    QPushButton                       *cue_play_on_deck1_button1;
+    QLabel                            **cue_point_deck1_labels;
     QPushButton                        *cue_set_on_deck2_button1;
     QPushButton                        *cue_play_on_deck2_button1;
     QLabel                             *cue_point_label1_deck2;

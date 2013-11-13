@@ -73,6 +73,7 @@ using namespace std;
 #define KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT "F2"
 #define KB_GET_NEXT_TRACK_FROM_DECK         "keyboard_shortcuts/kb_get_next_track_from_deck"
 #define KB_GET_NEXT_TRACK_FROM_DECK_DEFAULT "F3"
+
 #define KB_SET_CUE_POINT1_ON_DECK           "keyboard_shortcuts/kb_set_cue_point1_on_deck"
 #define KB_SET_CUE_POINT1_ON_DECK_DEFAULT   "F5"
 #define KB_PLAY_CUE_POINT1_ON_DECK          "keyboard_shortcuts/kb_play_cue_point1_on_deck"
@@ -105,6 +106,23 @@ using namespace std;
 #define KB_FULLSCREEN_DEFAULT               "F"
 #define KB_HELP                             "keyboard_shortcuts/kb_help"
 #define KB_HELP_DEFAULT                     "H"
+
+const QString KB_SET_CUE_POINTS_ON_DECK[]          = { KB_SET_CUE_POINT1_ON_DECK,
+                                                       KB_SET_CUE_POINT2_ON_DECK,
+                                                       KB_SET_CUE_POINT3_ON_DECK,
+                                                       KB_SET_CUE_POINT4_ON_DECK };
+const QString KB_SET_CUE_POINTS_ON_DECK_DEFAULT[]  = { KB_SET_CUE_POINT1_ON_DECK_DEFAULT,
+                                                       KB_SET_CUE_POINT2_ON_DECK_DEFAULT,
+                                                       KB_SET_CUE_POINT3_ON_DECK_DEFAULT,
+                                                       KB_SET_CUE_POINT4_ON_DECK_DEFAULT };
+const QString KB_PLAY_CUE_POINTS_ON_DECK[]         = { KB_PLAY_CUE_POINT1_ON_DECK,
+                                                       KB_PLAY_CUE_POINT2_ON_DECK,
+                                                       KB_PLAY_CUE_POINT3_ON_DECK,
+                                                       KB_PLAY_CUE_POINT4_ON_DECK };
+const QString KB_PLAY_CUE_POINTS_ON_DECK_DEFAULT[] = { KB_PLAY_CUE_POINT1_ON_DECK_DEFAULT,
+                                                       KB_PLAY_CUE_POINT2_ON_DECK_DEFAULT,
+                                                       KB_PLAY_CUE_POINT3_ON_DECK_DEFAULT,
+                                                       KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT };
 
 class Application_settings : public QObject
 {
