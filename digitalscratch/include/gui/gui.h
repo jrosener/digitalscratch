@@ -178,8 +178,8 @@ class Gui : QObject
     QShortcut                          *shortcut_load_audio_file;
     QShortcut                          *shortcut_go_to_begin;
     QShortcut                          *shortcut_get_next_audio_tracks;
-    QShortcut                          *shortcut_set_cue_point1;
-    QShortcut                          *shortcut_go_to_cue_point1;
+    QShortcut                         **shortcut_set_cue_points;
+    QShortcut                         **shortcut_go_to_cue_points;
     QShortcut                          *shortcut_load_sample_file_1;
     QShortcut                          *shortcut_load_sample_file_2;
     QShortcut                          *shortcut_load_sample_file_3;
@@ -199,7 +199,7 @@ class Gui : QObject
     QPushButton                        *restart_on_deck1_button;
     QPushButton                        *restart_on_deck2_button;
     QPushButton                       **cue_set_on_deck1_buttons;
-    QPushButton                       *cue_play_on_deck1_button1;
+    QPushButton                       **cue_play_on_deck1_buttons;
     QLabel                            **cue_point_deck1_labels;
     QPushButton                        *cue_set_on_deck2_button1;
     QPushButton                        *cue_play_on_deck2_button1;
@@ -329,8 +329,8 @@ class Gui : QObject
     void deck_set_cue_point(int in_cue_point_number);
     void deck1_set_cue_point(int in_cue_point_number);
     void deck2_set_cue_point(int in_cue_point_number);
-    void deck_go_to_cue_point();
-    void deck1_go_to_cue_point();
+    void deck_go_to_cue_point(int in_cue_point_number);
+    void deck1_go_to_cue_point(int in_cue_point_number);
     void deck2_go_to_cue_point();
     void switch_playback_selection();
     void select_playback_1();
