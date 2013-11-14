@@ -201,9 +201,9 @@ class Gui : QObject
     QPushButton                       **cue_set_on_deck1_buttons;
     QPushButton                       **cue_play_on_deck1_buttons;
     QLabel                            **cue_point_deck1_labels;
-    QPushButton                        *cue_set_on_deck2_button1;
-    QPushButton                        *cue_play_on_deck2_button1;
-    QLabel                             *cue_point_label1_deck2;
+    QPushButton                       **cue_set_on_deck2_buttons;
+    QPushButton                       **cue_play_on_deck2_buttons;
+    QLabel                            **cue_point_deck2_labels;
     QPushButton                        *show_next_key_from_deck1_button;
     QPushButton                        *show_next_key_from_deck2_button;
     QPushButton                        *load_sample1_1_button;
@@ -331,7 +331,7 @@ class Gui : QObject
     void deck2_set_cue_point(int in_cue_point_number);
     void deck_go_to_cue_point(int in_cue_point_number);
     void deck1_go_to_cue_point(int in_cue_point_number);
-    void deck2_go_to_cue_point();
+    void deck2_go_to_cue_point(int in_cue_point_number);
     void switch_playback_selection();
     void select_playback_1();
     void select_playback_2();

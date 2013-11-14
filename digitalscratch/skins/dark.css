@@ -716,6 +716,87 @@ QPushButton#Cue_set_button0:checked
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-cue_set_1_white.png);
 }
+QPushButton#Cue_set_button1
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-cue_set_2.png);
+}
+QPushButton#Cue_set_button1:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-cue_set_2_white.png);
+}
+QPushButton#Cue_set_button1:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-cue_set_2.png);
+}
+QPushButton#Cue_set_button1:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-cue_set_2_white.png);
+}
+QPushButton#Cue_set_button2
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-cue_set_3.png);
+}
+QPushButton#Cue_set_button2:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-cue_set_3_white.png);
+}
+QPushButton#Cue_set_button2:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-cue_set_3.png);
+}
+QPushButton#Cue_set_button2:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-cue_set_3_white.png);
+}
+QPushButton#Cue_set_button3
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-cue_set_4.png);
+}
+QPushButton#Cue_set_button3:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-cue_set_4_white.png);
+}
+QPushButton#Cue_set_button3:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-cue_set_4.png);
+}
+QPushButton#Cue_set_button3:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-cue_set_4_white.png);
+}
 
 QPushButton#Cue_play_button0
 {
@@ -744,6 +825,88 @@ QPushButton#Cue_play_button0:checked
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-cue_play_1_white.png);
 }
+QPushButton#Cue_play_button1
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-cue_play_2.png);
+}
+QPushButton#Cue_play_button1:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-cue_play_2_white.png);
+}
+QPushButton#Cue_play_button1:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-cue_play_2.png);
+}
+QPushButton#Cue_play_button1:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-cue_play_2_white.png);
+}
+QPushButton#Cue_play_button2
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-cue_play_3.png);
+}
+QPushButton#Cue_play_button2:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-cue_play_3_white.png);
+}
+QPushButton#Cue_play_button2:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-cue_play_3.png);
+}
+QPushButton#Cue_play_button2:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-cue_play_3_white.png);
+}
+QPushButton#Cue_play_button3
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-cue_play_4.png);
+}
+QPushButton#Cue_play_button3:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-cue_play_4_white.png);
+}
+QPushButton#Cue_play_button3:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-cue_play_4.png);
+}
+QPushButton#Cue_play_button3:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-cue_play_4_white.png);
+}
+
 QLabel#Cue_point_label
 {
     border: 1px solid gray;
