@@ -42,7 +42,7 @@ Application_settings::Application_settings()
     this->settings = new QSettings(APPLICATION_NAME);
 
     this->available_gui_styles = new QList<QString>();
-    this->available_gui_styles->append(GUI_STYLE_DEFAULT);
+    this->available_gui_styles->append(GUI_STYLE_NATIVE);
     this->available_gui_styles->append(GUI_STYLE_DARK);
 
     this->available_vinyl_types = new QList<QString>();
@@ -79,7 +79,7 @@ Application_settings::init_settings()
         this->settings->setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
     }
     if (this->settings->contains(GUI_STYLE_CFG) == false) {
-        this->settings->setValue(GUI_STYLE_CFG, GUI_STYLE_DEFAULT);
+        this->settings->setValue(GUI_STYLE_CFG, this->get_gui_style_default());
     }
 
     //

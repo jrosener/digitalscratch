@@ -2034,7 +2034,7 @@ Gui::apply_main_window_style()
     qDebug() << "Gui::apply_main_window_style...";
 
     // Apply some GUI settings manually.
-    if (this->window_style == QString(GUI_STYLE_DEFAULT))
+    if (this->window_style == QString(GUI_STYLE_NATIVE))
     {
         // Set manually some standard icons.
         for (int i = 0; i < this->nb_samplers; i++)

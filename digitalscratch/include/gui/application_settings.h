@@ -50,9 +50,10 @@ using namespace std;
 #define BASE_DIR_PATH_CFG         "player/base_dir_path"
 
 #define GUI_STYLE_CFG             "player/gui_style_select"
-#define GUI_STYLE_DEFAULT         "default"
+#define GUI_STYLE_NATIVE          "native"
 #define GUI_STYLE_DARK            "dark"
 #define GUI_STYLE_DARK_CSS        SKINS_PATH "dark.css"
+#define GUI_STYLE_DEFAULT         "dark"
 
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
