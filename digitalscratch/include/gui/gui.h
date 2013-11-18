@@ -334,6 +334,9 @@ class Gui : QObject
     void deck_go_to_cue_point(int in_cue_point_number);
     void deck1_go_to_cue_point(int in_cue_point_number);
     void deck2_go_to_cue_point(int in_cue_point_number);
+    void deck_del_cue_point(int in_cue_point_number);
+    void deck1_del_cue_point(int in_cue_point_number);
+    void deck2_del_cue_point(int in_cue_point_number);
     void switch_playback_selection();
     void select_playback_1();
     void select_playback_2();

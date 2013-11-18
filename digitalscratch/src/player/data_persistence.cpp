@@ -486,3 +486,60 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
 
     return result;
 }
+
+bool Data_persistence::delete_cue_point(Audio_track *in_at, unsigned int in_number)
+{
+    // Init result.
+    bool result = true;
+
+    qDebug() << "Data_persistence::delete_cue_point...";
+
+    // Check input parameter.
+    if ((in_at == NULL) ||
+        (in_at->get_hash().size() == 0) ||
+        (in_number >= MAX_NB_CUE_POINTS))
+    {
+        qWarning() << "Can not delete cue point: wrong params.";
+        result = false;
+    }
+
+    // Search the audio track (based on its hash) in DB.
+    if ((result == true) &&
+        (this->is_initialized == true))
+    {
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        if (query.lastError().isValid())
+        {
+            // Can not select audio track in DB.
+            qWarning() << "SELECT track failed: " << query.lastError().text();
+            result = false;
+        }
+        else if (query.next() == true) // Check if there is a record.
+        {
+            // The audio track exists, look for the specified cue point.
+            QSqlQuery query_cue_point = this->db.exec(
+                        "DELETE FROM CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
+            if (query_cue_point.lastError().isValid())
+            {
+                // Can not delete cue point.
+                qWarning() << "DELETE cue point failed: " << query_cue_point.lastError().text();
+                result = false;
+            }
+        }
+        else
+        {
+            // Audio track not found.
+            result = false;
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
+    }
+
+    qDebug() << "Data_persistence::delete_cue_point done.";
+
+    return result;
+}

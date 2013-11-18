@@ -1882,35 +1882,43 @@ Gui::create_main_window()
     QSignalMapper *play_cue_point_shortcut_signal_mapper     = new QSignalMapper(this);
     QSignalMapper *set_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
     QSignalMapper *play_cue_point_button_signal_mapper_deck1 = new QSignalMapper(this);
+    QSignalMapper *del_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
         set_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_set_cue_points[i], i);
         play_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_go_to_cue_points[i], i);
         set_cue_point_button_signal_mapper_deck1->setMapping(this->cue_set_on_deck1_buttons[i], i);
         play_cue_point_button_signal_mapper_deck1->setMapping(this->cue_play_on_deck1_buttons[i], i);
+        del_cue_point_button_signal_mapper_deck1->setMapping(this->cue_del_on_deck1_buttons[i], i);
         QObject::connect(this->shortcut_set_cue_points[i],   SIGNAL(activated()), set_cue_point_shortcut_signal_mapper,      SLOT(map()));
         QObject::connect(this->shortcut_go_to_cue_points[i], SIGNAL(activated()), play_cue_point_shortcut_signal_mapper,     SLOT(map()));
         QObject::connect(this->cue_set_on_deck1_buttons[i],  SIGNAL(clicked()),   set_cue_point_button_signal_mapper_deck1,  SLOT(map()));
         QObject::connect(this->cue_play_on_deck1_buttons[i], SIGNAL(clicked()),   play_cue_point_button_signal_mapper_deck1, SLOT(map()));
+        QObject::connect(this->cue_del_on_deck1_buttons[i],  SIGNAL(clicked()),   del_cue_point_button_signal_mapper_deck1,  SLOT(map()));
     }
     QObject::connect(set_cue_point_shortcut_signal_mapper,      SIGNAL(mapped(int)), this, SLOT(deck_set_cue_point(int)));
     QObject::connect(play_cue_point_shortcut_signal_mapper,     SIGNAL(mapped(int)), this, SLOT(deck_go_to_cue_point(int)));
     QObject::connect(set_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_set_cue_point(int)));
     QObject::connect(play_cue_point_button_signal_mapper_deck1, SIGNAL(mapped(int)), this, SLOT(deck1_go_to_cue_point(int)));
+    QObject::connect(del_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_del_cue_point(int)));
 
     if (this->nb_decks > 1)
     {
         QSignalMapper *set_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
         QSignalMapper *play_cue_point_button_signal_mapper_deck2 = new QSignalMapper(this);
+        QSignalMapper *del_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
         for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
         {
             set_cue_point_button_signal_mapper_deck2->setMapping(this->cue_set_on_deck2_buttons[i], i);
             play_cue_point_button_signal_mapper_deck2->setMapping(this->cue_play_on_deck2_buttons[i], i);
+            del_cue_point_button_signal_mapper_deck2->setMapping(this->cue_del_on_deck2_buttons[i], i);
             QObject::connect(this->cue_set_on_deck2_buttons[i],  SIGNAL(clicked()), set_cue_point_button_signal_mapper_deck2,  SLOT(map()));
             QObject::connect(this->cue_play_on_deck2_buttons[i], SIGNAL(clicked()), play_cue_point_button_signal_mapper_deck2, SLOT(map()));
+            QObject::connect(this->cue_del_on_deck2_buttons[i],  SIGNAL(clicked()), del_cue_point_button_signal_mapper_deck2, SLOT(map()));
         }
         QObject::connect(set_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_set_cue_point(int)));
         QObject::connect(play_cue_point_button_signal_mapper_deck2, SIGNAL(mapped(int)), this, SLOT(deck2_go_to_cue_point(int)));
+        QObject::connect(del_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_del_cue_point(int)));
     }
 
     // Progress for file analyzis and storage.
@@ -3268,6 +3276,79 @@ Gui::deck2_go_to_cue_point(int in_cue_point_number)
     this->cue_play_on_deck2_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck2_go_to_cue_point done.";
+
+    return;
+}
+
+void
+Gui::deck_del_cue_point(int in_cue_point_number)
+{
+    qDebug() << "Gui::deck_del_cue_point...";
+
+    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
+    {
+        // Deck 2.
+        this->playback->delete_cue_point(1, in_cue_point_number);
+        this->deck2_waveform->move_cue_slider(in_cue_point_number, 0.0);
+        this->cue_point_deck2_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(1, in_cue_point_number));
+    }
+    else
+    {
+        // Deck 1.
+        this->playback->delete_cue_point(0, in_cue_point_number);
+        this->deck1_waveform->move_cue_slider(in_cue_point_number, 0.0);
+        this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(0, in_cue_point_number));
+    }
+
+    qDebug() << "Gui::deck_del_cue_point done.";
+
+    return;
+}
+
+void
+Gui::deck1_del_cue_point(int in_cue_point_number)
+{
+    qDebug() << "Gui::deck1_del_cue_point...";
+
+    // Select deck 1.
+    this->highlight_deck_sampler_area(0);
+
+    // Check the button.
+    this->cue_del_on_deck1_buttons[in_cue_point_number]->setEnabled(false);
+    this->cue_del_on_deck1_buttons[in_cue_point_number]->setChecked(true);
+
+    // Delete point.
+    this->deck_del_cue_point(in_cue_point_number);
+
+    // Release the button.
+    this->cue_del_on_deck1_buttons[in_cue_point_number]->setEnabled(true);
+    this->cue_del_on_deck1_buttons[in_cue_point_number]->setChecked(false);
+
+    qDebug() << "Gui::deck1_del_cue_point done.";
+
+    return;
+}
+
+void
+Gui::deck2_del_cue_point(int in_cue_point_number)
+{
+    qDebug() << "Gui::deck2_del_cue_point...";
+
+    // Select deck 2.
+    this->highlight_deck_sampler_area(1);
+
+    // Check the button.
+    this->cue_del_on_deck2_buttons[in_cue_point_number]->setEnabled(false);
+    this->cue_del_on_deck2_buttons[in_cue_point_number]->setChecked(true);
+
+    // Delete point.
+    this->deck_del_cue_point(in_cue_point_number);
+
+    // Release the button.
+    this->cue_del_on_deck2_buttons[in_cue_point_number]->setEnabled(true);
+    this->cue_del_on_deck2_buttons[in_cue_point_number]->setChecked(false);
+
+    qDebug() << "Gui::deck2_del_cue_point done.";
 
     return;
 }

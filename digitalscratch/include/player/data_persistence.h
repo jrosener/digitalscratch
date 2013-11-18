@@ -70,6 +70,8 @@ class Data_persistence : public QObject
     bool get_cue_point(Audio_track  *in_at,         // Get the in_number cue point of an audio track.
                        unsigned int  in_number,
                        unsigned int &out_position_msec);
+    bool delete_cue_point(Audio_track  *in_at,      // Delete the in_number cue point of an audio track.
+                          unsigned int  in_number);
 
  private:
     bool init_db();

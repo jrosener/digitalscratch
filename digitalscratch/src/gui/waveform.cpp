@@ -302,6 +302,7 @@ Waveform::draw_cue_slider(unsigned short int in_cue_point_num)
     }
     else
     {
+        // Cue point not defined (= 0), so hide it.
         this->cue_sliders[in_cue_point_num]->hide();
         this->cue_sliders_number[in_cue_point_num]->hide();
     }

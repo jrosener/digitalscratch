@@ -197,6 +197,11 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     QVERIFY2(data_persist->get_cue_point(at, 0, position) == true,  "get updated cue point 1");
     QVERIFY2(position == 1314, "updated position 1");
 
+    // Delete cue point.
+    QVERIFY2(data_persist->delete_cue_point(at, 1)        == true,  "delete updated cue point 2");
+    QVERIFY2(data_persist->get_cue_point(at, 1, position) == false, "get cue point 2");
+
+
     // Cleanup.
     delete at;
     delete at_wrong;

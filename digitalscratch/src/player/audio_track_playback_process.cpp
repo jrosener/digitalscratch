@@ -766,6 +766,17 @@ Audio_track_playback_process::jump_to_cue_point(unsigned short int in_deck_index
 }
 
 bool
+Audio_track_playback_process::delete_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number)
+{
+    // Delete cue point from playback process list.
+    this->cue_points[in_deck_index][in_cue_point_number] = 0;
+
+    // Delete cue point from database.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    return data_persist->delete_cue_point(this->ats[in_deck_index], in_cue_point_number);
+}
+
+bool
 Audio_track_playback_process::speed_up(float              *io_speed,
                                        int                 in_diff,
                                        unsigned short int  in_nb_samples)

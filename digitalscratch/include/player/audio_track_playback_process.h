@@ -97,6 +97,7 @@ class Audio_track_playback_process : public QObject
     bool     read_cue_point(unsigned short int in_deck_index,    unsigned short int in_cue_point_number);
     bool     store_cue_point(unsigned short int in_deck_index,   unsigned short int in_cue_point_number);
     bool     jump_to_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number);
+    bool     delete_cue_point(unsigned short int in_deck_index,  unsigned short int in_cue_point_number);
     QString  get_cue_point_str(unsigned short int in_deck_index, unsigned short int in_cue_point_number);
 
     float get_position(unsigned short int in_deck_index); // 0.0 < position < 1.0
