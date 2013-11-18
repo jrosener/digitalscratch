@@ -200,9 +200,11 @@ class Gui : QObject
     QPushButton                        *restart_on_deck2_button;
     QPushButton                       **cue_set_on_deck1_buttons;
     QPushButton                       **cue_play_on_deck1_buttons;
+    QPushButton                       **cue_del_on_deck1_buttons;
     QLabel                            **cue_point_deck1_labels;
     QPushButton                       **cue_set_on_deck2_buttons;
     QPushButton                       **cue_play_on_deck2_buttons;
+    QPushButton                       **cue_del_on_deck2_buttons;
     QLabel                            **cue_point_deck2_labels;
     QPushButton                        *show_next_key_from_deck1_button;
     QPushButton                        *show_next_key_from_deck2_button;
