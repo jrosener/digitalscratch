@@ -85,8 +85,8 @@ Audio_track::reset()
 {
     qDebug() << "Audio_track::reset...";
 
+    this->set_name("");
     this->end_of_samples = 0;
-    this->name           = "";
     this->length         = 0;
     this->hash           = "";
     this->path           = "";
@@ -207,7 +207,14 @@ Audio_track::set_name(QString in_name)
     if (in_name != this->name)
     {
         this->name = in_name;
-        emit name_changed("[" + this->get_length_str() + "]  " + this->name);
+        if (in_name == "")
+        {
+            emit name_changed("--");
+        }
+        else
+        {
+            emit name_changed("[" + this->get_length_str() + "]  " + this->name);
+        }
     }
 
     qDebug() << "Audio_track::set_name done.";

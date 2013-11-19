@@ -156,10 +156,12 @@ class Gui : QObject
     Audio_file_decoding_process       **dec_2_samplers;
     QPushButton                       **sampler1_buttons_play;
     QPushButton                       **sampler1_buttons_stop;
+    QPushButton                       **sampler1_buttons_del;
     QLabel                            **sampler1_trackname;
     QLabel                            **sampler1_remainingtime;
     QPushButton                       **sampler2_buttons_play;
     QPushButton                       **sampler2_buttons_stop;
+    QPushButton                       **sampler2_buttons_del;
     QLabel                            **sampler2_trackname;
     QLabel                            **sampler2_remainingtime;
     Playback_parameters                *params_1;
@@ -260,6 +262,8 @@ class Gui : QObject
                                          unsigned short int in_sampler_index);
     void    on_sampler_button_stop_click(unsigned short int in_deck_index,
                                          unsigned short int in_sampler_index);
+    void    on_sampler_button_del_click(unsigned short int in_deck_index,
+                                        unsigned short int in_sampler_index);
     void    highlight_deck_sampler_area(unsigned short int in_deck_index);
     void    highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                                bool               switch_on);
@@ -320,6 +324,14 @@ class Gui : QObject
     void on_sampler_button_2_2_stop_click();
     void on_sampler_button_2_3_stop_click();
     void on_sampler_button_2_4_stop_click();
+    void on_sampler_button_1_1_del_click();
+    void on_sampler_button_1_2_del_click();
+    void on_sampler_button_1_3_del_click();
+    void on_sampler_button_1_4_del_click();
+    void on_sampler_button_2_1_del_click();
+    void on_sampler_button_2_2_del_click();
+    void on_sampler_button_2_3_del_click();
+    void on_sampler_button_2_4_del_click();
     void set_remaining_time(unsigned int in_remaining_time, int in_deck_index);
     void set_sampler_remaining_time(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);
     void set_sampler_state(int in_deck_index, int in_sampler_index, bool in_state);

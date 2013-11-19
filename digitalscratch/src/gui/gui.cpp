@@ -1185,6 +1185,7 @@ Gui::create_main_window()
     // Sampler 1 group box
     this->sampler1_buttons_play  = new QPushButton*[this->nb_samplers];
     this->sampler1_buttons_stop  = new QPushButton*[this->nb_samplers];
+    this->sampler1_buttons_del   = new QPushButton*[this->nb_samplers];
     this->sampler1_trackname     = new QLabel*[this->nb_samplers];
     this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
     QGridLayout *sampler1_layout = new QGridLayout();
@@ -1204,23 +1205,32 @@ Gui::create_main_window()
         this->sampler1_buttons_stop[i]->setCheckable(true);
         this->sampler1_buttons_stop[i]->setChecked(true);
         this->sampler1_buttons_stop[i]->setToolTip(tr("Stop sample"));
-        this->sampler1_trackname[i] = new QLabel(tr("--"));
+        this->sampler1_buttons_del[i] = new QPushButton();
+        this->sampler1_buttons_del[i]->setObjectName("Sampler_del_buttons");
+        this->sampler1_buttons_del[i]->setFixedSize(16, 16);
+        this->sampler1_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler1_buttons_del[i]->setCheckable(true);
+        this->sampler1_buttons_del[i]->setChecked(true);
+        this->sampler1_buttons_del[i]->setToolTip(tr("Delete sample"));
+        this->sampler1_trackname[i]     = new QLabel(tr("--"));
         this->sampler1_remainingtime[i] = new QLabel("- 00");
 
         QLabel *sampler1_name_label = new QLabel(sampler1_name);
         sampler1_layout->addWidget(sampler1_name_label,             i, 0);
         sampler1_layout->addWidget(this->sampler1_buttons_play[i],  i, 1);
         sampler1_layout->addWidget(this->sampler1_buttons_stop[i],  i, 2);
-        sampler1_layout->addWidget(this->sampler1_remainingtime[i], i, 3);
-        sampler1_layout->addWidget(this->sampler1_trackname[i],     i, 4);
+        sampler1_layout->addWidget(this->sampler1_buttons_del[i],   i, 3);
+        sampler1_layout->addWidget(this->sampler1_remainingtime[i], i, 4);
+        sampler1_layout->addWidget(this->sampler1_trackname[i],     i, 5);
 
         sampler1_name[0].unicode()++; // Next sampler letter.
     }
     sampler1_layout->setColumnStretch(0, 1);
     sampler1_layout->setColumnStretch(1, 1);
     sampler1_layout->setColumnStretch(2, 1);
-    sampler1_layout->setColumnStretch(3, 4);
-    sampler1_layout->setColumnStretch(4, 95);
+    sampler1_layout->setColumnStretch(3, 1);
+    sampler1_layout->setColumnStretch(4, 4);
+    sampler1_layout->setColumnStretch(5, 95);
     this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
     this->sampler1_gbox->setObjectName("SamplerGBox");
     this->sampler1_gbox->setLayout(sampler1_layout);
@@ -1228,6 +1238,7 @@ Gui::create_main_window()
     // Sampler 2 group box
     this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
     this->sampler2_buttons_stop  = new QPushButton*[this->nb_samplers];
+    this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
     this->sampler2_trackname     = new QLabel*[this->nb_samplers];
     this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
     QGridLayout *sampler2_layout = new QGridLayout();
@@ -1247,23 +1258,32 @@ Gui::create_main_window()
         this->sampler2_buttons_stop[i]->setCheckable(true);
         this->sampler2_buttons_stop[i]->setChecked(true);
         this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
-        this->sampler2_trackname[i] = new QLabel(tr("--"));
+        this->sampler2_buttons_del[i] = new QPushButton();
+        this->sampler2_buttons_del[i]->setObjectName("Sampler_del_buttons");
+        this->sampler2_buttons_del[i]->setFixedSize(16, 16);
+        this->sampler2_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler2_buttons_del[i]->setCheckable(true);
+        this->sampler2_buttons_del[i]->setChecked(true);
+        this->sampler2_buttons_del[i]->setToolTip(tr("Delete sample"));
+        this->sampler2_trackname[i]     = new QLabel(tr("--"));
         this->sampler2_remainingtime[i] = new QLabel("- 00");
 
         QLabel *sampler2_name_label = new QLabel(sampler2_name);
         sampler2_layout->addWidget(sampler2_name_label,             i, 0);
         sampler2_layout->addWidget(this->sampler2_buttons_play[i],  i, 1);
         sampler2_layout->addWidget(this->sampler2_buttons_stop[i],  i, 2);
-        sampler2_layout->addWidget(this->sampler2_remainingtime[i], i, 3);
-        sampler2_layout->addWidget(this->sampler2_trackname[i],     i, 4);
+        sampler2_layout->addWidget(this->sampler2_buttons_del[i],   i, 3);
+        sampler2_layout->addWidget(this->sampler2_remainingtime[i], i, 4);
+        sampler2_layout->addWidget(this->sampler2_trackname[i],     i, 5);
 
         sampler2_name[0].unicode()++; // Next sampler letter.
     }
     sampler2_layout->setColumnStretch(0, 1);
     sampler2_layout->setColumnStretch(1, 1);
     sampler2_layout->setColumnStretch(2, 1);
-    sampler2_layout->setColumnStretch(3, 4);
-    sampler2_layout->setColumnStretch(4, 95);
+    sampler2_layout->setColumnStretch(3, 1);
+    sampler2_layout->setColumnStretch(4, 4);
+    sampler2_layout->setColumnStretch(5, 95);
     this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
     this->sampler2_gbox->setObjectName("SamplerGBox");
     this->sampler2_gbox->setLayout(sampler2_layout);
@@ -1843,6 +1863,16 @@ Gui::create_main_window()
     QObject::connect(sampler2_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_stop_click()));
     QObject::connect(sampler2_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_stop_click()));
 
+    QObject::connect(sampler1_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_del_click()));
+    QObject::connect(sampler1_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_del_click()));
+    QObject::connect(sampler1_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_del_click()));
+    QObject::connect(sampler1_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_del_click()));
+
+    QObject::connect(sampler2_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_del_click()));
+    QObject::connect(sampler2_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_del_click()));
+    QObject::connect(sampler2_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_del_click()));
+    QObject::connect(sampler2_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_del_click()));
+
     // Remaining time for samplers.
     QObject::connect(this->playback, SIGNAL(sampler_remaining_time_changed(unsigned int, int, int)),
                      this,           SLOT(set_sampler_remaining_time(unsigned int, int, int)));
@@ -2051,6 +2081,8 @@ Gui::apply_main_window_style()
             this->sampler2_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
             this->sampler1_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
             this->sampler2_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
+            this->sampler1_buttons_del[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
+            this->sampler2_buttons_del[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
         this->load_track_on_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
@@ -2104,6 +2136,8 @@ Gui::apply_main_window_style()
             this->sampler2_buttons_play[i]->setIcon(QIcon());
             this->sampler1_buttons_stop[i]->setIcon(QIcon());
             this->sampler2_buttons_stop[i]->setIcon(QIcon());
+            this->sampler1_buttons_del[i]->setIcon(QIcon());
+            this->sampler2_buttons_del[i]->setIcon(QIcon());
         }
         this->refresh_file_browser->setIcon(QIcon());
         this->load_track_on_deck1_button->setIcon(QIcon());
@@ -2733,6 +2767,83 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
 }
 
 void
+Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
+                                 unsigned short int in_sampler_index)
+{
+    qDebug() << "Gui::on_sampler_button_del_click...";
+
+    // Remove track loaded in the sampler.
+    this->playback->del_sampler(in_deck_index, in_sampler_index);
+    this->set_sampler_state(in_deck_index, in_sampler_index, false);
+
+    // TODO !!
+
+    // Select playback area (if not already done).
+    this->highlight_deck_sampler_area(in_deck_index);
+
+    qDebug() << "Gui::on_sampler_button_del_click done.";
+
+    return;
+}
+
+void
+Gui::on_sampler_button_1_1_del_click()
+{
+    this->on_sampler_button_del_click(0, 0);
+    return;
+}
+
+void
+Gui::on_sampler_button_1_2_del_click()
+{
+    this->on_sampler_button_del_click(0, 1);
+    return;
+}
+
+void
+Gui::on_sampler_button_1_3_del_click()
+{
+    this->on_sampler_button_del_click(0, 2);
+    return;
+}
+
+void
+Gui::on_sampler_button_1_4_del_click()
+{
+    this->on_sampler_button_del_click(0, 3);
+    return;
+}
+
+void
+Gui::on_sampler_button_2_1_del_click()
+{
+    this->on_sampler_button_del_click(1, 0);
+    return;
+}
+
+void
+Gui::on_sampler_button_2_2_del_click()
+{
+    this->on_sampler_button_del_click(1, 1);
+    return;
+}
+
+void
+Gui::on_sampler_button_2_3_del_click()
+{
+    this->on_sampler_button_del_click(1, 2);
+    return;
+}
+
+void
+Gui::on_sampler_button_2_4_del_click()
+{
+    this->on_sampler_button_del_click(1, 3);
+    return;
+}
+
+
+void
 Gui::on_progress_cancel_button_click()
 {
     // Stop any running file analysis.
@@ -2866,7 +2977,6 @@ Gui::run_audio_file_decoding_process()
         {
             deck_index = 1;
             deck_track_name = this->deck2_track_name;
-            //deck_cue_point  = this->cue_point_deck2_labels;
             deck_waveform   = this->deck2_waveform;
             decode_process  = this->dec_2;
         }
@@ -2964,35 +3074,49 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
 {
     qDebug() << "Gui::set_sampler_remaining_time...";
 
-    // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
-    int remaining_time_by_1000 = in_remaining_time / 1000.0;
-    div_t tmp_division;
-    tmp_division = div(remaining_time_by_1000, 60);
-    QString sec  = QString::number(tmp_division.rem);
-
-    // Change displayed remaining time (if different than previous one).
-    if (in_deck_index == 0 &&
-        sec.compare(this->sampler1_remainingtime[in_sampler_index]->text()) != 0)
+    if (in_remaining_time == 0)
     {
-        if (sec.size() == 1)
+        if (in_deck_index == 0)
         {
-            this->sampler1_remainingtime[in_sampler_index]->setText("- 0" + sec);
+            this->sampler1_remainingtime[in_sampler_index]->setText("- 00");
         }
         else
         {
-            this->sampler1_remainingtime[in_sampler_index]->setText("- " + sec);
+            this->sampler2_remainingtime[in_sampler_index]->setText("- 00");
         }
     }
-    if (in_deck_index == 1 &&
-        sec.compare(this->sampler2_remainingtime[in_sampler_index]->text()) != 0)
+    else
     {
-        if (sec.size() == 1)
+        // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
+        int remaining_time_by_1000 = in_remaining_time / 1000.0;
+        div_t tmp_division;
+        tmp_division = div(remaining_time_by_1000, 60);
+        QString sec  = QString::number(tmp_division.rem);
+
+        // Change displayed remaining time (if different than previous one).
+        if (in_deck_index == 0 &&
+            sec.compare(this->sampler1_remainingtime[in_sampler_index]->text()) != 0)
         {
-            this->sampler2_remainingtime[in_sampler_index]->setText("- 0" + sec);
+            if (sec.size() == 1)
+            {
+                this->sampler1_remainingtime[in_sampler_index]->setText("- 0" + sec);
+            }
+            else
+            {
+                this->sampler1_remainingtime[in_sampler_index]->setText("- " + sec);
+            }
         }
-        else
+        if (in_deck_index == 1 &&
+            sec.compare(this->sampler2_remainingtime[in_sampler_index]->text()) != 0)
         {
-            this->sampler2_remainingtime[in_sampler_index]->setText("- " + sec);
+            if (sec.size() == 1)
+            {
+                this->sampler2_remainingtime[in_sampler_index]->setText("- 0" + sec);
+            }
+            else
+            {
+                this->sampler2_remainingtime[in_sampler_index]->setText("- " + sec);
+            }
         }
     }
 
@@ -3002,8 +3126,8 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
 }
 
 void
-Gui::set_sampler_state(int in_deck_index,
-                       int in_sampler_index,
+Gui::set_sampler_state(int  in_deck_index,
+                       int  in_sampler_index,
                        bool in_state)
 {
     qDebug() << "Gui::set_sampler_state...";

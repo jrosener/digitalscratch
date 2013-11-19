@@ -178,6 +178,22 @@ Audio_track_playback_process::reset_sampler(unsigned short int in_index,
     return true;
 }
 
+void
+Audio_track_playback_process::del_sampler(unsigned short int in_deck_index,
+                                          unsigned short int in_sampler_index)
+{
+    qDebug() << "Audio_track_playback_process::del_sampler...";
+
+    this->reset_sampler(in_deck_index, in_sampler_index);
+    this->set_sampler_state(in_deck_index, in_sampler_index, false);
+    emit sampler_remaining_time_changed(0, in_deck_index, in_sampler_index);
+    this->at_samplers[in_deck_index][in_sampler_index]->reset();
+
+    qDebug() << "Audio_track_playback_process::del_sampler done.";
+
+    return;
+}
+
 bool
 Audio_track_playback_process::play_empty(unsigned short int   in_deck_index,
                                          unsigned short int   in_nb_samples,

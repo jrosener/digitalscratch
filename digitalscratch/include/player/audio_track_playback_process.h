@@ -90,6 +90,9 @@ class Audio_track_playback_process : public QObject
     bool reset_sampler(unsigned short int in_index,
                        unsigned short int in_sampler_index);
 
+    void del_sampler(unsigned short int in_deck_index,
+                     unsigned short int in_sampler_index);
+
     bool jump_to_position(unsigned short int in_deck_index,
                           float              in_position);
 

@@ -437,6 +437,20 @@ QPushButton#Sampler_stop_buttons:checked
    border:           1px solid orange;
 }
 
+QPushButton#Sampler_del_buttons
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          3px;
+   image:            url(:/pixmaps/dark-del.png);
+}
+QPushButton#Sampler_del_buttons:hover
+{
+   background-color: lightGray;
+   border:           1px solid orange;
+}
+
 QPushButton#Refresh_browser_button
 {
    background-color: gray;
