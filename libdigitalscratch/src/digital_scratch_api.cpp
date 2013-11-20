@@ -33,6 +33,7 @@
 #include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -207,6 +208,18 @@ int dscratch_analyze_recorded_datas(int     turntable_id,
     g_input_samples_1.assign(input_samples_1, input_samples_1 + nb_frames);
     g_input_samples_2.assign(input_samples_2, input_samples_2 + nb_frames);
 
+    // Amplify samples if needed.
+    if (dscratch_get_input_amplify_coeff(turntable_id) > 1)
+    {
+        std::transform(g_input_samples_1.begin(), g_input_samples_1.end(),
+                       g_input_samples_1.begin(),
+                       std::bind1st(std::multiplies<float>(), dscratch_get_input_amplify_coeff(turntable_id)));
+        std::transform(g_input_samples_2.begin(), g_input_samples_2.end(),
+                       g_input_samples_2.begin(),
+                       std::bind1st(std::multiplies<float>(), dscratch_get_input_amplify_coeff(turntable_id)));
+    }
+
+    // Analyze new samples.
     if (tab_turntable[turntable_id]->analyze_recording_data(g_input_samples_1,
                                                             g_input_samples_2) == false)
     {
@@ -1175,4 +1188,37 @@ DLLIMPORT float dscratch_get_low_pass_filter_max_speed_usage(int turntable_id)
 DLLIMPORT float dscratch_get_default_low_pass_filter_max_speed_usage()
 {
     return (float)DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
+}
+
+DLLIMPORT int dscratch_set_input_amplify_coeff(int turntable_id,
+                                               int coeff)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Set input_amplify_coeff parameter to Coded_vinyl.
+    if (vinyl->set_input_amplify_coeff(coeff) == false)
+    {
+        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
+                            "Cannot set input_amplify_coeff.");
+        return 1;
+    }
+
+    return 0;
+}
+
+DLLIMPORT int dscratch_get_input_amplify_coeff(int turntable_id)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Get input_amplify_coeff parameter from Coded_vinyl.
+    return vinyl->get_input_amplify_coeff();
+}
+
+DLLIMPORT int dscratch_get_default_input_amplify_coeff()
+{
+    return DEFAULT_INPUT_AMPLIFY_COEFF;
 }

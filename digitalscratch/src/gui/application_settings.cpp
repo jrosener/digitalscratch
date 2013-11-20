@@ -97,6 +97,9 @@ Application_settings::init_settings()
     if (this->settings->contains(MAX_BUFFER_COEFF_CFG) == false) {
         this->settings->setValue(MAX_BUFFER_COEFF_CFG, (new QString)->setNum(this->get_max_buffer_coeff_default()));
     }
+    if (this->settings->contains(INPUT_AMPLIFY_COEFF) == false) {
+        this->settings->setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
+    }
     if (this->settings->contains(MAX_SPEED_DIFF_CFG) == false) {
         this->settings->setValue(MAX_SPEED_DIFF_CFG, (new QString)->setNum(this->get_max_speed_diff_default(), 'f', 3));
     }
@@ -375,6 +378,29 @@ Application_settings::set_low_pass_filter_max_speed_usage(float in_low_pass_filt
     if (in_low_pass_filter_max_speed_usage > 0.0 && in_low_pass_filter_max_speed_usage < 2.0) // Range: ]0.0,2.0[
     {
         this->settings->setValue(LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG, value);
+    }
+}
+
+int
+Application_settings::get_input_amplify_coeff()
+{
+    return this->settings->value(INPUT_AMPLIFY_COEFF).toInt();
+}
+
+int
+Application_settings::get_input_amplify_coeff_default()
+{
+    return dscratch_get_default_input_amplify_coeff();
+}
+
+void
+Application_settings::set_input_amplify_coeff(int in_coeff)
+{
+    QString value;
+    value.setNum(in_coeff);
+    if (in_coeff > 0 && in_coeff < 1000) // Range: ]0,1000[
+    {
+        this->settings->setValue(INPUT_AMPLIFY_COEFF, value);
     }
 }
 

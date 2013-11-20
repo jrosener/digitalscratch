@@ -75,6 +75,7 @@ Coded_vinyl::Coded_vinyl()
     this->full_volume_amplitude              = (float)DEFAULT_FULL_VOLUME_AMPLITUDE;
     this->sample_rate                        = DEFAULT_SAMPLE_RATE;
     this->low_pass_filter_max_speed_usage    = (float)DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
+    this->input_amplify_coeff                = DEFAULT_INPUT_AMPLIFY_COEFF;
     this->total_input_samples_1.reserve(512 * this->get_max_buffer_coeff());
     this->total_input_samples_2.reserve(512 * this->get_max_buffer_coeff());
 
@@ -2369,4 +2370,23 @@ bool Coded_vinyl::set_low_pass_filter_max_speed_usage(float low_pass_filter_max_
 float Coded_vinyl::get_low_pass_filter_max_speed_usage()
 {
     return this->low_pass_filter_max_speed_usage;
+}
+
+bool Coded_vinyl::set_input_amplify_coeff(int coeff)
+{
+    if (coeff <= 0)
+    {
+        Utils::trace_error(TRACE_PREFIX_CODED_VINYL, "coeff cannot be <= 0");
+
+        return false;
+    }
+
+    this->input_amplify_coeff = coeff;
+
+    return true;
+}
+
+int Coded_vinyl::get_input_amplify_coeff()
+{
+    return this->input_amplify_coeff;
 }

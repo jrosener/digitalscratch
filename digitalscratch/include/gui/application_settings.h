@@ -60,6 +60,7 @@ using namespace std;
 #define MAX_NB_BUFFER_CFG                   "motion_detection/max_nb_buffer"
 #define MAX_BUFFER_COEFF_CFG                "motion_detection/max_buffer_coeff"
 #define LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG "motion_detection/low_pass_filter_max_speed_usage"
+#define INPUT_AMPLIFY_COEFF                 "motion_detection/input_amplify_coeff"
 
 #define MAX_SPEED_DIFF_CFG                  "playback_parameters/max_speed_diff"
 #define SLOW_SPEED_ALGO_USAGE_CFG           "playback_parameters/slow_speed_algo_usage"
@@ -173,6 +174,10 @@ class Application_settings : public QObject
     void  set_max_buffer_coeff(int in_buffer_coeff);
     int   get_max_buffer_coeff();
     int   get_max_buffer_coeff_default();
+
+    void  set_input_amplify_coeff(int in_coeff);
+    int   get_input_amplify_coeff();
+    int   get_input_amplify_coeff_default();
 
     void  set_max_speed_diff(float in_diff);
     float get_max_speed_diff();

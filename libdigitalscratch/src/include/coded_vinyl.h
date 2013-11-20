@@ -61,6 +61,7 @@
 #define DEFAULT_FULL_VOLUME_AMPLITUDE              0.22
 #define DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE    1.1
 #define DEFAULT_SAMPLE_RATE                        44100
+#define DEFAULT_INPUT_AMPLIFY_COEFF                1
 
 /**
  * Define a Coded_vinyl class.\n
@@ -241,6 +242,11 @@ class Coded_vinyl
          * Boolean used to reverse direction (ex: Mixvibes vinyl).
          */
         bool is_reverse_direction;
+
+        /**
+         * Coeff used to amplify input signal.
+         */
+        int input_amplify_coeff;
 
     public: // TODO: add accessor and put attributes in private
         /**
@@ -462,6 +468,19 @@ class Coded_vinyl
          * @return TRUE if all is OK, otherwise FALSE.
          */
         bool get_bit_types();
+
+        /**
+         * Set coeff to be multiplied to input samples (amplification).
+         * @param coeff is the value to set.
+         * @return TRUE if all is OK, otherwise FALSE.
+         */
+        bool set_input_amplify_coeff(int coeff);
+
+        /**
+         * Get coeff to be multiplied to input samples.
+         * @return the value to get.
+         */
+        int get_input_amplify_coeff();
 
         /**
          * Get the current position value of needle on vinyl

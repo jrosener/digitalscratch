@@ -274,6 +274,10 @@ Gui::apply_application_settings()
         {
             qWarning() << "Gui::apply_application_settings: Cannot set new max buffer coeff value";
         }
+        if (dscratch_set_input_amplify_coeff(this->dscratch_ids[i], this->settings->get_input_amplify_coeff()) != 0)
+        {
+            qWarning() << "Gui::apply_application_settings: Cannot set new input amplify coeff value";
+        }
         if (dscratch_set_max_speed_diff(this->dscratch_ids[i], this->settings->get_max_speed_diff()) != 0)
         {
             qWarning() << "Gui::apply_application_settings: Cannot set new max speed diff value";
