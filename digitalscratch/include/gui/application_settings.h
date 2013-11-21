@@ -47,6 +47,8 @@ using namespace std;
 #define MAIN_WIN_POS_CFG          "player/main_win_position"
 #define MAIN_WIN_POS_CFG_DEFAULT  "50,50"
 
+#define BROWSER_SPLITTER_SIZE_CFG "player/browser_splitter_size"
+
 #define BASE_DIR_PATH_CFG         "player/base_dir_path"
 
 #define GUI_STYLE_CFG             "player/gui_style_select"
@@ -144,6 +146,10 @@ class Application_settings : public QObject
     void    set_main_window_size(QSize in_size);
     QSize   get_main_window_size();
     QString get_main_window_size_default();
+
+    void       set_browser_splitter_size(QByteArray in_state);
+    QByteArray get_browser_splitter_size();
+   // QString get_browser_splitter_size_default();
 
     void    set_main_window_position(QPoint in_pos);
     QPoint  get_main_window_position();

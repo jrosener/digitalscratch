@@ -211,8 +211,6 @@ Application_settings::get_main_window_size_default()
     return MAIN_WIN_SIZE_CFG_DEFAULT;
 }
 
-
-
 void
 Application_settings::set_main_window_position(QPoint in_pos)
 {
@@ -248,6 +246,19 @@ Application_settings::set_tracks_base_dir_path(QString in_tracks_base_dir_path)
 {
     this->settings->setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
 }
+
+void
+Application_settings::set_browser_splitter_size(QByteArray in_state)
+{
+    this->settings->setValue(BROWSER_SPLITTER_SIZE_CFG, in_state);
+}
+
+QByteArray
+Application_settings::get_browser_splitter_size()
+{
+    return this->settings->value(BROWSER_SPLITTER_SIZE_CFG).toByteArray();
+}
+
 
 QString
 Application_settings::get_tracks_base_dir_path()

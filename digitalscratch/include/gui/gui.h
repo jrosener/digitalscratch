@@ -43,6 +43,7 @@
 #include <QShortcut>
 #include <QProgressBar>
 #include <QFileIconProvider>
+#include <QSplitter>
 
 #include "config_dialog.h"
 #include "audio_track.h"
@@ -140,6 +141,7 @@ class Gui : QObject
     QWidget                            *window;
     Config_dialog                      *config_dialog;
     QString                             window_style;
+    QSplitter                          *browser_splitter;
     QTreeView                          *file_browser;
     QTreeView                          *folder_browser;
     QDialog                            *about_dialog;

@@ -742,6 +742,35 @@ DLLIMPORT float dscratch_get_low_pass_filter_max_speed_usage(int turntable_id);
  */
 DLLIMPORT float dscratch_get_default_low_pass_filter_max_speed_usage();
 
+/**
+ * Set the coefficient to be multiplied to input timecoded signal.
+ *
+ * @param turntable_id is the id of the turntable on which you want to work.
+ *        This id is provided by dscratch_create_turntable() function.
+ * @param coeff is the value to multiply to input samples.
+ *
+ * @return 0 if all is OK, otherwise 1.
+ */
+DLLIMPORT int dscratch_set_input_amplify_coeff(int turntable_id,
+                                               int coeff);
+
+/**
+ * Get the coefficient to be multiplied to input timecoded signal.
+ *
+ * @param turntable_id is the id of the turntable on which you want to work.
+ *        This id is provided by dscratch_create_turntable() function.
+ *
+ * @return the coefficient used to be multiplied to input samples.
+ */
+DLLIMPORT int dscratch_get_input_amplify_coeff(int turntable_id);
+
+/**
+ * Get the default coefficient to be multiplied to input timecoded signal.
+ *
+ * @return the coefficient used to be multiplied to input samples.
+ */
+DLLIMPORT int dscratch_get_default_input_amplify_coeff();
+
 #ifdef __cplusplus
 }
 #endif

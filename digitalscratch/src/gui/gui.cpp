@@ -222,6 +222,7 @@ Gui::~Gui()
     }
     this->settings->set_main_window_position(this->window->mapToGlobal(QPoint(0, 0)));
     this->settings->set_main_window_size(this->window->size());
+    this->settings->set_browser_splitter_size(this->browser_splitter->saveState());
 
     // Cleanup.
     delete this->treeview_icon_provider;
@@ -249,6 +250,7 @@ Gui::apply_application_settings()
     {
         qWarning() << "Gui::apply_application_settings: Cannot set new style to main window";
     }
+    this->browser_splitter->restoreState(this->settings->get_browser_splitter_size());
 
     // Change base path for tracks browser.
     this->set_folder_browser_base_path(this->settings->get_tracks_base_dir_path());
@@ -1620,12 +1622,12 @@ Gui::create_main_window()
     horiz_line->setObjectName("Horizontal_line");
     file_browser_layout->addWidget(horiz_line);
 
-    QSplitter *vert_splitter = new QSplitter();
-    vert_splitter->addWidget(this->folder_browser);
-    vert_splitter->addWidget(this->file_browser);
-    vert_splitter->setStretchFactor(0, 1);
-    vert_splitter->setStretchFactor(1, 4);
-    file_browser_layout->addWidget(vert_splitter);
+    this->browser_splitter = new QSplitter();
+    this->browser_splitter->addWidget(this->folder_browser);
+    this->browser_splitter->addWidget(this->file_browser);
+    this->browser_splitter->setStretchFactor(0, 1);
+    this->browser_splitter->setStretchFactor(1, 4);
+    file_browser_layout->addWidget(this->browser_splitter);
 
     this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
     this->file_browser_gbox->setLayout(file_browser_layout);
