@@ -81,6 +81,8 @@ class PlaybackQGroupBox : public QGroupBox
        void mousePressEvent(QMouseEvent *in_mouse_event);
        void enterEvent(QEvent *in_event);
        void leaveEvent(QEvent *in_event);
+       void dragEnterEvent(QDragEnterEvent *in_event);
+       void dropEvent(QDropEvent *in_event);
 
    public:
        PlaybackQGroupBox(const QString &title);
@@ -92,6 +94,7 @@ class PlaybackQGroupBox : public QGroupBox
        void selected();
        void hover();
        void unhover();
+       void file_dropped();
 };
 
 class TreeViewIconProvider : public QFileIconProvider

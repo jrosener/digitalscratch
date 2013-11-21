@@ -130,6 +130,8 @@ class Audio_collection_model : public QAbstractItemModel
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
     void          sort(int in_column, Qt::SortOrder in_order);
+    QStringList   mimeTypes() const;
+    QMimeData    *mimeData(const QModelIndexList &in_indexes) const;
 
     void begin_db_change();                                     // Begin a DB transaction.
     void commit_db_change();                                    // Commit a DB transaction.

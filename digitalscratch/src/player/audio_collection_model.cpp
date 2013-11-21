@@ -44,6 +44,7 @@
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
 #include <application_settings.h>
+#include <QMimeData>
 
 Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
                                              QString                in_file_hash,
@@ -497,6 +498,40 @@ void Audio_collection_model::sort(int in_column, Qt::SortOrder in_order)
     }
 }
 
+QStringList
+Audio_collection_model::mimeTypes() const
+{
+    // Export plain text when dragging out of the model.
+    QStringList types;
+    types << "application/vnd.text.list";
+
+    return types;
+}
+
+QMimeData
+*Audio_collection_model::mimeData(const QModelIndexList &in_indexes) const
+{
+    // Encode data that is dragged out.
+    QMimeData *mimeData = new QMimeData();
+    QByteArray encodedData;
+
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    foreach (const QModelIndex &index, in_indexes)
+    {
+        if (index.isValid())
+        {
+            Audio_collection_item *item = static_cast<Audio_collection_item*>(index.internalPointer());
+            QString text = item->get_full_path();
+            stream << text;
+        }
+    }
+
+    mimeData->setData("application/vnd.text.list", encodedData);
+
+    return mimeData;
+}
+
 QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) const
 {
     if (in_index.isValid() == false)
@@ -550,7 +585,18 @@ Qt::ItemFlags Audio_collection_model::flags(const QModelIndex &in_index) const
         return 0;
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    // Get item.
+    Audio_collection_item *item;
+    item = static_cast<Audio_collection_item*>(in_index.internalPointer());
+    if ((item != NULL) && (item->is_directory() == false))
+    {
+        // Only a file can be dragged to a deck.
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    }
+    else
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
 }
 
 QVariant Audio_collection_model::headerData(int in_section, Qt::Orientation in_orientation, int in_role) const

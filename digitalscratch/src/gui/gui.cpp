@@ -57,6 +57,7 @@
 #include <QModelIndexList>
 #include <QAction>
 #include <QMenu>
+#include <QMimeData>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -153,6 +154,9 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->file_system_model = new Audio_collection_model();
     this->file_browser = new QTreeView();
     this->file_browser->setModel(this->file_system_model);
+    this->file_browser->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->file_browser->setDragEnabled(true);
+    this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
 
     this->file_browser_gbox = new QGroupBox();
 
@@ -1169,6 +1173,12 @@ Gui::create_main_window()
     this->deck1_gbox->setObjectName("DeckGBox");
     this->deck2_gbox = new PlaybackQGroupBox(tr("Deck 2"));
     this->deck2_gbox->setObjectName("DeckGBox");
+
+    // Enable drop in deck group boxes.
+    this->deck1_gbox->setAcceptDrops(true);
+    this->deck2_gbox->setAcceptDrops(true);
+    QObject::connect(this->deck1_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+    QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
 
     // Put horizontal layouts in group boxes.
     this->deck1_gbox->setLayout(deck1_general_layout);
@@ -3767,6 +3777,40 @@ PlaybackQGroupBox::leaveEvent(QEvent *in_event)
     qDebug() << "PlaybackQGroupBox::leaveEvent done.";
 
     return;
+}
+
+void
+PlaybackQGroupBox::dragEnterEvent(QDragEnterEvent *in_event)
+{
+    // Only accept plain text to drop in.
+    if (in_event->mimeData()->hasFormat("application/vnd.text.list"))
+    {
+        in_event->acceptProposedAction();
+    }
+}
+
+void
+PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
+{
+    // FIXME: clean drag and drop code !
+
+    // Decode dragged file names and emit a signal to open files.
+    QByteArray encodedData = in_event->mimeData()->data("application/vnd.text.list");
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    QStringList newItems;
+    int rows = 0;
+    while (!stream.atEnd())
+    {
+        QString text;
+        stream >> text;
+        newItems << text;
+        // cout << "dropping" << qPrintable(newItems[rows]) << endl;
+        ++rows;
+    }
+
+    in_event->acceptProposedAction();
+
+    emit file_dropped();
 }
 
 TreeViewIconProvider::TreeViewIconProvider()
