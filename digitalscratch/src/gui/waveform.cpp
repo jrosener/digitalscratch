@@ -53,6 +53,7 @@ Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
     // Create table of points to display.
     this->points = new QPointF[POINTS_MAX_SIZE];
     this->end_of_waveform = 0;
+    this->force_regenerate_polyline = true;
 
     // Create slider.
     this->slider_position_x = 0;
@@ -92,13 +93,33 @@ Waveform::~Waveform()
 }
 
 void
+Waveform::reset()
+{
+    qDebug() << "Waveform::reset...";
+
+    this->force_regenerate_polyline = true;
+
+    qDebug() << "Waveform::reset done.";
+
+    return;
+}
+
+void
 Waveform::get_area_size()
 {
     qDebug() << "Waveform::get_area_size...";
 
     // Get current display area size.
-    this->area_height = this->frameSize().height() - 1;
-    this->area_width  = this->frameSize().width() - 1;
+    int  new_height = this->frameSize().height() - 1;
+    int  new_width  = this->frameSize().width() - 1;
+
+    if ((this->area_height != new_height) ||
+        (this->area_width  != new_width))
+    {
+        this->area_height = new_height;
+        this->area_width  = new_width;
+        this->force_regenerate_polyline = true;
+    }
 
     qDebug() << "Waveform::get_area_size done.";
 
@@ -145,6 +166,8 @@ Waveform::generate_polyline()
         j += 100;
     }
 
+    this->force_regenerate_polyline = false;
+
     qDebug() << "Waveform::generate_polyline done.";
 
     return true;
@@ -155,20 +178,22 @@ Waveform::paintEvent(QPaintEvent *)
 {
     qDebug() << "Waveform::paintEvent...";
 
-    // Get size of painting area.
+    // Get area size.
     this->get_area_size();
 
-    // Generate list of points to draw.
-    if (this->generate_polyline() == false)
+    // Generate list of points to draw if size of the waveform changed.
+    if (this->force_regenerate_polyline == true)
     {
-        qDebug() << "Waveform::paintEvent: can not generate polyline";
+        if (this->generate_polyline() == false)
+        {
+            qDebug() << "Waveform::paintEvent: can not generate polyline";
+        }
     }
 
     QPainter painter(this);
 
     // Draw polyline on current area.
     painter.setPen(QColor("grey"));
-//painter.scale(10.0, 1.0);
     painter.drawPolyline(this->points, POINTS_MAX_SIZE); // waveform from track
 
     // Draw minute separators.

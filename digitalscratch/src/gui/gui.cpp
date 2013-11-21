@@ -2998,12 +2998,22 @@ Gui::run_audio_file_decoding_process()
         }
 
         // Execute decoding if not trying to open the existing track.
-        if (info.fileName().compare(deck_track_name->text()) != 0 ) {
+        if (info.fileName().compare(deck_track_name->text()) != 0 )
+        {
+            // Clear audio track and waveform.
+            decode_process->clear();
+            deck_waveform->reset();
+            deck_waveform->update();
+
+            // Decode track.
             if (decode_process->run(info.absoluteFilePath(), item->get_file_hash(), item->get_data(COLUMN_KEY).toString()) == false)
             {
                 qWarning() << "Gui::run_audio_file_decoding_process: can not decode " << info.absoluteFilePath();
             }
         }
+
+        // Force waveform computation.
+        deck_waveform->reset();
 
         // Reset playback process.
         this->playback->reset(deck_index);
@@ -3016,9 +3026,8 @@ Gui::run_audio_file_decoding_process()
             deck_cue_point[i]->setText(this->playback->get_cue_point_str(deck_index, i));
         }
 
-        // Update waveforms.
+        // Update waveform.
         deck_waveform->update();
-    //    this->deck1_vertical_waveform->update();
     }
 
     qDebug() << "Gui::run_audio_file_decoding_process done.";

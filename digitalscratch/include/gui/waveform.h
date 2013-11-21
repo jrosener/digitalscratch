@@ -57,6 +57,7 @@ class Waveform : public QLabel
     QList<int>     cue_sliders_position_x;
     QList<float>   cue_sliders_absolute_position;
     unsigned int   end_of_waveform;
+    bool           force_regenerate_polyline;
 
  public:
     QPointF *points; // Table of points to display.
@@ -65,6 +66,7 @@ class Waveform : public QLabel
     Waveform(Audio_track *in_at, QWidget *in_parent = 0);
     ~Waveform();
 
+    void reset();                                                             // Clean list of points and force repaint.
     bool move_slider(float in_position);                                      // Position is between 0.0 and 1.0.
     bool move_cue_slider(unsigned short in_cue_point_num, float in_position); // Position is between 0.0 and 1.0.
 

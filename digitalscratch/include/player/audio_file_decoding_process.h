@@ -64,6 +64,7 @@ class Audio_file_decoding_process
     Audio_file_decoding_process(Audio_track *in_at);
     virtual ~Audio_file_decoding_process();
 
+    void clear();
     bool run(const QString &in_path,
              const QString &in_file_hash,
              const QString &in_music_key);    // Make decoding of the audio file depending of its extension.

@@ -68,6 +68,12 @@ Audio_file_decoding_process::~Audio_file_decoding_process()
     return;
 }
 
+void
+Audio_file_decoding_process::clear()
+{
+    this->at->reset();
+}
+
 bool
 Audio_file_decoding_process::run(const QString &in_path,
                                  const QString &in_file_hash,
