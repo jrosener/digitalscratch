@@ -2976,6 +2976,9 @@ Gui::run_audio_file_decoding_process()
 {
     qDebug() << "Gui::run_audio_file_decoding_process...";
 
+    // Force processing events to refresh main window before running decoding.
+    QApplication::processEvents();
+
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
     QFileInfo info(item->get_full_path());
@@ -3801,24 +3804,23 @@ PlaybackQGroupBox::dragEnterEvent(QDragEnterEvent *in_event)
 void
 PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
 {
-    // FIXME: clean drag and drop code !
-
-    // Decode dragged file names and emit a signal to open files.
-    QByteArray encodedData = in_event->mimeData()->data("application/vnd.text.list");
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
-    QStringList newItems;
+    // Decode dragged file names as a string list.
+    QByteArray encoded_dragged_data = in_event->mimeData()->data("application/vnd.text.list");
+    QDataStream encoded_dragged_stream(&encoded_dragged_data, QIODevice::ReadOnly);
+    QStringList new_items;
     int rows = 0;
-    while (!stream.atEnd())
+    while (encoded_dragged_stream.atEnd() == false)
     {
         QString text;
-        stream >> text;
-        newItems << text;
-        // cout << "dropping" << qPrintable(newItems[rows]) << endl;
-        ++rows;
+        encoded_dragged_stream >> text;
+        new_items << text;
+        rows++;
     }
 
+    // Accept the drop action.
     in_event->acceptProposedAction();
 
+    // Send a signal saying that a file was dropped into the groupbox.
     emit file_dropped();
 }
 

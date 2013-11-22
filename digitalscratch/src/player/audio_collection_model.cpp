@@ -512,24 +512,24 @@ QMimeData
 *Audio_collection_model::mimeData(const QModelIndexList &in_indexes) const
 {
     // Encode data that is dragged out.
-    QMimeData *mimeData = new QMimeData();
-    QByteArray encodedData;
-
-    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+    QMimeData *mime_data = new QMimeData();
+    QByteArray encoded_dragged_data;
+    QDataStream encoded_dragged_stream(&encoded_dragged_data, QIODevice::WriteOnly);
 
     foreach (const QModelIndex &index, in_indexes)
     {
         if (index.isValid())
         {
+            // Put full path of file in encoded dragged stream.
             Audio_collection_item *item = static_cast<Audio_collection_item*>(index.internalPointer());
             QString text = item->get_full_path();
-            stream << text;
+            encoded_dragged_stream << text;
         }
     }
 
-    mimeData->setData("application/vnd.text.list", encodedData);
+    mime_data->setData("application/vnd.text.list", encoded_dragged_data);
 
-    return mimeData;
+    return mime_data;
 }
 
 QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) const
