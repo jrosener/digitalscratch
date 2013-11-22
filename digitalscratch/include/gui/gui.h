@@ -44,6 +44,7 @@
 #include <QProgressBar>
 #include <QFileIconProvider>
 #include <QSplitter>
+#include <QHBoxLayout>
 
 #include "config_dialog.h"
 #include "audio_track.h"
@@ -95,6 +96,28 @@ class PlaybackQGroupBox : public QGroupBox
        void hover();
        void unhover();
        void file_dropped();
+};
+
+class QSamplerContainerWidget : public QWidget
+{
+   Q_OBJECT
+
+   private:
+       unsigned short int deck_index;
+       unsigned short int sampler_index;
+
+   protected:
+       void dragEnterEvent(QDragEnterEvent *in_event);
+       void dropEvent(QDropEvent *in_event);
+
+   public:
+       QSamplerContainerWidget(unsigned short int in_deck_index,
+                               unsigned short int in_sampler_index);
+       virtual ~QSamplerContainerWidget();
+
+   signals:
+       void file_dropped_in_sampler(unsigned short int in_deck_index,
+                                    unsigned short int in_sampler_index);
 };
 
 class TreeViewIconProvider : public QFileIconProvider
@@ -261,8 +284,6 @@ class Gui : QObject
     bool    set_file_browser_title(QString in_title);
     bool    restart_sound_card(short unsigned int in_nb_channels);
     bool    apply_application_settings();
-    void    run_sampler_decoding_process(unsigned short int in_deck_index,
-                                         unsigned short int in_sampler_index);
     void    on_sampler_button_play_click(unsigned short int in_deck_index,
                                          unsigned short int in_sampler_index);
     void    on_sampler_button_stop_click(unsigned short int in_deck_index,
@@ -301,6 +322,8 @@ class Gui : QObject
     void select_and_run_sample2_decoding_process_deck2();
     void select_and_run_sample3_decoding_process_deck2();
     void select_and_run_sample4_decoding_process_deck2();
+    void run_sampler_decoding_process(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
     void run_sample_1_decoding_process();
     void run_sample_2_decoding_process();
     void run_sample_3_decoding_process();

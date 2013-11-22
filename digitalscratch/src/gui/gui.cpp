@@ -58,6 +58,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QMimeData>
+#include <QSizePolicy>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -1175,8 +1176,6 @@ Gui::create_main_window()
     this->deck2_gbox->setObjectName("DeckGBox");
 
     // Enable drop in deck group boxes.
-    this->deck1_gbox->setAcceptDrops(true);
-    this->deck2_gbox->setAcceptDrops(true);
     QObject::connect(this->deck1_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
     QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
 
@@ -1204,7 +1203,7 @@ Gui::create_main_window()
     this->sampler1_buttons_del   = new QPushButton*[this->nb_samplers];
     this->sampler1_trackname     = new QLabel*[this->nb_samplers];
     this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
-    QGridLayout *sampler1_layout = new QGridLayout();
+    QVBoxLayout *sampler1_layout = new QVBoxLayout();
     QString      sampler1_name("A");
     for (int i = 0; i < this->nb_samplers; i++)
     {
@@ -1231,22 +1230,26 @@ Gui::create_main_window()
         this->sampler1_trackname[i]     = new QLabel(tr("--"));
         this->sampler1_remainingtime[i] = new QLabel("- 00");
 
+        QSamplerContainerWidget *container = new QSamplerContainerWidget(0, i);
+        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
         QLabel *sampler1_name_label = new QLabel(sampler1_name);
-        sampler1_layout->addWidget(sampler1_name_label,             i, 0);
-        sampler1_layout->addWidget(this->sampler1_buttons_play[i],  i, 1);
-        sampler1_layout->addWidget(this->sampler1_buttons_stop[i],  i, 2);
-        sampler1_layout->addWidget(this->sampler1_buttons_del[i],   i, 3);
-        sampler1_layout->addWidget(this->sampler1_remainingtime[i], i, 4);
-        sampler1_layout->addWidget(this->sampler1_trackname[i],     i, 5);
+        sampler1_name_label->setFixedWidth(15);
+        sampler_horz_layout->addWidget(sampler1_name_label,             1);
+        sampler_horz_layout->addWidget(this->sampler1_buttons_play[i],  1);
+        sampler_horz_layout->addWidget(this->sampler1_buttons_stop[i],  1);
+        sampler_horz_layout->addWidget(this->sampler1_buttons_del[i],   1);
+        sampler_horz_layout->addWidget(this->sampler1_remainingtime[i], 4);
+        sampler_horz_layout->addWidget(this->sampler1_trackname[i],     95);
+        sampler_horz_layout->setMargin(0);
+        container->setLayout(sampler_horz_layout);
+        sampler1_layout->addWidget(container);
+
+        // Connect drop actions (load file in sampler).
+        QObject::connect(container, SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
+                         this,      SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
 
         sampler1_name[0].unicode()++; // Next sampler letter.
     }
-    sampler1_layout->setColumnStretch(0, 1);
-    sampler1_layout->setColumnStretch(1, 1);
-    sampler1_layout->setColumnStretch(2, 1);
-    sampler1_layout->setColumnStretch(3, 1);
-    sampler1_layout->setColumnStretch(4, 4);
-    sampler1_layout->setColumnStretch(5, 95);
     this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
     this->sampler1_gbox->setObjectName("SamplerGBox");
     this->sampler1_gbox->setLayout(sampler1_layout);
@@ -1284,13 +1287,24 @@ Gui::create_main_window()
         this->sampler2_trackname[i]     = new QLabel(tr("--"));
         this->sampler2_remainingtime[i] = new QLabel("- 00");
 
+        QSamplerContainerWidget *container = new QSamplerContainerWidget(1, i);
+        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
         QLabel *sampler2_name_label = new QLabel(sampler2_name);
-        sampler2_layout->addWidget(sampler2_name_label,             i, 0);
-        sampler2_layout->addWidget(this->sampler2_buttons_play[i],  i, 1);
-        sampler2_layout->addWidget(this->sampler2_buttons_stop[i],  i, 2);
-        sampler2_layout->addWidget(this->sampler2_buttons_del[i],   i, 3);
-        sampler2_layout->addWidget(this->sampler2_remainingtime[i], i, 4);
-        sampler2_layout->addWidget(this->sampler2_trackname[i],     i, 5);
+        sampler2_name_label->setFixedWidth(15);
+        sampler_horz_layout->addWidget(sampler2_name_label,             1);
+        sampler_horz_layout->addWidget(this->sampler2_buttons_play[i],  1);
+        sampler_horz_layout->addWidget(this->sampler2_buttons_stop[i],  1);
+        sampler_horz_layout->addWidget(this->sampler2_buttons_del[i],   1);
+        sampler_horz_layout->addWidget(this->sampler2_remainingtime[i], 4);
+        sampler_horz_layout->addWidget(this->sampler2_trackname[i],     95);
+        sampler_horz_layout->setMargin(0);
+        container->setLayout(sampler_horz_layout);
+        sampler2_layout->addWidget(container);
+
+        // Connect drop actions (load file in sampler).
+        QObject::connect(container, SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
+                         this,      SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
+
 
         sampler2_name[0].unicode()++; // Next sampler letter.
     }
@@ -2335,6 +2349,9 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
                                   unsigned short int in_sampler_index)
 {
     qDebug() << "Gui::run_sampler_decoding_process...";
+
+    // Select deck.
+    this->highlight_deck_sampler_area(in_deck_index);
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
@@ -3723,6 +3740,7 @@ PlaybackQGroupBox::PlaybackQGroupBox(const QString &title) : QGroupBox(title)
 
     // Init.
     this->l_selected = false;
+    this->setAcceptDrops(true);
 
     qDebug() << "PlaybackQGroupBox::PlaybackQGroupBox: create object done.";
 
@@ -3822,6 +3840,39 @@ PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
 
     // Send a signal saying that a file was dropped into the groupbox.
     emit file_dropped();
+}
+
+QSamplerContainerWidget::QSamplerContainerWidget(unsigned short in_deck_index, unsigned short in_sampler_index) : QWidget()
+{
+    this->setAcceptDrops(true);
+    this->deck_index    = in_deck_index;
+    this->sampler_index = in_sampler_index;
+    return;
+}
+
+QSamplerContainerWidget::~QSamplerContainerWidget()
+{
+    return;
+}
+
+void
+QSamplerContainerWidget::dragEnterEvent(QDragEnterEvent *in_event)
+{
+    // Only accept plain text to drop in.
+    if (in_event->mimeData()->hasFormat("application/vnd.text.list"))
+    {
+        in_event->acceptProposedAction();
+    }
+}
+
+void
+QSamplerContainerWidget::dropEvent(QDropEvent *in_event)
+{
+    // Accept the drop action.
+    in_event->acceptProposedAction();
+
+    // Send a signal saying that a file was dropped into the sampler.
+    emit file_dropped_in_sampler(this->deck_index, this->sampler_index);
 }
 
 TreeViewIconProvider::TreeViewIconProvider()
