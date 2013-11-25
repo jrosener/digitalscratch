@@ -87,6 +87,8 @@ class Config_dialog : public QDialog
     QComboBox            *vinyl_type_select;
     QSlider              *extreme_min;
     QLabel               *extreme_min_value;
+    QSlider              *amplify_coeff;
+    QLabel               *amplify_coeff_value;
     QSlider              *max_speed_diff;
     QLabel               *max_speed_diff_value;
     QSlider              *slow_speed_algo_usage;
@@ -134,6 +136,8 @@ class Config_dialog : public QDialog
     void     fill_tab_shortcuts();
     void     set_extreme_min_slider(float in_value);
     float    get_extreme_min_slider();
+    void     set_amplify_coeff_slider(int in_value);
+    int      get_amplify_coeff_slider();
     void     set_low_pass_filter_max_speed_usage_slider(float in_value);
     float    get_low_pass_filter_max_speed_usage_slider();
     void     set_max_speed_diff_slider(float in_value);
@@ -151,6 +155,7 @@ class Config_dialog : public QDialog
     void reset_shortcuts();
     void reset_motion_detection_params();
     void set_extreme_min_value(int in_value);
+    void set_amplify_coeff_value(int in_value);
     void set_low_pass_filter_max_speed_usage_value(int in_value);
     void set_max_speed_diff_value(int in_value);
     void set_slow_speed_algo_usage_value(int in_value);

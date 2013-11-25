@@ -747,7 +747,7 @@ DLLIMPORT float dscratch_get_default_low_pass_filter_max_speed_usage();
  *
  * @param turntable_id is the id of the turntable on which you want to work.
  *        This id is provided by dscratch_create_turntable() function.
- * @param coeff is the value to multiply to input samples.
+ * @param coeff is the value to be multiplied to input samples.
  *
  * @return 0 if all is OK, otherwise 1.
  */
