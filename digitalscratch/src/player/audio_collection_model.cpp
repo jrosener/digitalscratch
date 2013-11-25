@@ -217,6 +217,7 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
     this->rootItem = NULL;
     this->create_header("", false);
     this->audio_item_list.clear();
+    this->root_path = "";
 
     // Init thread tools.
     this->concurrent_future        = new QFuture<void>;
@@ -287,7 +288,15 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
     // Fill the model.
     this->setup_model_data(in_root_path, this->rootItem);
 
+    // Store root path.
+    this->root_path = in_root_path;
+
     return this->get_root_index();
+}
+
+QString Audio_collection_model::get_root_path()
+{
+    return this->root_path;
 }
 
 QModelIndex Audio_collection_model::set_playlist(Playlist *in_playlist)

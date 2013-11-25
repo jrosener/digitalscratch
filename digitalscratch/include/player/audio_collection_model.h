@@ -112,12 +112,14 @@ class Audio_collection_model : public QAbstractItemModel
     QPixmap                        audio_file_icon;
     QPixmap                        directory_icon;
     QList<Audio_collection_item*>  audio_item_list;
+    QString                        root_path;
 
  public:
     Audio_collection_model(QObject *in_parent = 0);
     ~Audio_collection_model();
 
     QModelIndex   set_root_path(QString in_root_path);
+    QString       get_root_path();
     QModelIndex   set_playlist(Playlist *in_playlist);
     QModelIndex   get_root_index();
 

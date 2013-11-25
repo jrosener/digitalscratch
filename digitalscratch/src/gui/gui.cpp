@@ -258,8 +258,11 @@ Gui::apply_application_settings()
     this->browser_splitter->restoreState(this->settings->get_browser_splitter_size());
 
     // Change base path for tracks browser.
-    this->set_folder_browser_base_path(this->settings->get_tracks_base_dir_path());
-    this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
+    if (this->file_system_model->get_root_path() != this->settings->get_tracks_base_dir_path())
+    {
+        this->set_folder_browser_base_path(this->settings->get_tracks_base_dir_path());
+        this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
+    }
 
     // Apply motion detection settings for all turntables.
     for (int i = 0; i < this->nb_decks; i++)
