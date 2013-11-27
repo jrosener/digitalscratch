@@ -50,7 +50,8 @@ class Timecode_analyzis_process
  public:
     Timecode_analyzis_process(Playback_parameters *in_params[],
                               unsigned short int   in_nb_decks,
-                              QString              in_vinyl_type);
+                              QString              in_vinyl_type,
+                              unsigned int         in_sample_rate);
     virtual ~Timecode_analyzis_process();
 
     bool run(unsigned short int  in_nb_samples,

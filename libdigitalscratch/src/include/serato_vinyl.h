@@ -66,7 +66,7 @@ class Serato_vinyl : public Coded_vinyl
         /**
          * Constructor.
          */
-        Serato_vinyl();
+        Serato_vinyl(unsigned int sample_rate);
 
         /**
          * Destructor.

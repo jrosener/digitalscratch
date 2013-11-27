@@ -43,7 +43,7 @@ using namespace std;
 #include "include/coded_vinyl.h"
 #include "include/serato_vinyl.h"
 
-Serato_vinyl::Serato_vinyl() : Coded_vinyl()
+Serato_vinyl::Serato_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
     Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
                              "+ Creating Serato_vinyl object...");

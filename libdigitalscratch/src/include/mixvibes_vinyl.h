@@ -65,7 +65,7 @@ class Mixvibes_vinyl : public Coded_vinyl
         /**
          * Constructor.
          */
-        Mixvibes_vinyl();
+        Mixvibes_vinyl(unsigned int sample_rate);
 
         /**
          * Destructor.

@@ -42,13 +42,15 @@ using namespace std;
 #include "include/digital_scratch_api.h"
 #include "include/digital_scratch.h"
 
-Digital_scratch::Digital_scratch(string controller_name,
-                                 string coded_vinyl_type) : Controller(controller_name)
+Digital_scratch::Digital_scratch(string       controller_name,
+                                 string       coded_vinyl_type,
+                                 unsigned int sample_rate) : Controller(controller_name)
 {
     Utils::trace_object_life(TRACE_PREFIX_DIGITALSCRATCH,
                              "+ Creating Digital_scratch object...");
 
     // Init.
+    this->sample_rate = sample_rate;
     this->init(coded_vinyl_type);
 
 
@@ -83,15 +85,15 @@ bool Digital_scratch::init(string coded_vinyl_type)
     this->vinyl = NULL;
     if (coded_vinyl_type == FINAL_SCRATCH_VINYL)
     {
-        this->vinyl = new Final_scratch_vinyl();
+        this->vinyl = new Final_scratch_vinyl(sample_rate);
     }
     else if (coded_vinyl_type == SERATO_VINYL)
     {
-       this->vinyl = new Serato_vinyl();
+       this->vinyl = new Serato_vinyl(sample_rate);
     }
     else if (coded_vinyl_type == MIXVIBES_VINYL)
     {
-       this->vinyl = new Mixvibes_vinyl();
+       this->vinyl = new Mixvibes_vinyl(sample_rate);
     }
     else
     {

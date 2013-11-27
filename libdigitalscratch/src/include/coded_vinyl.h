@@ -60,7 +60,6 @@
 #define DEFAULT_PROGRESSIVE_VOLUME_COEFF           1000.0
 #define DEFAULT_FULL_VOLUME_AMPLITUDE              0.22
 #define DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE    1.1
-#define DEFAULT_SAMPLE_RATE                        44100
 #define DEFAULT_INPUT_AMPLIFY_COEFF                1
 
 /**
@@ -265,7 +264,7 @@ class Coded_vinyl
         /**
          * Constructor
          */
-        Coded_vinyl();
+        Coded_vinyl(unsigned int sample_rate);
 
         /**
          * Destructor

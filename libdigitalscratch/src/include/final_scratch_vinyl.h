@@ -85,7 +85,7 @@ class Final_scratch_vinyl : public Coded_vinyl
         /**
          * Constructor.
          */
-        Final_scratch_vinyl();
+        Final_scratch_vinyl(unsigned int sample_rate);
 
         /**
          * Destructor.

@@ -89,14 +89,16 @@ extern "C" {
  * @param name is the name you want to give to the turntable.
  * @param coded_vinyl_type is the type of timecoded vinyl you want to use
  *        (e.g. FINAL_SCRATCH_VINYL, see above).
+ * @param sample rate is the rate of the timecoded input signal.
  * @param turntable_id will be returned, needed by some other API functions to
  *        specify which turntable you want to use.
  *
  * @return 0 if all is OK, otherwise 1.
  */
-DLLIMPORT int dscratch_create_turntable(const char *name,
-                                        const char *coded_vinyl_type,
-                                        int        *turntable_id);
+DLLIMPORT int dscratch_create_turntable(const char   *name,
+                                        const char   *coded_vinyl_type,
+                                        unsigned int  sample_rate,
+                                        int          *turntable_id);
 
 /**
  * Remove the specified turntable from turntable list and delete (deallocate

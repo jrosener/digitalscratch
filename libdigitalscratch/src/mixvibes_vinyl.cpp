@@ -43,7 +43,7 @@ using namespace std;
 #include "include/coded_vinyl.h"
 #include "include/mixvibes_vinyl.h"
 
-Mixvibes_vinyl::Mixvibes_vinyl() : Coded_vinyl()
+Mixvibes_vinyl::Mixvibes_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
     Utils::trace_object_life(TRACE_PREFIX_MVVINYL,
                              "+ Creating Mixvibes_vinyl object...");

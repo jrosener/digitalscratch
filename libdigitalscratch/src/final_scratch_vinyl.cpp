@@ -44,7 +44,7 @@ using namespace std;
 #include "include/final_scratch_vinyl.h"
 #include "include/timecode.h"
 
-Final_scratch_vinyl::Final_scratch_vinyl() : Coded_vinyl()
+Final_scratch_vinyl::Final_scratch_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
     Utils::trace_object_life(TRACE_PREFIX_FSVINYL,
                              "+ Creating Final_scratch_vinyl object...");

@@ -101,9 +101,10 @@ bool l_get_coded_vinyl(int           turntable_id,
 
 /********************************* API functions ******************************/
 
-int dscratch_create_turntable(const char *name,
-                              const char *coded_vinyl_type,
-                              int        *turntable_id)
+int dscratch_create_turntable(const char   *name,
+                              const char   *coded_vinyl_type,
+                              unsigned int  sample_rate,
+                              int          *turntable_id)
 {
     // Error if no name is provided.
     if (name == NULL || Utils::to_string(name) == "")
@@ -125,7 +126,8 @@ int dscratch_create_turntable(const char *name,
 
     // Create Digital_scratch object.
     Digital_scratch *dscratch = new Digital_scratch(Utils::to_string(name),
-                                                    Utils::to_string(coded_vinyl_type));
+                                                    Utils::to_string(coded_vinyl_type),
+                                                    sample_rate);
     if (dscratch == NULL)
     {
         Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,

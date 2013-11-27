@@ -42,7 +42,8 @@
 
 Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_params[],
                                                      unsigned short int   in_nb_decks,
-                                                     QString              in_vinyl_type)
+                                                     QString              in_vinyl_type,
+                                                     unsigned int         in_sample_rate)
 {
     qDebug() << "Timecode_analyzis_process::Timecode_analyzis_process: create object...";
 
@@ -68,6 +69,7 @@ Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_par
         turntable_name = "turntable_" + i;
         if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
                                       (char*)in_vinyl_type.toStdString().c_str(),
+                                      in_sample_rate,
                                       &this->dscratch_ids[i]) != 0)
         {
             qCritical() << "Timecode_analyzis_process::Timecode_analyzis_process: dscratch_lib: can not create turntable";

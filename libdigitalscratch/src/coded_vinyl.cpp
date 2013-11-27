@@ -43,7 +43,7 @@ using namespace std;
 #include "include/utils.h"
 #include "include/coded_vinyl.h"
 
-Coded_vinyl::Coded_vinyl()
+Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
 {
     Utils::trace_object_life(TRACE_PREFIX_CODED_VINYL,
                              "+ Creating Coded_vinyl object...");
@@ -73,7 +73,7 @@ Coded_vinyl::Coded_vinyl()
     this->coeff_left_dist_max_bit0_to_bit0   = (float)DEFAULT_COEFF_LEFT_DIST_MAX_BIT0_TO_BIT0;
     this->progressive_volume_coeff           = (float)DEFAULT_PROGRESSIVE_VOLUME_COEFF;
     this->full_volume_amplitude              = (float)DEFAULT_FULL_VOLUME_AMPLITUDE;
-    this->sample_rate                        = DEFAULT_SAMPLE_RATE;
+    this->sample_rate                        = sample_rate;
     this->low_pass_filter_max_speed_usage    = (float)DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE;
     this->input_amplify_coeff                = DEFAULT_INPUT_AMPLIFY_COEFF;
     this->total_input_samples_1.reserve(512 * this->get_max_buffer_coeff());

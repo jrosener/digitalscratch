@@ -102,6 +102,7 @@ class Digital_scratch : public Controller
         int nb_buffer;
         int speed_state;
         bool is_waiting_other_buffer;
+        unsigned int sample_rate;
 
         int max_nb_speed_for_stability;
         int max_nb_buffer;
@@ -115,9 +116,11 @@ class Digital_scratch : public Controller
          * @param controller_name is the name of this DigitalScratch controller.
          * @param timecoded_vinyl is the Coded_vinyl object used with
          *        Digital_scratch (e.g. Final_scratch_vinyl)
+         * @param sample rate is the rate of the timecoded input signal.
          */
-        Digital_scratch(string controller_name,
-                        string coded_vinyl_type);
+        Digital_scratch(string       controller_name,
+                        string       coded_vinyl_type,
+                        unsigned int sample_rate);
 
         /**
          * Destructor
@@ -211,7 +214,7 @@ class Digital_scratch : public Controller
         Coded_vinyl* get_coded_vinyl();
 
         /**
-         * Get Coded_vinyl object.
+         * Set Coded_vinyl object.
          */
         bool change_coded_vinyl(string coded_vinyl_type);
 

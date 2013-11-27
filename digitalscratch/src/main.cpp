@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
     Playback_parameters *params[] = { params_1, params_2 };
 
     // Process which analyze captured timecode data.
-    Timecode_analyzis_process *tcode_analyzis = new Timecode_analyzis_process(params, nb_decks, settings->get_vinyl_type());
+    Timecode_analyzis_process *tcode_analyzis = new Timecode_analyzis_process(params, nb_decks, settings->get_vinyl_type(), SAMPLE_RATE);
     int *dscratch_ids;
     dscratch_ids = new int[nb_decks];
     for (int i = 0; i < nb_decks; i++)
