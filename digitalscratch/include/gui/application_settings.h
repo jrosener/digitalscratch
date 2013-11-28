@@ -57,6 +57,9 @@ using namespace std;
 #define GUI_STYLE_DARK_CSS        SKINS_PATH "dark.css"
 #define GUI_STYLE_DEFAULT         "dark"
 
+#define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
+#define SAMPLE_RATE_DEFAULT                 44100
+
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
 #define MAX_NB_BUFFER_CFG                   "motion_detection/max_nb_buffer"
@@ -163,6 +166,10 @@ class Application_settings : public QObject
     QString         get_gui_style();
     QString         get_gui_style_default();
     QList<QString>* get_available_gui_styles();
+
+    void            set_sample_rate(unsigned int in_sample_rate);
+    unsigned int    get_sample_rate();
+    unsigned int    get_sample_rate_default();
 
     void            set_vinyl_type(QString in_vinyl_type);
     QString         get_vinyl_type();

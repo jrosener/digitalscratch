@@ -74,17 +74,17 @@ int main(int argc, char *argv[])
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
 
     // Tracks.
-    Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK);
+    Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
     Audio_track *at_2 = NULL;
-    if (nb_decks > 1) at_2 = new Audio_track(MAX_MINUTES_TRACK);
-    else              at_2 = new Audio_track();
+    if (nb_decks > 1) at_2 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
+    else              at_2 = new Audio_track(settings->get_sample_rate());
     Audio_track *ats[] = { at_1, at_2 };
 
     // Samplers.
-    Audio_track *at_1_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER);
-    Audio_track *at_1_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER);
-    Audio_track *at_1_sampler_3  = new Audio_track(MAX_MINUTES_SAMPLER);
-    Audio_track *at_1_sampler_4  = new Audio_track(MAX_MINUTES_SAMPLER);
+    Audio_track *at_1_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+    Audio_track *at_1_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+    Audio_track *at_1_sampler_3  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+    Audio_track *at_1_sampler_4  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
     Audio_track *at_1_samplers[] = { at_1_sampler_1, at_1_sampler_2, at_1_sampler_3, at_1_sampler_4 };
 
     Audio_track *at_2_sampler_1  = NULL;
@@ -93,17 +93,17 @@ int main(int argc, char *argv[])
     Audio_track *at_2_sampler_4  = NULL;
     if (nb_decks > 1)
     {
-        at_2_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER);
-        at_2_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER);
-        at_2_sampler_3  = new Audio_track(MAX_MINUTES_SAMPLER);
-        at_2_sampler_4  = new Audio_track(MAX_MINUTES_SAMPLER);
+        at_2_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+        at_2_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+        at_2_sampler_3  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+        at_2_sampler_4  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
     }
     else
     {
-        at_2_sampler_1  = new Audio_track();
-        at_2_sampler_2  = new Audio_track();
-        at_2_sampler_3  = new Audio_track();
-        at_2_sampler_4  = new Audio_track();
+        at_2_sampler_1  = new Audio_track(settings->get_sample_rate());
+        at_2_sampler_2  = new Audio_track(settings->get_sample_rate());
+        at_2_sampler_3  = new Audio_track(settings->get_sample_rate());
+        at_2_sampler_4  = new Audio_track(settings->get_sample_rate());
     }
     Audio_track *at_2_samplers[] = { at_2_sampler_1, at_2_sampler_2, at_2_sampler_3, at_2_sampler_4 };
 
@@ -134,7 +134,10 @@ int main(int argc, char *argv[])
     Playback_parameters *params[] = { params_1, params_2 };
 
     // Process which analyze captured timecode data.
-    Timecode_analyzis_process *tcode_analyzis = new Timecode_analyzis_process(params, nb_decks, settings->get_vinyl_type(), SAMPLE_RATE);
+    Timecode_analyzis_process *tcode_analyzis = new Timecode_analyzis_process(params,
+                                                                              nb_decks,
+                                                                              settings->get_vinyl_type(),
+                                                                              settings->get_sample_rate());
     int *dscratch_ids;
     dscratch_ids = new int[nb_decks];
     for (int i = 0; i < nb_decks; i++)

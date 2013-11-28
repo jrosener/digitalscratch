@@ -30,8 +30,6 @@
 /*                                                                            */
 /*============================================================================*/
 
-#define SAMPLE_RATE         44100             // Fixed sample rate.
-#define NB_SAMPLES_PER_MIN  2*60*SAMPLE_RATE  // How much samples for 1 minute.
 #define MAX_MINUTES_TRACK   15                // Maximum number of minutes for an audio track
 #define MAX_MINUTES_SAMPLER 1                 // Maximum number of minutes for a sample in the sampler
 

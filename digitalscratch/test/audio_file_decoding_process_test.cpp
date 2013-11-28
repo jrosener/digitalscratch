@@ -20,7 +20,7 @@ void Audio_file_decoding_process_Test::cleanupTestCase()
 void Audio_file_decoding_process_Test::testCaseCreate()
 {
     // Create an object.
-    Audio_track *at = new Audio_track(15);
+    Audio_track *at = new Audio_track(15, 44100);
     Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at);
 
     // Cleanup.

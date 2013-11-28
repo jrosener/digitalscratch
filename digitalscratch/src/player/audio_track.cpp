@@ -40,11 +40,12 @@
 #include "audio_track.h"
 #include <utils.h>
 
-Audio_track::Audio_track()
+Audio_track::Audio_track(unsigned int in_sample_rate)
 {
     qDebug() << "Audio_track::Audio_trac: create object...";
 
     // Do not store audio samples.
+    this->sample_rate = in_sample_rate;
     this->max_nb_samples = 0;
     this->samples = NULL;
     this->reset();
@@ -54,12 +55,13 @@ Audio_track::Audio_track()
     return;
 }
 
-Audio_track::Audio_track(short unsigned int in_max_minutes)
+Audio_track::Audio_track(short unsigned int in_max_minutes, unsigned int in_sample_rate)
 {
     qDebug() << "Audio_track::Audio_trac(in_max_minutes): create object...";
 
     // Create table of sample base of number of minutes.
-    this->max_nb_samples = in_max_minutes * NB_SAMPLES_PER_MIN;
+    this->sample_rate = in_sample_rate;
+    this->max_nb_samples = in_max_minutes * 2 * 60 * this->sample_rate;
     // Add also several seconds more, which is used to put more infos in decoding step.
     this->samples = new short signed int[this->max_nb_samples + this->get_security_nb_samples()];
     this->reset();
@@ -139,7 +141,7 @@ Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
             this->end_of_samples = in_end_of_samples;
 
             // Set length of the track.
-            this->length = (unsigned int)(1000.0 * ((float)this->end_of_samples + 1.0) / (2.0 * (float)SAMPLE_RATE));
+            this->length = (unsigned int)(1000.0 * ((float)this->end_of_samples + 1.0) / (2.0 * (float)this->sample_rate));
         }
     }
     else
@@ -158,13 +160,13 @@ Audio_track::get_max_nb_samples()
     return this->max_nb_samples;
 }
 
-signed int
+unsigned int
 Audio_track::get_sample_rate()
 {
     qDebug() << "Audio_track::get_sample_rate...";
     qDebug() << "Audio_track::get_sample_rate done.";
 
-    return SAMPLE_RATE;
+    return this->sample_rate;
 }
 
 unsigned int
@@ -173,7 +175,7 @@ Audio_track::get_security_nb_samples()
     qDebug() << "Audio_track::get_security_nb_samples...";
     qDebug() << "Audio_track::get_security_nb_samples done.";
 
-    return SECURITY_NB_SAMPLES;
+    return 2 * 10 * this->sample_rate; // Number of samples added at the end of *samples for decoding purpose.
 }
 
 unsigned int
@@ -191,7 +193,7 @@ Audio_track::get_length_str()
     qDebug() << "Audio_track::get_length_str...";
     qDebug() << "Audio_track::get_length_str done.";
 
-    return Utils::get_str_time_from_sample_index(this->end_of_samples, SAMPLE_RATE, false);
+    return Utils::get_str_time_from_sample_index(this->end_of_samples, this->sample_rate, false);
 }
 
 QString

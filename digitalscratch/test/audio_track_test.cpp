@@ -25,7 +25,7 @@ void Audio_track_Test::cleanupTestCase()
 void Audio_track_Test::testCaseCreate()
 {
     // Create an object.
-    Audio_track *at = new Audio_track(15);
+    Audio_track *at = new Audio_track(15, 44100);
 
     // Reset track content.
     at->reset();
@@ -40,7 +40,7 @@ void Audio_track_Test::testCaseCreate()
 void Audio_track_Test::testCaseFillSamples()
 {
     // Create a track.
-    Audio_track *at = new Audio_track(15);
+    Audio_track *at = new Audio_track(15, 44100);
 
     // Create a track decoder and decode compressed audio data to the audio track object.
     Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at);
@@ -74,7 +74,7 @@ void Audio_track_Test::testCaseFillSamples()
 void Audio_track_Test::testCaseSetPath()
 {
     // Create a track.
-    Audio_track *at = new Audio_track(15);
+    Audio_track *at = new Audio_track(15, 44100);
 
     // Set path and check it.
    #ifdef WIN32

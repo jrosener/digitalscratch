@@ -39,14 +39,12 @@
 #include <application_const.h>
 using namespace std;
 
-#define SECURITY_NB_SAMPLES (2 * 10 * SAMPLE_RATE) // Number of samples added at the end of *samples for
-                                                   //  decoding purpose.
-
 class Audio_track : public QObject
 {
     Q_OBJECT
 
  private:
+    unsigned int       sample_rate;               // Sample rate of decoded samples.
     short signed int  *samples;                   // Table of decoded samples.
     unsigned int       end_of_samples;            // The last filled sample in the table of samples.
     unsigned int       length;                    // Length of the track (ms).
@@ -59,8 +57,9 @@ class Audio_track : public QObject
     QString            music_key_tag;             // The main musical key of the track (get from metadata tag).
 
  public:
-    Audio_track();                                  // Does not contains any samples.
-    Audio_track(short unsigned int in_max_minutes); // Contains the table of decoded audio samples.
+    Audio_track(unsigned int in_sample_rate);       // Does not contains any samples.
+    Audio_track(short unsigned int in_max_minutes,  // Contains the table of decoded audio samples.
+                unsigned int       in_sample_rate);
     virtual ~Audio_track();
 
  public:
@@ -69,7 +68,7 @@ class Audio_track : public QObject
     unsigned int      get_end_of_samples();                               // Get index of last used sample.
     bool              set_end_of_samples(unsigned int in_end_of_samples); // Set index of last used sample.
     unsigned int      get_max_nb_samples();                               // Get maximum number of samples.
-    signed int        get_sample_rate();                                  // Get sample rate.
+    unsigned int      get_sample_rate();                                  // Get sample rate.
     unsigned int      get_security_nb_samples();                          // Get number of samples used for decoding security purpose.
     unsigned int      get_length();                                       // Get length of the track (msec).
     QString           get_length_str();                                   // Get length of the track (min:sec:msec).

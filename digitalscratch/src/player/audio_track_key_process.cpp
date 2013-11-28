@@ -77,7 +77,8 @@ Audio_track_key_process::run()
     // Compute the musical key.
     QString key = kfinder_get_key(at->get_samples(),
                                   at->get_end_of_samples(),
-                                  SAMPLE_RATE, 2);
+                                  at->get_sample_rate(),
+                                  2);
     if (key != "")
     {
         // Transform music key to a clock number.

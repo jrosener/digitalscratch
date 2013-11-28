@@ -33,6 +33,8 @@
 #include <QtDebug>
 
 #include "sound_card_access_rules.h"
+#include <singleton.h>
+#include <application_settings.h>
 
 // Global pointer on object instance used for error callback.
 Sound_card_access_rules* ptr;
@@ -121,11 +123,12 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
     jack_set_process_callback(this->stream, in_callback, in_callback_param);
 
     // Display the current sample rate.
+    Application_settings *settings = &Singleton<Application_settings>::get_instance();
     qDebug() << "Sound_card_access_rules::start: engine sample rate = " << jack_get_sample_rate(this->stream);
-    if (jack_get_sample_rate(this->stream) != 44100)
+    if (jack_get_sample_rate(this->stream) != settings->get_sample_rate())
     {
-        qWarning() << "Sound_card_access_rules::start: DigitalScratch only support sample rate of 44100Hz";
-        emit error_msg(QString("DigitalScratch currently only support sample rate of 44100Hz, please configure/start Jack server properly."));
+        qWarning() << "Sound_card_access_rules::start: DigitalScratch is configured to support sample rate of " << qPrintable(settings->get_sample_rate());
+        emit error_msg(QString("DigitalScratch is configured to support a sample rate of " + QString::number(settings->get_sample_rate()) + "Hz, you can change it in the settings dialog."));
         return false;
     }
 

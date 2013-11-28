@@ -197,7 +197,7 @@ Audio_file_decoding_process::mp3_decode()
 
     // Ensure that this output format will not change (it could, when we allow it).
     mpg123_format_none(handle);
-    mpg123_format(handle, rate, channels, encoding);
+    mpg123_format(handle, this->at->get_sample_rate(), channels, encoding);
 
     // Do decoding.
     max_nb_sample_decoded = this->at->get_max_nb_samples() + this->at->get_security_nb_samples();
@@ -294,7 +294,7 @@ Audio_file_decoding_process::flac_decode()
 
     (void)FLAC__stream_decoder_set_md5_checking(decoder, true);
 
-    init_status = FLAC__stream_decoder_init_file(decoder, file_name, flac_write_callback,flac_metadata_callback, flac_error_callback, this);
+    init_status = FLAC__stream_decoder_init_file(decoder, file_name, flac_write_callback, flac_metadata_callback, flac_error_callback, this);
     if(init_status != FLAC__STREAM_DECODER_INIT_STATUS_OK)
     {
         qWarning() << "Audio_file_decoding_process::flac_decode: ERROR: initializing decoder: " << FLAC__StreamDecoderInitStatusString[init_status];
@@ -312,6 +312,13 @@ Audio_file_decoding_process::flac_decode()
     }
 
     FLAC__stream_decoder_delete(decoder);
+
+    // Maybe the sample rate used by the sound card to play the file is not the same as
+    // the one of the Flac file, so convert it if necessary.
+    if (at->get_sample_rate() != this->flac_sample_rate)
+    {
+        // TODO convert with libsamplerate
+    }
 
     qDebug() << "Audio_file_decoding_process::flac_decode: " << this->at->get_end_of_samples()
              << " samples decoded.";

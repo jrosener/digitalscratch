@@ -153,7 +153,7 @@ void Audio_collection_item::read_from_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track      *at           = new Audio_track();
+    Audio_track      *at           = new Audio_track(44100); // could be hardcoded, not used for this purpose.
 
     // Get the hash of audio file.
     at->reset();
@@ -196,7 +196,7 @@ void Audio_collection_item::store_to_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track      *at           = new Audio_track();
+    Audio_track      *at           = new Audio_track(44100); // Could be hardcoded, not used for this purpose
 
     // Get a hash, set audio data to an Audio_track and persist it.
     at->reset();

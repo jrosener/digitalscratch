@@ -83,6 +83,13 @@ Application_settings::init_settings()
     }
 
     //
+    // Sound card settings.
+    //
+    if (this->settings->contains(SAMPLE_RATE_CFG) == false) {
+        this->settings->setValue(SAMPLE_RATE_CFG, this->get_sample_rate_default());
+    }
+
+    //
     // Timecode signal detection parameters.
     //
     if (this->settings->contains(VINYL_TYPE_CFG) == false) {
@@ -530,6 +537,24 @@ QString
 Application_settings::get_keyboard_shortcut(QString in_kb_shortcut_path)
 {
     return this->settings->value(in_kb_shortcut_path).toString();
+}
+
+unsigned int
+Application_settings::get_sample_rate()
+{
+    return this->settings->value(SAMPLE_RATE_CFG).toUInt();
+}
+
+unsigned int
+Application_settings::get_sample_rate_default()
+{
+    return SAMPLE_RATE_DEFAULT;
+}
+
+void
+Application_settings::set_sample_rate(unsigned int in_sample_rate)
+{
+    this->settings->setValue(SAMPLE_RATE_CFG, in_sample_rate);
 }
 
 QString
