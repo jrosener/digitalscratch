@@ -32,10 +32,11 @@
 
 #include <QtDebug>
 #include <algorithm>
+#include <samplerate.h>
 
 #include "audio_file_decoding_process.h"
 
-Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at)
+Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample)
 {
     qDebug() << "Audio_file_decoding_process::Audio_file_decoding_process: create object...";
 
@@ -46,6 +47,7 @@ Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at)
     else
     {
         this->at = in_at;
+        this->do_resample = in_do_resample;
     }
 
     this->file = NULL;
@@ -155,6 +157,44 @@ Audio_file_decoding_process::run(const QString &in_path,
     return true;
 }
 
+void
+Audio_file_decoding_process::resample_track()
+{
+    qDebug() << "Audio_file_decoding_process::resample_track...";
+
+    if ((this->do_resample == true) && (at->get_sample_rate() != this->flac_sample_rate))
+    {
+        // Copy decoded samples in a temp buffer.
+        unsigned int in_nb_samples = at->get_end_of_samples();
+        float *in_samples = new float[in_nb_samples];
+        src_short_to_float_array(at->get_samples(), in_samples, in_nb_samples);
+
+        // Resample temp buffer.
+        int   out_nb_samples = (at->get_end_of_samples() * (float)at->get_sample_rate() / (float)this->flac_sample_rate) + 2;
+        float *out_samples = new float[out_nb_samples];
+        SRC_DATA src_data;
+        src_data.data_in       = in_samples;
+        src_data.data_out      = out_samples;
+        src_data.end_of_input  = 0;
+        src_data.input_frames  = in_nb_samples / 2;
+        src_data.output_frames = out_nb_samples / 2;
+        src_data.src_ratio     = (float)at->get_sample_rate() / (float)this->flac_sample_rate;
+        src_simple(&src_data, SRC_LINEAR, 2);
+
+        // Copy resampled sampler back to original table of samples.
+        src_float_to_short_array(out_samples, at->get_samples(), src_data.output_frames_gen * 2);
+        at->set_end_of_samples(src_data.output_frames_gen * 2);
+
+        // Cleanup.
+        delete [] in_samples;
+        delete [] out_samples;
+    }
+
+    qDebug() << "Audio_file_decoding_process::resample_track: done.";
+
+    return;
+}
+
 bool
 Audio_file_decoding_process::mp3_decode()
 {
@@ -197,7 +237,7 @@ Audio_file_decoding_process::mp3_decode()
 
     // Ensure that this output format will not change (it could, when we allow it).
     mpg123_format_none(handle);
-    mpg123_format(handle, this->at->get_sample_rate(), channels, encoding);
+    mpg123_format(handle, rate, channels, encoding);
 
     // Do decoding.
     max_nb_sample_decoded = this->at->get_max_nb_samples() + this->at->get_security_nb_samples();
@@ -236,6 +276,11 @@ Audio_file_decoding_process::mp3_decode()
     mpg123_close(handle);
     mpg123_delete(handle);
     mpg123_exit();
+
+
+    // Maybe the sample rate used by the sound card to play the file is not the same as
+    // the one of the Mp3 file, so convert it if necessary.
+    this->resample_track();
 
     qDebug() << "Audio_file_decoding_process::mp3_decode: " << this->at->get_end_of_samples()
              << " samples decoded.";
@@ -315,10 +360,7 @@ Audio_file_decoding_process::flac_decode()
 
     // Maybe the sample rate used by the sound card to play the file is not the same as
     // the one of the Flac file, so convert it if necessary.
-    if (at->get_sample_rate() != this->flac_sample_rate)
-    {
-        // TODO convert with libsamplerate
-    }
+    this->resample_track();
 
     qDebug() << "Audio_file_decoding_process::flac_decode: " << this->at->get_end_of_samples()
              << " samples decoded.";

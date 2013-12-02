@@ -53,6 +53,7 @@ class Audio_file_decoding_process
  private:
     Audio_track *at;
     QFile       *file;
+    bool         do_resample;
 
     // Flac decoding specific.
     FLAC__uint64 flac_total_samples;
@@ -61,7 +62,7 @@ class Audio_file_decoding_process
     unsigned     flac_bps;
 
  public:
-    Audio_file_decoding_process(Audio_track *in_at);
+    Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample = true);
     virtual ~Audio_file_decoding_process();
 
     void clear();
@@ -69,7 +70,9 @@ class Audio_file_decoding_process
              const QString &in_file_hash,
              const QString &in_music_key);    // Make decoding of the audio file depending of its extension.
 
- private:   
+ private:
+    void resample_track();             // Change sample rate of the audio track.
+
     bool mp3_decode();                 // Make mp3 decoding and id3 (artist + track name).
 
     bool flac_decode();                // Decode flac encoded file.

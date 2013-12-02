@@ -115,7 +115,7 @@ QString Utils::get_file_music_key(QString in_path)
 
     // Decode the audio track.
     Audio_track *at = new Audio_track(10, 44100); // Force 44100 to calculate music key.
-    Audio_file_decoding_process *dec = new Audio_file_decoding_process(at);
+    Audio_file_decoding_process *dec = new Audio_file_decoding_process(at, false);
     dec->run(in_path, "", "");
 
     // Compute the music key.
