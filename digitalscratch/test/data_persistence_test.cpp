@@ -164,7 +164,7 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
 
     // Precondition: store a track (if not already there).
     Audio_track *at = new Audio_track(15, 44100);
-    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at);
+    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at, false);
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
     decoder->run(fullpath, Utils::get_file_hash(fullpath, FILE_HASH_SIZE), "A1");
     QVERIFY2(data_persist->store_audio_track(at) == true, "store audio track");

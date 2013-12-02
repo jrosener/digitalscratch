@@ -43,7 +43,7 @@ void Audio_track_Test::testCaseFillSamples()
     Audio_track *at = new Audio_track(15, 44100);
 
     // Create a track decoder and decode compressed audio data to the audio track object.
-    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at);
+    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at, false);
 
     // Check decoded track content 1.
     at->reset();
