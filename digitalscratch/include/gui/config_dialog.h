@@ -84,6 +84,7 @@ class Config_dialog : public QDialog
  private:
     QLineEdit            *base_dir_path;
     QComboBox            *gui_style_select;
+    QComboBox            *sample_rate_select;
     QComboBox            *vinyl_type_select;
     QSlider              *extreme_min;
     QLabel               *extreme_min_value;
@@ -129,9 +130,11 @@ class Config_dialog : public QDialog
     void     accept();
     void     reject();
     QWidget *init_tab_player();
+    QWidget *init_tab_sound_card();
     QWidget *init_tab_motion_detect();
     QWidget *init_tab_shortcuts();
     void     fill_tab_player();
+    void     fill_tab_sound_card();
     void     fill_tab_motion_detect();
     void     fill_tab_shortcuts();
     void     set_extreme_min_slider(float in_value);

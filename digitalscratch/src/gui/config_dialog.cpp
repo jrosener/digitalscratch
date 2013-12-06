@@ -61,6 +61,14 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
         this->gui_style_select->addItem(available_gui_styles->at(i));
     }
 
+    // Init sound card parameters widgets.
+    this->sample_rate_select = new QComboBox(this);
+    QList<unsigned int> *available_sample_rates = this->settings->get_available_sample_rates();
+    for (int i = 0; i < available_sample_rates->size(); i++)
+    {
+        this->sample_rate_select->addItem(QString::number(available_sample_rates->at(i)));
+    }
+
     // Init motion detection parameters widgets.
     this->extreme_min                              = new QSlider(Qt::Horizontal, this);
     this->extreme_min_value                        = new QLabel(this);
@@ -119,6 +127,10 @@ Config_dialog::show()
     QWidget *player_tab = this->init_tab_player();
     this->fill_tab_player();
 
+    // Create the sound card tab.
+    QWidget *sound_card_tab = this->init_tab_sound_card();
+    this->fill_tab_sound_card();
+
     // Create the motion detection tab: provide coded vinyl configuration parameters.
     QWidget *motion_detect_tab = this->init_tab_motion_detect();
     this->fill_tab_motion_detect();
@@ -139,9 +151,10 @@ Config_dialog::show()
 
     // Create 3 tabs: player, sound card and motion detection.
     QTabWidget *tabs = new QTabWidget(this);
-    tabs->insertTab(0, player_tab, tr("Player"));
-    tabs->insertTab(1, motion_detect_tab, tr("Motion detection"));
-    tabs->insertTab(2, shortcuts_tab, tr("Shortcuts"));
+    tabs->insertTab(0, player_tab,        tr("Player"));
+    tabs->insertTab(1, sound_card_tab,    tr("Sound card"));
+    tabs->insertTab(2, motion_detect_tab, tr("Motion detection"));
+    tabs->insertTab(3, shortcuts_tab,     tr("Shortcuts"));
 
     // 2 buttons: OK and Cancel.
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
@@ -192,6 +205,32 @@ void Config_dialog::fill_tab_player()
 {
     this->base_dir_path->setText(this->settings->get_tracks_base_dir_path());
     this->gui_style_select->setCurrentIndex(this->gui_style_select->findText(this->settings->get_gui_style()));
+}
+
+QWidget *Config_dialog::init_tab_sound_card()
+{
+    // Sound card tab: select sample rate.
+    QLabel *sample_rate_label = new QLabel(tr("Sample rate: "), this);
+
+    // Show warning.
+    QLabel *warning = new QLabel(tr("This setting can not be applied directly, please accept this dialog and restart DigitalScratch."));
+
+    // Sound card tab: setup layout.
+    QGridLayout *soundcard_tab_layout = new QGridLayout(this);
+    soundcard_tab_layout->addWidget(sample_rate_label,        0, 0);
+    soundcard_tab_layout->addWidget(this->sample_rate_select, 0, 1);
+    soundcard_tab_layout->addWidget(warning,                  1, 0);
+
+    // Create tab.
+    QWidget *soundcard_tab = new QWidget(this);
+    soundcard_tab->setLayout(soundcard_tab_layout);
+
+    return soundcard_tab;
+}
+
+void Config_dialog::fill_tab_sound_card()
+{
+    this->sample_rate_select->setCurrentIndex(this->sample_rate_select->findText(QString::number(this->settings->get_sample_rate())));
 }
 
 QWidget *Config_dialog::init_tab_motion_detect()
@@ -694,6 +733,9 @@ Config_dialog::accept()
 
     // Set vinyl type.
     this->settings->set_vinyl_type(this->vinyl_type_select->currentText());
+
+    // Set sound card settings.
+    this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
 
     // Set motion detection settings.
     this->settings->set_extreme_min(this->get_extreme_min_slider());

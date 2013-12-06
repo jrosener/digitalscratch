@@ -50,6 +50,11 @@ Application_settings::Application_settings()
     this->available_vinyl_types->append(SERATO_VINYL);
     this->available_vinyl_types->append(MIXVIBES_VINYL);
 
+    this->available_sample_rates = new QList<unsigned int>();
+    this->available_sample_rates->append(44100);
+    this->available_sample_rates->append(48000);
+    this->available_sample_rates->append(96000);
+
     this->audio_collection_full_refresh = true;
 
     this->init_settings();
@@ -60,6 +65,7 @@ Application_settings::~Application_settings()
     delete this->settings;
     delete this->available_gui_styles;
     delete this->available_vinyl_types;
+    delete this->available_sample_rates;
 }
 
 void
@@ -579,6 +585,12 @@ QList<QString>*
 Application_settings::get_available_vinyl_types()
 {
     return this->available_vinyl_types;
+}
+
+QList<unsigned int>*
+Application_settings::get_available_sample_rates()
+{
+    return this->available_sample_rates;
 }
 
 void

@@ -136,10 +136,11 @@ class Application_settings : public QObject
     Q_OBJECT
 
  private:
-    QSettings      *settings;
-    QList<QString> *available_gui_styles;
-    QList<QString> *available_vinyl_types;
-    bool            audio_collection_full_refresh;
+    QSettings           *settings;
+    QList<QString>      *available_gui_styles;
+    QList<QString>      *available_vinyl_types;
+    QList<unsigned int> *available_sample_rates;
+    bool                 audio_collection_full_refresh;
 
  public:
     Application_settings();
@@ -167,9 +168,10 @@ class Application_settings : public QObject
     QString         get_gui_style_default();
     QList<QString>* get_available_gui_styles();
 
-    void            set_sample_rate(unsigned int in_sample_rate);
-    unsigned int    get_sample_rate();
-    unsigned int    get_sample_rate_default();
+    void                 set_sample_rate(unsigned int in_sample_rate);
+    unsigned int         get_sample_rate();
+    unsigned int         get_sample_rate_default();
+    QList<unsigned int>* get_available_sample_rates();
 
     void            set_vinyl_type(QString in_vinyl_type);
     QString         get_vinyl_type();
