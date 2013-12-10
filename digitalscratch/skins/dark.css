@@ -1137,3 +1137,33 @@ QMenu::item:selected
 {
     background-color: #654321;
 }
+
+QCheckBox::indicator
+{
+    background-color: transparent;
+    border          : 1px solid grey;
+    width           : 9px;
+    height          : 9px;
+}
+
+QCheckBox::indicator:checked, QRadioButton::indicator:unchecked
+{
+    border          : 1px solid grey;
+    border-radius   : 6px;
+}
+
+QCheckBox::indicator:checked
+{
+    background-color: qradialgradient(
+        cx: 0.5, cy: 0.5,
+        fx: 0.5, fy: 0.5,
+        radius: 0.7,
+        stop: 0.25 lightGray,
+        stop: 0.3 transparent
+    );
+}
+
+QCheckBox::indicator:hover
+{
+    border: 1px solid darkGray;
+}

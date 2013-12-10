@@ -36,6 +36,7 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QString>
 #include <QCloseEvent>
 #include <QWidget>
@@ -85,6 +86,7 @@ class Config_dialog : public QDialog
     QLineEdit            *base_dir_path;
     QComboBox            *gui_style_select;
     QComboBox            *sample_rate_select;
+    QCheckBox            *autostart_detection_check;
     QComboBox            *vinyl_type_select;
     QSlider              *extreme_min;
     QLabel               *extreme_min_value;

@@ -563,6 +563,24 @@ Application_settings::set_sample_rate(unsigned int in_sample_rate)
     this->settings->setValue(SAMPLE_RATE_CFG, in_sample_rate);
 }
 
+bool
+Application_settings::get_autostart_motion_detection()
+{
+    return this->settings->value(AUTOSTART_MOTION_DETECTION_CFG).toBool();
+}
+
+bool
+Application_settings::get_autostart_motion_detection_default()
+{
+    return AUTOSTART_MOTION_DETECTION_DEFAULT;
+}
+
+void
+Application_settings::set_autostart_motion_detection(bool in_autostart)
+{
+    this->settings->setValue(AUTOSTART_MOTION_DETECTION_CFG, in_autostart);
+}
+
 QString
 Application_settings::get_vinyl_type()
 {

@@ -211,6 +211,12 @@ Gui::Gui(Audio_track                        *in_at_1,
         return;
     }
 
+    // Run motion detection.
+    if (this->settings->get_autostart_motion_detection() == true)
+    {
+        this->start_capture_and_playback();
+    }
+
     qDebug() << "Gui::Gui: create object done.";
 
     return;

@@ -60,6 +60,8 @@ using namespace std;
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
 #define SAMPLE_RATE_DEFAULT                 44100
 
+#define AUTOSTART_MOTION_DETECTION_CFG      "motion_detection/auto_start_motion_detection"
+#define AUTOSTART_MOTION_DETECTION_DEFAULT  0
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
 #define MAX_NB_BUFFER_CFG                   "motion_detection/max_nb_buffer"
@@ -172,6 +174,10 @@ class Application_settings : public QObject
     unsigned int         get_sample_rate();
     unsigned int         get_sample_rate_default();
     QList<unsigned int>* get_available_sample_rates();
+
+    void            set_autostart_motion_detection(bool in_autostart);
+    bool            get_autostart_motion_detection();
+    bool            get_autostart_motion_detection_default();
 
     void            set_vinyl_type(QString in_vinyl_type);
     QString         get_vinyl_type();
