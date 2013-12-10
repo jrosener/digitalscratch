@@ -210,16 +210,12 @@ void Config_dialog::fill_tab_player()
 QWidget *Config_dialog::init_tab_sound_card()
 {
     // Sound card tab: select sample rate.
-    QLabel *sample_rate_label = new QLabel(tr("Sample rate: "), this);
-
-    // Show warning.
-    QLabel *warning = new QLabel(tr("This setting can not be applied directly, please accept this dialog and restart DigitalScratch."));
+    QLabel *sample_rate_label = new QLabel(tr("Sample rate (need to restart): "), this);
 
     // Sound card tab: setup layout.
     QGridLayout *soundcard_tab_layout = new QGridLayout(this);
     soundcard_tab_layout->addWidget(sample_rate_label,        0, 0);
     soundcard_tab_layout->addWidget(this->sample_rate_select, 0, 1);
-    soundcard_tab_layout->addWidget(warning,                  1, 0);
 
     // Create tab.
     QWidget *soundcard_tab = new QWidget(this);
