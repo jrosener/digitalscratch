@@ -91,7 +91,9 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
         this->vinyl_type_select->addItem(available_vinyl_types->at(i));
     }
     this->autostart_detection_check                = new QCheckBox(this);
+    this->auto_jack_connections_check              = new QCheckBox(this);
     this->autostart_detection_check->setTristate(false);
+    this->auto_jack_connections_check->setTristate(false);
 
     // Init keyboard shortcuts widgets.
     this->kb_switch_playback           = new ShortcutQLabel(this);
@@ -214,10 +216,15 @@ QWidget *Config_dialog::init_tab_sound_card()
     // Sound card tab: select sample rate.
     QLabel *sample_rate_label = new QLabel(tr("Sample rate (need to restart): "), this);
 
+    // Sound card tab: auto connect JACK.
+    QLabel *auto_jack_connections_label = new QLabel(tr("Connect JACK ports at startup: "), this);
+
     // Sound card tab: setup layout.
     QGridLayout *soundcard_tab_layout = new QGridLayout(this);
-    soundcard_tab_layout->addWidget(sample_rate_label,        0, 0);
-    soundcard_tab_layout->addWidget(this->sample_rate_select, 0, 1);
+    soundcard_tab_layout->addWidget(sample_rate_label,                 0, 0);
+    soundcard_tab_layout->addWidget(this->sample_rate_select,          0, 1);
+    soundcard_tab_layout->addWidget(auto_jack_connections_label,       1, 0);
+    soundcard_tab_layout->addWidget(this->auto_jack_connections_check, 1, 1);
 
     // Create tab.
     QWidget *soundcard_tab = new QWidget(this);
@@ -229,6 +236,7 @@ QWidget *Config_dialog::init_tab_sound_card()
 void Config_dialog::fill_tab_sound_card()
 {
     this->sample_rate_select->setCurrentIndex(this->sample_rate_select->findText(QString::number(this->settings->get_sample_rate())));
+    this->auto_jack_connections_check->setChecked(this->settings->get_auto_jack_connections());
 }
 
 QWidget *Config_dialog::init_tab_motion_detect()
@@ -744,6 +752,9 @@ Config_dialog::accept()
 
     // Set sound card settings.
     this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
+
+    // Set auto JACK port connections.
+    this->settings->set_auto_jack_connections(this->auto_jack_connections_check->isChecked());
 
     // Set motion detection settings.
     this->settings->set_extreme_min(this->get_extreme_min_slider());

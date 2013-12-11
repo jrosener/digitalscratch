@@ -59,6 +59,8 @@ using namespace std;
 
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
 #define SAMPLE_RATE_DEFAULT                 44100
+#define AUTO_JACK_CONNECTIONS_CFG           "sound_card/auto_jack_connections"
+#define AUTO_JACK_CONNECTIONS_DEFAULT       1
 
 #define AUTOSTART_MOTION_DETECTION_CFG      "motion_detection/auto_start_motion_detection"
 #define AUTOSTART_MOTION_DETECTION_DEFAULT  0
@@ -155,7 +157,6 @@ class Application_settings : public QObject
 
     void       set_browser_splitter_size(QByteArray in_state);
     QByteArray get_browser_splitter_size();
-   // QString get_browser_splitter_size_default();
 
     void    set_main_window_position(QPoint in_pos);
     QPoint  get_main_window_position();
@@ -174,6 +175,10 @@ class Application_settings : public QObject
     unsigned int         get_sample_rate();
     unsigned int         get_sample_rate_default();
     QList<unsigned int>* get_available_sample_rates();
+
+    void            set_auto_jack_connections(bool in_autoconnect);
+    bool            get_auto_jack_connections();
+    bool            get_auto_jack_connections_default();
 
     void            set_autostart_motion_detection(bool in_autostart);
     bool            get_autostart_motion_detection();

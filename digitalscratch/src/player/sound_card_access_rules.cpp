@@ -181,41 +181,44 @@ Sound_card_access_rules::start(AUDIO_CALLBACK_TYPE  in_callback,
     // orientation of the driver backend ports: playback ports are
     // "input" to the backend, and capture ports are "output" from
     // it.
-    ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsOutput);
-    if (ports == NULL)
+    if (settings->get_auto_jack_connections() == true)
     {
-        qWarning() << "Sound_card_access_rules::start: no physical capture ports";
-        emit error_msg(QString("No Jack physical capture ports available, please configure/start Jack server properly."));
-        return false;
-    }
-    for (int i = 0; i < this->nb_channels; i++)
-    {
-        if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
+        ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsOutput);
+        if (ports == NULL)
         {
-            qWarning() << "Sound_card_access_rules::start: cannot connect input ports";
-            emit error_msg(QString("Can not connect Jack input ports, please configure/start Jack server properly."));
+            qWarning() << "Sound_card_access_rules::start: no physical capture ports";
+            emit error_msg(QString("No Jack physical capture ports available, please configure/start Jack server properly."));
             return false;
         }
-    }
-    jack_free(ports);
+        for (int i = 0; i < this->nb_channels; i++)
+        {
+            if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
+            {
+                qWarning() << "Sound_card_access_rules::start: cannot connect input ports";
+                emit error_msg(QString("Can not connect Jack input ports, please configure/start Jack server properly."));
+                return false;
+            }
+        }
+        jack_free(ports);
 
-    ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
-    if (ports == NULL)
-    {
-        qWarning() << "Sound_card_access_rules::start: no physical playback ports";
-        emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
-        return false;
-    }
-    for (int i = 0; i < this->nb_channels; i++)
-    {
-        if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+        ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
+        if (ports == NULL)
         {
-            qWarning() << "Sound_card_access_rules::start: cannot connect output ports";
-            emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
+            qWarning() << "Sound_card_access_rules::start: no physical playback ports";
+            emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
             return false;
         }
+        for (int i = 0; i < this->nb_channels; i++)
+        {
+            if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+            {
+                qWarning() << "Sound_card_access_rules::start: cannot connect output ports";
+                emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
+                return false;
+            }
+        }
+        jack_free(ports);
     }
-    jack_free(ports);
 
     qDebug() << "Sound_card_access_rules::start: done.";
 

@@ -94,10 +94,16 @@ Application_settings::init_settings()
     if (this->settings->contains(SAMPLE_RATE_CFG) == false) {
         this->settings->setValue(SAMPLE_RATE_CFG, this->get_sample_rate_default());
     }
+    if (this->settings->contains(AUTO_JACK_CONNECTIONS_CFG) == false) {
+        this->settings->setValue(AUTO_JACK_CONNECTIONS_CFG, this->get_auto_jack_connections_default());
+    }
 
     //
     // Timecode signal detection parameters.
     //
+    if (this->settings->contains(AUTOSTART_MOTION_DETECTION_CFG) == false) {
+        this->settings->setValue(AUTOSTART_MOTION_DETECTION_CFG, this->get_autostart_motion_detection_default());
+    }
     if (this->settings->contains(VINYL_TYPE_CFG) == false) {
         this->settings->setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
     }
@@ -561,6 +567,24 @@ void
 Application_settings::set_sample_rate(unsigned int in_sample_rate)
 {
     this->settings->setValue(SAMPLE_RATE_CFG, in_sample_rate);
+}
+
+bool
+Application_settings::get_auto_jack_connections()
+{
+    return this->settings->value(AUTO_JACK_CONNECTIONS_CFG).toBool();
+}
+
+bool
+Application_settings::get_auto_jack_connections_default()
+{
+    return AUTO_JACK_CONNECTIONS_DEFAULT;
+}
+
+void
+Application_settings::set_auto_jack_connections(bool in_autoconnect)
+{
+    this->settings->setValue(AUTO_JACK_CONNECTIONS_CFG, in_autoconnect);
 }
 
 bool
