@@ -213,9 +213,7 @@ win32 {
                 %QTDIR%/bin/Qt5Guid.dll \
                 %QTDIR%/bin/Qt5Widgetsd.dll \
                 %QTDIR%/bin/Qt5Concurrentd.dll \
-                %QTDIR%/bin/icuin49.dll \
-                %QTDIR%/bin/icuuc49.dll \
-                %QTDIR%/bin/icudt49.dll \
+                %QTDIR%/bin/icu*.dll \
                 %QTDIR%/bin/Qt5Sqld.dll
         CONFIG(test) {
            DLLS += %QTDIR%/bin/Qt5Testd.dll
@@ -226,9 +224,7 @@ win32 {
                 %QTDIR%/bin/Qt5Gui.dll \
                 %QTDIR%/bin/Qt5Widgets.dll \
                 %QTDIR%/bin/Qt5Concurrent.dll \
-                %QTDIR%/bin/icuin49.dll \
-                %QTDIR%/bin/icuuc49.dll \
-                %QTDIR%/bin/icudt49.dll \
+                %QTDIR%/bin/icu*.dll \
                 %QTDIR%/bin/Qt5Sql.dll
         CONFIG(test) {
            DLLS += %QTDIR%/bin/Qt5Test.dll
