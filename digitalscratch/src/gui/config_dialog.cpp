@@ -217,7 +217,7 @@ QWidget *Config_dialog::init_tab_sound_card()
     QLabel *sample_rate_label = new QLabel(tr("Sample rate (need to restart): "), this);
 
     // Sound card tab: auto connect JACK.
-    QLabel *auto_jack_connections_label = new QLabel(tr("Connect JACK ports at startup: "), this);
+    QLabel *auto_jack_connections_label = new QLabel(tr("Connect automatically JACK ports: "), this);
 
     // Sound card tab: setup layout.
     QGridLayout *soundcard_tab_layout = new QGridLayout(this);
