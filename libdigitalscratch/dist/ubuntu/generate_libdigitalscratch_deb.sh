@@ -121,7 +121,7 @@ echo ""
 
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
-cd $WORKINGPATH/$SOURCEDIR
+cd $WORKINGPATH/$SOURCEDIR_ORIG
 if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
 then
     pbuilder-dist $DISTRIB create
@@ -130,7 +130,7 @@ pbuilder-dist $DISTRIB update
 echo ""
 echo ""
 
-echo "************Parse debian/ config file and create source.changes *********"
+echo "************ Parse debian/ config file and create source.changes *********"
 debuild -S -sa
 check_error
 cd ../
