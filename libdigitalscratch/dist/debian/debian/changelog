@@ -1,3 +1,10 @@
+libdigitalscratch (1.4.0-1) stable; urgency=low
+
+  * added an amplification factor for the input timecoded signal
+  * support any sample rate 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Mon, 23 Dec 2013 00:26:30 +0100
+
 libdigitalscratch (1.3.0-1) stable; urgency=low
 
   * ported to Qt5
