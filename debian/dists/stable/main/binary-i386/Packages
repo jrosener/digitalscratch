@@ -1,3 +1,46 @@
+Package: libdigitalscratch-dev
+Source: libdigitalscratch
+Version: 1.4.0-1
+Architecture: i386
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 67
+Depends: libdigitalscratch1 (= 1.4.0-1)
+Homepage: http://www.digital-scratch.org
+Priority: extra
+Section: libdevel
+Filename: pool/main/libd/libdigitalscratch/libdigitalscratch-dev_1.4.0-1_i386.deb
+Size: 7798
+SHA256: d392afec102bc53660555f76af14fbf104d31de9cd2e6fd8ccb7d4b33dc6001f
+SHA1: adda03d74ecb14f1431b25c61e1d2602065164ab
+MD5sum: 880e9217141734c1c91743f347a3c756
+Description: Motion detection for vinyl turntable
+ DigitalScratch library is designed to analyze motion of a disc on a vinyl
+ turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
+ Serato or Mixvibes disc.
+ .
+ This package contains the header file and library needed by software which
+ uses DigitalScratch library.
+
+Package: libdigitalscratch1
+Source: libdigitalscratch
+Version: 1.4.0-1
+Architecture: i386
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 1280
+Depends: libc6 (>= 2.3.6-6~), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0)
+Homepage: http://www.digital-scratch.org
+Priority: extra
+Section: libs
+Filename: pool/main/libd/libdigitalscratch/libdigitalscratch1_1.4.0-1_i386.deb
+Size: 932610
+SHA256: 616550ae195240b116ced680a9894ca603948414a0e386aa913c64d23e696a9a
+SHA1: ca6fca2f876f00c98506ea9ed1472af1fc4d7499
+MD5sum: 8172d82ac245d5fea2712e5ab144947b
+Description: Motion detection for vinyl turntable
+ Digital Scratch library is designed to analyze motion of a disc on a vinyl
+ turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
+ Serato or Mixvibes disc.
+
 Package: libkeyfinder-dev
 Source: libkeyfinder
 Version: 0.11.0-1
