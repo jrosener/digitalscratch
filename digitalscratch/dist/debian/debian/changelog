@@ -1,3 +1,27 @@
+digitalscratch (1.4.0-1) stable; urgency=low
+
+  * features:
+     - new motion detection setting: amplification factor of the input timecoded signal
+     - open playlist (m3u) in file browser
+     - support 4 storable cue points per deck
+  * configuration:
+     - new option to auto start motion detection
+     - new option to auto connect jack ports
+     - added support for arbitrary sample rate
+  * graphics:
+     - added a directory browser panel
+     - added buttons to reset samplers
+     - added buttons to reset cue points
+     - added right click contextual menu for track loading
+     - added drag and drop support for track loading
+     - added buttons to start/stop motion detection
+     - added a progress bar when analysing file audio collection
+  * build:
+     - created Debian stable package
+     - added support of Qt4.x 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Mon, 23 Dec 2013 00:36:33 +0100
+
 digitalscratch (1.3.0-1) stable; urgency=low
 
   * features:
