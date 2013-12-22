@@ -1,68 +1,3 @@
-Package: digitalscratch
-Version: 1.4.0-1
-Architecture: i386
-Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 937
-Depends: libc6 (>= 2.3.6-6~), libdigitalscratch1, libflac8 (>= 1.2.1), libgcc1 (>= 1:4.1.1), libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libmpg123-0 (>= 1.6.2), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.4.0)
-Homepage: http://www.digital-scratch.org
-Priority: extra
-Section: sound
-Filename: pool/main/d/digitalscratch/digitalscratch_1.4.0-1_i386.deb
-Size: 547382
-SHA256: a72fc5f69040e6194950b75ac74d2b9ef84fd4f57552dbab753cf692ebe4cc90
-SHA1: 3a9c9788b09946c7922f740ead936fdffcd3bb49
-MD5sum: b5d9768a7c853423c2c1a282950d6d7d
-Description: Audio file player driven by vinyl turntable
- DigitalScratch player is an audio file player driven by a vinyl turntable
- playing a timecoded vinyl disc.
- .
- Requirements:
- - A timecoded vinyl (FinalScratch, Serato or Mixvibes disc).
- - The Jack Audio Connection Kit (JACK) as audio server.
-
-Package: libdigitalscratch-dev
-Source: libdigitalscratch
-Version: 1.4.0-1
-Architecture: i386
-Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 67
-Depends: libdigitalscratch1 (= 1.4.0-1)
-Homepage: http://www.digital-scratch.org
-Priority: extra
-Section: libdevel
-Filename: pool/main/libd/libdigitalscratch/libdigitalscratch-dev_1.4.0-1_i386.deb
-Size: 7798
-SHA256: d392afec102bc53660555f76af14fbf104d31de9cd2e6fd8ccb7d4b33dc6001f
-SHA1: adda03d74ecb14f1431b25c61e1d2602065164ab
-MD5sum: 880e9217141734c1c91743f347a3c756
-Description: Motion detection for vinyl turntable
- DigitalScratch library is designed to analyze motion of a disc on a vinyl
- turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
- Serato or Mixvibes disc.
- .
- This package contains the header file and library needed by software which
- uses DigitalScratch library.
-
-Package: libdigitalscratch1
-Source: libdigitalscratch
-Version: 1.4.0-1
-Architecture: i386
-Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 1280
-Depends: libc6 (>= 2.3.6-6~), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0)
-Homepage: http://www.digital-scratch.org
-Priority: extra
-Section: libs
-Filename: pool/main/libd/libdigitalscratch/libdigitalscratch1_1.4.0-1_i386.deb
-Size: 932610
-SHA256: 616550ae195240b116ced680a9894ca603948414a0e386aa913c64d23e696a9a
-SHA1: ca6fca2f876f00c98506ea9ed1472af1fc4d7499
-MD5sum: 8172d82ac245d5fea2712e5ab144947b
-Description: Motion detection for vinyl turntable
- Digital Scratch library is designed to analyze motion of a disc on a vinyl
- turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
- Serato or Mixvibes disc.
-
 Package: libkeyfinder-dev
 Source: libkeyfinder
 Version: 0.11.0-1
@@ -75,9 +10,9 @@ Priority: extra
 Section: libdevel
 Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_i386.deb
 Size: 3338
-SHA256: 920958a0533be6ba96f33032622e046ce941eedbd6d821067fdcc779e9abe6c0
-SHA1: 26202653b0f18df3e812e155dfb3eaa9ba323991
-MD5sum: f0ca635b32847a55ce85ab0c475c9e07
+SHA256: ccde7eaab670b680ce2b5c0183e9a703dcdac74f16be3c364d1678c06ee6ced9
+SHA1: f31b6ef4532d462cfb8d96d2b7c6d6677c9ba2cd
+MD5sum: 007fb9aaa193f7e3459ea838d0ec76bd
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
  .
@@ -95,10 +30,10 @@ Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libs
 Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_i386.deb
-Size: 65058
-SHA256: 017b0cb49adce462ba2a6a9b5b3c409c22427c51a17575f0d9034530616ab86b
-SHA1: 331f85f8c5ccb3a3f0a7d2b5e0809348ed14ca14
-MD5sum: 3aa66e3d6db65d3eeb9d0ad8498182a2
+Size: 65066
+SHA256: d88559596831441ed3db735484a4299bf5bd0340a8dc25a64a06ae06c66643a4
+SHA1: 59fc079922fc17ded26f4291f8d7b4f1c835b8e0
+MD5sum: 39c76e5f0c363b02723d90223b131529
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
 
