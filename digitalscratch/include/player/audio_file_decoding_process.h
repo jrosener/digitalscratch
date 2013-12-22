@@ -54,6 +54,7 @@ class Audio_file_decoding_process
     Audio_track *at;
     QFile       *file;
     bool         do_resample;
+    unsigned int decoded_sample_rate;
 
     // Flac decoding specific.
     FLAC__uint64 flac_total_samples;

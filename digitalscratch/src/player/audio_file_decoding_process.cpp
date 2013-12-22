@@ -48,6 +48,7 @@ Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, boo
     {
         this->at = in_at;
         this->do_resample = in_do_resample;
+        this->decoded_sample_rate = this->at->get_sample_rate();
     }
 
     this->file = NULL;
@@ -162,7 +163,7 @@ Audio_file_decoding_process::resample_track()
 {
     qDebug() << "Audio_file_decoding_process::resample_track...";
 
-    if ((this->do_resample == true) && (at->get_sample_rate() != this->flac_sample_rate))
+    if ((this->do_resample == true) && (at->get_sample_rate() != this->decoded_sample_rate))
     {
         // Copy decoded samples in a temp buffer.
         unsigned int in_nb_samples = at->get_end_of_samples();
@@ -170,7 +171,7 @@ Audio_file_decoding_process::resample_track()
         src_short_to_float_array(at->get_samples(), in_samples, in_nb_samples);
 
         // Resample temp buffer.
-        int   out_nb_samples = (at->get_end_of_samples() * (float)at->get_sample_rate() / (float)this->flac_sample_rate) + 2;
+        int   out_nb_samples = (at->get_end_of_samples() * (float)at->get_sample_rate() / (float)this->decoded_sample_rate) + 2;
         float *out_samples = new float[out_nb_samples];
         SRC_DATA src_data;
         src_data.data_in       = in_samples;
@@ -178,7 +179,7 @@ Audio_file_decoding_process::resample_track()
         src_data.end_of_input  = 0;
         src_data.input_frames  = in_nb_samples / 2;
         src_data.output_frames = out_nb_samples / 2;
-        src_data.src_ratio     = (float)at->get_sample_rate() / (float)this->flac_sample_rate;
+        src_data.src_ratio     = (float)at->get_sample_rate() / (float)this->decoded_sample_rate;
         src_simple(&src_data, SRC_LINEAR, 2);
 
         // Copy resampled sampler back to original table of samples.
@@ -231,6 +232,9 @@ Audio_file_decoding_process::mp3_decode()
         mpg123_exit();
         return false;
     }
+
+    // Store decoded sample rate.
+    this->decoded_sample_rate = rate;
 
     // Verbosity.
     mpg123_param(handle, MPG123_ADD_FLAGS, MPG123_QUIET, 0.0);
@@ -434,6 +438,9 @@ Audio_file_decoding_process::flac_metadata(const FLAC__StreamDecoder  *in_decode
         this->flac_sample_rate   = in_metadata->data.stream_info.sample_rate;
         this->flac_channels      = in_metadata->data.stream_info.channels;
         this->flac_bps           = in_metadata->data.stream_info.bits_per_sample;
+
+        // Store sample rate.
+        this->decoded_sample_rate = this->flac_sample_rate;
 
         qDebug() << "Audio_file_decoding_process::flac_metadata: sample rate    : " << this->flac_sample_rate << " Hz";
         qDebug() << "Audio_file_decoding_process::flac_metadata: channels       : " << this->flac_channels;
