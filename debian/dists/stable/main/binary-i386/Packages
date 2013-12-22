@@ -1,3 +1,25 @@
+Package: digitalscratch
+Version: 1.4.0-1
+Architecture: i386
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 937
+Depends: libc6 (>= 2.3.6-6~), libdigitalscratch1, libflac8 (>= 1.2.1), libgcc1 (>= 1:4.1.1), libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libmpg123-0 (>= 1.6.2), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.4.0)
+Homepage: http://www.digital-scratch.org
+Priority: extra
+Section: sound
+Filename: pool/main/d/digitalscratch/digitalscratch_1.4.0-1_i386.deb
+Size: 547382
+SHA256: a72fc5f69040e6194950b75ac74d2b9ef84fd4f57552dbab753cf692ebe4cc90
+SHA1: 3a9c9788b09946c7922f740ead936fdffcd3bb49
+MD5sum: b5d9768a7c853423c2c1a282950d6d7d
+Description: Audio file player driven by vinyl turntable
+ DigitalScratch player is an audio file player driven by a vinyl turntable
+ playing a timecoded vinyl disc.
+ .
+ Requirements:
+ - A timecoded vinyl (FinalScratch, Serato or Mixvibes disc).
+ - The Jack Audio Connection Kit (JACK) as audio server.
+
 Package: libdigitalscratch-dev
 Source: libdigitalscratch
 Version: 1.4.0-1
