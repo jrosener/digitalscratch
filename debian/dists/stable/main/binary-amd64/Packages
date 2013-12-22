@@ -8,10 +8,10 @@ Homepage: http://www.digital-scratch.org
 Priority: extra
 Section: sound
 Filename: pool/main/d/digitalscratch/digitalscratch_1.4.0-1_amd64.deb
-Size: 542930
-SHA256: 40910102e55498c2d35bc72a1decebf729221a5235fefcc13b0daaad40b99aa2
-SHA1: 4ab176b2869abc1908b496502c7fa688390c0da0
-MD5sum: a8cc8ab7cb46bb479980445b282d5d9c
+Size: 542994
+SHA256: 8a794ea450e0e1f53d428cb9622946b2f1f7bb870798b917e296f26fd92d957b
+SHA1: 36ec4b6c361aa9f4f7872a58f23f765348c4b50c
+MD5sum: b6a62e9203a1654e5e355b32cf8e7e20
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
