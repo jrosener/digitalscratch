@@ -4,36 +4,36 @@ Hash: SHA1
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Fri, 25 Oct 2013 17:18:27 UTC
+Date: Sun, 22 Dec 2013 18:59:26 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- c1ccaf9256c6e1132d79f873dc3e7576 4297 main/binary-amd64/Packages
- 93fe52256de8e9b0c747b6187c0547c1 1462 main/binary-amd64/Packages.gz
+ c29a570e16bd05cf9aa921fb8014bd35 3222 main/binary-amd64/Packages
+ a7c078b3295fb02be85e88d294ca40d4 1115 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
- 893f3dfb42e5aa24aa967a208eb652f2 4293 main/binary-i386/Packages
- 417c1174a8b106f9be9bf265fa41bebc 1470 main/binary-i386/Packages.gz
+ b13049cda4337a835abf8dfaec3a8a84 1529 main/binary-i386/Packages
+ 9083d3e7777e801b9b0825f282352380 700 main/binary-i386/Packages.gz
  32122f38610f15b8026cd7f4be3176d6 152 main/binary-i386/Release
  d41d8cd98f00b204e9800998ecf8427e 0 main/source/Sources
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- ffaec4d6ab78fae87726053a6a93b376d8c2c05d 4297 main/binary-amd64/Packages
- f39bc5c60551d22bb748ebd0f5f7206c01526f8c 1462 main/binary-amd64/Packages.gz
+ 2459e4ecd87a7c89b77cae936879c2a775187c4e 3222 main/binary-amd64/Packages
+ db5970ec334883ead33f16a7182e4fb2598c8a6d 1115 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
- 739a83e1d362cfca11d88241e8c03a6c5e88c940 4293 main/binary-i386/Packages
- 1aa951ff3ad6531118459bebdffa673273c06847 1470 main/binary-i386/Packages.gz
+ 253dc422e01351349e4a44d7cc45d80337f27ac4 1529 main/binary-i386/Packages
+ 4037ffb1aeb571f8f2052f762032d25c8c5d9a2b 700 main/binary-i386/Packages.gz
  aca0e76982209e8c4be03047232e3ecc2606ffb5 152 main/binary-i386/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/source/Sources
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- 2dfbc69dce402dac8ff577a254bfecd81503f557733665c4046f35f528710352 4297 main/binary-amd64/Packages
- 4c8de0766097f6464bb380c5693aad79d62912c87e7f2bf1ff5640feb0f31bd2 1462 main/binary-amd64/Packages.gz
+ c38769774220398f4acfa0c0518af1f8937776ac6a7111488936772fa00f45d2 3222 main/binary-amd64/Packages
+ e7edc3339b355216186bbd9c6a8dc1a0c37e7adeb6a15e572308b82b36149fd5 1115 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
- 726a6dab41d5a7a5921f2038887b383023597627ef8569298ca38eff05d7e6cb 4293 main/binary-i386/Packages
- 61d69f02a074469f37b789f360010175a3828c7b2419a72587ab86d6487da611 1470 main/binary-i386/Packages.gz
+ 9c84dbd7bd4cbd06c26847ad8c517770e1af3a7d40481e3354ab178f2679b8dc 1529 main/binary-i386/Packages
+ 7e0fcce5e038eb4829c2c20186d873c99e65a53c9325b321af7fdcb5fde1f32b 700 main/binary-i386/Packages.gz
  a768893c28dcc669ffc5552b2b2a9e97c4a1e6c199091942e82e409a1feb0637 152 main/binary-i386/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/source/Sources
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/source/Sources.gz
@@ -41,11 +41,11 @@ SHA256:
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQEcBAEBAgAGBQJSaqfjAAoJEJ1a+q4YMfpRZmQH+QEFKtLRjQN5q2Y0QRqEa2Y2
-W/99T7fF5iN2eTh83LyBaPFJpZV/cQnPz5Q0nH2Xa1LXH5flYpugmL9XHknv8xwX
-6Qb1Hs/NK8Qkq4hb8qJb1rEVQDYS2mIH/oyFpb61IilXnHLnbgfUiZGDnMlzh3pp
-TxmYqCYeeD6F5n8ZzsoUb2vj3oMP5dcCnntLf4tgRg8lPVT3CfBcsvJkhBd0oTHU
-qwxlM5eGvjzYcc8Z37vCV9jQ4VlVIalh1HW+18tJKvNfuRWm1T3CRiCWG3UZVsdc
-V0uRIyx3iksR/fYJy4B6U9FbueueoNO0OWIYcx7FSxHy53u9rgXPNvwFR6FmobI=
-=T/Fe
+iQEcBAEBAgAGBQJStzaOAAoJEJ1a+q4YMfpRgY8H+wRIFCzZdtkqzLub9GwwLiRU
+cdsM1LreRWpry7RXLRchXg1ywxDQl5tKU8Wz/qU0U82rV7rAu36UOmuOaIkPowCN
+1tUPSyzXZ9syDyW/jrxq+FvaaNwIIQPsGDiKcLge22T2kezqflRYZ/mVV4aN3iTg
+xbYdOgInr3ByXHZaPf4FYbOpTJfBBzjKBuVqDvUNLpDKdbXutoEruY6xdQRgFsKJ
+32Lupk5ddsWNAXGbxTHAf5wUJpaqfmwhczRT9/TFWAiLncTexAaYu5lVwSfdVhyo
+ZpB281Ej7Ub7Ct9jcYT4BcPcdSQUVfFGO2UM5J3o1kddQfAqgw2xJOgNa3TXmAU=
+=Zftl
 -----END PGP SIGNATURE-----
