@@ -10,7 +10,7 @@ echo  Setup environment ...
 echo ----------------------------------------------------------------------------------
 echo.
 set CURDIR=%CD%
-set QTDIR=C:\Qt\Qt5.0.2\5.0.2\msvc2010_opengl
+set QTDIR=C:\Qt\5.2.0\msvc2010_opengl
 call "%QTDIR%\bin\qtenv2.bat"
 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x86
 cd /D %CURDIR% 
