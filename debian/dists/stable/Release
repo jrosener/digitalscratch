@@ -1,36 +1,36 @@
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Fri, 25 Oct 2013 17:18:27 UTC
+Date: Sun, 22 Dec 2013 23:45:16 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- c1ccaf9256c6e1132d79f873dc3e7576 4297 main/binary-amd64/Packages
- 93fe52256de8e9b0c747b6187c0547c1 1462 main/binary-amd64/Packages.gz
+ bc00077fba8adb9e0a34de00bf6e5026 4297 main/binary-amd64/Packages
+ 93aa9f7fcacb2f565196ba88e7dd62f0 1459 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
- 893f3dfb42e5aa24aa967a208eb652f2 4293 main/binary-i386/Packages
- 417c1174a8b106f9be9bf265fa41bebc 1470 main/binary-i386/Packages.gz
+ 3eed52113e1a3793f49d7d8f79a6c60f 4293 main/binary-i386/Packages
+ f5a57ac61cbc8eae7b5f2319c191d980 1469 main/binary-i386/Packages.gz
  32122f38610f15b8026cd7f4be3176d6 152 main/binary-i386/Release
  d41d8cd98f00b204e9800998ecf8427e 0 main/source/Sources
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- ffaec4d6ab78fae87726053a6a93b376d8c2c05d 4297 main/binary-amd64/Packages
- f39bc5c60551d22bb748ebd0f5f7206c01526f8c 1462 main/binary-amd64/Packages.gz
+ 9f3dd5aa31caa7ac8e44c4735bb7489719e67450 4297 main/binary-amd64/Packages
+ 496235220b0f0f6ac79eac2e5bc696637a5b3fee 1459 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
- 739a83e1d362cfca11d88241e8c03a6c5e88c940 4293 main/binary-i386/Packages
- 1aa951ff3ad6531118459bebdffa673273c06847 1470 main/binary-i386/Packages.gz
+ 21fb4c0db83ed3edeedf417c30615e363db85f1b 4293 main/binary-i386/Packages
+ 83957d8c37d1558b9dc9d7c50bf8312e78b4c9e9 1469 main/binary-i386/Packages.gz
  aca0e76982209e8c4be03047232e3ecc2606ffb5 152 main/binary-i386/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/source/Sources
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- 2dfbc69dce402dac8ff577a254bfecd81503f557733665c4046f35f528710352 4297 main/binary-amd64/Packages
- 4c8de0766097f6464bb380c5693aad79d62912c87e7f2bf1ff5640feb0f31bd2 1462 main/binary-amd64/Packages.gz
+ 52131b48a460f422ab65cfb85b8b50b0cbfd4714afea62005f843c46b7a5dd6c 4297 main/binary-amd64/Packages
+ 60f05c219a12f289376e3f4888e1c0c2967eb4456f06a62de876403fa086286f 1459 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
- 726a6dab41d5a7a5921f2038887b383023597627ef8569298ca38eff05d7e6cb 4293 main/binary-i386/Packages
- 61d69f02a074469f37b789f360010175a3828c7b2419a72587ab86d6487da611 1470 main/binary-i386/Packages.gz
+ bc61172b7564d6de28a165a747b0479992befc5c13f90539fb66aa9f45e26008 4293 main/binary-i386/Packages
+ c8f1a4063d2f9577648f32f002408f265716d349effb4dd9f35b8010bd366ad9 1469 main/binary-i386/Packages.gz
  a768893c28dcc669ffc5552b2b2a9e97c4a1e6c199091942e82e409a1feb0637 152 main/binary-i386/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/source/Sources
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/source/Sources.gz
