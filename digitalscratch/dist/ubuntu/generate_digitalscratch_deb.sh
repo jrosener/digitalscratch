@@ -51,7 +51,8 @@ echo ""
 echo ""
 
 echo "************************* Get version from .pro ************************"
-VERSION=$(cat ../../digitalscratch.pro | grep 'VERSION =' | cut -d'=' -f2 | tr -d ' ')
+VERSION=$(cat ../../digitalscratch.pro | grep -i '^VERSION =' | cut -d'=' -f2 | tr -d ' ')
+VERSION=${VERSION/\$\$\{CURRENT_DATE\}/$(date +%Y%m%d)}
 echo VERSION = $VERSION
 check_error
 echo ""
@@ -147,7 +148,7 @@ echo ""
 echo ""
 
 echo "************ Upload source.changes on Launchpad at ppa:$PPAPATH *************"
-dput -f ppa:$PPAPATH *source.changes
+#dput -f ppa:$PPAPATH *source.changes
 check_error
 echo ""
 echo ""

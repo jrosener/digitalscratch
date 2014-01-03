@@ -4,7 +4,16 @@
 #
 #-------------------------------------------------
 
-VERSION = 1.4.0
+unix {
+    CURRENT_DATE = $$system(date +%Y%m%d)
+}
+win32 {
+    CURRENT_DATE = $$system(win-external\tools\date.exe +%Y%m%d)
+}
+
+#VERSION = 1.4.0
+VERSION = 1.4.0+1.5.0SNAPSHOT$${CURRENT_DATE}
+DEFINES += VERSION=$${VERSION}
 
 CONFIG(test) {
     QT       += testlib
@@ -27,7 +36,6 @@ else {
 
     INSTALLS += target include
 }
-DEFINES += VERSION=$${VERSION}
 
 SOURCES += \ 
     src/volume.cpp \
