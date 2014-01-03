@@ -46,10 +46,14 @@
 #endif
 
 /**
- * Sinusoidal frequency (Hz)
+ * Serato vinyl sinusoidal frequency (Hz) (@33 rpm)
  */
 #define SERATO_VINYL_SINUSOIDAL_FREQ 1000
 
+/**
+ * Serato vinyl sinusoidal frequency (Hz)  (@45 rpm)
+ */
+#define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1364
 
 /**
  * Define a Serato Scratch Live timecode vinyl class.\n

@@ -46,9 +46,14 @@
 #endif
 
 /**
- * Mixvibes vinyl sinusoidal frequency (Hz)
+ * Mixvibes vinyl sinusoidal frequency (Hz) (@33 rpm)
  */
 #define MIXVIBES_SINUSOIDAL_FREQ 1300
+
+/**
+ * Mixvibes vinyl sinusoidal frequency (Hz) (@45 rpm)
+ */
+#define MIXVIBES_SINUSOIDAL_FREQ_45RPM 1773
 
 /**
  * Define a Mixvibes DVS timecode vinyl class.\n

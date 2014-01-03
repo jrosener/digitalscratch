@@ -72,5 +72,8 @@ float Serato_vinyl::get_position()
 
 int Serato_vinyl::get_sinusoidal_frequency()
 {
-    return SERATO_VINYL_SINUSOIDAL_FREQ;
+    if (this->get_rpm() == RPM_33)
+        return SERATO_VINYL_SINUSOIDAL_FREQ;
+    else
+        return SERATO_VINYL_SINUSOIDAL_FREQ_45RPM;
 }

@@ -76,5 +76,8 @@ float Mixvibes_vinyl::get_position()
 
 int Mixvibes_vinyl::get_sinusoidal_frequency()
 {
-    return MIXVIBES_SINUSOIDAL_FREQ;
+    if (this->get_rpm() == RPM_33)
+        return MIXVIBES_SINUSOIDAL_FREQ;
+    else
+        return MIXVIBES_SINUSOIDAL_FREQ_45RPM;
 }

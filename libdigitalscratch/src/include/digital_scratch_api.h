@@ -79,6 +79,12 @@ extern "C" {
 #define MIXVIBES_VINYL "mixvibes dvs"
 
 /******************************************************************************/
+/************************** Supported base RPM ********************************/
+
+#define RPM_33 33
+#define RPM_45 45
+
+/******************************************************************************/
 /************ API functions: create, delete, provide datas,... ****************/
 
 /**
@@ -772,6 +778,35 @@ DLLIMPORT int dscratch_get_input_amplify_coeff(int turntable_id);
  * @return the coefficient used to be multiplied to input samples.
  */
 DLLIMPORT int dscratch_get_default_input_amplify_coeff();
+
+/**
+ * Set the number of RPM.
+ *
+ * @param turntable_id is the id of the turntable on which you want to work.
+ *        This id is provided by dscratch_create_turntable() function.
+ * @param rpm is the number of RPM of the turntable (45 or 33).
+ *
+ * @return 0 if all is OK, otherwise 1.
+ */
+DLLIMPORT int dscratch_set_rpm(int turntable_id,
+                               unsigned short int rpm);
+
+/**
+ * Get the turntable RPM value.
+ *
+ * @param turntable_id is the id of the turntable on which you want to work.
+ *        This id is provided by dscratch_create_turntable() function.
+ *
+ * @return the number of rpm (45 or 33).
+ */
+DLLIMPORT unsigned short int dscratch_get_rpm(int turntable_id);
+
+/**
+ * Get the default number of RPM.
+ *
+ * @return the coefficient used to be multiplied to input samples.
+ */
+DLLIMPORT unsigned short int dscratch_get_default_rpm();
 
 #ifdef __cplusplus
 }

@@ -50,6 +50,10 @@ Application_settings::Application_settings()
     this->available_vinyl_types->append(SERATO_VINYL);
     this->available_vinyl_types->append(MIXVIBES_VINYL);
 
+    this->available_rpms = new QList<unsigned short int>();
+    this->available_rpms->append(RPM_33);
+    this->available_rpms->append(RPM_45);
+
     this->available_sample_rates = new QList<unsigned int>();
     this->available_sample_rates->append(44100);
     this->available_sample_rates->append(48000);
@@ -65,6 +69,7 @@ Application_settings::~Application_settings()
     delete this->settings;
     delete this->available_gui_styles;
     delete this->available_vinyl_types;
+    delete this->available_rpms;
     delete this->available_sample_rates;
 }
 
@@ -627,6 +632,38 @@ QList<QString>*
 Application_settings::get_available_vinyl_types()
 {
     return this->available_vinyl_types;
+}
+
+void
+Application_settings::set_rpm(unsigned short int in_rpm)
+{
+    QString value;
+    value.setNum(in_rpm);
+    if (in_rpm == 33 || in_rpm == 45) // Range: 33 or 45.
+    {
+        this->settings->setValue(RPM_CFG, value);
+    }
+}
+
+unsigned short int
+Application_settings::get_rpm()
+{
+    if (this->settings->value(RPM_CFG).toInt() == 45)
+        return 45;
+    else
+        return 33;
+}
+
+unsigned short int
+Application_settings::get_rpm_default()
+{
+    return dscratch_get_default_rpm();
+}
+
+QList<unsigned short int>*
+Application_settings::get_available_rpms()
+{
+    return this->available_rpms;
 }
 
 QList<unsigned int>*

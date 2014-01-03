@@ -89,6 +89,7 @@ class Config_dialog : public QDialog
     QCheckBox            *auto_jack_connections_check;
     QCheckBox            *autostart_detection_check;
     QComboBox            *vinyl_type_select;
+    QComboBox            *rpm_select;
     QSlider              *extreme_min;
     QLabel               *extreme_min_value;
     QSlider              *amplify_coeff;

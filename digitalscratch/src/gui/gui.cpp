@@ -278,6 +278,10 @@ Gui::apply_application_settings()
         {
             qWarning() << "Gui::apply_application_settings: Cannot set vinyl type";
         }
+        if (dscratch_set_rpm(this->dscratch_ids[i], this->settings->get_rpm()) != 0)
+        {
+            qWarning() << "Gui::apply_application_settings: Cannot set turntable RPM";
+        }
         if (dscratch_set_extreme_min(this->dscratch_ids[i], this->settings->get_extreme_min()) != 0)
         {
             qWarning() << "Gui::apply_application_settings: Cannot set new extreme min value";

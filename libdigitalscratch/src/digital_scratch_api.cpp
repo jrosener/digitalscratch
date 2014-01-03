@@ -1224,3 +1224,37 @@ DLLIMPORT int dscratch_get_default_input_amplify_coeff()
 {
     return DEFAULT_INPUT_AMPLIFY_COEFF;
 }
+
+DLLIMPORT int dscratch_set_rpm(int turntable_id,
+                               unsigned short int rpm)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Set turntable RPM.
+    if (((rpm != RPM_33) && (rpm != RPM_45)) ||
+       (vinyl->set_rpm(rpm) == false))
+    {
+        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
+                            "Cannot set RPM.");
+        return 1;
+    }
+
+    return 0;
+}
+
+DLLIMPORT unsigned short int dscratch_get_rpm(int turntable_id)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Get RPM parameter from Coded_vinyl.
+    return vinyl->get_rpm();
+}
+
+DLLIMPORT unsigned short int dscratch_get_default_rpm()
+{
+    return DEFAULT_RPM;
+}

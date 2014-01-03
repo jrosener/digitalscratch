@@ -65,6 +65,7 @@ using namespace std;
 #define AUTOSTART_MOTION_DETECTION_CFG      "motion_detection/auto_start_motion_detection"
 #define AUTOSTART_MOTION_DETECTION_DEFAULT  0
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
+#define RPM_CFG                             "motion_detection/rpm"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
 #define MAX_NB_BUFFER_CFG                   "motion_detection/max_nb_buffer"
 #define MAX_BUFFER_COEFF_CFG                "motion_detection/max_buffer_coeff"
@@ -140,11 +141,12 @@ class Application_settings : public QObject
     Q_OBJECT
 
  private:
-    QSettings           *settings;
-    QList<QString>      *available_gui_styles;
-    QList<QString>      *available_vinyl_types;
-    QList<unsigned int> *available_sample_rates;
-    bool                 audio_collection_full_refresh;
+    QSettings                 *settings;
+    QList<QString>            *available_gui_styles;
+    QList<QString>            *available_vinyl_types;
+    QList<unsigned short int> *available_rpms;
+    QList<unsigned int>       *available_sample_rates;
+    bool                       audio_collection_full_refresh;
 
  public:
     Application_settings();
@@ -188,6 +190,11 @@ class Application_settings : public QObject
     QString         get_vinyl_type();
     QString         get_vinyl_type_default();
     QList<QString>* get_available_vinyl_types();
+
+    void                   set_rpm(unsigned short int in_rpm);
+    unsigned short int     get_rpm();
+    unsigned short int     get_rpm_default();
+    QList<unsigned short> *get_available_rpms();
 
     void  set_extreme_min(float in_extreme_min);
     float get_extreme_min();

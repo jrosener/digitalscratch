@@ -287,5 +287,8 @@ this->latest_was_right = false;
 
 int Final_scratch_vinyl::get_sinusoidal_frequency()
 {
-    return FINAL_SCRATCH_SINUSOIDAL_FREQ;
+    if (this->get_rpm() == RPM_33)
+        return FINAL_SCRATCH_SINUSOIDAL_FREQ;
+    else
+        return FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
 }

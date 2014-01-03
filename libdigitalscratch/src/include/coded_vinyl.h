@@ -61,6 +61,7 @@
 #define DEFAULT_FULL_VOLUME_AMPLITUDE              0.22
 #define DEFAULT_LOW_PASS_FILTER_MAX_SPEED_USAGE    1.1
 #define DEFAULT_INPUT_AMPLIFY_COEFF                1
+#define DEFAULT_RPM                                RPM_33
 
 /**
  * Define a Coded_vinyl class.\n
@@ -246,6 +247,11 @@ class Coded_vinyl
          * Coeff used to amplify input signal.
          */
         int input_amplify_coeff;
+
+        /**
+         * Base RPM of the turntable.
+         */
+        unsigned short int rpm;
 
     public: // TODO: add accessor and put attributes in private
         /**
@@ -480,6 +486,19 @@ class Coded_vinyl
          * @return the value to get.
          */
         int get_input_amplify_coeff();
+
+        /**
+         * Set number of RPM of the turntable.
+         * @param rpm is the value to set.
+         * @return TRUE if all is OK, otherwise FALSE.
+         */
+        bool set_rpm(unsigned short int rpm);
+
+        /**
+         * Get number of RPM of the turntable.
+         * @return the value to get.
+         */
+        unsigned short int get_rpm();
 
         /**
          * Get the current position value of needle on vinyl

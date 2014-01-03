@@ -2390,3 +2390,15 @@ int Coded_vinyl::get_input_amplify_coeff()
 {
     return this->input_amplify_coeff;
 }
+
+bool Coded_vinyl::set_rpm(unsigned short int rpm)
+{
+    this->rpm = rpm;
+
+    return true;
+}
+
+unsigned short int Coded_vinyl::get_rpm()
+{
+    return this->rpm;
+}
