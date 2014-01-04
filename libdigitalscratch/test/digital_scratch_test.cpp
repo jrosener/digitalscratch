@@ -34,7 +34,8 @@ void DigitalScratch_Test::testCase_constructor()
 {
     // Create Digital_scratch.
     Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                    FINAL_SCRATCH_VINYL);
+                                                    FINAL_SCRATCH_VINYL,
+                                                    44100);
 
     // Check initilization of all public parameters.
     QVERIFY2(qFuzzyCompare(dscratch->get_max_speed_diff(), DEFAULT_MAX_SPEED_DIFF) == true,    "max speed diff");
@@ -61,7 +62,8 @@ void DigitalScratch_Test::testCase_set_max_nb_buffer()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Check set_max_nb_buffer().
    QVERIFY2(dscratch->set_max_nb_buffer(0)   == false,                 "set zero value");
@@ -93,7 +95,8 @@ void DigitalScratch_Test::testCase_set_max_nb_speed_for_stability()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Check set_max_nb_speed_for_stability().
    QVERIFY2(dscratch->set_max_nb_speed_for_stability(0)   == false,                              "set zero value");
@@ -124,7 +127,8 @@ void DigitalScratch_Test::testCase_set_max_slow_speed()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Check set_max_slow_speed()
    QVERIFY2(dscratch->set_max_slow_speed(0)                      == false,                  "set zero value");
@@ -153,7 +157,8 @@ void DigitalScratch_Test::testCase_set_max_speed_diff()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Check set_max_speed_diff()
    QVERIFY2(dscratch->set_max_speed_diff(0) == false,                                      "set zero value");
@@ -184,7 +189,8 @@ void DigitalScratch_Test::testCase_analyze_recording_data_1()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Check analyze_recording_data()
    vector<float> tab_1;
@@ -222,7 +228,8 @@ void DigitalScratch_Test::testCase_analyze_recording_data_2()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Prepare table of samples.
    vector<float> full_tab_1;
@@ -276,7 +283,8 @@ void DigitalScratch_Test::testCase_analyze_recording_data_3()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL);
+                                                   FINAL_SCRATCH_VINYL,
+                                                   44100);
 
    // Enable detection of position.
    QVERIFY2(dscratch->enable_position_detection(true) == true, "enable position detection");
