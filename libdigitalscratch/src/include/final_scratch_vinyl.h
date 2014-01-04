@@ -51,9 +51,10 @@
 #define FINAL_SCRATCH_SINUSOIDAL_FREQ 1200
 
 /**
- * Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@45 rpm)
+ * Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@45 rpm).
+ * Same value than 33rpm because there is a specific vinyl side for 45 rpm.
  */
-#define FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM 1636
+#define FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM 1200
 
 /**
  * Bit value 1 for timecode start sequence
