@@ -202,7 +202,11 @@ Audio_file_decoding_process::decode()
     short signed int *output_samples = this->at->get_samples();
 
     // Allocate a frame.
+#ifdef WIN32
+    AVFrame* frame = av_frame_alloc();
+#else
     AVFrame* frame = avcodec_alloc_frame();
+#endif
     if (!frame)
     {
         return false;
@@ -287,7 +291,7 @@ Audio_file_decoding_process::decode()
 
             // Some frames rely on multiple packets, so we have to make sure the frame is finished before
             // we can use it
-            if (frame_finished == true)
+            if (frame_finished == 1)
             {
                 // Frame now has usable audio data in it.
                 if (codec_context->sample_fmt == AV_SAMPLE_FMT_S16) // Interleaved data.
