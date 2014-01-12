@@ -61,6 +61,7 @@ class Audio_track_playback_process : public QObject
     unsigned int          *sampler_remaining_times; // Table of (nb_decks * nb_samplers) remaining time (in msec).
     bool                  *sampler_current_states;  // Table of (nb_decks * nb_samplers) states of sampler (true=play).
     unsigned short int     need_update_remaining_time;
+    bool                  *stopped;                 // Table of state (stopped = true) of audio track playback.
     unsigned short int     nb_decks;
     unsigned short int     nb_samplers;
     SRC_STATE            **src_state;       // Libsamplerate internal state.
@@ -85,7 +86,8 @@ class Audio_track_playback_process : public QObject
              float              *out_samples_3,
              float              *out_samples_4);  // Prepare set of samples to be played in sound card.
 
-    bool reset(unsigned short int in_index);
+    bool stop(unsigned short int in_deck_index);
+    bool reset(unsigned short int in_deck_index);
 
     bool reset_sampler(unsigned short int in_index,
                        unsigned short int in_sampler_index);

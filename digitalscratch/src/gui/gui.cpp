@@ -45,7 +45,6 @@
 #include <iostream>
 #include <QGraphicsScene>
 #include <QFileSystemModel>
-#include <FLAC/format.h>
 #include <samplerate.h>
 #include <jack/jack.h>
 #include <QSignalMapper>
@@ -69,6 +68,23 @@
 #include "playlist.h"
 #include "playlist_persistence.h"
 
+#ifdef WIN32
+extern "C"
+{
+    #include "libavcodec/version.h"
+    #include "libavformat/version.h"
+}
+#else
+extern "C"
+{
+    #ifndef INT64_C
+    #define INT64_C(c) (c ## LL)
+    #define UINT64_C(c) (c ## ULL)
+    #endif
+    #include "libavcodec/version.h"
+    #include "libavformat/version.h"
+}
+#endif
 
 // Pass-through function.
 int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
@@ -746,10 +762,12 @@ Gui::show_about_window()
                                                    + ", <a style=\"color: grey\" href=\"http://qt-project.org\">http://qt-project.org</a>");
     QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8()
                                                    + ", <a style=\"color: grey\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
-    QLabel *libmpg123_version         = new QLabel(QString("- libmpg123")
-                                                   + ", <a style=\"color: grey\" href=\"http://www.mpg123.de\">http://www.mpg123.de</a>");
-    QLabel *libFLAC_version           = new QLabel((QString("- libFLAC v") + QString(FLAC__VERSION_STRING)).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://flac.sourceforge.net\">http://flac.sourceforge.net</a>");
+    QLabel *libavcodec_version        = new QLabel((QString("- libavcodec v") + QString::number(LIBAVCODEC_VERSION_MAJOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MINOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MICRO)).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+    QLabel *libavformat_version       = new QLabel((QString("- libavformat v") + QString::number(LIBAVFORMAT_VERSION_MAJOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MINOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MICRO)).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+    QLabel *libavutil_version         = new QLabel((QString("- libavutil v") + QString::number(LIBAVUTIL_VERSION_MAJOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MINOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MICRO)).toUtf8()
+                                                   + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
     QLabel *libsamplerate_version     = new QLabel((QString("- ") + QString(src_get_version())).toUtf8()
                                                    + ", <a style=\"color: grey\" href=\"http://www.mega-nerd.com/SRC/\">http://www.mega-nerd.com/SRC/</a>");
     QLabel *libjack_version           = new QLabel((QString("- libjack v") + QString(jack_get_version_string())).toUtf8()
@@ -765,13 +783,17 @@ Gui::show_about_window()
     libdigitalscratch_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
     libdigitalscratch_version->setOpenExternalLinks(true);
 
-    libmpg123_version->setTextFormat(Qt::RichText);
-    libmpg123_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libmpg123_version->setOpenExternalLinks(true);
+    libavcodec_version->setTextFormat(Qt::RichText);
+    libavcodec_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libavcodec_version->setOpenExternalLinks(true);
 
-    libFLAC_version->setTextFormat(Qt::RichText);
-    libFLAC_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libFLAC_version->setOpenExternalLinks(true);
+    libavformat_version->setTextFormat(Qt::RichText);
+    libavformat_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libavformat_version->setOpenExternalLinks(true);
+
+    libavutil_version->setTextFormat(Qt::RichText);
+    libavutil_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libavutil_version->setOpenExternalLinks(true);
 
     libsamplerate_version->setTextFormat(Qt::RichText);
     libsamplerate_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -814,8 +836,9 @@ Gui::show_about_window()
     layout->addWidget(built);
     layout->addWidget(qt_version);
     layout->addWidget(libdigitalscratch_version);
-    layout->addWidget(libmpg123_version);
-    layout->addWidget(libFLAC_version);
+    layout->addWidget(libavcodec_version);
+    layout->addWidget(libavformat_version);
+    layout->addWidget(libavutil_version);
     layout->addWidget(libsamplerate_version);
     layout->addWidget(libjack_version);
     layout->addWidget(libkeyfinder_version);
@@ -3033,6 +3056,9 @@ Gui::run_audio_file_decoding_process()
         // Execute decoding if not trying to open the existing track.
         if (info.fileName().compare(deck_track_name->text()) != 0 )
         {
+            // Stop playback.
+            this->playback->stop(deck_index);
+
             // Clear audio track and waveform.
             decode_process->clear();
             deck_waveform->reset();

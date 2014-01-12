@@ -32,7 +32,6 @@
 
 
 #include <iostream>
-#include <mpg123.h>
 #include <QFileInfo>
 #include <QtDebug>
 #include <QDir>

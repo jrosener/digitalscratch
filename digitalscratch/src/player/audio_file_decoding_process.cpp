@@ -34,6 +34,24 @@
 #include <algorithm>
 #include <samplerate.h>
 
+#ifdef WIN32
+extern "C"
+{
+    #include "libavcodec/avcodec.h"
+    #include "libavformat/avformat.h"
+}
+#else
+extern "C"
+{
+    #ifndef INT64_C
+    #define INT64_C(c) (c ## LL)
+    #define UINT64_C(c) (c ## ULL)
+    #endif
+    #include "libavcodec/avcodec.h"
+    #include "libavformat/avformat.h"
+}
+#endif
+
 #include "audio_file_decoding_process.h"
 
 Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample)
@@ -49,6 +67,10 @@ Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, boo
         this->at = in_at;
         this->do_resample = in_do_resample;
         this->decoded_sample_rate = this->at->get_sample_rate();
+
+        // Some libav decoder init.
+        av_register_all();
+        av_log_set_level(AV_LOG_QUIET);
     }
 
     this->file = NULL;
@@ -102,46 +124,17 @@ Audio_file_decoding_process::run(const QString &in_path,
         qWarning() << "Audio_file_decoding_process::run: file does not exists.";
         return false;
     }
-    QFileInfo file_info = QFileInfo(*this->file);
 
-    // Decode audio data depending of file extension.
-    QString extension = file_info.suffix();
-
-    if (extension == MP3_FILE_EXT)
+    // Decode compressed audio.
+    this->at->reset();
+    if (this->decode() == false)
     {
-        this->at->reset();
-        if (this->mp3_decode() == false)
-        {
-            qWarning() << "Audio_file_decoding_process::run: can not decode MP3 audio data.";
-            return false;
-        }
-    }
-    else if (extension == FLAC_FILE_EXT)
-    {
-        this->at->reset();
-        if (this->flac_decode() == false)
-        {
-            cerr << "Audio_file_decoding_process::run: can not decode FLAC audio data.";
-            return false;
-        }
-    }
-    /*else if (extension == OGG_FILE_EXT)
-    {
-        this->at->reset();
-        if (this->decode_audio_data_ogg() == FALSE)
-        {
-            cerr << "Audio_file_decoding_process::run: can not decode OGG audio data.";
-            return false;
-        }
-    }
-    */
-    else
-    {
-        qWarning() << "Audio_file_decoding_process::run: unknown extension type.";
+        qWarning() << "Audio_file_decoding_process::run: can not decode audio file.";
         return false;
     }
 
     // Set name of the track which is for the moment the name of the file.
+    QFileInfo file_info = QFileInfo(*this->file);
     this->at->set_name(file_info.fileName());
 
     // Set file path.
@@ -197,269 +190,181 @@ Audio_file_decoding_process::resample_track()
 }
 
 bool
-Audio_file_decoding_process::mp3_decode()
+Audio_file_decoding_process::decode()
 {
-    qDebug() << "Audio_file_decoding_process::mp3_decode...";
+    qDebug() << "Audio_file_decoding_process::decode...";
 
-    int               err                   = MPG123_OK;
-    mpg123_handle    *handle                = NULL;
-    QByteArray        file_name_array       = this->file->fileName().toUtf8();
-    char             *file_name             = (char*)file_name_array.constData();
-    int               channels              = 0;
-    int               encoding              = 0;
-    long              rate                  = 0;
-    size_t            done                  = 0;
-    unsigned int      read_index            = 0;
-    unsigned int      max_nb_sample_decoded = 0;
-    short signed int *samples               = this->at->get_samples();
+    // Get file name to decode.
+    QByteArray        filename_array = this->file->fileName().toUtf8();
+    char             *filename       = (char*)filename_array.constData();
 
-    // Initialize mpg123.
-    err = mpg123_init();
-    if((err != MPG123_OK) ||
-       ((handle = mpg123_new(NULL, &err)) == NULL) ||
-       (mpg123_open(handle, file_name) != MPG123_OK) ||
-       (mpg123_getformat(handle, &rate, &channels, &encoding) != MPG123_OK))
+    // Get output table of decoded samples.
+    short signed int *output_samples = this->at->get_samples();
+
+    // Allocate a frame.
+    AVFrame* frame = avcodec_alloc_frame();
+    if (!frame)
     {
-        qWarning() << "Audio_file_decoding_process::mp3_decode: trouble with mpg123: ";
-        if (handle == NULL)
-            qWarning() << mpg123_plain_strerror(err);
-        else
-            qWarning() << mpg123_strerror(handle);
+        return false;
+    }
 
-        // Cleanup.
-        mpg123_close(handle);
-        mpg123_delete(handle);
-        mpg123_exit();
+    // Open file.
+    AVFormatContext* format_context = NULL;
+    if (avformat_open_input(&format_context, filename, NULL, NULL) != 0)
+    {
+        av_free(frame);
+        qWarning() << "Audio_file_decoding_process::decode: Error opening the file.";
+        return false;
+    }
+
+    // Get audio format.
+    if (avformat_find_stream_info(format_context, NULL) < 0)
+    {
+        av_free(frame);
+        avformat_close_input(&format_context);
+        qWarning() << "Audio_file_decoding_process::decode: Error finding the stream info.";
+        return false;
+    }
+
+    // Find the audio stream (some container files can have multiple streams in them).
+    AVStream* audio_stream = NULL;
+    for (unsigned int i = 0; i < format_context->nb_streams; ++i)
+    {
+        if (format_context->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+        {
+            audio_stream = format_context->streams[i];
+            break;
+        }
+    }
+    if (audio_stream == NULL)
+    {
+        av_free(frame);
+        avformat_close_input(&format_context);
+        qWarning() << "Audio_file_decoding_process::decode: Could not find any audio stream in the file.";
+        return false;
+    }
+
+    // Get codec of the audio file.
+    AVCodecContext* codec_context = audio_stream->codec;
+    codec_context->codec = avcodec_find_decoder(codec_context->codec_id);
+    if (codec_context->codec == NULL)
+    {
+        av_free(frame);
+        avformat_close_input(&format_context);
+        qWarning() << "Audio_file_decoding_process::decode: Couldn't find a proper decoder.";
+        return false;
+    }
+    else if (avcodec_open2(codec_context, codec_context->codec, NULL) != 0)
+    {
+        av_free(frame);
+        avformat_close_input(&format_context);
+        qWarning() << "Audio_file_decoding_process::decode: Couldn't open the context with the decoder.";
         return false;
     }
 
     // Store decoded sample rate.
-    this->decoded_sample_rate = rate;
+    this->decoded_sample_rate = codec_context->sample_rate;
 
-    // Verbosity.
-    mpg123_param(handle, MPG123_ADD_FLAGS, MPG123_QUIET, 0.0);
+    // Show audio format.
+    cout << qPrintable(this->file->fileName()) << ": "
+         << codec_context->sample_rate << "Hz, "
+         << codec_context->channels << "ch, "
+         << av_get_sample_fmt_name(codec_context->sample_fmt) << endl;
 
-    // Ensure that this output format will not change (it could, when we allow it).
-    mpg123_format_none(handle);
-    mpg123_format(handle, rate, channels, encoding);
+    // Create a packet.
+    AVPacket packet;
+    av_init_packet(&packet);
 
-    // Do decoding.
-    max_nb_sample_decoded = this->at->get_max_nb_samples() + this->at->get_security_nb_samples();
-    do
+    // Read the packets in a loop
+    bool decoding_done = false;
+    while ((decoding_done == false) && (av_read_frame(format_context, &packet) == 0))
     {
-        // Read and store a piece of data
-        err = mpg123_read(handle, (unsigned char*)&(samples[read_index]), max_nb_sample_decoded - read_index, &done);
-        read_index += (unsigned int)done / sizeof(short signed int);
-        // We are not in feeder mode, so MPG123_OK, MPG123_ERR and
-        // MPG123_NEW_FORMAT are the only possibilities.
-        // We do not handle a new format, MPG123_DONE is the end... so abort on
-        // anything not MPG123_OK.
-    } while ((err == MPG123_OK) && (read_index < max_nb_sample_decoded-1));
+        if (packet.stream_index == audio_stream->index)
+        {
+            // Try to decode the packet into a frame.
+            int frame_finished = 0;
+            avcodec_decode_audio4(codec_context, frame, &frame_finished, &packet);
 
-    // Fail if full decoding was not done.
-    if ((err != MPG123_DONE) && (read_index < max_nb_sample_decoded-1))
-    {
-        qWarning() << "Audio_file_decoding_process::mp3_decode: warning, decoding ended prematurely because: ";
-        if (err == MPG123_ERR)
-            qWarning() << mpg123_strerror(handle);
-        else
-            qWarning() << mpg123_plain_strerror(err);
+            // Some frames rely on multiple packets, so we have to make sure the frame is finished before
+            // we can use it
+            if (frame_finished == true)
+            {
+                // Frame now has usable audio data in it.
+                if (codec_context->sample_fmt == AV_SAMPLE_FMT_S16) // Interleaved data.
+                {
+                    int total_nb_samples = frame->nb_samples * codec_context->channels;
+                    if ((this->at->get_end_of_samples() + total_nb_samples) > this->at->get_max_nb_samples())
+                    {
+                        // We reached the end of the audio track buffer.
+                        total_nb_samples = this->at->get_max_nb_samples() - this->at->get_end_of_samples();
+                        decoding_done = true;
+                    }
+                    int data_size = total_nb_samples * sizeof(short signed int);
+                    memcpy(output_samples, frame->data[0], data_size);
+                    output_samples += total_nb_samples;
+                    this->at->set_end_of_samples(this->at->get_end_of_samples() + total_nb_samples);
+                }
+                else if (codec_context->sample_fmt == AV_SAMPLE_FMT_S16P) // Planar data (one data table per channels).
+                {
+                    int total_nb_samples = frame->nb_samples * codec_context->channels;
+                    if ((this->at->get_end_of_samples() + total_nb_samples) > this->at->get_max_nb_samples())
+                    {
+                        // We reached the end of the audio track buffer.
+                        total_nb_samples = this->at->get_max_nb_samples() - this->at->get_end_of_samples();
+                        decoding_done = true;
+                    }
+                    int data_size = frame->nb_samples * sizeof(short signed int);
+                    short signed int *channel_0;
+                    channel_0 = new short signed int [frame->nb_samples];
+                    short signed int *channel_1;
+                    channel_1 = new short signed int [frame->nb_samples];
+                    memcpy(channel_0, frame->data[0], data_size);
+                    memcpy(channel_1, frame->data[1], data_size);
+                    for (int i = 0; i < frame->nb_samples; i++)
+                    {
+                        output_samples[i*2]   = channel_0[i];
+                        output_samples[i*2+1] = channel_1[i];
+                    }
+                    delete [] channel_0;
+                    delete [] channel_1;
+                    output_samples += total_nb_samples;
+                    this->at->set_end_of_samples(this->at->get_end_of_samples() + total_nb_samples);
+                }
+                else // Non recognized byte format.
+                {
+                    decoding_done = true;
+                    qWarning() << "Audio_file_decoding_process::decode: Audio byte format not supported.";
+                }
+            }
+        }
+
+        // Cleanup packet.
+        av_free_packet(&packet);
     }
 
-    // Number of samples.
-    if (read_index > this->at->get_max_nb_samples())
+    // Some codecs will cause frames to be buffered up in the decoding process. If the CODEC_CAP_DELAY flag
+    // is set, there can be buffered up frames that need to be flushed, so we'll do that
+    if (codec_context->codec->capabilities & CODEC_CAP_DELAY)
     {
-        this->at->set_end_of_samples(this->at->get_max_nb_samples());
-    }
-    else
-    {
-        this->at->set_end_of_samples(read_index);
+        av_init_packet(&packet);
+        // Decode all the remaining frames in the buffer, until the end is reached
+        int frame_finished = 0;
+        while (avcodec_decode_audio4(codec_context, frame, &frame_finished, &packet) >= 0 && frame_finished)
+        {
+        }
     }
 
     // Cleanup.
-    mpg123_close(handle);
-    mpg123_delete(handle);
-    mpg123_exit();
-
+    av_free(frame);
+    avcodec_close(codec_context);
+    avformat_close_input(&format_context);
 
     // Maybe the sample rate used by the sound card to play the file is not the same as
-    // the one of the Mp3 file, so convert it if necessary.
+    // the one of the audio file, so convert it if necessary.
     this->resample_track();
 
     qDebug() << "Audio_file_decoding_process::mp3_decode: " << this->at->get_end_of_samples()
              << " samples decoded.";
 
     return true;
-}
-
-FLAC__StreamDecoderWriteStatus
-flac_write_callback(const FLAC__StreamDecoder *in_decoder,
-                    const FLAC__Frame         *in_frame,
-                    const FLAC__int32         *const in_buffer[],
-                    void                      *in_client_data)
-{
-    Audio_file_decoding_process* current_instance = static_cast<Audio_file_decoding_process*>(in_client_data);
-    return current_instance->flac_write(in_decoder, in_frame, in_buffer);
-}
-
-void
-flac_metadata_callback(const FLAC__StreamDecoder  *in_decoder,
-                       const FLAC__StreamMetadata *in_metadata,
-                       void                       *in_client_data)
-{
-    Audio_file_decoding_process* current_instance = static_cast<Audio_file_decoding_process*>(in_client_data);
-    return current_instance->flac_metadata(in_decoder, in_metadata);
-}
-
-void
-flac_error_callback(const FLAC__StreamDecoder      *in_decoder,
-                    FLAC__StreamDecoderErrorStatus  in_status,
-                    void                           *in_client_data)
-{
-    Audio_file_decoding_process* current_instance = static_cast<Audio_file_decoding_process*>(in_client_data);
-    return current_instance->flac_error(in_decoder, in_status);
-}
-
-bool
-Audio_file_decoding_process::flac_decode()
-{
-    qDebug() << "Audio_file_decoding_process::flac_decode...";
-
-    FLAC__bool                     ok              = true;
-    FLAC__StreamDecoder           *decoder         = 0;
-    FLAC__StreamDecoderInitStatus  init_status;
-    QByteArray                     file_name_array = this->file->fileName().toUtf8();
-    char                          *file_name       = (char*)file_name_array.constData();
-    this->flac_total_samples = 0;
-    this->flac_sample_rate   = 0;
-    this->flac_channels      = 0;
-    this->flac_bps           = 0;
-
-    if((decoder = FLAC__stream_decoder_new()) == NULL)
-    {
-        qWarning() << "Audio_file_decoding_process::flac_decode: ERROR: allocating decoder";
-        return false;
-    }
-
-    (void)FLAC__stream_decoder_set_md5_checking(decoder, true);
-
-    init_status = FLAC__stream_decoder_init_file(decoder, file_name, flac_write_callback, flac_metadata_callback, flac_error_callback, this);
-    if(init_status != FLAC__STREAM_DECODER_INIT_STATUS_OK)
-    {
-        qWarning() << "Audio_file_decoding_process::flac_decode: ERROR: initializing decoder: " << FLAC__StreamDecoderInitStatusString[init_status];
-        ok = false;
-    }
-
-    if(ok)
-    {
-        ok = FLAC__stream_decoder_process_until_end_of_stream(decoder);
-        if (!ok)
-        {
-            qWarning() << "Audio_file_decoding_process::flac_decode: decoding FAILED";
-        }
-        qDebug() << "Audio_file_decoding_process::flac_decode: state: " << FLAC__StreamDecoderStateString[FLAC__stream_decoder_get_state(decoder)];
-    }
-
-    FLAC__stream_decoder_delete(decoder);
-
-    // Maybe the sample rate used by the sound card to play the file is not the same as
-    // the one of the Flac file, so convert it if necessary.
-    this->resample_track();
-
-    qDebug() << "Audio_file_decoding_process::flac_decode: " << this->at->get_end_of_samples()
-             << " samples decoded.";
-
-    return true;
-}
-
-FLAC__StreamDecoderWriteStatus
-Audio_file_decoding_process::flac_write(const FLAC__StreamDecoder *in_decoder,
-                                        const FLAC__Frame         *in_frame,
-                                        const FLAC__int32         *const in_buffer[])
-{
-    size_t i;
-    char *samples = (char *)this->at->get_samples();
-
-    (void)in_decoder;
-
-    qDebug() << "Audio_file_decoding_process::flac_write...";
-
-    if(this->flac_total_samples == 0)
-    {
-        qWarning() << "Audio_file_decoding_process::flac_write: ERROR: decoding only works for FLAC files that have a total_samples count in STREAMINFO";
-        return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
-    }
-    if(this->flac_channels != 2 || this->flac_bps != 16)
-    {
-        qWarning() << "Audio_file_decoding_process::flac_write: ERROR: decoding only supports 16bit stereo streams";
-        return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
-    }
-
-    // Write decoded PCM samples.
-    int j = 0;
-    if ((this->at->get_end_of_samples() + (in_frame->header.blocksize * 2)) < this->at->get_max_nb_samples())
-    {
-        for(i = 0; i < in_frame->header.blocksize; i++)
-        {
-            // Left channel.
-            samples[(this->at->get_end_of_samples() + j) * 2]       = (FLAC__uint16)in_buffer[0][i];
-            samples[((this->at->get_end_of_samples() + j) * 2) + 1] = ((FLAC__uint16)in_buffer[0][i]) >> 8;
-            // Right channel.
-            samples[(this->at->get_end_of_samples() + j + 1) * 2]       = (FLAC__uint16)in_buffer[1][i];
-            samples[((this->at->get_end_of_samples() + j + 1) * 2) + 1] = ((FLAC__uint16)in_buffer[1][i]) >> 8;
-
-            j = j + 2;
-        }
-        this->at->set_end_of_samples(this->at->get_end_of_samples() + (in_frame->header.blocksize * 2));
-    }
-    else
-    {
-        qDebug() << "Audio_file_decoding_process::flac_write maximum samples decoded";
-    }
-
-    qDebug() << "Audio_file_decoding_process::flac_write done.";
-
-    return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
-}
-
-void
-Audio_file_decoding_process::flac_metadata(const FLAC__StreamDecoder  *in_decoder,
-                                           const FLAC__StreamMetadata *in_metadata)
-{
-    (void)in_decoder;
-
-    qDebug() << "Audio_file_decoding_process::flac_metadata...";
-
-    // Print some stats.
-    if(in_metadata->type == FLAC__METADATA_TYPE_STREAMINFO)
-    {
-        // Save for later.
-        this->flac_total_samples = in_metadata->data.stream_info.total_samples;
-        this->flac_sample_rate   = in_metadata->data.stream_info.sample_rate;
-        this->flac_channels      = in_metadata->data.stream_info.channels;
-        this->flac_bps           = in_metadata->data.stream_info.bits_per_sample;
-
-        // Store sample rate.
-        this->decoded_sample_rate = this->flac_sample_rate;
-
-        qDebug() << "Audio_file_decoding_process::flac_metadata: sample rate    : " << this->flac_sample_rate << " Hz";
-        qDebug() << "Audio_file_decoding_process::flac_metadata: channels       : " << this->flac_channels;
-        qDebug() << "Audio_file_decoding_process::flac_metadata: bits per sample: " << this->flac_bps;
-        qDebug() << "Audio_file_decoding_process::flac_metadata: total samples  : " << this->flac_total_samples;
-    }
-
-    qDebug() << "Audio_file_decoding_process::flac_metadata done.";
-}
-
-void
-Audio_file_decoding_process::flac_error(const FLAC__StreamDecoder      *in_decoder,
-                                        FLAC__StreamDecoderErrorStatus  in_status)
-{
-    (void)in_decoder;
-
-    qDebug() << "Audio_file_decoding_process::flac_error...";
-
-    qWarning() << "Audio_file_decoding_process::flac_error: Got error callback: " << FLAC__StreamDecoderErrorStatusString[in_status];
-
-    qDebug() << "Audio_file_decoding_process::flac_error done.";
 }

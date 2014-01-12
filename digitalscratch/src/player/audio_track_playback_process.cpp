@@ -77,6 +77,7 @@ Audio_track_playback_process::Audio_track_playback_process(Audio_track          
 
     }
     this->current_samples            = new unsigned int[in_nb_decks];
+    this->stopped                    = new bool        [in_nb_decks];
     this->remaining_times            = new unsigned int[in_nb_decks];
     this->src_state                  = new SRC_STATE*  [in_nb_decks];
     this->src_data                   = new SRC_DATA*   [in_nb_decks];
@@ -122,6 +123,7 @@ Audio_track_playback_process::~Audio_track_playback_process()
     }
     delete [] this->cue_points;
     delete [] this->current_samples;
+    delete [] this->stopped;
     delete [] this->remaining_times;
     delete [] this->sampler_current_samples;
     delete [] this->sampler_remaining_times;
@@ -142,24 +144,37 @@ Audio_track_playback_process::~Audio_track_playback_process()
 }
 
 bool
-Audio_track_playback_process::reset(unsigned short int in_index)
+Audio_track_playback_process::reset(unsigned short int in_deck_index)
 {
     qDebug() << "Audio_track_playback_process::reset...";
 
-    this->current_samples[in_index] = 0;
-    this->remaining_times[in_index] = 0;
+    this->current_samples[in_deck_index] = 0;
+    this->remaining_times[in_deck_index] = 0;
+    this->stopped[in_deck_index]         = false;
     for (int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
-        this->read_cue_point(in_index, i);
+        this->read_cue_point(in_deck_index, i);
     }
 
     // Reset libsamplerate.
-    if (this->src_state[in_index] != NULL)
+    if (this->src_state[in_deck_index] != NULL)
     {
-        src_reset(this->src_state[in_index]);
+        src_reset(this->src_state[in_deck_index]);
     }
 
-    qDebug() << "Audio_track_playback_process::done.";
+    qDebug() << "Audio_track_playback_process::reset done.";
+
+    return true;
+}
+
+bool
+Audio_track_playback_process::stop(unsigned short int in_deck_index)
+{
+    qDebug() << "Audio_track_playback_process::stop...";
+
+    this->stopped[in_deck_index] = true;
+
+    qDebug() << "Audio_track_playback_process::stop done.";
 
     return true;
 }
@@ -459,7 +474,7 @@ Audio_track_playback_process::run(unsigned short int  in_nb_samples,
         }
 
         // Track is not loaded, play empty sound.
-        if (this->ats[i]->get_end_of_samples() == 0)
+        if ((this->ats[i]->get_end_of_samples() == 0) || (this->stopped[i] == true))
         {
             this->play_empty(i, in_nb_samples, samples);
         }

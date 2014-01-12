@@ -9,7 +9,6 @@ win32 {
     CURRENT_DATE = $$system(win-external\tools\date.exe +%Y%m%d)
 }
 
-#VERSION = 1.4.0
 VERSION = 1.4.0+1.5.0SNAPSHOT$${CURRENT_DATE}
 DEFINES += VERSION=$${VERSION}
 
@@ -115,22 +114,14 @@ CONFIG(test) {
 
 
 #############################
-# External libraries for audio decoding
+# LibAV / FFmpeg
 win32 {
-    LIBS += -L$$PWD/win-external/mpg123/lib/ -llibmpg123
-    INCLUDEPATH += $$PWD/win-external/mpg123/include
-    DEPENDPATH += $$PWD/win-external/mpg123/include
+    LIBS += -L$$PWD/win-external/ffmpeg/lib/ -lavformat -lavcodec -lavutil
+    INCLUDEPATH += $$PWD/win-external/ffmpeg/include
+    DEPENDPATH += $$PWD/win-external/ffmpeg/include
 }
 unix {
-    LIBS += -lmpg123
-}
-win32 {
-    LIBS += -L$$PWD/win-external/flac-1.2.1-devel-win/lib/ -llibFLAC
-    INCLUDEPATH += $$PWD/win-external/flac-1.2.1-devel-win/include
-    DEPENDPATH += $$PWD/win-external/flac-1.2.1-devel-win/include
-}
-unix {
-    LIBS += -lFLAC
+    LIBS += -lavformat -lavcodec -lavutil
 }
 #############################
 
@@ -200,15 +191,16 @@ CONFIG += qt thread
 
 ############################
 # Icon for Windows build
-############################
 win32:RC_FILE = digitalscratch_resource.rc
+############################
 
 ############################
 # Copy necessary files to run on windows
 win32 {
     DLLS = \
-        $${PWD}/win-external/mpg123/lib/libmpg123.dll \
-        $${PWD}/win-external/flac-1.2.1-devel-win/lib/libFLAC.dll \
+        $${PWD}/win-external/ffmpeg/lib/avcodec-55.dll \
+        $${PWD}/win-external/ffmpeg/lib/avutil-52.dll \
+        $${PWD}/win-external/ffmpeg/lib/avformat-55.dll \
         $${PWD}/win-external/libdigitalscratch/lib/digitalscratch1.dll \
         $${PWD}/win-external/samplerate-0.1.8/lib/libsamplerate-0.dll \
         $${PWD}/win-external/jack-1.9.9/lib/libjack.dll \

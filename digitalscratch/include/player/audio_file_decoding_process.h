@@ -34,8 +34,6 @@
 #define AUDIO_FILE_DECODING_PROCESS_H_
 
 #include <iostream>
-#include <mpg123.h>
-#include <FLAC/stream_decoder.h>
 #include <QFileInfo>
 #include <QFile>
 #include <QString>
@@ -43,10 +41,6 @@
 #include <application_const.h>
 
 using namespace std;
-
-#define MP3_FILE_EXT  "mp3"
-#define FLAC_FILE_EXT "flac"
-#define OGG_FILE_EXT  "ogg"
 
 class Audio_file_decoding_process
 {
@@ -56,12 +50,6 @@ class Audio_file_decoding_process
     bool         do_resample;
     unsigned int decoded_sample_rate;
 
-    // Flac decoding specific.
-    FLAC__uint64 flac_total_samples;
-    unsigned     flac_sample_rate;
-    unsigned     flac_channels;
-    unsigned     flac_bps;
-
  public:
     Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample = true);
     virtual ~Audio_file_decoding_process();
@@ -69,35 +57,11 @@ class Audio_file_decoding_process
     void clear();
     bool run(const QString &in_path,
              const QString &in_file_hash,
-             const QString &in_music_key);    // Make decoding of the audio file depending of its extension.
+             const QString &in_music_key);    // Make decoding of the audio file.
 
  private:
-    void resample_track();             // Change sample rate of the audio track.
-
-    bool mp3_decode();                 // Make mp3 decoding and id3 (artist + track name).
-
-    bool flac_decode();                // Decode flac encoded file.
-
-    friend FLAC__StreamDecoderWriteStatus flac_write_callback(const FLAC__StreamDecoder *in_decoder,
-                                                              const FLAC__Frame         *in_frame,
-                                                              const FLAC__int32         *const in_buffer[],
-                                                              void                      *in_client_data);
-    FLAC__StreamDecoderWriteStatus flac_write(const FLAC__StreamDecoder *in_decoder,
-                                              const FLAC__Frame         *in_frame,
-                                              const FLAC__int32         *const in_buffer[]);
-
-    friend void flac_metadata_callback(const FLAC__StreamDecoder  *in_decoder,
-                                       const FLAC__StreamMetadata *in_metadata,
-                                       void                       *in_client_data);
-    void flac_metadata(const FLAC__StreamDecoder  *in_decoder,
-                       const FLAC__StreamMetadata *in_metadata);
-
-    friend void flac_error_callback(const FLAC__StreamDecoder      *in_decoder,
-                                    FLAC__StreamDecoderErrorStatus  in_status,
-                                    void                           *in_client_data);
-    void flac_error(const FLAC__StreamDecoder      *in_decoder,
-                    FLAC__StreamDecoderErrorStatus  in_status);
-
+    void resample_track();                    // Change sample rate of the audio track.
+    bool decode();                            // Internal audio decoding.
 };
 
 #endif /* AUDIO_FILE_DECODING_PROCESS_H_ */

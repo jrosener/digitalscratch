@@ -43,7 +43,7 @@
 #include <singleton.h>
 
 // Global static data.
-QStringList Utils::audio_file_extensions = QStringList() << "mp3" << "flac";
+QStringList Utils::audio_file_extensions = QStringList() << "ac3" << "flac" << "m4a" << "mp2" << "mp3" << "ogg" << "wav" << "wma";
 
 // Static utils functions.
 QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
