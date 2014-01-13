@@ -2,6 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <QString>
+#include <QStringList>
+#include <QFile>
+#include <QTextStream>
 using namespace std;
 
 #include "test_utils.h"
@@ -21,6 +25,116 @@ void l_create_default_input_samples(vector<float> &tb_1,
     tb_1.push_back(0.4f); tb_2.push_back(0.9f);
 
     return;
+}
+
+int l_read_text_file_to_string_list(const QString &file_name,
+                                    QStringList &string_list)
+{
+    QFile text_file(file_name);
+    if (text_file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
+    {
+        QTextStream text_stream(&text_file);
+        while(true)
+        {
+            QString line = text_stream.readLine();
+            if (line.isNull())
+            {
+                break;
+            }
+            else
+            {
+                // Do not take comments.
+                if (line.startsWith('#') == false)
+                {
+                    string_list.append(line);
+                }
+            }
+        }
+    }
+    else
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+int l_get_next_buffer_of_timecode(QStringList   &csv_data,
+                                  vector<float> &channel_1,
+                                  vector<float> &channel_2,
+                                  float         &expected_speed)
+{
+    // Init.
+    channel_1.clear();
+    channel_2.clear();
+    expected_speed = -99; // speed not found.
+
+    if (csv_data.size() == 0)
+    {
+        return true; // EOF
+    }
+
+    QString line = csv_data.at(0);
+    csv_data.removeAt(0);
+    if (csv_data.size() == 0)
+    {
+        return true; // EOF
+    }
+
+    // Parse until beginning of a buffer.
+    while (line.startsWith("buffer_size;speed") == false)
+    {
+        line = csv_data.at(0);
+        csv_data.removeAt(0);
+        if (csv_data.size() == 0)
+        {
+            return true; // EOF
+        }
+    }
+
+    // Get line for buffer size and expected speed.
+    line = csv_data.at(0);
+    csv_data.removeAt(0);
+    if (csv_data.size() == 0)
+    {
+        return true; // EOF
+    }
+    QStringList buffer_and_speed = line.split(';');
+
+    // Remove "channel1;channel2"
+    line = csv_data.at(0);
+    csv_data.removeAt(0);
+    if (csv_data.size() == 0)
+    {
+        return true; // EOF
+    }
+
+    // Get buffer size.
+    int buffer_size = buffer_and_speed.at(0).toInt();
+
+    // Get data.
+    if (csv_data.size() >= buffer_size)
+    {
+        for (int i = 0; i < buffer_size; i++)
+        {
+            line = csv_data.at(0);
+            csv_data.removeAt(0);
+            channel_1.push_back(line.split(';').at(0).toFloat());
+            channel_2.push_back(line.split(';').at(1).toFloat());
+        }
+    }
+    else
+    {
+        return true; // EOF
+    }
+
+    // Get expected speed.
+    if (buffer_and_speed.at(1) != "TODO")
+    {
+        expected_speed = buffer_and_speed.at(1).toFloat();
+    }
+
+    return false;
 }
 
 int l_read_input_samples_from_file(const char    *file_name,

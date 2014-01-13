@@ -14,6 +14,28 @@ void l_create_default_input_samples(vector<float> &tb_1,
                                     vector<float> &tb_2);
 
 /**
+ * @brief l_read_text_file_to_string_list read a file line by line and put result in string_list.
+ * @param file_name is the file to read.
+ * @param string_list is the list which will contain the lines of the file.
+ * @return 0 if everything is OK.
+ */
+int l_read_text_file_to_string_list(const QString &file_name,
+                                    QStringList &string_list);
+
+/**
+ * @brief l_get_next_buffer_of_timecode Extract 2 tables of timecode data from the first buffer (and remove it from csv_data).
+ * @param csv_data
+ * @param channel_1
+ * @param channel_2
+ * @param expected_speed
+ * @return true if we reached the end of the csv_data.
+ */
+int l_get_next_buffer_of_timecode(QStringList   &csv_data,
+                                  vector<float> &channel_1,
+                                  vector<float> &channel_2,
+                                  float         &expected_speed);
+
+/**
  * This function create 2 tables of float read from a specified file, syntax
  * of the text file must be:
  *      > 225           # ><space>buffer_size
