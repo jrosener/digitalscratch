@@ -64,6 +64,7 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
     this->latest_was_right                = false;
     this->old_volume                      = 0.0;
 
+    this->rpm                                = RPM_33;
     this->extreme_min                        = (float)DEFAULT_EXTREME_MIN;
     this->max_buffer_coeff                   = DEFAULT_MAX_BUFFER_COEFF;
     this->nb_cycle_before_changing_direction = DEFAULT_NB_CYCLE_BEFORE_CHANGING_DIRECTION;
