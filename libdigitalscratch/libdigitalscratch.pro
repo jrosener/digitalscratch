@@ -128,18 +128,20 @@ OTHER_FILES += \
 
 ############################
 # Copy dll and .h for windows build
-win32 {
-    CONFIG(debug, debug|release) {
-        OUT_PWD_WIN = $${OUT_PWD}/debug
-    } else {
-        OUT_PWD_WIN = $${OUT_PWD}/release
+CONFIG(!test) {
+    win32 {
+        CONFIG(debug, debug|release) {
+            OUT_PWD_WIN = $${OUT_PWD}/debug
+        } else {
+            OUT_PWD_WIN = $${OUT_PWD}/release
+        }
+        OUT_PWD_WIN ~= s,/,\\,g
+        PWD_WIN = $${PWD}
+        PWD_WIN ~= s,/,\\,g
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.lib) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.dll) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch_api.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
     }
-    OUT_PWD_WIN ~= s,/,\\,g
-    PWD_WIN = $${PWD}
-    PWD_WIN ~= s,/,\\,g
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.lib) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.dll) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
-    QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch_api.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
 }
 
 CONFIG(test) {
@@ -148,16 +150,16 @@ CONFIG(test) {
         CONFIG(debug, debug|release) {
             DESTDIR_WIN += debug
             DLLS = %QTDIR%/bin/Qt5Cored.dll \
-                   %QTDIR%/bin/icuin49.dll \
-                   %QTDIR%/bin/icuuc49.dll \
-                   %QTDIR%/bin/icudt49.dll \
+                   %QTDIR%/bin/icuin*.dll \
+                   %QTDIR%/bin/icuuc*.dll \
+                   %QTDIR%/bin/icudt*.dll \
                    %QTDIR%/bin/Qt5Testd.dll
         } else {
             DESTDIR_WIN += release
             DLLS = %QTDIR%/bin/Qt5Core.dll \
-                   %QTDIR%/bin/icuin49.dll \
-                   %QTDIR%/bin/icuuc49.dll \
-                   %QTDIR%/bin/icudt49.dll \
+                   %QTDIR%/bin/icuin*.dll \
+                   %QTDIR%/bin/icuuc*.dll \
+                   %QTDIR%/bin/icudt*.dll \
                    %QTDIR%/bin/Qt5Test.dll
         }
         DLLS ~= s,/,\\,g
