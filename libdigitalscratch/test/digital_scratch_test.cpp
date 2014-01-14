@@ -235,7 +235,7 @@ void DigitalScratch_Test::testCase_analyze_recording_data_2()
    vector<float> full_tab_1;
    vector<float> full_tab_2;
    vector<int>   tab_index;
-   QVERIFY2(l_read_input_samples_from_file(TIMECODE_FILE_1,
+   QVERIFY2(l_read_input_samples_from_file(TIMECODE_FS_33RPM_SPEED100,
                                            full_tab_1,
                                            full_tab_2,
                                            tab_index) == 0, "read input files");
@@ -294,7 +294,7 @@ void DigitalScratch_Test::testCase_analyze_recording_data_3()
    vector<float> full_tab_1;
    vector<float> full_tab_2;
    vector<int>   tab_index;
-   QVERIFY2(l_read_input_samples_from_file(TIMECODE_FILE_1,
+   QVERIFY2(l_read_input_samples_from_file(TIMECODE_FS_33RPM_SPEED100,
                                            full_tab_1,
                                            full_tab_2,
                                            tab_index) == 0, "read input samples");

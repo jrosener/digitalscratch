@@ -153,19 +153,17 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas()
 
     // Read text file containing timecode data.
     QStringList csv_data;
-    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_FILE_1, csv_data) == 0, "read CSV");
+    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_FS_33RPM_SPEED100, csv_data) == 0, "read CSV");
 
     // Provide several times next part of timecode to digital-scratch and get
     // playing parameters.
     vector<float> channel_1;
     vector<float> channel_2;
-    bool          eof              = false;
-    float         expected_speed   = 0.0;
-    float         speed            = 0.0;
-    float         volume           = 0.0;
-    float         position         = 0.0;
-    bool          are_params_found = false;
-
+    bool          eof             = false;
+    float         expected_speed  = 0.0;
+    float         speed           = 0.0;
+    float         volume          = 0.0;
+    float         position        = 0.0;
     while (eof == false)
     {
         // Get a chunk of timecode data.
@@ -177,19 +175,13 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas()
             QVERIFY2(dscratch_analyze_recorded_datas(id, &channel_1[0], &channel_2[0], (int)channel_1.size()) == 0, "analyze data");
 
             // Check if digital-scratch was able to find playing parameters.
-            are_params_found = dscratch_get_playing_parameters(id, &speed, &volume, &position);
-            if (are_params_found == true)
+            if (expected_speed != -99.0)
             {
-    //            cout << "\nspeed=" << speed
-    //                 << "\t" << "volume=" << volume
-    //                 << "\t" << "position=" << position
-    //                 << endl;
+                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
+                //cout << "speed=" << speed << "\t" << "volume=" << volume << "\t" << "position=" << position << endl;
 
-                // Speed diff should not be more than 2%.
-                if (expected_speed != -99)
-                {
-                    QVERIFY2(qAbs(speed - expected_speed) < 0.02, "speed diff < 2%");
-                }
+                // Speed diff should not be more than 0.1%.
+                QVERIFY2(qAbs(speed - expected_speed) < 0.001, "speed diff < 0.1%");
             }
         }
     }
@@ -199,11 +191,14 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas()
 }
 
 /**
- * Test dscratch_analyze_recorded_datas_interleaved() and dscratch_get_playing_parameters.
+ * Test dscratch_analyze_recorded_datas_interleaved() and dscratch_get_playing_parameters().
  *
  * Test Description:
- *      - Same as test_digital_scratch_api_dscratch_analyze_recorded_datas but
- *        by providing interleaved input datas.
+ *      - Create a turntable with default parameters.
+ *      - Enable position detection.
+ *      - Call dscratch_analyze_recorded_datas() continously on next part of
+ *        timecode. In the mean time check a little bit the quality of returned
+ *        playing parameters.
  */
 void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_interleaved()
 {
@@ -215,69 +210,52 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_interleave
     // Enable position detection.
     QVERIFY2(dscratch_set_position_detection(id, 1) == 0, "position detection");
 
-    // Prepare table of samples.
-    vector<float> full_tab_1;
-    vector<float> full_tab_2;
-    vector<int>   tab_index;
-    QVERIFY2(l_read_input_samples_from_file(TIMECODE_FILE_1,
-                                            full_tab_1,
-                                            full_tab_2,
-                                            tab_index) == 0, "read input samples");
-    QVERIFY2(full_tab_1.size() > 0, "check input samples");
+    // Read text file containing timecode data.
+    QStringList csv_data;
+    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_FS_33RPM_SPEED100, csv_data) == 0, "read CSV");
 
     // Provide several times next part of timecode to digital-scratch and get
     // playing parameters.
-    vector<float> tab_1;
-    vector<float> tab_2;
+    vector<float> channel_1;
+    vector<float> channel_2;
     vector<float> tab_interleaved;
-    int           start_index     = 0;
+    bool          eof             = false;
+    float         expected_speed  = 0.0;
     float         speed           = 0.0;
     float         volume          = 0.0;
     float         position        = 0.0;
-    bool          are_params_found = false;
-
-    for (unsigned int i = 0; i < tab_index.size(); i++)
+    while (eof == false)
     {
-        // Prepare a set of samples.
-        l_select_samples(full_tab_1,
-                         full_tab_2,
-                         start_index,
-                         tab_index[i] - 1,
-                         tab_1,
-                         tab_2);
-        for (unsigned int j = 0; j < tab_1.size(); j++)
+        // Get a chunk of timecode data.
+        eof = l_get_next_buffer_of_timecode(csv_data, channel_1, channel_2, expected_speed);
+
+        if (eof == false)
         {
-            tab_interleaved.push_back(tab_1[j]);
-            tab_interleaved.push_back(tab_2[j]);
-            tab_interleaved.push_back(0.0);
-            tab_interleaved.push_back(0.0);
+            // Prepare interleaved data.
+            for (unsigned int i = 0; i < channel_1.size(); i++)
+            {
+                tab_interleaved.push_back(channel_1[i]);
+                tab_interleaved.push_back(channel_2[i]);
+                tab_interleaved.push_back(0.0);
+                tab_interleaved.push_back(0.0);
+            }
+
+            // Check dscratch_analyze_recorded_datas()
+            QVERIFY2(dscratch_analyze_recorded_datas_interleaved(id, 4, 0, 1, &tab_interleaved[0], (int)channel_1.size()) == 0, "analyze interleaved data");
+
+            // Check if digital-scratch was able to find playing parameters.
+            if (expected_speed != -99.0)
+            {
+                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
+                //cout << "speed=" << speed << "\t" << "volume=" << volume << "\t" << "position=" << position << endl;
+
+                // Speed diff should not be more than 0.1%.
+                QVERIFY2(qAbs(speed - expected_speed) < 0.001, "speed diff < 0.1%");
+            }
+
+            // Cleanup.
+            tab_interleaved.clear();
         }
-
-        // Check dscratch_analyze_recorded_datas_interleaved()
-        QVERIFY2(dscratch_analyze_recorded_datas_interleaved(id, 4, 0, 1, &tab_interleaved[0], (int)tab_1.size()) == 0,
-                 QString("analyze interleaved data " + QString::number(i)).toStdString().c_str());
-        start_index = tab_index[i];
-
-        // Check if digital-scratch was able to find playing parameters.
-        are_params_found = dscratch_get_playing_parameters(id,
-                                                           &speed,
-                                                           &volume,
-                                                           &position);
-        if (are_params_found == true)
-        {
-            /*cout << "\nspeed=" << speed
-                 << "\t" << "volume=" << volume
-                 << "\t" << "position=" << position
-                 << endl;*/
-
-            // Speed diff should not be more than 2%.
-            QVERIFY2(qAbs(speed - 1.0f) < 0.02, "speed diff < 2%");
-        }
-
-        // Clean tables of input samples.
-        tab_1.clear();
-        tab_2.clear();
-        tab_interleaved.clear();
     }
 
     // Cleanup.
