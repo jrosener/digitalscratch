@@ -16,6 +16,7 @@ private Q_SLOTS:
 
     void testCase_dscratch_create_turntable_1();
     void testCase_dscratch_create_turntable_2();
+    void testCase_dscratch_analyze_recorded_datas_serato();
     void testCase_dscratch_analyze_recorded_datas();
     void testCase_dscratch_analyze_recorded_datas_interleaved();
     void testCase_dscratch_set_extreme_min();

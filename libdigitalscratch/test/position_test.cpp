@@ -67,17 +67,17 @@ void Position_Test::testCase_set_value()
     QVERIFY2(pos->set_value(NO_NEW_POSITION_FOUND) == true, "set no new position");
     QVERIFY2(pos->get_value() == NO_NEW_POSITION_FOUND,     "get no new position");
 
-    QVERIFY2(pos->set_value(2.4) == true, "set correct value 1");
+    QVERIFY2(pos->set_value(2.4f) == true,                   "set correct value 1");
     QVERIFY2(qFuzzyCompare(pos->get_value(), 2.4f) == false, "check value 1 not stored");
 
-    QVERIFY2(pos->set_value(3.3) == true,           "set correct value 2");
+    QVERIFY2(pos->set_value(3.3f) == true,          "set correct value 2");
     QVERIFY2(qFuzzyCompare(pos->get_value(), 3.3f), "check correct value 2");
 
-    QVERIFY2(pos->set_value(2.5) == true,                    "set correct value 3");
+    QVERIFY2(pos->set_value(2.5f) == true,                   "set correct value 3");
     QVERIFY2(qFuzzyCompare(pos->get_value(), 2.5f) == false, "check value 3 not stored");
     QVERIFY2(qFuzzyCompare(pos->get_value(), 3.3f) == true,  "check previous value");
 
-    QVERIFY2(pos->set_value(5.3) == false,                   "bad value");
+    QVERIFY2(pos->set_value(5.3f) == false,                  "bad value");
     QVERIFY2(qFuzzyCompare(pos->get_value(), 5.3f) == false, "bad value not stored");
     QVERIFY2(qFuzzyCompare(pos->get_value(), 3.3f) == true,  "previous value still there");
 

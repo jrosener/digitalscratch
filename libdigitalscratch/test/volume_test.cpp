@@ -54,9 +54,9 @@ void Volume_Test::testCase_set_value()
    Volume *vol = new Volume("turntable_name");
 
    QVERIFY2(vol->get_turntable_name() == "turntable_name",   "get default name");
-   QVERIFY2(vol->set_value(-1.0) == false,                   "set negative value");
+   QVERIFY2(vol->set_value(-1.0f) == false,                  "set negative value");
    QVERIFY2(qFuzzyCompare(vol->get_value(), -1.0f) == false, "get default value");
-   QVERIFY2(vol->set_value(2.4) == true,                     "set correct value");
+   QVERIFY2(vol->set_value(2.4f) == true,                    "set correct value");
    QVERIFY2(qFuzzyCompare(vol->get_value(), 2.4f) == true,   "check correct value");
 
    // Cleanup

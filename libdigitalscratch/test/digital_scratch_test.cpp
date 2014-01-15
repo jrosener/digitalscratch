@@ -135,7 +135,7 @@ void DigitalScratch_Test::testCase_set_max_slow_speed()
    QVERIFY2(dscratch->get_max_slow_speed()                       == DEFAULT_MAX_SLOW_SPEED, "get default value");
    QVERIFY2(dscratch->set_max_slow_speed(-99)                    == false,                  "set negative value");
    QVERIFY2(dscratch->get_max_slow_speed()                       == DEFAULT_MAX_SLOW_SPEED, "get default value again");
-   QVERIFY2(dscratch->set_max_slow_speed(10.2)                   == true,                   "set correct value");
+   QVERIFY2(dscratch->set_max_slow_speed(10.2f)                  == true,                   "set correct value");
    QVERIFY2(qFuzzyCompare(dscratch->get_max_slow_speed(), 10.2f) == true,                   "get correct value");
 
    // Cleanup.
@@ -165,7 +165,7 @@ void DigitalScratch_Test::testCase_set_max_speed_diff()
    QVERIFY2(qFuzzyCompare(dscratch->get_max_speed_diff(), DEFAULT_MAX_SPEED_DIFF) == true, "get default value");
    QVERIFY2(dscratch->set_max_speed_diff(-99) == false,                                    "set negative value");
    QVERIFY2(qFuzzyCompare(dscratch->get_max_speed_diff(), DEFAULT_MAX_SPEED_DIFF) == true, "get default value again");
-   QVERIFY2(dscratch->set_max_speed_diff(10.2) == true,                                    "set correct value");
+   QVERIFY2(dscratch->set_max_speed_diff(10.2f) == true,                                   "set correct value");
    QVERIFY2(qFuzzyCompare(dscratch->get_max_speed_diff(), 10.2f) == true,                  "get correct value");
 
    // Cleanup.

@@ -134,7 +134,7 @@ void Speed_Test::testCase_set_value()
        QVERIFY2(speed->set_value(NO_NEW_SPEED_FOUND) == true, "set no new speed");
        QVERIFY2(speed->get_value() == NO_NEW_SPEED_FOUND,     "get no new speed");
    }
-   QVERIFY2(speed->set_value(1.08) == true,                   "set correct speed 2");
+   QVERIFY2(speed->set_value(1.08f) == true,                  "set correct speed 2");
    QVERIFY2(qFuzzyCompare(speed->get_value(), 1.08f) == true, "get correct speed 2");
 
    for (int i = 0; i < speed->get_max_nb_no_new_speed_found()-1; i++)
@@ -142,7 +142,7 @@ void Speed_Test::testCase_set_value()
        QVERIFY2(speed->set_value(NO_NEW_SPEED_FOUND) == true, "set no new speed");
        QVERIFY2(speed->get_value() == NO_NEW_SPEED_FOUND,     "get no new speed");
    }
-   QVERIFY2(speed->set_value(5.04) == true,           "set correct speed 3");
+   QVERIFY2(speed->set_value(5.04f) == true,          "set correct speed 3");
    QVERIFY2(qFuzzyCompare(speed->get_value(), 5.04f), "get correct speed 3");
 
    // Cleanup
