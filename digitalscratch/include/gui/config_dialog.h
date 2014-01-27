@@ -90,20 +90,8 @@ class Config_dialog : public QDialog
     QCheckBox            *autostart_detection_check;
     QComboBox            *vinyl_type_select;
     QComboBox            *rpm_select;
-    QSlider              *extreme_min;
-    QLabel               *extreme_min_value;
     QSlider              *amplify_coeff;
     QLabel               *amplify_coeff_value;
-    QSlider              *max_speed_diff;
-    QLabel               *max_speed_diff_value;
-    QSlider              *slow_speed_algo_usage;
-    QLabel               *slow_speed_algo_usage_value;
-    QSlider              *max_nb_speed_for_stability;
-    QLabel               *max_nb_speed_for_stability_value;
-    QSlider              *nb_cycle_before_changing_direction;
-    QLabel               *nb_cycle_before_changing_direction_value;
-    QSlider              *low_pass_filter_max_speed_usage;
-    QLabel               *low_pass_filter_max_speed_usage_value;
     ShortcutQLabel       *kb_switch_playback;
     ShortcutQLabel       *kb_load_track_on_deck;
     ShortcutQLabel       *kb_play_begin_track_on_deck;
@@ -141,33 +129,15 @@ class Config_dialog : public QDialog
     void     fill_tab_sound_card();
     void     fill_tab_motion_detect();
     void     fill_tab_shortcuts();
-    void     set_extreme_min_slider(float in_value);
-    float    get_extreme_min_slider();
     void     set_amplify_coeff_slider(int in_value);
     int      get_amplify_coeff_slider();
-    void     set_low_pass_filter_max_speed_usage_slider(float in_value);
-    float    get_low_pass_filter_max_speed_usage_slider();
-    void     set_max_speed_diff_slider(float in_value);
-    float    get_max_speed_diff_slider();
-    void     set_slow_speed_algo_usage_slider(float in_value);
-    float    get_slow_speed_algo_usage_slider();
-    void     set_max_nb_speed_for_stability_slider(int in_value);
-    int      get_max_nb_speed_for_stability_slider();
-    void     set_nb_cycle_before_changing_direction_slider(int in_value);
-    int      get_nb_cycle_before_changing_direction_slider();
     bool     is_duplicate_shortcut(const QString& in_value);
 
  private slots:
     bool show_browse_window();
     void reset_shortcuts();
     void reset_motion_detection_params();
-    void set_extreme_min_value(int in_value);
     void set_amplify_coeff_value(int in_value);
-    void set_low_pass_filter_max_speed_usage_value(int in_value);
-    void set_max_speed_diff_value(int in_value);
-    void set_slow_speed_algo_usage_value(int in_value);
-    void set_max_nb_speed_for_stability_value(int in_value);
-    void set_nb_cycle_before_changing_direction_value(int in_value);
     void validate_and_set_shortcut(const QString& in_value);
 };
 

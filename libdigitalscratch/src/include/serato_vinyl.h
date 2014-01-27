@@ -55,6 +55,8 @@
  */
 #define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1350
 
+#define DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.20f
+
 /**
  * Define a Serato Scratch Live timecode vinyl class.\n
  * @author Julien Rosener
@@ -88,6 +90,7 @@ class Serato_vinyl : public Coded_vinyl
         float get_position();
 
         int get_sinusoidal_frequency();
+        float get_min_amplitude_for_normal_speed();
 
     private:
 

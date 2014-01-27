@@ -55,6 +55,8 @@
  */
 #define MIXVIBES_SINUSOIDAL_FREQ_45RPM 1755
 
+#define DEFAULT_MIXVIBES_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.20f
+
 /**
  * Define a Mixvibes DVS timecode vinyl class.\n
  * @author Julien Rosener
@@ -88,6 +90,7 @@ class Mixvibes_vinyl : public Coded_vinyl
         float get_position();
 
         int get_sinusoidal_frequency();
+        float get_min_amplitude_for_normal_speed();
 };
 
 #endif //_MIXVIBES_VINYL_H_

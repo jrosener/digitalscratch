@@ -15,11 +15,5 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCase_constructor();
-    void testCase_set_max_nb_buffer();
-    void testCase_set_max_nb_speed_for_stability();
-    void testCase_set_max_slow_speed();
-    void testCase_set_max_speed_diff();
-    void testCase_analyze_recording_data_1();
-    void testCase_analyze_recording_data_2();
-    void testCase_analyze_recording_data_3();
+    void testCase_analyze_recording_data();
 };

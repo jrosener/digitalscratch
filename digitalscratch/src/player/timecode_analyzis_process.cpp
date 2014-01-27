@@ -38,8 +38,6 @@
 #include "timecode_analyzis_process.h"
 #include <digital_scratch_api.h>
 
-#define SPEED_FOR_VOLUME_CUT  0.90
-
 Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_params[],
                                                      unsigned short int   in_nb_decks,
                                                      QString              in_vinyl_type,
@@ -165,11 +163,6 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
                 }
                 if (volume != NO_NEW_VOLUME_FOUND)
                 {
-                    // TODO: move this job into DigitalScratch library.
-                    if (fabs(speed) < SPEED_FOR_VOLUME_CUT)
-                    {
-                        volume = fabs(speed) / SPEED_FOR_VOLUME_CUT;
-                    }
                     this->params[i]->set_volume(volume);
                     this->params[i]->set_new_volume(true);
                 }

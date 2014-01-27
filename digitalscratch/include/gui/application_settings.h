@@ -196,41 +196,9 @@ class Application_settings : public QObject
     unsigned short int     get_rpm_default();
     QList<unsigned short> *get_available_rpms();
 
-    void  set_extreme_min(float in_extreme_min);
-    float get_extreme_min();
-    float get_extreme_min_default();
-
-    void  set_max_nb_buffer(int in_nb_buffer);
-    int   get_max_nb_buffer();
-    int   get_max_nb_buffer_default();
-
-    void  set_max_buffer_coeff(int in_buffer_coeff);
-    int   get_max_buffer_coeff();
-    int   get_max_buffer_coeff_default();
-
     void  set_input_amplify_coeff(int in_coeff);
     int   get_input_amplify_coeff();
     int   get_input_amplify_coeff_default();
-
-    void  set_max_speed_diff(float in_diff);
-    float get_max_speed_diff();
-    float get_max_speed_diff_default();
-
-    void  set_slow_speed_algo_usage(float in_speed);
-    float get_slow_speed_algo_usage();
-    float get_slow_speed_algo_usage_default();
-
-    void  set_max_nb_speed_for_stability(int in_nb_speed);
-    int   get_max_nb_speed_for_stability();
-    int   get_max_nb_speed_for_stability_default();
-
-    void  set_nb_cycle_before_changing_direction(int in_nb_cycle);
-    int   get_nb_cycle_before_changing_direction();
-    int   get_nb_cycle_before_changing_direction_default();
-
-    void  set_low_pass_filter_max_speed_usage(float in_low_pass_filter_max_speed_usage);
-    float get_low_pass_filter_max_speed_usage();
-    float get_low_pass_filter_max_speed_usage_default();
 
     void    set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);

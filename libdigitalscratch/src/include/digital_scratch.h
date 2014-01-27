@@ -79,35 +79,7 @@ class Digital_scratch : public Controller
         Coded_vinyl *vinyl;
 
         int is_position_detection_enabled;
-        float player_track_length;
-        float player_current_position;
-        int confirm_position_jump;
-
-        float *speeds_for_stability;
-        int speeds_for_stability_length;
-
-        /**
-         * Table containing the concatenation of input sample buffers 1
-         */
-        vector<float> total_input_samples_1;
-
-        /**
-         * Table containing the concatenation of input sample buffers 2
-         */
-        vector<float> total_input_samples_2;
-
-        float old_speed;
-
-        int nb_speed;
-        int nb_buffer;
-        int speed_state;
-        bool is_waiting_other_buffer;
         unsigned int sample_rate;
-
-        int max_nb_speed_for_stability;
-        int max_nb_buffer;
-        float max_speed_diff;
-        float max_slow_speed;
 
     /* Constructor / Destructor */
     public:
@@ -144,58 +116,6 @@ class Digital_scratch : public Controller
                                     vector<float> &input_samples_2);
 
         /**
-         * Set the maximum speed difference that we allow.
-         * @param diff is max_speed_diff (must be > 0.0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_speed_diff(float diff);
-
-        /**
-         * Get the maximum speed difference that we allow.
-         * @return max_speed_diff.
-         */
-        float get_max_speed_diff();
-
-        /**
-         * Set the minimum speed we will accept.
-         * @param slow_speed is max_slow_speed (must be > 0.0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_slow_speed(float slow_speed);
-
-        /**
-         * Get the the minimum speed we will accept.
-         * @return max_slow_speed.
-         */
-        float get_max_slow_speed();
-
-        /**
-         * Set the maximum number of buffer we will accumulate.
-         * @param nb is max_nb_buffer (must be > 0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_nb_buffer(int nb);
-
-        /**
-         * Get the maximum number of buffer we will accumulate.
-         * @return max_nb_buffer.
-         */
-        int get_max_nb_buffer();
-
-        /**
-         * Set the maximum number of speed we will use for stability algorythm.
-         * @param nb is max_nb_speed_for_stability (must be > 0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_nb_speed_for_stability(int nb);
-
-        /**
-         * Get the maximum number of speed we will use for stability algorythm.
-         * @return max_nb_speed_for_stability.
-         */
-        int get_max_nb_speed_for_stability();
-
-        /**
          * Set detection of position.
          * @param is_enabled must be TRUE to enable position detection.
          * @return TRUE if all is OK, otherwise FALSE.
@@ -223,7 +143,6 @@ class Digital_scratch : public Controller
         void clean();
 
         void  calculate_speed();
-        void  calculate_average_speed();
         float get_speed();
 
         void  calculate_position();
@@ -231,26 +150,6 @@ class Digital_scratch : public Controller
 
         void  calculate_volume();
         float get_volume();
-
-        void calculate_position_and_volume();
-
-        bool store_speed_for_stability();
-        bool is_speed_stable();
-        bool is_speed_slow();
-        bool is_old_speed_close_to_current();
-
-        bool add_new_input_samples(vector<float> &input_samples_1,
-                                   vector<float> &input_samples_2);
-        bool delete_total_input_samples();
-
-        bool analyze_recording_data_unstable_speed(vector<float> &input_samples_1,
-                                                   vector<float> &input_samples_2);
-
-        bool analyze_recording_data_slow_speed(vector<float> &input_samples_1,
-                                               vector<float> &input_samples_2);
-
-        bool analyze_recording_data_stable_speed(vector<float> &input_samples_1,
-                                                 vector<float> &input_samples_2);
 };
 
 #endif //_DIGITAL_SCRATCH_H_

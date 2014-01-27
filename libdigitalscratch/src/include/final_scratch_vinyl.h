@@ -56,6 +56,8 @@
  */
 #define FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM 1200
 
+#define DEFAULT_FS_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.05f
+
 /**
  * Bit value 1 for timecode start sequence
  */
@@ -109,6 +111,7 @@ class Final_scratch_vinyl : public Coded_vinyl
         float get_position();
 
         int get_sinusoidal_frequency();
+        float get_min_amplitude_for_normal_speed();
 
     private:
         /**

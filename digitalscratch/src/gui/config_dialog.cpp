@@ -70,20 +70,8 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     }
 
     // Init motion detection parameters widgets.
-    this->extreme_min                              = new QSlider(Qt::Horizontal, this);
-    this->extreme_min_value                        = new QLabel(this);
     this->amplify_coeff                            = new QSlider(Qt::Horizontal, this);
     this->amplify_coeff_value                      = new QLabel(this);
-    this->max_speed_diff                           = new QSlider(Qt::Horizontal, this);
-    this->max_speed_diff_value                     = new QLabel(this);
-    this->slow_speed_algo_usage                    = new QSlider(Qt::Horizontal, this);
-    this->slow_speed_algo_usage_value              = new QLabel(this);
-    this->max_nb_speed_for_stability               = new QSlider(Qt::Horizontal, this);
-    this->max_nb_speed_for_stability_value         = new QLabel(this);
-    this->nb_cycle_before_changing_direction       = new QSlider(Qt::Horizontal, this);
-    this->nb_cycle_before_changing_direction_value = new QLabel(this);
-    this->low_pass_filter_max_speed_usage          = new QSlider(Qt::Horizontal, this);
-    this->low_pass_filter_max_speed_usage_value    = new QLabel(this);
     this->vinyl_type_select                        = new QComboBox(this);
     QList<QString> *available_vinyl_types          = this->settings->get_available_vinyl_types();
     for (int i = 0; i < available_vinyl_types->size(); i++)
@@ -261,68 +249,14 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(rpm_label,        2, 0);
     motion_detect_layout->addWidget(this->rpm_select, 2, 1);
 
-    QLabel *extreme_min_label = new QLabel(tr("Minimal signal:"), this);
-    this->extreme_min->setMinimum(1);
-    this->extreme_min->setMaximum(99);
-    this->extreme_min->setSingleStep(1);
-    motion_detect_layout->addWidget(extreme_min_label, 3, 0);
-    motion_detect_layout->addWidget(this->extreme_min, 3, 1);
-    motion_detect_layout->addWidget(this->extreme_min_value, 3, 2);
-    QObject::connect(this->extreme_min, SIGNAL(valueChanged(int)), this, SLOT(set_extreme_min_value(int)));
-
     QLabel *amplify_coeff_label = new QLabel(tr("Amplification factor for input signal:"), this);
     this->amplify_coeff->setMinimum(1);
     this->amplify_coeff->setMaximum(20);
     this->amplify_coeff->setSingleStep(1);
-    motion_detect_layout->addWidget(amplify_coeff_label, 4, 0);
-    motion_detect_layout->addWidget(this->amplify_coeff, 4, 1);
-    motion_detect_layout->addWidget(this->amplify_coeff_value, 4, 2);
+    motion_detect_layout->addWidget(amplify_coeff_label, 3, 0);
+    motion_detect_layout->addWidget(this->amplify_coeff, 3, 1);
+    motion_detect_layout->addWidget(this->amplify_coeff_value, 3, 2);
     QObject::connect(this->amplify_coeff, SIGNAL(valueChanged(int)), this, SLOT(set_amplify_coeff_value(int)));
-
-    QLabel *low_pass_filter_max_speed_usage_label = new QLabel(tr("Enable low pass filter under this speed:"), this);
-    this->low_pass_filter_max_speed_usage->setMinimum(1);
-    this->low_pass_filter_max_speed_usage->setMaximum(199);
-    this->low_pass_filter_max_speed_usage->setSingleStep(1);
-    motion_detect_layout->addWidget(low_pass_filter_max_speed_usage_label, 5, 0);
-    motion_detect_layout->addWidget(this->low_pass_filter_max_speed_usage, 5, 1);
-    motion_detect_layout->addWidget(this->low_pass_filter_max_speed_usage_value, 5, 2);
-    QObject::connect(this->low_pass_filter_max_speed_usage, SIGNAL(valueChanged(int)), this, SLOT(set_low_pass_filter_max_speed_usage_value(int)));
-
-    QLabel *max_speed_diff_label = new QLabel(tr("Maximum speed difference allowed beetween 2 speeds:"), this);
-    this->max_speed_diff->setMinimum(1);
-    this->max_speed_diff->setMaximum(99);
-    this->max_speed_diff->setSingleStep(1);
-    motion_detect_layout->addWidget(max_speed_diff_label, 6, 0);
-    motion_detect_layout->addWidget(this->max_speed_diff, 6, 1);
-    motion_detect_layout->addWidget(this->max_speed_diff_value, 6, 2);
-    QObject::connect(this->max_speed_diff, SIGNAL(valueChanged(int)), this, SLOT(set_max_speed_diff_value(int)));
-
-    QLabel *slow_speed_algo_usage_label = new QLabel(tr("Enable slow speed detection if speed is under this value:"), this);
-    this->slow_speed_algo_usage->setMinimum(1);
-    this->slow_speed_algo_usage->setMaximum(99);
-    this->slow_speed_algo_usage->setSingleStep(1);
-    motion_detect_layout->addWidget(slow_speed_algo_usage_label, 7, 0);
-    motion_detect_layout->addWidget(this->slow_speed_algo_usage, 7, 1);
-    motion_detect_layout->addWidget(this->slow_speed_algo_usage_value, 7, 2);
-    QObject::connect(this->slow_speed_algo_usage, SIGNAL(valueChanged(int)), this, SLOT(set_slow_speed_algo_usage_value(int)));
-
-    QLabel *max_nb_speed_for_stability_label = new QLabel(tr("Maximum number of speeds for stability system:"), this);
-    this->max_nb_speed_for_stability->setMinimum(1);
-    this->max_nb_speed_for_stability->setMaximum(99);
-    this->max_nb_speed_for_stability->setSingleStep(1);
-    motion_detect_layout->addWidget(max_nb_speed_for_stability_label, 8, 0);
-    motion_detect_layout->addWidget(this->max_nb_speed_for_stability, 8, 1);
-    motion_detect_layout->addWidget(this->max_nb_speed_for_stability_value, 8, 2);
-    QObject::connect(this->max_nb_speed_for_stability, SIGNAL(valueChanged(int)), this, SLOT(set_max_nb_speed_for_stability_value(int)));
-
-    QLabel *nb_cycle_before_changing_direction_label = new QLabel(tr("Number of cycles before switching to new direction:"), this);
-    this->nb_cycle_before_changing_direction->setMinimum(1);
-    this->nb_cycle_before_changing_direction->setMaximum(99);
-    this->nb_cycle_before_changing_direction->setSingleStep(1);
-    motion_detect_layout->addWidget(nb_cycle_before_changing_direction_label, 9, 0);
-    motion_detect_layout->addWidget(this->nb_cycle_before_changing_direction, 9, 1);
-    motion_detect_layout->addWidget(this->nb_cycle_before_changing_direction_value, 9, 2);
-    QObject::connect(this->nb_cycle_before_changing_direction, SIGNAL(valueChanged(int)), this, SLOT(set_nb_cycle_before_changing_direction_value(int)));
 
     QPushButton *motion_params_reset_to_default = new QPushButton(this);
     motion_params_reset_to_default->setText(tr("Reset to default"));
@@ -348,42 +282,8 @@ void Config_dialog::fill_tab_motion_detect()
 
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm())));
 
-    this->set_extreme_min_slider(this->settings->get_extreme_min());
-    this->set_extreme_min_value(this->extreme_min->value());
-
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff());
     this->set_amplify_coeff_value(this->amplify_coeff->value());
-
-    this->set_low_pass_filter_max_speed_usage_slider(this->settings->get_low_pass_filter_max_speed_usage());
-    this->set_low_pass_filter_max_speed_usage_value(this->low_pass_filter_max_speed_usage->value());
-
-    this->set_max_speed_diff_slider(this->settings->get_max_speed_diff());
-    this->set_max_speed_diff_value(this->max_speed_diff->value());
-
-    this->set_slow_speed_algo_usage_slider(this->settings->get_slow_speed_algo_usage());
-    this->set_slow_speed_algo_usage_value(this->slow_speed_algo_usage->value());
-
-    this->set_max_nb_speed_for_stability_slider(this->settings->get_max_nb_speed_for_stability());
-    this->set_max_nb_speed_for_stability_value(this->max_nb_speed_for_stability->value());
-
-    this->set_nb_cycle_before_changing_direction_slider(this->settings->get_nb_cycle_before_changing_direction());
-    this->set_nb_cycle_before_changing_direction_value(this->nb_cycle_before_changing_direction->value());
-}
-
-void Config_dialog::set_extreme_min_slider(float in_value)
-{
-    this->extreme_min->setValue(qRound(in_value * 100.0));
-}
-
-float Config_dialog::get_extreme_min_slider()
-{
-   return this->extreme_min->value() / 100.0;
-}
-
-void
-Config_dialog::set_extreme_min_value(int)
-{
-    this->extreme_min_value->setText((new QString)->setNum(this->get_extreme_min_slider()));
 }
 
 void Config_dialog::set_amplify_coeff_slider(int in_value)
@@ -400,86 +300,6 @@ void
 Config_dialog::set_amplify_coeff_value(int)
 {
     this->amplify_coeff_value->setText((new QString)->setNum(this->get_amplify_coeff_slider()));
-}
-
-void Config_dialog::set_low_pass_filter_max_speed_usage_slider(float in_value)
-{
-    this->low_pass_filter_max_speed_usage->setValue(qRound(in_value * 100.0));
-}
-
-float Config_dialog::get_low_pass_filter_max_speed_usage_slider()
-{
-   return this->low_pass_filter_max_speed_usage->value() / 100.0;
-}
-
-void
-Config_dialog::set_low_pass_filter_max_speed_usage_value(int)
-{
-    this->low_pass_filter_max_speed_usage_value->setText((new QString)->setNum(this->get_low_pass_filter_max_speed_usage_slider()));
-}
-
-void Config_dialog::set_max_speed_diff_slider(float in_value)
-{
-    this->max_speed_diff->setValue(qRound(in_value * 100.0));
-}
-
-float Config_dialog::get_max_speed_diff_slider()
-{
-   return this->max_speed_diff->value() / 100.0;
-}
-
-void
-Config_dialog::set_max_speed_diff_value(int)
-{
-    this->max_speed_diff_value->setText((new QString)->setNum(this->get_max_speed_diff_slider()));
-}
-
-void Config_dialog::set_slow_speed_algo_usage_slider(float in_value)
-{
-    this->slow_speed_algo_usage->setValue(qRound(in_value * 100.0));
-}
-
-float Config_dialog::get_slow_speed_algo_usage_slider()
-{
-   return this->slow_speed_algo_usage->value() / 100.0;
-}
-
-void
-Config_dialog::set_slow_speed_algo_usage_value(int)
-{
-    this->slow_speed_algo_usage_value->setText((new QString)->setNum(this->get_slow_speed_algo_usage_slider()));
-}
-
-void Config_dialog::set_max_nb_speed_for_stability_slider(int in_value)
-{
-    this->max_nb_speed_for_stability->setValue(in_value);
-}
-
-int Config_dialog::get_max_nb_speed_for_stability_slider()
-{
-   return this->max_nb_speed_for_stability->value();
-}
-
-void
-Config_dialog::set_max_nb_speed_for_stability_value(int)
-{
-    this->max_nb_speed_for_stability_value->setText((new QString)->setNum(this->get_max_nb_speed_for_stability_slider()));
-}
-
-void
-Config_dialog::set_nb_cycle_before_changing_direction_value(int)
-{
-    this->nb_cycle_before_changing_direction_value->setText((new QString)->setNum(this->get_nb_cycle_before_changing_direction_slider()));
-}
-
-void Config_dialog::set_nb_cycle_before_changing_direction_slider(int in_value)
-{
-    this->nb_cycle_before_changing_direction->setValue(in_value);
-}
-
-int Config_dialog::get_nb_cycle_before_changing_direction_slider()
-{
-   return this->nb_cycle_before_changing_direction->value();
 }
 
 QWidget *Config_dialog::init_tab_shortcuts()
@@ -708,13 +528,7 @@ void Config_dialog::reset_motion_detection_params()
     this->autostart_detection_check->setChecked(this->settings->get_autostart_motion_detection_default());
     this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findText(this->settings->get_vinyl_type_default()));
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
-    this->set_extreme_min_slider(this->settings->get_extreme_min_default());
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
-    this->set_low_pass_filter_max_speed_usage_slider(this->settings->get_low_pass_filter_max_speed_usage_default());
-    this->set_max_speed_diff_slider(this->settings->get_max_speed_diff_default());
-    this->set_slow_speed_algo_usage_slider(this->settings->get_slow_speed_algo_usage_default());
-    this->set_max_nb_speed_for_stability_slider(this->settings->get_max_nb_speed_for_stability_default());
-    this->set_nb_cycle_before_changing_direction_slider(this->settings->get_nb_cycle_before_changing_direction_default());
 }
 
 void Config_dialog::reset_shortcuts()
@@ -773,13 +587,7 @@ Config_dialog::accept()
     this->settings->set_auto_jack_connections(this->auto_jack_connections_check->isChecked());
 
     // Set motion detection settings.
-    this->settings->set_extreme_min(this->get_extreme_min_slider());
     this->settings->set_input_amplify_coeff(this->get_amplify_coeff_slider());
-    this->settings->set_low_pass_filter_max_speed_usage(this->get_low_pass_filter_max_speed_usage_slider());
-    this->settings->set_max_speed_diff(this->get_max_speed_diff_slider());
-    this->settings->set_slow_speed_algo_usage(this->get_slow_speed_algo_usage_slider());
-    this->settings->set_max_nb_speed_for_stability(this->get_max_nb_speed_for_stability_slider());
-    this->settings->set_nb_cycle_before_changing_direction(this->get_nb_cycle_before_changing_direction_slider());
 
     // Set keyboard shortcuts.
     this->settings->set_keyboard_shortcut(KB_SWITCH_PLAYBACK,           this->kb_switch_playback->text());

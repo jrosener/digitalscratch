@@ -62,61 +62,6 @@ Final_scratch_vinyl::~Final_scratch_vinyl()
                              "- Final_scratch_vinyl object deleted");
 }
 
-int Final_scratch_vinyl::get_timecode_start_sequence_position()
-{
-    // search a sequence of 1 1 1 0 on right channel bit list (all pair index
-    // value of bit_list)
-    unsigned int i = 0;
-
-    for (i = 0; i < this->bit_list.size() - 6; i = i+2)
-    {
-        if (this->bit_list[i].value == START_SEQ_BIT1 \
-            && this->bit_list[i+2].value == START_SEQ_BIT2 \
-            && this->bit_list[i+4].value == START_SEQ_BIT3 \
-            && this->bit_list[i+6].value == START_SEQ_BIT4)
-        {
-            // start sequence found
-            #ifdef TRACE_POSITION
-                Utils::trace_position(TRACE_PREFIX_FSVINYL, "Start sequence found on index " \
-                                      + Utils::to_string(i));
-            #endif
-
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-unsigned int Final_scratch_vinyl::get_timecode()
-{
-    // bit_list combine bits from right and left channel, the timecode is
-    // 16 bits from right channel and 16 bits from left channel
-    unsigned int i = 0;
-    int j = 31;
-    unsigned int timecode = 0;
-
-    for (i = 0; i < 32; i = i + 2)
-    {
-        if (this->bit_list[i].value == BIT_1)
-        {
-            timecode = timecode | (1 << j);
-        }
-        j--;
-    }
-
-    for (i = 1; i < 32; i = i + 2)
-    {
-        if (this->bit_list[i].value == BIT_1)
-        {
-            timecode = timecode | (1 << j);
-        }
-        j--;
-    }
-
-    return timecode;
-}
-
 float Final_scratch_vinyl::get_position_from_timecode_value(unsigned int timecode)
 {
     // get the corresponding value in list of timecode (hard coded)
@@ -292,3 +237,10 @@ int Final_scratch_vinyl::get_sinusoidal_frequency()
     else
         return FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
 }
+
+float Final_scratch_vinyl::get_min_amplitude_for_normal_speed()
+{
+    // TODO: allow to customize this value by the user.
+    return DEFAULT_FS_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
+}
+

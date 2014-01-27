@@ -141,7 +141,7 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_2()
  *        timecode. In the mean time check a little bit the quality of returned
  *        playing parameters.
  */
-void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_serato()
+void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
 {
     int id = -1;
 
@@ -150,7 +150,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_serato()
 
     // Read text file containing timecode data.
     QStringList csv_data;
-    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_FS_33RPM_SPEED100, csv_data) == 0, "read CSV");
+    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_SERATO_33RPM_STOP_FAST, csv_data) == 0, "read CSV");
 
     // Provide several times next part of timecode to digital-scratch and get
     // playing parameters.
@@ -175,10 +175,24 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_serato()
             if (expected_speed != -99.0)
             {
                 QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
-                //cout << "speed=" << speed << "\t" << "volume=" << volume << "\t" << "position=" << position << endl;
 
-                // Speed diff should not be more than 0.1%.
-                QVERIFY2(qAbs(speed - expected_speed) < 0.001, "speed diff < 0.1%");
+//                cout << "expected speed=" << expected_speed << endl;
+//                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
+//                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
+//                cout << endl;
+
+                // Speed diff should not be more than 0.01%.
+                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
+
+                // Volume should be < 1.0 only if speed < 0.90.
+                if (qAbs(expected_speed) < 0.90)
+                {
+                    QVERIFY2(volume < 1.0, "volume not full");
+                }
+                else
+                {
+                    QVERIFY2(volume == 1.0, "full volume");
+                }
             }
         }
     }
@@ -197,7 +211,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_serato()
  *        timecode. In the mean time check a little bit the quality of returned
  *        playing parameters.
  */
-void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas()
+void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
 {
     int id = -1;
 
@@ -234,10 +248,14 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas()
             if (expected_speed != -99.0)
             {
                 QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
-                //cout << "speed=" << speed << "\t" << "volume=" << volume << "\t" << "position=" << position << endl;
 
-                // Speed diff should not be more than 0.1%.
-                QVERIFY2(qAbs(speed - expected_speed) < 0.001, "speed diff < 0.1%");
+//                cout << "expected speed=" << expected_speed << endl;
+//                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
+//                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
+//                cout << endl;
+
+                // Speed diff should not be more than 0.01%.
+                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
             }
         }
     }
@@ -256,7 +274,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas()
  *        timecode. In the mean time check a little bit the quality of returned
  *        playing parameters.
  */
-void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_interleaved()
+void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch_interleaved()
 {
     int id = -1;
 
@@ -303,50 +321,20 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_recorded_datas_interleave
             if (expected_speed != -99.0)
             {
                 QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
-                //cout << "speed=" << speed << "\t" << "volume=" << volume << "\t" << "position=" << position << endl;
 
-                // Speed diff should not be more than 0.1%.
-                QVERIFY2(qAbs(speed - expected_speed) < 0.001, "speed diff < 0.1%");
+//                cout << "expected speed=" << expected_speed << endl;
+//                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
+//                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
+//                cout << endl;
+
+                // Speed diff should not be more than 0.01%.
+                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
             }
 
             // Cleanup.
             tab_interleaved.clear();
         }
     }
-
-    // Cleanup.
-    QVERIFY2(dscratch_delete_turntable(id) == 0, "cleanup turntable");
-}
-
-/**
- * Test dscratch_get_extreme_min() and dscratch_set_extreme_min().
- *
- * Test Description:
- *      - Create a turntable.
- *      - Get current value.
- *      - Try to set wrong value.
- *      - Set the same value+1.
- *      - Check if the result is value+1.
- */
-void DigitalScratchApi_Test::testCase_dscratch_set_extreme_min()
-{
-    int   id  = -1;
-    float val = 0.0;
-    float inc = 1.0;
-
-    // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &id) == 0, "create turntable");
-
-    // Get default value.
-    val = dscratch_get_extreme_min(id);
-
-    // Try to set a negative value.
-    QVERIFY2(dscratch_set_extreme_min(id, -val) == 1,   "set negative value");
-    QVERIFY2(dscratch_get_extreme_min(id)       == val, "get negative value");
-
-    // Set value + 1
-    QVERIFY2(dscratch_set_extreme_min(id, val+inc)                == 0,    "set correct value");
-    QVERIFY2(qFuzzyCompare(dscratch_get_extreme_min(id), val+inc) == true, "get correct value");
 
     // Cleanup.
     QVERIFY2(dscratch_delete_turntable(id) == 0, "cleanup turntable");
@@ -425,39 +413,5 @@ void DigitalScratchApi_Test::testCase_dscratch_get_vinyl_type()
     {
         free(vinyl);
     }
-    QVERIFY2(dscratch_delete_turntable(id) == 0, "cleanup turntable");
-}
-
-/**
- * Test dscratch_set_max_speed_diff() and dscratch_get_max_speed_diff().
- *
- * Test Description:
- *      - Create a turntable.
- *      - Get current value.
- *      - Try to set wrong value.
- *      - Set the same value+1.
- *      - Check if the result is value+1.
- */
-void DigitalScratchApi_Test::testCase_dscratch_set_max_speed_diff()
-{
-    int   id  = -1;
-    float val = 0.0;
-    float inc = 1.0;
-
-    // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &id) == 0, "create turntable");
-
-    // Get default value.
-    val = dscratch_get_max_speed_diff(id);
-
-    // Try to set a negative value.
-    QVERIFY2(dscratch_set_max_speed_diff(id, -val) == 1, "set negative max speed diff");
-    QVERIFY2(qFuzzyCompare(dscratch_get_max_speed_diff(id), val) == true, "get default max speed diff");
-
-    // Set value + 1
-    QVERIFY2(dscratch_set_max_speed_diff(id, val+inc) == 0, "set correct max speed diff");
-    QVERIFY2(qFuzzyCompare(dscratch_get_max_speed_diff(id), val+inc) == true, "get correct max speed diff");
-
-    // Cleanup.
     QVERIFY2(dscratch_delete_turntable(id) == 0, "cleanup turntable");
 }

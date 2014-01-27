@@ -298,41 +298,9 @@ Gui::apply_application_settings()
         {
             qWarning() << "Gui::apply_application_settings: Cannot set turntable RPM";
         }
-        if (dscratch_set_extreme_min(this->dscratch_ids[i], this->settings->get_extreme_min()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new extreme min value";
-        }
-        if (dscratch_set_max_nb_buffer(this->dscratch_ids[i], this->settings->get_max_nb_buffer()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new max nb buffer value";
-        }
-        if (dscratch_set_max_buffer_coeff(this->dscratch_ids[i], this->settings->get_max_buffer_coeff()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new max buffer coeff value";
-        }
         if (dscratch_set_input_amplify_coeff(this->dscratch_ids[i], this->settings->get_input_amplify_coeff()) != 0)
         {
             qWarning() << "Gui::apply_application_settings: Cannot set new input amplify coeff value";
-        }
-        if (dscratch_set_max_speed_diff(this->dscratch_ids[i], this->settings->get_max_speed_diff()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new max speed diff value";
-        }
-        if (dscratch_set_slow_speed_algo_usage(this->dscratch_ids[i], this->settings->get_slow_speed_algo_usage()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new slow speed algo usage value";
-        }
-        if (dscratch_set_max_nb_speed_for_stability(this->dscratch_ids[i], this->settings->get_max_nb_speed_for_stability()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new max nb speed for stability value";
-        }
-        if (dscratch_set_nb_cycle_before_changing_direction(this->dscratch_ids[i], this->settings->get_nb_cycle_before_changing_direction()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new nb cycle before changing direction value";
-        }
-        if (dscratch_set_low_pass_filter_max_speed_usage(this->dscratch_ids[i], this->settings->get_low_pass_filter_max_speed_usage()) != 0)
-        {
-            qWarning() << "Gui::apply_application_settings: Cannot set new low pass filter max speed usage value";
         }
     }
 

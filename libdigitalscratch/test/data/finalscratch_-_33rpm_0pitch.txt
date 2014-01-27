@@ -1,6 +1,6 @@
 # Finalscratch 33rpm, Channels 2, Sample rate 44100;
 buffer_size;speed
-225;1.0319
+225;1.0308
 channel 1;channel 2
 -0.0870693;-0.0423902
 -0.0852992;-0.0227668
@@ -456,7 +456,7 @@ channel 1;channel 2
 -0.0463881;0.30311
 -0.000671407;0.304575
 buffer_size;speed
-225;1.0099
+225;1.0158
 channel 1;channel 2
 0.046144;0.296762
 0.0930815;0.280496

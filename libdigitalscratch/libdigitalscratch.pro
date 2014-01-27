@@ -30,7 +30,7 @@ CONFIG(test) {
     CONFIG   -= app_bundle
 }
 else {
-    QT -= core gui
+    QT -= gui
 
     TARGET = digitalscratch
     TEMPLATE = lib
@@ -128,7 +128,9 @@ OTHER_FILES += \
 
 ############################
 # Copy dll and .h for windows build
-CONFIG(!test) {
+CONFIG(test) {
+}
+else {
     win32 {
         CONFIG(debug, debug|release) {
             OUT_PWD_WIN = $${OUT_PWD}/debug
