@@ -145,83 +145,11 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
 {
     Utils::trace_analyze_vinyl(TRACE_PREFIX_CODED_VINYL, "Fill list of zero crossing...");
 
-    // Get list of peak indexes.
-    vector< pair<unsigned int, float> > peaks; // pair(table_index, sample_value)
-    bool wait_for_up   = false;
-    bool wait_for_down = false;
-    for (unsigned int i = 0; i < samples.size()-1; i++)
-    {
-        // Diff with the next sample.
-        float diff = samples[i+1] - samples[i];
-
-        if (diff > 0.0) // We are going up, waiting for the down hill.
-        {
-            if (wait_for_up == true) // Found the hill going up, store it.
-            {
-                peaks.push_back(make_pair(i, samples[i]));
-            }
-            wait_for_down = true;
-            wait_for_up   = false;
-        }
-        else if (diff < 0.0) // We are going down, waiting for the up hill
-        {
-            if (wait_for_down == true) // Found the hill going down, store it.
-            {
-                peaks.push_back(make_pair(i, samples[i]));
-            }
-            wait_for_up   = true;
-            wait_for_down = false;
-        }
-        else
-        {
-            wait_for_up   = false;
-            wait_for_down = false;
-        }
-    }
-//    cout << "table of peaks:" << endl;
-//    for (unsigned int i = 0; i < peaks.size(); i++)
-//    {
-//        cout << peaks[i].first << ":" << peaks[i].second << endl;
-//    }
+    // Create the zero crossing line.
+    vector<float> zero_crossing_line(samples.size(), 0.0f);
 
     // Create the zero crossing line based on peaks.
-    vector<float> zero_crossing_line(samples.size(), 0.0f);
-#if 0
-    if (peaks.size() >= 2)
-    {
-        fill(zero_crossing_line.begin(), zero_crossing_line.end(), -99.0f);
-        int unknowns_index_start = 0;
-        int unknowns_index_end   = 0;
-        for (unsigned int i = 0; i < peaks.size() - 1; i++)
-        {
-            // Calculate index and values in the middle of 2 peaks.
-            int index = qRound((float)peaks[i].first + ((float)(peaks[i+1].first - peaks[i].first) / 2.0));
-            float value = qMax(peaks[i].second, peaks[i+1].second) - ((float)(qAbs(peaks[i].second) + qAbs(peaks[i+1].second)) / 2.0);
-
-            // Add the value at the right place.
-            zero_crossing_line[index] = value;
-            unknowns_index_end = index;
-
-            // Interpolate unknown values.
-            this->interpolate_unknown_values(zero_crossing_line, unknowns_index_start, unknowns_index_end);
-
-            // Next one.
-            unknowns_index_start = index;
-        }
-        // Last part has to be interpolated as well.
-        if (zero_crossing_line[zero_crossing_line.size() - 1] == -99)
-        {
-            zero_crossing_line[zero_crossing_line.size() - 1] = 0.0;
-            unknowns_index_end = zero_crossing_line.size() - 1;
-        }
-        this->interpolate_unknown_values(zero_crossing_line, unknowns_index_start, unknowns_index_end);
-    }
-//    cout << "nb;samples;zero crossing line:" << endl;
-//    for (unsigned int i = 0; i < samples.size(); i++)
-//    {
-//        cout << i << ";" << samples[i] << ";" << zero_crossing_line[i] << endl;
-//    }
-#endif
+//    this->calculate_zero_crossing_line(zero_crossing_line, samples);
 
     // Iterate over 2 sample channels, get size of sinusoidal wave areas by catching samples crossing zero.
     float sample = 0.0;
@@ -277,6 +205,84 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
             }
         }
     }
+}
+
+void Coded_vinyl::calculate_zero_crossing_line(vector<float> &zero_crossing_line, vector<float> &samples)
+{
+    // Get list of peak indexes.
+    vector< pair<unsigned int, float> > peaks; // pair(table_index, sample_value)
+    bool wait_for_up   = false;
+    bool wait_for_down = false;
+    for (unsigned int i = 0; i < samples.size()-1; i++)
+    {
+        // Diff with the next sample.
+        float diff = samples[i+1] - samples[i];
+
+        if (diff > 0.0) // We are going up, waiting for the down hill.
+        {
+            if (wait_for_up == true) // Found the hill going up, store it.
+            {
+                peaks.push_back(make_pair(i, samples[i]));
+            }
+            wait_for_down = true;
+            wait_for_up   = false;
+        }
+        else if (diff < 0.0) // We are going down, waiting for the up hill
+        {
+            if (wait_for_down == true) // Found the hill going down, store it.
+            {
+                peaks.push_back(make_pair(i, samples[i]));
+            }
+            wait_for_up   = true;
+            wait_for_down = false;
+        }
+        else
+        {
+            wait_for_up   = false;
+            wait_for_down = false;
+        }
+    }
+//    cout << "table of peaks:" << endl;
+//    for (unsigned int i = 0; i < peaks.size(); i++)
+//    {
+//        cout << peaks[i].first << ":" << peaks[i].second << endl;
+//    }
+
+    // Create the zero crossing line based on peaks.
+    if (peaks.size() >= 2)
+    {
+        fill(zero_crossing_line.begin(), zero_crossing_line.end(), -99.0f);
+        int unknowns_index_start = 0;
+        int unknowns_index_end   = 0;
+        for (unsigned int i = 0; i < peaks.size() - 1; i++)
+        {
+            // Calculate index and values in the middle of 2 peaks.
+            int index = qRound((float)peaks[i].first + ((float)(peaks[i+1].first - peaks[i].first) / 2.0));
+            float value = qMax(peaks[i].second, peaks[i+1].second) - ((float)(qAbs(peaks[i].second) + qAbs(peaks[i+1].second)) / 2.0);
+
+            // Add the value at the right place.
+            zero_crossing_line[index] = value;
+            unknowns_index_end = index;
+
+            // Interpolate unknown values.
+            this->interpolate_unknown_values(zero_crossing_line, unknowns_index_start, unknowns_index_end);
+
+            // Next one.
+            unknowns_index_start = index;
+        }
+        // Last part has to be interpolated as well.
+        if (zero_crossing_line[zero_crossing_line.size() - 1] == -99)
+        {
+            zero_crossing_line[zero_crossing_line.size() - 1] = 0.0;
+            unknowns_index_end = zero_crossing_line.size() - 1;
+        }
+        this->interpolate_unknown_values(zero_crossing_line, unknowns_index_start, unknowns_index_end);
+    }
+//    cout << "nb;samples;zero crossing line:" << endl;
+//    for (unsigned int i = 0; i < samples.size(); i++)
+//    {
+//        cout << i << ";" << samples[i] << ";" << zero_crossing_line[i] << endl;
+//    }
 }
 
 void Coded_vinyl::interpolate_unknown_values(vector<float> &table, int unknowns_index_start, int unknowns_index_end)
@@ -489,19 +495,19 @@ bool Coded_vinyl::validate_speed_against_amplitude(float speed)
     amplitude = amplitude / (float)div;
 
     // Validate "normal" speed (more than 0.30) against signal amplitude.
-    if (qAbs(speed) > 0.10)
+    if (qAbs(speed) > 0.30)
     {
         if (amplitude < this->get_min_amplitude_for_normal_speed())
         {
             // This speed looks wrong because the amplitude is too small.
-            cout << "speed=" << speed << "  amplitude=" << amplitude
-                 << "  => not enough signal for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
+            cout << "speed=" << speed << "\tamplitude=" << amplitude
+                 << "\t=> not enough signal for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
             return false;
         }
     }
 
-    cout << "speed=" << speed << "  amplitude=" << amplitude
-         << "  => OK for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
+    cout << "speed=" << speed << "\tamplitude=" << amplitude << endl;
+       //  << "\t=> OK for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
 
     return true;
 }

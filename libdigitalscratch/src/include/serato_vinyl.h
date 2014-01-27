@@ -55,7 +55,7 @@
  */
 #define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1350
 
-#define DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.20f
+#define DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.18f
 
 /**
  * Define a Serato Scratch Live timecode vinyl class.\n

@@ -176,10 +176,10 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
             {
                 QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
 
-//                cout << "expected speed=" << expected_speed << endl;
-//                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
-//                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
-//                cout << endl;
+                cout << "expected speed=" << expected_speed << endl;
+                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
+                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
+                cout << endl;
 
                 // Speed diff should not be more than 0.01%.
                 QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
