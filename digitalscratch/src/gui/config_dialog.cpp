@@ -72,6 +72,10 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     // Init motion detection parameters widgets.
     this->amplify_coeff                            = new QSlider(Qt::Horizontal, this);
     this->amplify_coeff_value                      = new QLabel(this);
+    this->min_amplitude_for_normal_speed           = new QSlider(Qt::Horizontal, this);
+    this->min_amplitude_for_normal_speed_value     = new QLabel(this);
+    this->min_amplitude                            = new QSlider(Qt::Horizontal, this);
+    this->min_amplitude_value                      = new QLabel(this);
     this->vinyl_type_select                        = new QComboBox(this);
     QList<QString> *available_vinyl_types          = this->settings->get_available_vinyl_types();
     for (int i = 0; i < available_vinyl_types->size(); i++)
@@ -258,6 +262,24 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(this->amplify_coeff_value, 3, 2);
     QObject::connect(this->amplify_coeff, SIGNAL(valueChanged(int)), this, SLOT(set_amplify_coeff_value(int)));
 
+    QLabel *min_amplitude_for_normal_speed_label = new QLabel(tr("Minimal signal amplitude for normal speed:"), this);
+    this->min_amplitude_for_normal_speed->setMinimum(1);
+    this->min_amplitude_for_normal_speed->setMaximum(100);
+    this->min_amplitude_for_normal_speed->setSingleStep(1);
+    motion_detect_layout->addWidget(min_amplitude_for_normal_speed_label, 4, 0);
+    motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed, 4, 1);
+    motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed_value, 4, 2);
+    QObject::connect(this->min_amplitude_for_normal_speed, SIGNAL(valueChanged(int)), this, SLOT(set_min_amplitude_for_normal_speed_value(int)));
+
+    QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
+    this->min_amplitude->setMinimum(1);
+    this->min_amplitude->setMaximum(100);
+    this->min_amplitude->setSingleStep(1);
+    motion_detect_layout->addWidget(min_amplitude_label, 5, 0);
+    motion_detect_layout->addWidget(this->min_amplitude, 5, 1);
+    motion_detect_layout->addWidget(this->min_amplitude_value, 5, 2);
+    QObject::connect(this->min_amplitude, SIGNAL(valueChanged(int)), this, SLOT(set_min_amplitude_value(int)));
+
     QPushButton *motion_params_reset_to_default = new QPushButton(this);
     motion_params_reset_to_default->setText(tr("Reset to default"));
     motion_detect_layout->addWidget(motion_params_reset_to_default, 10, 0, Qt::AlignLeft);
@@ -284,6 +306,12 @@ void Config_dialog::fill_tab_motion_detect()
 
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff());
     this->set_amplify_coeff_value(this->amplify_coeff->value());
+
+    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed());
+    this->set_min_amplitude_for_normal_speed_value(this->min_amplitude_for_normal_speed->value());
+
+    this->set_min_amplitude_slider(this->settings->get_min_amplitude());
+    this->set_min_amplitude_value(this->min_amplitude->value());
 }
 
 void Config_dialog::set_amplify_coeff_slider(int in_value)
@@ -300,6 +328,38 @@ void
 Config_dialog::set_amplify_coeff_value(int)
 {
     this->amplify_coeff_value->setText((new QString)->setNum(this->get_amplify_coeff_slider()));
+}
+
+void Config_dialog::set_min_amplitude_for_normal_speed_slider(float in_value)
+{
+    this->min_amplitude_for_normal_speed->setValue(in_value);
+}
+
+float Config_dialog::get_min_amplitude_for_normal_speed_slider()
+{
+   return this->min_amplitude_for_normal_speed->value();
+}
+
+void
+Config_dialog::set_min_amplitude_for_normal_speed_value(int)
+{
+    this->min_amplitude_for_normal_speed_value->setText((new QString)->setNum(this->get_min_amplitude_for_normal_speed_slider()));
+}
+
+void Config_dialog::set_min_amplitude_slider(float in_value)
+{
+    this->min_amplitude->setValue(in_value);
+}
+
+float Config_dialog::get_min_amplitude_slider()
+{
+   return this->min_amplitude->value();
+}
+
+void
+Config_dialog::set_min_amplitude_value(int)
+{
+    this->min_amplitude_value->setText((new QString)->setNum(this->get_min_amplitude_slider()));
 }
 
 QWidget *Config_dialog::init_tab_shortcuts()
@@ -529,6 +589,8 @@ void Config_dialog::reset_motion_detection_params()
     this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findText(this->settings->get_vinyl_type_default()));
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
+    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default());
+    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default());
 }
 
 void Config_dialog::reset_shortcuts()
@@ -588,6 +650,8 @@ Config_dialog::accept()
 
     // Set motion detection settings.
     this->settings->set_input_amplify_coeff(this->get_amplify_coeff_slider());
+    this->settings->set_min_amplitude_for_normal_speed(this->get_min_amplitude_for_normal_speed_slider());
+    this->settings->set_min_amplitude(this->get_min_amplitude_slider());
 
     // Set keyboard shortcuts.
     this->settings->set_keyboard_shortcut(KB_SWITCH_PLAYBACK,           this->kb_switch_playback->text());

@@ -64,6 +64,10 @@
 class Coded_vinyl
 {
     /* Attributes */
+    protected:
+        float min_amplitude_for_normal_speed;
+        float min_amplitude;
+
     private:
         vector<float> samples_channel_1;
         vector<float> samples_channel_2;
@@ -127,7 +131,7 @@ class Coded_vinyl
         float     calculate_speed();
         float     calculate_average_speed_one_channel(vector< pair<bool, unsigned int> > &zero_cross_list);
         short int calculate_direction();
-        bool      validate_speed_against_amplitude(float speed);
+        bool      validate_and_adjust_speed_against_amplitude(float &speed);
         void      keep_unused_samples();
         void      remove_used_samples(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
         void      align_samples();
@@ -202,7 +206,13 @@ class Coded_vinyl
          */
         virtual int get_sinusoidal_frequency() = 0;
 
-        virtual float get_min_amplitude_for_normal_speed() = 0;
+        void  set_min_amplitude_for_normal_speed(float amplitude);
+        float get_min_amplitude_for_normal_speed();
+        virtual float get_default_min_amplitude_for_normal_speed() = 0;
+
+        void  set_min_amplitude(float amplitude);
+        float get_min_amplitude();
+        virtual float get_default_min_amplitude() = 0;
 
     protected:
         /**

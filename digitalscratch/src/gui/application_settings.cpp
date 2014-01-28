@@ -115,6 +115,12 @@ Application_settings::init_settings()
     if (this->settings->contains(INPUT_AMPLIFY_COEFF) == false) {
         this->settings->setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
     }
+    if (this->settings->contains(MIN_AMPLITUDE_NORMAL_SPEED) == false) {
+        this->settings->setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default()));
+    }
+    if (this->settings->contains(MIN_AMPLITUDE) == false) {
+        this->settings->setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default()));
+    }
 
     //
     // Keyboard shortcuts.
@@ -320,6 +326,52 @@ Application_settings::set_input_amplify_coeff(int in_coeff)
     if (in_coeff > 0 && in_coeff < 1000) // Range: ]0,1000[
     {
         this->settings->setValue(INPUT_AMPLIFY_COEFF, value);
+    }
+}
+
+float
+Application_settings::get_min_amplitude_for_normal_speed()
+{
+    return this->settings->value(MIN_AMPLITUDE_NORMAL_SPEED).toFloat();
+}
+
+float
+Application_settings::get_min_amplitude_for_normal_speed_default()
+{
+    return dscratch_get_default_min_amplitude_for_normal_speed();
+}
+
+void
+Application_settings::set_min_amplitude_for_normal_speed(float in_amplitude)
+{
+    QString value;
+    value.setNum(in_amplitude);
+    if (in_amplitude > 0.0 && in_amplitude < 1.0) // Range: ]0,1[
+    {
+        this->settings->setValue(MIN_AMPLITUDE_NORMAL_SPEED, value);
+    }
+}
+
+float
+Application_settings::get_min_amplitude()
+{
+    return this->settings->value(MIN_AMPLITUDE).toFloat();
+}
+
+float
+Application_settings::get_min_amplitude_default()
+{
+    return dscratch_get_default_min_amplitude();
+}
+
+void
+Application_settings::set_min_amplitude(float in_amplitude)
+{
+    QString value;
+    value.setNum(in_amplitude);
+    if (in_amplitude > 0.0 && in_amplitude < 1.0) // Range: ]0,1[
+    {
+        this->settings->setValue(MIN_AMPLITUDE, value);
     }
 }
 

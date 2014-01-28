@@ -678,3 +678,67 @@ DLLIMPORT unsigned short int dscratch_get_default_rpm()
 {
     return DEFAULT_RPM;
 }
+
+DLLIMPORT int dscratch_set_min_amplitude_for_normal_speed(int   turntable_id,
+                                                          float amplitude)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Set amplitude.
+    vinyl->set_min_amplitude_for_normal_speed(amplitude);
+    return 0;
+}
+
+DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(int turntable_id)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Get amplitude from Coded_vinyl.
+    return vinyl->get_min_amplitude_for_normal_speed();
+}
+
+DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed()
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(0, &vinyl) == false) return 1;
+
+    // Get amplitude from Coded_vinyl.
+    return vinyl->get_default_min_amplitude_for_normal_speed();
+}
+
+DLLIMPORT int dscratch_set_min_amplitude(int   turntable_id,
+                                         float amplitude)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Set amplitude.
+    vinyl->set_min_amplitude(amplitude);
+    return 0;
+}
+
+DLLIMPORT float dscratch_get_min_amplitude(int turntable_id)
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(turntable_id, &vinyl) == false) return 1;
+
+    // Get amplitude from Coded_vinyl.
+    return vinyl->get_min_amplitude();
+}
+
+DLLIMPORT float dscratch_get_default_min_amplitude()
+{
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = NULL;
+    if (l_get_coded_vinyl(0, &vinyl) == false) return 1;
+
+    // Get amplitude from Coded_vinyl.
+    return vinyl->get_default_min_amplitude();
+}

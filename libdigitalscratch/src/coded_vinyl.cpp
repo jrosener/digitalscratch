@@ -341,20 +341,19 @@ float Coded_vinyl::calculate_speed()
     // Validate speed againt average signal amplitude.
     if (speed_found == true)
     {
-        speed_found = this->validate_speed_against_amplitude(speed);
+        speed_found = this->validate_and_adjust_speed_against_amplitude(speed);
     }
 
     // Return speed if found and validated.
-    if (speed_found == false)
-    {
-        return NO_NEW_SPEED_FOUND;
-    }
-    else
+    if (speed_found == true)
     {
         // Calculate direction.
         short int direction = this->calculate_direction();
-
         return direction * speed;
+    }
+    else
+    {
+        return NO_NEW_SPEED_FOUND;
     }
 }
 
@@ -471,7 +470,7 @@ short int Coded_vinyl::calculate_direction()
     }
 }
 
-bool Coded_vinyl::validate_speed_against_amplitude(float speed)
+bool Coded_vinyl::validate_and_adjust_speed_against_amplitude(float &speed)
 {
     // Get average signal amplitude.
     float amplitude  = 0.0;
@@ -500,13 +499,24 @@ bool Coded_vinyl::validate_speed_against_amplitude(float speed)
         if (amplitude < this->get_min_amplitude_for_normal_speed())
         {
             // This speed looks wrong because the amplitude is too small.
-            cout << "speed=" << speed << "\tamplitude=" << amplitude
-                 << "\t=> not enough signal for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
+//            cout << "speed=" << speed << "\tamplitude=" << amplitude
+//                 << "\t=> not enough signal for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
+            speed = NO_NEW_SPEED_FOUND;
             return false;
         }
     }
+    else
+    {
+        // In any case, if amplitude than a min value, we consider there is no signal.
+        if (amplitude < this->get_min_amplitude())
+        {
+//            cout << "not enough signal => speed = 0" << endl;
+            speed = 0.0;
+        }
+    }
 
-    cout << "speed=" << speed << "\tamplitude=" << amplitude << endl;
+//    cout << "speed=" << speed << "\tamplitude=" << amplitude << endl;
+//    cout << "amplitude=" << amplitude << endl;
 
     return true;
 }
@@ -633,11 +643,32 @@ int Coded_vinyl::get_input_amplify_coeff()
 bool Coded_vinyl::set_rpm(unsigned short int rpm)
 {
     this->rpm = rpm;
-
     return true;
 }
 
 unsigned short int Coded_vinyl::get_rpm()
 {
     return this->rpm;
+}
+
+void Coded_vinyl::set_min_amplitude_for_normal_speed(float amplitude)
+{
+    this->min_amplitude_for_normal_speed = amplitude;
+    return;
+}
+
+float Coded_vinyl::get_min_amplitude_for_normal_speed()
+{
+    return this->min_amplitude_for_normal_speed;
+}
+
+void Coded_vinyl::set_min_amplitude(float amplitude)
+{
+    this->min_amplitude = amplitude;
+    return;
+}
+
+float Coded_vinyl::get_min_amplitude()
+{
+    return this->min_amplitude;
 }

@@ -71,6 +71,8 @@ using namespace std;
 #define MAX_BUFFER_COEFF_CFG                "motion_detection/max_buffer_coeff"
 #define LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG "motion_detection/low_pass_filter_max_speed_usage"
 #define INPUT_AMPLIFY_COEFF                 "motion_detection/input_amplify_coeff"
+#define MIN_AMPLITUDE_NORMAL_SPEED          "motion_detection/min_amplitude_normal_speed"
+#define MIN_AMPLITUDE                       "motion_detection/min_amplitude"
 
 #define MAX_SPEED_DIFF_CFG                  "playback_parameters/max_speed_diff"
 #define SLOW_SPEED_ALGO_USAGE_CFG           "playback_parameters/slow_speed_algo_usage"
@@ -199,6 +201,14 @@ class Application_settings : public QObject
     void  set_input_amplify_coeff(int in_coeff);
     int   get_input_amplify_coeff();
     int   get_input_amplify_coeff_default();
+
+    void  set_min_amplitude_for_normal_speed(float in_amplitude);
+    float get_min_amplitude_for_normal_speed();
+    float get_min_amplitude_for_normal_speed_default();
+
+    void  set_min_amplitude(float in_amplitude);
+    float get_min_amplitude();
+    float get_min_amplitude_default();
 
     void    set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);

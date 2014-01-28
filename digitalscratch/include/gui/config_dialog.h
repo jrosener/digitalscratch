@@ -92,6 +92,10 @@ class Config_dialog : public QDialog
     QComboBox            *rpm_select;
     QSlider              *amplify_coeff;
     QLabel               *amplify_coeff_value;
+    QSlider              *min_amplitude_for_normal_speed;
+    QLabel               *min_amplitude_for_normal_speed_value;
+    QSlider              *min_amplitude;
+    QLabel               *min_amplitude_value;
     ShortcutQLabel       *kb_switch_playback;
     ShortcutQLabel       *kb_load_track_on_deck;
     ShortcutQLabel       *kb_play_begin_track_on_deck;
@@ -131,6 +135,10 @@ class Config_dialog : public QDialog
     void     fill_tab_shortcuts();
     void     set_amplify_coeff_slider(int in_value);
     int      get_amplify_coeff_slider();
+    void     set_min_amplitude_for_normal_speed_slider(float in_value);
+    float    get_min_amplitude_for_normal_speed_slider();
+    void     set_min_amplitude_slider(float in_value);
+    float    get_min_amplitude_slider();
     bool     is_duplicate_shortcut(const QString& in_value);
 
  private slots:
@@ -138,6 +146,8 @@ class Config_dialog : public QDialog
     void reset_shortcuts();
     void reset_motion_detection_params();
     void set_amplify_coeff_value(int in_value);
+    void set_min_amplitude_for_normal_speed_value(int in_value);
+    void set_min_amplitude_value(int in_value);
     void validate_and_set_shortcut(const QString& in_value);
 };
 

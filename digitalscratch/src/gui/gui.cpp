@@ -302,6 +302,14 @@ Gui::apply_application_settings()
         {
             qWarning() << "Gui::apply_application_settings: Cannot set new input amplify coeff value";
         }
+        if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_ids[i], this->settings->get_min_amplitude_for_normal_speed()) != 0)
+        {
+            qWarning() << "Gui::apply_application_settings: Cannot set new min amplitude for normal speed value";
+        }
+        if (dscratch_set_min_amplitude(this->dscratch_ids[i], this->settings->get_min_amplitude()) != 0)
+        {
+            qWarning() << "Gui::apply_application_settings: Cannot set new min amplitude value";
+        }
     }
 
     // Change shortcuts.

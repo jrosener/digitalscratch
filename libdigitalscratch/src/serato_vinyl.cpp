@@ -48,6 +48,9 @@ Serato_vinyl::Serato_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
     Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
                              "+ Creating Serato_vinyl object...");
 
+    this->min_amplitude_for_normal_speed = DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
+    this->min_amplitude                  = DEFAULT_SERATO_MIN_AMPLITUDE;
+
     Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
                              "+ Serato_vinyl object created");
 }
@@ -69,8 +72,12 @@ int Serato_vinyl::get_sinusoidal_frequency()
         return SERATO_VINYL_SINUSOIDAL_FREQ_45RPM;
 }
 
-float Serato_vinyl::get_min_amplitude_for_normal_speed()
+float Serato_vinyl::get_default_min_amplitude_for_normal_speed()
 {
-    // TODO: allow to customize this value by the user.
     return DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
+}
+
+float Serato_vinyl::get_default_min_amplitude()
+{
+    return DEFAULT_SERATO_MIN_AMPLITUDE;
 }
