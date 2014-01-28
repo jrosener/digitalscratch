@@ -78,7 +78,6 @@ class Digital_scratch : public Controller
          */
         Coded_vinyl *vinyl;
 
-        int is_position_detection_enabled;
         unsigned int sample_rate;
 
     /* Constructor / Destructor */
@@ -116,19 +115,6 @@ class Digital_scratch : public Controller
                                     vector<float> &input_samples_2);
 
         /**
-         * Set detection of position.
-         * @param is_enabled must be TRUE to enable position detection.
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool enable_position_detection(bool is_enabled);
-
-        /**
-         * True if detection of position is on.
-         * @return TRUE if detection of position is on.
-         */
-        bool get_position_detection_state();
-
-        /**
          * Get Coded_vinyl object.
          */
         Coded_vinyl* get_coded_vinyl();
@@ -144,9 +130,6 @@ class Digital_scratch : public Controller
 
         void  calculate_speed();
         float get_speed();
-
-        void  calculate_position();
-        float get_position();
 
         void  calculate_volume();
         float get_volume();

@@ -136,7 +136,6 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_2()
  *
  * Test Description:
  *      - Create a turntable with default parameters.
- *      - Enable position detection.
  *      - Call dscratch_analyze_recorded_datas() continously on next part of
  *        timecode. In the mean time check a little bit the quality of returned
  *        playing parameters.
@@ -160,7 +159,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
     float         expected_speed  = 0.0;
     float         speed           = 0.0;
     float         volume          = 0.0;
-    float         position        = 0.0;
     while (eof == false)
     {
         // Get a chunk of timecode data.
@@ -174,7 +172,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
             // Check if digital-scratch was able to find playing parameters.
             if (expected_speed != -99.0)
             {
-                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
+                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume) == 0, "get playing parameters");
 
                 cout << "expected speed=" << expected_speed << endl;
                 cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
@@ -206,7 +204,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
  *
  * Test Description:
  *      - Create a turntable with default parameters.
- *      - Enable position detection.
  *      - Call dscratch_analyze_recorded_datas() continously on next part of
  *        timecode. In the mean time check a little bit the quality of returned
  *        playing parameters.
@@ -217,9 +214,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
 
     // Create a turntable
     QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &id) == 0, "create turntable");
-
-    // Enable position detection.
-    QVERIFY2(dscratch_set_position_detection(id, 1) == 0, "position detection");
 
     // Read text file containing timecode data.
     QStringList csv_data;
@@ -233,7 +227,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
     float         expected_speed  = 0.0;
     float         speed           = 0.0;
     float         volume          = 0.0;
-    float         position        = 0.0;
     while (eof == false)
     {
         // Get a chunk of timecode data.
@@ -247,7 +240,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
             // Check if digital-scratch was able to find playing parameters.
             if (expected_speed != -99.0)
             {
-                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
+                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume) == 0, "get playing parameters");
 
 //                cout << "expected speed=" << expected_speed << endl;
 //                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
@@ -269,7 +262,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
  *
  * Test Description:
  *      - Create a turntable with default parameters.
- *      - Enable position detection.
  *      - Call dscratch_analyze_recorded_datas() continously on next part of
  *        timecode. In the mean time check a little bit the quality of returned
  *        playing parameters.
@@ -280,9 +272,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch_int
 
     // Create a turntable
     QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &id) == 0, "create turntable");
-
-    // Enable position detection.
-    QVERIFY2(dscratch_set_position_detection(id, 1) == 0, "position detection");
 
     // Read text file containing timecode data.
     QStringList csv_data;
@@ -297,7 +286,6 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch_int
     float         expected_speed  = 0.0;
     float         speed           = 0.0;
     float         volume          = 0.0;
-    float         position        = 0.0;
     while (eof == false)
     {
         // Get a chunk of timecode data.
@@ -320,7 +308,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch_int
             // Check if digital-scratch was able to find playing parameters.
             if (expected_speed != -99.0)
             {
-                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume, &position) == 0, "get playing parameters");
+                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume) == 0, "get playing parameters");
 
 //                cout << "expected speed=" << expected_speed << endl;
 //                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;

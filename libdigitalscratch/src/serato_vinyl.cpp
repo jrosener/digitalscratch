@@ -61,15 +61,6 @@ Serato_vinyl::~Serato_vinyl()
                              "- Serato_vinyl object deleted");
 }
 
-float Serato_vinyl::get_position()
-{
-    Utils::trace_position(TRACE_PREFIX_SERVINYL, "Searching new position...");
-
-    // TODO: to be implemented
-
-    return NO_NEW_POSITION_FOUND;
-}
-
 int Serato_vinyl::get_sinusoidal_frequency()
 {
     if (this->get_rpm() == RPM_33)

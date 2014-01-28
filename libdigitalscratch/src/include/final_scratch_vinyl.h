@@ -103,36 +103,8 @@ class Final_scratch_vinyl : public Coded_vinyl
 
     /* Methods */
     public:
-        /**
-         * Get the current position value of needle on vinyl.
-         * Define the pure virtual method in base class (Coded_vinyl)
-         * @return the position value or NO_NEW_POSITION_FOUND if nothing is found
-         */
-        float get_position();
-
         int get_sinusoidal_frequency();
         float get_min_amplitude_for_normal_speed();
-
-    private:
-        /**
-         * Search a start sequence in bit_list and if found, get the index
-         * @return the index in bit_list of the beginning of the start sequence
-         *         or -1 if no start sequence is found
-         */
-        int get_timecode_start_sequence_position();
-
-        /**
-         * Get timecode value from bit list (that start with a start sequence)
-         * @return the timecode value
-         */
-        unsigned int get_timecode();
-
-        /**
-         * Get needle position in seconde from timecode value
-         * @param timecode is the timecoded value detected by get_timecode()
-         * @return a position (needle on disk) in seconde
-         */
-        float get_position_from_timecode_value(unsigned int timecode);
 };
 
 #endif //_FINAL_SCRATCH_VINYL_H_

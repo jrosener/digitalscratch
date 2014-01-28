@@ -59,8 +59,7 @@ Playback_parameters::reset()
 {
     qDebug() << "Playback_parameters::reset...";
 
-    this->speed    = 0.0;
-    this->position = 0.0;
+    this->speed = 0.0;
 
     qDebug() << "Playback_parameters::reset done.";
 
@@ -112,52 +111,6 @@ Playback_parameters::is_new_speed()
     qDebug() << "Playback_parameters::is_new_speed done.";
 
     return this->new_speed;
-}
-
-bool
-Playback_parameters::set_position(float in_position)
-{
-    qDebug() << "Playback_parameters::set_position...";
-
-    if (in_position != this->position)
-    {
-        this->position = in_position;
-        emit position_changed((double)this->position);
-    }
-
-    qDebug() << "Playback_parameters::set_position done.";
-
-    return true;
-}
-
-float
-Playback_parameters::get_position()
-{
-    qDebug() << "Playback_parameters::get_position...";
-    qDebug() << "Playback_parameters::get_position done.";
-
-    return this->position;
-}
-
-bool
-Playback_parameters::set_new_position(bool in_new)
-{
-    qDebug() << "Playback_parameters::set_new_position...";
-
-    this->new_position = in_new;
-
-    qDebug() << "Playback_parameters::set_new_position done.";
-
-    return true;
-}
-
-bool
-Playback_parameters::is_new_position()
-{
-    qDebug() << "Playback_parameters::is_new_position...";
-    qDebug() << "Playback_parameters::is_new_position done.";
-
-    return this->new_position;
 }
 
 bool
@@ -215,9 +168,8 @@ Playback_parameters::set_new_data(bool in_new_data)
 
     if (in_new_data == false)
     {
-        this->new_speed    = false;
-        this->new_position = false;
-        this->new_volume   = false;
+        this->new_speed  = false;
+        this->new_volume = false;
     }
 
     qDebug() << "Playback_parameters::new_data done.";

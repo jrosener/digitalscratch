@@ -52,7 +52,6 @@ Controller::Controller(string name)
 
     this->speed    = new Speed(this->name);
     this->volume   = new Volume(this->name);
-    this->position = new Position(this->name);
     this->set_playing_parameters_ready(false);
 
     Utils::trace_object_life(TRACE_PREFIX_CONTROLLER,
@@ -65,7 +64,6 @@ Controller::~Controller()
                              "- Deleting Controller object...");
 
     delete this->speed;
-    delete this->position;
     delete this->volume;
 
     Utils::trace_object_life(TRACE_PREFIX_CONTROLLER,
@@ -124,14 +122,12 @@ bool Controller::set_max_nb_cycle_before_starting(int nb)
 }
 
 bool Controller::get_playing_parameters(float *speed,
-                                        float *volume,
-                                        float *position)
+                                        float *volume)
 {
     if (this->playing_parameters_ready == true)
     {
         *speed    = this->speed->get_value();
         *volume   = this->volume->get_value();
-        *position = this->position->get_value();
 
         return true;
     }

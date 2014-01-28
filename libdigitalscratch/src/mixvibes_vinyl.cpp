@@ -64,16 +64,6 @@ Mixvibes_vinyl::~Mixvibes_vinyl()
                              "- Mixvibes_vinyl object deleted");
 }
 
-float Mixvibes_vinyl::get_position()
-{
-    Utils::trace_position(TRACE_PREFIX_MVVINYL, "Searching new position...");
-
-    // TODO: implement position detection.
-
-    // no position found
-    return NO_NEW_POSITION_FOUND;
-}
-
 int Mixvibes_vinyl::get_sinusoidal_frequency()
 {
     if (this->get_rpm() == RPM_33)

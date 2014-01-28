@@ -61,8 +61,6 @@ Digital_scratch::Digital_scratch(string       controller_name,
 bool Digital_scratch::init(string coded_vinyl_type)
 {
     // Internal parameters.
-    this->is_position_detection_enabled = 0;
-
     this->set_playing_parameters_ready(false);
 
     this->vinyl = NULL;
@@ -149,33 +147,6 @@ bool Digital_scratch::change_coded_vinyl(string coded_vinyl_type)
     return this->init(coded_vinyl_type);
 }
 
-
-bool Digital_scratch::enable_position_detection(bool is_enabled)
-{
-    if (is_enabled == true)
-    {
-        this->is_position_detection_enabled = 1;
-    }
-    else
-    {
-        this->is_position_detection_enabled = 0;
-    }
-
-    return true;
-}
-
-bool Digital_scratch::get_position_detection_state()
-{
-    if (this->is_position_detection_enabled == 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 void Digital_scratch::calculate_speed()
 {
     this->speed->set_value(this->vinyl->get_speed());
@@ -184,16 +155,6 @@ void Digital_scratch::calculate_speed()
 float Digital_scratch::get_speed()
 {
     return this->speed->get_value();
-}
-
-void Digital_scratch::calculate_position()
-{
-    this->position->set_value(this->vinyl->get_position());
-}
-
-float Digital_scratch::get_position()
-{
-    return this->position->get_value();
 }
 
 void Digital_scratch::calculate_volume()

@@ -273,35 +273,6 @@ class Utils
                 cout << "#TRACE_DIRECTION\t" << trace_prefix << trace_msg << endl;
             #endif
         }
-
-        /**
-         * Debug function : display message about current needle position on vinyl disc
-         * @param trace_prefix is a prefix string to display before trace_msg
-         * @param trace_msg is the message to display
-         */
-        inline static void trace_position(string trace_prefix, string trace_msg)
-        {
-            (void)trace_prefix;
-            (void)trace_msg;
-            #ifdef TRACE_POSITION
-                cout << "#TRACE_POSITION\t\t" << trace_prefix << trace_msg << endl;
-            #endif
-        }
-
-        /**
-         * Debug function : display message about FinalScratch vinyl extreme used fordetecting
-         * detecting speed (and not all the others)
-         * @param trace_prefix is a prefix string to display before trace_msg
-         * @param trace_msg is the message to display
-         */
-        inline static void trace_extreme_used_for_detecting_speed(string trace_prefix, string trace_msg)
-        {
-            (void)trace_prefix;
-            (void)trace_msg;
-            #ifdef TRACE_EXTREME_USED_FOR_DETECTING_SPEED
-                cout << "#TRACE_EXTREME_USED_FOR_DETECTING_SPEED\t" << trace_prefix << trace_msg << endl;
-            #endif
-        }
 };
 
 #endif //_UTILS_H_

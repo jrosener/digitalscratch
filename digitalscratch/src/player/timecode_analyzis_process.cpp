@@ -72,12 +72,6 @@ Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_par
         {
             qCritical() << "Timecode_analyzis_process::Timecode_analyzis_process: dscratch_lib: can not create turntable";
         }
-
-        // Enable position detection.
-        if (dscratch_set_position_detection(this->dscratch_ids[i], 1) != 0)
-        {
-            qCritical() << "Timecode_analyzis_process::Timecode_analyzis_process: dscratch_lib: can not enable position detection";
-        }
     }
 
     qDebug() << "Timecode_analyzis_process::Timecode_analyzis_process: create object done.";
@@ -116,7 +110,6 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
     int   are_new_params = 0;
     float speed    = 0.0;
     float volume   = 0.0;
-    float position = 0.0;
     float *samples[] = { in_samples_1, in_samples_2, in_samples_3, in_samples_4 };
 
     // Iterate over decks and analyze captured timecode.
@@ -133,8 +126,7 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
         // Update playing parameters.
         if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_ids[i],
                                                               &speed,
-                                                              &volume,
-                                                              &position)) != 0)
+                                                              &volume)) != 0)
         {
             qDebug() << "Timecode_analyzis_process::run: dscratch: can not get new playing parameters.";
         }
@@ -151,15 +143,6 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
                 else
                 {
                     this->params[i]->set_new_speed(false);
-                }
-                if (position != NO_NEW_POSITION_FOUND)
-                {
-                    this->params[i]->set_position(position);
-                    this->params[i]->set_new_position(true);
-                }
-                else
-                {
-                    this->params[i]->set_new_position(false);
                 }
                 if (volume != NO_NEW_VOLUME_FOUND)
                 {

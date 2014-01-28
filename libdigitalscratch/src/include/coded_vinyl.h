@@ -198,11 +198,6 @@ class Coded_vinyl
         unsigned short int get_rpm();
 
         /**
-         * Get the current position value of needle on vinyl
-         */
-        virtual float get_position() = 0;
-
-        /**
          * Get the sinusoidal frequency
          */
         virtual int get_sinusoidal_frequency() = 0;

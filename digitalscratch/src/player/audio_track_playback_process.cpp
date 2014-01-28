@@ -40,8 +40,7 @@
 
 #include "audio_track_playback_process.h"
 
-#define POSITION_MIN_DISTANCE_TO_JUMP 44100
-#define SPEED_MIN_TO_GO_DOWN          0.2
+#define SPEED_MIN_TO_GO_DOWN 0.2
 
 Audio_track_playback_process::Audio_track_playback_process(Audio_track          *in_ats[],
                                                            Audio_track         **in_at_samplers[],
@@ -506,32 +505,14 @@ Audio_track_playback_process::play_data_with_playback_parameters(unsigned short 
     qDebug() << "Audio_track_playback_process::play_data_with_playback_parameters...";
 
     float speed = this->params[in_deck_index]->get_speed();
-    //float speed = 0.4;
-/*
-cout << "speed = " << speed;
-unsigned int current_position = this->current_samples[in_deck_index];
-cout << "   current_position = " << current_position;
-unsigned int position_to_go = 0;
-if (this->params[in_deck_index]->is_new_position() == true)
-{
-    position_to_go = (unsigned int)((float)this->params[in_deck_index]->get_position() * (float)44100.0);
-    cout << "   position_to_go = " << position_to_go;
-}
-cout << endl;
-*/
+
     // If speed is null, play empty sound.
     if (speed == 0.0)
     {
         this->play_empty(in_deck_index, in_nb_samples, out_samples);
         return true;
     }
-#if 0
-    // Change position (adapt speed if necessary).
-    if (this->change_position(in_deck_index, &speed, in_nb_samples) == false)
-    {
-        qWarning() << "Audio_track_playback_process::play_data_with_playback_parameters: can not change position.";
-    }
-#endif
+
     // Determine the approximate number of input data we need to make time stretching.
     unsigned short int nb_input_data = (unsigned short int)((float)in_nb_samples * fabs(speed));
     if (fabs(speed) >= 1.0)
@@ -657,73 +638,6 @@ Audio_track_playback_process::change_volume(unsigned short int  in_deck_index,
 }
 
 bool
-Audio_track_playback_process::change_position(unsigned short int  in_deck_index,
-                                              float              *io_speed,
-                                              unsigned short int  in_nb_samples)
-{
-    qDebug() << "Audio_track_playback_process::change_position...";
-
-    // Check params.
-    if (io_speed == NULL)
-    {
-        qWarning() << "Audio_track_playback_process::change_position: null pointer.";
-        return false;
-    }
-
-    // If there is no new position, we can not do anything.
-    if (this->params[in_deck_index]->is_new_position() == false)
-    {
-        return true;
-    }
-
-    // Get current position of needle (represented as sample index), has to be pair.
-    unsigned int vinyl_pos = (unsigned int)(this->params[in_deck_index]->get_position() * (float)this->ats[in_deck_index]->get_sample_rate() * 2.0);
-    if (vinyl_pos % 2 != 0)
-    {
-        vinyl_pos++;
-    }
-
-    // Get current position in track.
-    unsigned int track_pos = this->current_samples[in_deck_index];
-
-    // Get difference between position.
-    int diff = vinyl_pos - track_pos;
-
-    // No difference, we are synchonised.
-    if (diff == 0)
-    {
-        return true;
-    }
-
-    // If difference is big then jump to the needle position,
-    // else modify speed to catch again the needle position.
-    if (fabsl(diff) > POSITION_MIN_DISTANCE_TO_JUMP)
-    {
-        // We jump.
-        this->current_samples[in_deck_index] = vinyl_pos;
-    }
-    else
-    {
-        if ((diff < 0 && *io_speed > 0) ||
-            (diff > 0 && *io_speed < 0))
-        {
-            // Speed has to going down.
-            this->speed_down(io_speed, vinyl_pos, track_pos, in_nb_samples);
-        }
-        else
-        {
-            // Speed has to going up.
-            this->speed_up(io_speed, diff, in_nb_samples);
-        }
-    }
-
-    qDebug() << "Audio_track_playback_process::change_position done.";
-
-    return true;
-}
-
-
-bool
 Audio_track_playback_process::jump_to_position(unsigned short int in_deck_index,
                                                float              in_position)
 {
@@ -805,53 +719,6 @@ Audio_track_playback_process::delete_cue_point(unsigned short int in_deck_index,
     // Delete cue point from database.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     return data_persist->delete_cue_point(this->ats[in_deck_index], in_cue_point_number);
-}
-
-bool
-Audio_track_playback_process::speed_up(float              *io_speed,
-                                       int                 in_diff,
-                                       unsigned short int  in_nb_samples)
-{
-    qDebug() << "Audio_track_playback_process::speed_up...";
-
-    // Define the next vinyl position.
-    int final_diff = in_diff + (unsigned short int)((float)in_nb_samples * fabs(*io_speed));
-
-    // Recalculate the speed based on the new difference.
-    *io_speed = (float)final_diff / in_nb_samples;
-
-    qDebug() << "Audio_track_playback_process::speed_up done.";
-
-    return true;
-}
-
-
-bool
-Audio_track_playback_process::speed_down(float              *io_speed,
-                                         unsigned int        in_vinyl_pos,
-                                         unsigned int        in_track_pos,
-                                         unsigned short int  in_nb_samples)
-{
-    qDebug() << "Audio_track_playback_process::speed_down...";
-
-    // Next vinyl position.
-    unsigned int next_vinyl_pos = in_vinyl_pos + (unsigned short int)((float)in_nb_samples * fabs(*io_speed));
-
-    // Difference with track position.
-    signed int final_diff = next_vinyl_pos - in_track_pos;
-
-    // Recalculate the speed based on the new difference.
-    *io_speed = (float)final_diff / in_nb_samples;
-
-    // Avoid to stop or go back.
-    if (*io_speed < SPEED_MIN_TO_GO_DOWN)
-    {
-        *io_speed = (float)SPEED_MIN_TO_GO_DOWN;
-    }
-
-    qDebug() << "Audio_track_playback_process::speed_down done.";
-
-    return true;
 }
 
 float

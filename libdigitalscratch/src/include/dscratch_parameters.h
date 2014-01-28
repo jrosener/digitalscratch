@@ -54,7 +54,7 @@
 
 
 /******************************************************************************/
-/******************Speed, direction and position analyze***********************/
+/****************************Sound card channels*******************************/
 
 /**
  * Left channel number value
@@ -65,12 +65,6 @@
  * Right channel number value
  */
 #define RIGHT_CHANNEL 1
-
-/**
- * If defined, try to detect too small extremes intervals and say if there is
- * enough signal level or not.
- */
-#define ENABLE_CHECK_EXTREMES_LEVEL
 
 
 /******************************************************************************/
@@ -84,12 +78,11 @@
 //#define TRACE_MISC                    4  // miscellaneous trace
 //#define TRACE_CAPTURE                 5  // capture management
 //#define TRACE_CAPTURE_SAMPLE          6  // capture samples value only
-//#define TRACE_ANALYZE_VINYL           7  // vinyl analyze trace (get speed, position, ...)
+//#define TRACE_ANALYZE_VINYL           7  // vinyl analyze trace (get speed, direction, ...)
 //#define TRACE_ANALYZE_EXTREME         8  // extremes management
 //#define TRACE_SPEED                   9  // vinyl speed
 //#define TRACE_DIRECTION               10 // vinyl direction
 //#define TRACE_VOLUME                  11 // vinyl sound volume
-//#define TRACE_POSITION                12 // needle position
 //#define TRACE_EXTREME_USED_FOR_DETECTING_SPEED 13 // extremes used for detecting speed
 
 #endif //_DSCRATCH_PARAMETERS_

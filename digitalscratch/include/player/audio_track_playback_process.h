@@ -143,19 +143,6 @@ class Audio_track_playback_process : public QObject
                        float              *in_buffer,
                        unsigned short int  in_size);
 
-    bool change_position(unsigned short int  in_deck_index,
-                         float              *io_speed,
-                         unsigned short int  in_nb_samples);
-
-    bool speed_up(float              *io_speed,
-                  int                 in_diff,
-                  unsigned short int  in_nb_samples);
-
-    bool speed_down(float              *io_speed,
-                    unsigned int        in_vinyl_pos,
-                    unsigned int        in_track_pos,
-                    unsigned short int  in_nb_samples);
-
     float sample_index_to_float(unsigned short int in_deck_index,
                                 unsigned int       in_sample_index);
 

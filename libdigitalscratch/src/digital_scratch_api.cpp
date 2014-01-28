@@ -275,66 +275,16 @@ int dscratch_analyze_recorded_datas_interleaved(int    turntable_id,
 
 int dscratch_get_playing_parameters(int    turntable_id,
                                     float *speed,
-                                    float *volume,
-                                    float *position)
+                                    float *volume)
 {
     if (tab_turntable[turntable_id]->get_playing_parameters(speed,
-                                                            volume,
-                                                            position) == false)
+                                                            volume) == false)
     {
         // Playing parameters not found.
         return 1;
     }
 
     return 0;
-}
-
-int dscratch_set_position_detection(int turntable_id,
-                                    int enable_position)
-{
-    if (enable_position == 1)
-    {
-        if (tab_turntable[turntable_id]->enable_position_detection(true) == false)
-        {
-            Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                                       "Cannot enable position detection.");
-            return 1;
-        }
-    }
-    else
-    {
-        if (tab_turntable[turntable_id]->enable_position_detection(false) == false)
-        {
-            Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                                       "Cannot disable position detection.");
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-int dscratch_get_position_detection_state(int turntable_id)
-{
-    // Check turntable id.
-    if ((turntable_id > ((int)tab_turntable.size() - 1))
-         || (tab_turntable[turntable_id] == NULL))
-    {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot access this turntable "
-                           + Utils::to_string(turntable_id));
-
-        return -1;
-    }
-
-    if (tab_turntable[turntable_id]->get_position_detection_state() == true)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
 }
 
 void dscratch_print_trace_used()
@@ -370,9 +320,6 @@ void dscratch_print_trace_used()
     #endif
     #ifdef TRACE_ANALYZE_EXTREME
         error_trace_modules += "TRACE_ANALYZE_EXTREME ";
-    #endif
-    #ifdef TRACE_POSITION
-        error_trace_modules += "TRACE_POSITION ";
     #endif
     #ifdef TRACE_EXTREME_USED_FOR_DETECTING_SPEED
         error_trace_modules += "TRACE_EXTREME_USED_FOR_DETECTING_SPEED ";

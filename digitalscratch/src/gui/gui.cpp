@@ -971,9 +971,6 @@ Gui::create_main_window()
     QLabel *deck1_tcode_speed_value     = new QLabel(tr("000.0"));
     deck1_tcode_speed->setObjectName("Speed");
     deck1_tcode_speed_value->setObjectName("Speed");
-    // TODO: work on position detection
-    //QLabel *deck1_tcode_position        = new QLabel(tr("Position (ms): "));
-    //QLabel *deck1_tcode_position_value  = new QLabel(tr("000.000"));
     QLabel *deck1_tcode_amplitude       = new QLabel(tr("Volume (%): "));
     QLabel *deck1_tcode_amplitude_value = new QLabel(tr("000.0"));
     deck1_tcode_amplitude->setObjectName("Volume");
@@ -981,9 +978,6 @@ Gui::create_main_window()
     QHBoxLayout *decks1_tcode_infos = new QHBoxLayout;
     decks1_tcode_infos->addWidget(deck1_tcode_speed,       1, Qt::AlignLeft);
     decks1_tcode_infos->addWidget(deck1_tcode_speed_value, 2, Qt::AlignLeft);
-    // TODO: work on position detection
-    //decks1_tcode_infos->addWidget(deck1_tcode_position, 1);
-    //decks1_tcode_infos->addWidget(deck1_tcode_position_value, 10);
     decks1_tcode_infos->addWidget(deck1_tcode_amplitude,       1,  Qt::AlignLeft);
     decks1_tcode_infos->addWidget(deck1_tcode_amplitude_value, 10, Qt::AlignLeft);
     QHBoxLayout *deck1_remaining_time_layout = new QHBoxLayout;
@@ -1065,9 +1059,6 @@ Gui::create_main_window()
     QLabel *deck2_tcode_speed_value     = new QLabel(tr("000.0"));
     deck2_tcode_speed->setObjectName("Speed");
     deck2_tcode_speed_value->setObjectName("Speed");
-    // TODO: work on position detection
-    //QLabel *deck2_tcode_position        = new QLabel(tr("Position (ms): "));
-    //QLabel *deck2_tcode_position_value  = new QLabel(tr("000.000"));
     QLabel *deck2_tcode_amplitude       = new QLabel(tr("Volume (%): "));
     QLabel *deck2_tcode_amplitude_value = new QLabel(tr("000.0"));
     deck2_tcode_amplitude->setObjectName("Volume");
@@ -1075,9 +1066,6 @@ Gui::create_main_window()
     QHBoxLayout *decks2_tcode_infos = new QHBoxLayout;
     decks2_tcode_infos->addWidget(deck2_tcode_speed,       1, Qt::AlignLeft);
     decks2_tcode_infos->addWidget(deck2_tcode_speed_value, 2, Qt::AlignLeft);
-    // TODO: work on position detection
-    //decks2_tcode_infos->addWidget(deck2_tcode_position, 1);
-    //decks2_tcode_infos->addWidget(deck2_tcode_position_value, 10);
     decks2_tcode_infos->addWidget(deck2_tcode_amplitude,       1,  Qt::AlignLeft);
     decks2_tcode_infos->addWidget(deck2_tcode_amplitude_value, 10, Qt::AlignLeft);
     QHBoxLayout *deck2_remaining_time_layout = new QHBoxLayout;
@@ -1915,16 +1903,11 @@ Gui::create_main_window()
     QObject::connect(this->playback, SIGNAL(sampler_state_changed(int, int, bool)),
                      this,           SLOT(set_sampler_state(int, int, bool)));
 
-    // Timecode informations (speed + position + volume), for each deck.
+    // Timecode informations (speed + volume), for each deck.
     QObject::connect(this->params_1,          SIGNAL(speed_changed(double)),
                      deck1_tcode_speed_value, SLOT(setNum(double)));
     QObject::connect(this->params_2,          SIGNAL(speed_changed(double)),
                      deck2_tcode_speed_value, SLOT(setNum(double)));
-    // TODO: work on position detection
-    //QObject::connect(this->params_1,             SIGNAL(position_changed(double)),
-    //                 deck1_tcode_position_value, SLOT(setNum(double)));
-    //QObject::connect(this->params_2,             SIGNAL(position_changed(double)),
-    //                 deck2_tcode_position_value, SLOT(setNum(double)));
     QObject::connect(this->params_1,              SIGNAL(volume_changed(double)),
                      deck1_tcode_amplitude_value, SLOT(setNum(double)));
     QObject::connect(this->params_2,              SIGNAL(volume_changed(double)),

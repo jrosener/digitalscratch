@@ -36,7 +36,6 @@
 #include <string>
 #include "dscratch_parameters.h"
 #include "speed.h"
-#include "position.h"
 #include "volume.h"
 
 #ifdef DISPLAY_CODE_LINE
@@ -49,7 +48,7 @@
 /**
  * Define a Controller class.\n
  * It is a generic class (abstract) for all types of audio player controller.
- * It can set playback properties such as speed, position and volume.
+ * It can set playback properties such as speed, direction and volume.
  * @author Julien Rosener
  */
 
@@ -73,11 +72,6 @@ class Controller
          * Volume object pointer.
          */
         Volume *volume;
-
-        /**
-         * Position object pointer.
-         */
-        Position *position;
 
         /**
          * Set to true by analyze_recording_datas() when playing parameters can
@@ -115,12 +109,11 @@ class Controller
         bool set_name(string name);
 
         /**
-         * Get last detected speed, position and volume.
+         * Get last detected speed, direction and volume.
          * @return TRUE if playing parameters are available, otherwise FALSE.
          */
         bool get_playing_parameters(float *speed,
-                                    float *volume,
-                                    float *position);
+                                    float *volume);
 
         /**
          * Get maximum number of time we allow NO_NEW_SPEED_FOUND.

@@ -62,10 +62,6 @@ extern "C" {
 /**< This is the volume value in case of no new value is found. */
 #define NO_NEW_VOLUME_FOUND -99.0
 
-/**< This is the position value in case of no new value is found. */
-#define NO_NEW_POSITION_FOUND -99.0
-
-
 /******************************************************************************/
 /********************* Supported timecoded vinyl type *************************/
 
@@ -173,9 +169,7 @@ DLLIMPORT int dscratch_analyze_recorded_datas_interleaved(int    turntable_id,
 /**
  * Provide playing parameters (only relevant if dscratch_analyze_recorded_datas()
  * was called). Playing parameters are:
- *      - speed of the vinyl disc.
- *      - position of the needle on vinyl disc (if position detection is
- *        enabled).
+ *      - speed of the vinyl disc (sign is the direction).
  *      - volume of the sound (dependant of the speed).
  *
  * @param turntable_id is the id of the turntable of which you want to get
@@ -196,42 +190,11 @@ DLLIMPORT int dscratch_analyze_recorded_datas_interleaved(int    turntable_id,
  *        a volume equal to 1.26.
  *        NO_NEW_VOLUME_FOUND is returned if no volume is found.
  *
- * @param position will be returned, this is the position of the needle on the
- *        vinyl disc. It is the number of second from the beginning of the disc.
- *        Ex: position = 132.36sec, jump to 2min12sec36ms.
- *        NO_NEW_POSITION_FOUND is returned if no position is found.
- *
  * @return 0 if playing parameters are found, otherwise 1.
  */
 DLLIMPORT int dscratch_get_playing_parameters(int    turntable_id,
                                               float *speed,
-                                              float *volume,
-                                              float *position);
-
-/**
- * Enable needle position detection algorithm.
- *
- * @param turntable_id is the id of the turntable of which you want to enable
- *        position detection. This id is provided by dscratch_create_turntable()
- *        function.
- * @param enable_position equal 1 if you want to enable position detection,
- *        otherwise 0.
- *
- * @return 0 if all is OK, otherwise 1
- */
-DLLIMPORT int dscratch_set_position_detection(int turntable_id,
-                                              int enable_position);
-
-/**
- * Get state of position detection (enable or not).
- *
- * @param turntable_id is the id of the turntable on which you want to work.
- *        This id is provided by dscratch_create_turntable() function.
- *
- * @return 1 if position detection algorithm is enabled, 0 if it is disabled and
- *         -1 for any error.
- */
-DLLIMPORT int dscratch_get_position_detection_state(int turntable_id);
+                                              float *volume);
 
 /**
  * Print which trace type are used to monitor DigitalScratch.

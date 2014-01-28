@@ -50,7 +50,6 @@ SOURCES += \
     src/utils.cpp \
     src/speed.cpp \
     src/serato_vinyl.cpp \
-    src/position.cpp \
     src/playing_parameter.cpp \
     src/final_scratch_vinyl.cpp \
     src/digital_scratch_api.cpp \
@@ -62,10 +61,8 @@ SOURCES += \
 HEADERS += \ 
     src/include/volume.h \
     src/include/utils.h \
-    src/include/timecode.h \
     src/include/speed.h \
     src/include/serato_vinyl.h \
-    src/include/position.h \
     src/include/playing_parameter.h \
     src/include/final_scratch_vinyl.h \
     src/include/dscratch_parameters.h \
@@ -83,7 +80,6 @@ CONFIG(test) {
                test/controller_test.cpp \
                test/digital_scratch_api_test.cpp \
                test/speed_test.cpp \
-               test/position_test.cpp \
                test/digital_scratch_test.cpp \
                test/volume_test.cpp
 
@@ -91,7 +87,6 @@ CONFIG(test) {
                test/controller_test.h \
                test/digital_scratch_api_test.h \
                test/speed_test.h \
-               test/position_test.h \
                test/digital_scratch_test.h \
                test/volume_test.h
 }

@@ -507,7 +507,6 @@ bool Coded_vinyl::validate_speed_against_amplitude(float speed)
     }
 
     cout << "speed=" << speed << "\tamplitude=" << amplitude << endl;
-       //  << "\t=> OK for this speed (min=" << this->get_min_amplitude_for_normal_speed() << ")."<< endl;
 
     return true;
 }

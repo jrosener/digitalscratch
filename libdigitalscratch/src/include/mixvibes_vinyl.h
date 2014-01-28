@@ -82,13 +82,6 @@ class Mixvibes_vinyl : public Coded_vinyl
 
     /* Methods */
     public:
-        /**
-         * Get the current position value of needle on vinyl.
-         * Define the pure virtual method in base class (Coded_vinyl)
-         * @return the position value or NO_NEW_POSITION_FOUND if nothing is found
-         */
-        float get_position();
-
         int get_sinusoidal_frequency();
         float get_min_amplitude_for_normal_speed();
 };

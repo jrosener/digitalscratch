@@ -47,10 +47,8 @@ class Playback_parameters : public QObject
 
  private:
     float speed;        // Vinyl speed.
-    float position;     // Needle position.
     float volume;       // Turntable sound volume.
     bool  new_speed;    // If true: speed is updated.
-    bool  new_position; // If true: position is updated.
     bool  new_volume;   // If true: volume is updated.
     bool  new_data;     // If true: data are updated.
 
@@ -63,11 +61,6 @@ class Playback_parameters : public QObject
     float get_speed();
     bool  set_new_speed(bool in_new);
     bool  is_new_speed();
-
-    bool  set_position(float in_speed);
-    float get_position();
-    bool  set_new_position(bool in_new);
-    bool  is_new_position();
 
     bool  set_volume(float in_volume);
     float get_volume();
@@ -82,7 +75,6 @@ class Playback_parameters : public QObject
 
  signals:
     void speed_changed(double in_speed);       // Speed.
-    void position_changed(double in_position); // Position in msec.
     void volume_changed(double in_volume);     // Volume.
 };
 
