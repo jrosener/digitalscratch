@@ -86,25 +86,6 @@ extern "C"
 }
 #endif
 
-// Pass-through function.
-int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
-                                  void                          *in_data)
-{
-    qDebug() << "Gui::capture_and_playback_callback...";
-
-    // Call process for consuming captured data and preparing playback ones.
-    Sound_capture_and_playback_process *capture_and_playback = static_cast<Sound_capture_and_playback_process*>(in_data);
-
-    if (capture_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
-    {
-        qWarning() << "capture_and_playback_callback: can not run capture and playback process";
-    }
-
-    qDebug() << "Gui::capture_and_playback_callback done.";
-
-    return 0;
-}
-
 Gui::Gui(Audio_track                        *in_at_1,
          Audio_track                        *in_at_2,
          Audio_track                      ***in_at_samplers,
@@ -346,7 +327,7 @@ Gui::start_capture_and_playback()
 
     // Start sound card for capture and playback.
     if ((this->sound_card->is_running() == false) &&
-        (this->sound_card->start(&capture_and_playback_callback, (void*)this->capture_and_play) == false))
+        (this->sound_card->start((void*)this->capture_and_play) == false))
     {
         qWarning() << "Main: can not start sound card.";
         this->start_capture_button->setChecked(false);

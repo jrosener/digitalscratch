@@ -69,6 +69,7 @@ HEADERS += include/gui/config_dialog.h \
            include/player/audio_track.h \
            include/player/audio_track_playback_process.h \
            include/player/sound_card_access_rules.h \
+           include/player/jack_access_rules.h \
            include/player/timecode_analyzis_process.h \
            include/player/playback_parameters.h \
            include/player/sound_capture_and_playback_process.h \
@@ -92,6 +93,7 @@ SOURCES += src/main.cpp \
            src/player/audio_track.cpp \
            src/player/audio_track_playback_process.cpp \
            src/player/sound_card_access_rules.cpp \
+           src/player/jack_access_rules.cpp \
            src/player/timecode_analyzis_process.cpp \
            src/player/playback_parameters.cpp \
            src/player/sound_capture_and_playback_process.cpp \

@@ -30,47 +30,61 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SOUND_CARD_ACCESS_RULES_H_
-#define SOUND_CARD_ACCESS_RULES_H_
+#ifndef JACK_ACCESS_RULES_H_
+#define JACK_ACCESS_RULES_H_
 
 #include <iostream>
 #include <QObject>
 #include <QString>
+#include <sound_card_access_rules.h>
+#include "jack/jack.h"
 #include <application_const.h>
+typedef jack_client_t *     AUDIO_STREAM_TYPE;
+typedef JackProcessCallback AUDIO_CALLBACK_TYPE;
+typedef jack_nframes_t      AUDIO_CALLBACK_NB_FRAMES_TYPE;
+
+#define CLIENT_NAME   "digitalscratch"
+#define INPUT_PORT_1  "left_turntable-left_channel"
+#define INPUT_PORT_2  "left_turntable-right_channel"
+#define INPUT_PORT_3  "right_turntable-left_channel"
+#define INPUT_PORT_4  "right_turntable-right_channel"
+#define OUTPUT_PORT_1 "mixer_left_side-left_speaker"
+#define OUTPUT_PORT_2 "mixer_left_side-right_speaker"
+#define OUTPUT_PORT_3 "mixer_right_side-left_speaker"
+#define OUTPUT_PORT_4 "mixer_right_side-right_speaker"
 
 using namespace std;
 
-class Sound_card_access_rules : public QObject
+class Jack_access_rules : public Sound_card_access_rules
 {
     Q_OBJECT
 
- protected:
-    unsigned short int       nb_channels;
-    void                    *callback_param;
-    bool                     running;
+ private:
+    AUDIO_STREAM_TYPE stream;
 
  public:
-    Sound_card_access_rules(unsigned short int in_nb_channels);
-    virtual ~Sound_card_access_rules();
+    jack_port_t  **input_port;
+    jack_port_t  **output_port;
 
  public:
+    Jack_access_rules(unsigned short int in_nb_channels);
+    virtual ~Jack_access_rules();
+
+ public:
+    bool start(void *in_callback_param);
+    bool restart();
+    bool stop();
     bool is_running();
-    virtual bool start(void *in_callback_param) = 0;
-    virtual bool restart() = 0;
-    virtual bool stop() = 0;
-    virtual bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
-                                   float              **out_buffer_1,
-                                   float              **out_buffer_2,
-                                   float              **out_buffer_3,
-                                   float              **out_buffer_4) = 0;
-    virtual bool get_output_buffers(unsigned short int   in_nb_buffer_frames,
-                                    float              **out_buffer_1,
-                                    float              **out_buffer_2,
-                                    float              **out_buffer_3,
-                                    float              **out_buffer_4) = 0;
-
- signals:
-   void error_msg(QString in_error_message);
+    bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
+                           float              **out_buffer_1,
+                           float              **out_buffer_2,
+                           float              **out_buffer_3,
+                           float              **out_buffer_4);
+    bool get_output_buffers(unsigned short int   in_nb_buffer_frames,
+                            float              **out_buffer_1,
+                            float              **out_buffer_2,
+                            float              **out_buffer_3,
+                            float              **out_buffer_4);
 };
 
-#endif /* SOUND_CARD_ACCESS_RULES_H_ */
+#endif /* JACK_ACCESS_RULES_H_ */

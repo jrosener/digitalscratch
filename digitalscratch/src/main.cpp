@@ -38,6 +38,7 @@
 #include "audio_file_decoding_process.h"
 #include "audio_track_playback_process.h"
 #include "sound_card_access_rules.h"
+#include "jack_access_rules.h"
 #include "playback_parameters.h"
 #include "timecode_analyzis_process.h"
 #include <QThreadPool>
@@ -149,7 +150,7 @@ int main(int argc, char *argv[])
     Audio_track_playback_process *playback = new Audio_track_playback_process(ats, at_samplers, params, nb_decks, nb_samplers);
 
     // Access sound card.
-    Sound_card_access_rules *sound_card = new Sound_card_access_rules(nb_decks * 2);
+    Sound_card_access_rules *sound_card = new Jack_access_rules(nb_decks * 2);
 
     // Sound capture and playback process.
     Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_analyzis, playback, sound_card);
