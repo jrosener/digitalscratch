@@ -333,9 +333,17 @@ DLLIMPORT unsigned short int dscratch_get_rpm(int turntable_id);
 /**
  * Get the default number of RPM.
  *
- * @return the coefficient used to be multiplied to input samples.
+ * @return the default number of rpm (45 or 33).
  */
 DLLIMPORT unsigned short int dscratch_get_default_rpm();
+
+DLLIMPORT int   dscratch_set_min_amplitude_for_normal_speed(int turntable_id, float amplitude);
+DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(int turntable_id);
+DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed();
+
+DLLIMPORT int   dscratch_set_min_amplitude(int turntable_id, float amplitude);
+DLLIMPORT float dscratch_get_min_amplitude(int turntable_id);
+DLLIMPORT float dscratch_get_default_min_amplitude();
 
 #ifdef __cplusplus
 }

@@ -264,7 +264,7 @@ QWidget *Config_dialog::init_tab_motion_detect()
 
     QLabel *min_amplitude_for_normal_speed_label = new QLabel(tr("Minimal signal amplitude for normal speed:"), this);
     this->min_amplitude_for_normal_speed->setMinimum(1);
-    this->min_amplitude_for_normal_speed->setMaximum(100);
+    this->min_amplitude_for_normal_speed->setMaximum(99);
     this->min_amplitude_for_normal_speed->setSingleStep(1);
     motion_detect_layout->addWidget(min_amplitude_for_normal_speed_label, 4, 0);
     motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed, 4, 1);
@@ -273,7 +273,7 @@ QWidget *Config_dialog::init_tab_motion_detect()
 
     QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
     this->min_amplitude->setMinimum(1);
-    this->min_amplitude->setMaximum(100);
+    this->min_amplitude->setMaximum(999);
     this->min_amplitude->setSingleStep(1);
     motion_detect_layout->addWidget(min_amplitude_label, 5, 0);
     motion_detect_layout->addWidget(this->min_amplitude, 5, 1);
@@ -332,12 +332,12 @@ Config_dialog::set_amplify_coeff_value(int)
 
 void Config_dialog::set_min_amplitude_for_normal_speed_slider(float in_value)
 {
-    this->min_amplitude_for_normal_speed->setValue(in_value);
+    this->min_amplitude_for_normal_speed->setValue(qRound(in_value * 100.0));
 }
 
 float Config_dialog::get_min_amplitude_for_normal_speed_slider()
 {
-   return this->min_amplitude_for_normal_speed->value();
+   return this->min_amplitude_for_normal_speed->value() / 100.0;
 }
 
 void
@@ -348,12 +348,12 @@ Config_dialog::set_min_amplitude_for_normal_speed_value(int)
 
 void Config_dialog::set_min_amplitude_slider(float in_value)
 {
-    this->min_amplitude->setValue(in_value);
+    this->min_amplitude->setValue(qRound(in_value * 1000.0));
 }
 
 float Config_dialog::get_min_amplitude_slider()
 {
-   return this->min_amplitude->value();
+   return this->min_amplitude->value() / 1000.0;
 }
 
 void
