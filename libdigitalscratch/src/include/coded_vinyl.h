@@ -139,6 +139,7 @@ class Coded_vinyl
         float     get_signal_amplitude(vector<float> &samples);
         void      amplify_and_clip_signal(float symetric_amp, vector<float> &samples);
         void      center_signal(vector<float> &samples);
+        bool      are_zero_cross_lists_homegeneous();
 
     public:
         /**

@@ -108,7 +108,7 @@ float Coded_vinyl::get_speed()
 #if 0 // TODO check if this is reaaly an improvement.
     // Center the signal if necessary.
     this->center_signal(this->samples_channel_1);
-    this->center_signal(this->samples_channel_1);
+    this->center_signal(this->samples_channel_2);
 #endif
 
     // For both channels, get the list of zero crossing.
@@ -126,8 +126,15 @@ float Coded_vinyl::get_speed()
 //        cout << this->zero_cross_list_2[i].first << ":" << this->zero_cross_list_2[i].second << endl;
 //    }
 
-    // Calculate speed for all area and make the average value.
-    float speed = this->calculate_speed();
+    // Check if zero cross list contains homegeneous values.
+    float speed = NO_NEW_SPEED_FOUND;
+    if (this->are_zero_cross_lists_homegeneous() == true)
+    {
+        // Calculate speed for all area and make the average value.
+        speed = this->calculate_speed();
+    }
+
+    // Return a speed.
     if (speed != NO_NEW_SPEED_FOUND) // A new speed was found, use and store it.
     {
         this->old_speed     = speed;
@@ -212,6 +219,14 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
             }
         }
     }
+}
+
+bool Coded_vinyl::are_zero_cross_lists_homegeneous()
+{
+// TODO
+    // Check that wave area are more or less of the same size (for the 2 channels).
+
+    // Check that 2 corresponding zero cross (between 2 channels) are delayed by half the size of the wave area.
 }
 
 void Coded_vinyl::center_signal(vector<float> &samples)
