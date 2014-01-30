@@ -122,7 +122,6 @@ float Coded_vinyl::get_speed()
 
     // Calculate speed for all area and make the average value.
     float speed = this->calculate_speed();
-//    cout << "calculated speed = " << speed << endl;
     if (speed != NO_NEW_SPEED_FOUND) // A new speed was found, use and store it.
     {
         this->old_speed     = speed;
@@ -132,7 +131,6 @@ float Coded_vinyl::get_speed()
     {
         speed = this->old_speed;
     }
-//    cout << "returned speed = " << speed << endl;
 
     // Keep non-used samples in internal buffers (for the next time).
     // Put -99 to complete undefined samples.
@@ -148,8 +146,25 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
     // Create the zero crossing line.
     vector<float> zero_crossing_line(samples.size(), 0.0f);
 
+    // Try to get better signal in case of scratches (sinusoidal signal is not crossing the 0 line).
+#if 0
     // Create the zero crossing line based on peaks.
-//    this->calculate_zero_crossing_line(zero_crossing_line, samples);
+    this->calculate_zero_crossing_line(zero_crossing_line, samples);
+#endif
+#if 0
+    // Check if true amplitude is not close to 0.
+    float amplitude = this->get_signal_amplitude(samples);
+    if (qAbs(amplitude) > 0.25)
+    {
+        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
+        for (unsigned int i = 0; i < samples.size(); i++)
+        {
+            cout << i << ";" << samples[i] << endl;
+        }
+        // Amplify the signal and clip it (zero crossing should stay the same).
+        this->amplify_and_clip_signal(amplitude, samples);
+    }
+#endif
 
     // Iterate over 2 sample channels, get size of sinusoidal wave areas by catching samples crossing zero.
     float sample = 0.0;
@@ -207,57 +222,156 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
     }
 }
 
+void Coded_vinyl::amplify_and_clip_signal(float symetric_amp, vector<float> &samples)
+{
+    // For each samples, if it is more than the symetrical limit, change it to the max value, else to the min value.
+    for (unsigned int i = 0; i < samples.size(); i++)
+    {
+        if (samples[i] != -99)
+        {
+            if (samples[i] >= symetric_amp)
+            {
+                samples[i] = 0.99;
+            }
+            else
+            {
+                samples[i] = -0.99;
+            }
+        }
+    }  
+}
+
 void Coded_vinyl::calculate_zero_crossing_line(vector<float> &zero_crossing_line, vector<float> &samples)
 {
     // Get list of peak indexes.
-    vector< pair<unsigned int, float> > peaks; // pair(table_index, sample_value)
+    vector< pair<int, float> > peaks; // pair(table_index, sample_value)
     bool wait_for_up   = false;
     bool wait_for_down = false;
     for (unsigned int i = 0; i < samples.size()-1; i++)
     {
-        // Diff with the next sample.
-        float diff = samples[i+1] - samples[i];
+        if (samples[i] != -99.0)
+        {
+            // Diff with the next sample.
+            float diff = samples[i+1] - samples[i];
 
-        if (diff > 0.0) // We are going up, waiting for the down hill.
-        {
-            if (wait_for_up == true) // Found the hill going up, store it.
+            if (diff > 0.0) // We are going up, waiting for the down hill.
             {
-                peaks.push_back(make_pair(i, samples[i]));
+                if (wait_for_up == true) // Found the hill going up, store it.
+                {
+                    peaks.push_back(make_pair(i * -1, samples[i]));
+                }
+                wait_for_down = true;
+                wait_for_up   = false;
             }
-            wait_for_down = true;
-            wait_for_up   = false;
-        }
-        else if (diff < 0.0) // We are going down, waiting for the up hill
-        {
-            if (wait_for_down == true) // Found the hill going down, store it.
+            else if (diff < 0.0) // We are going down, waiting for the up hill
             {
-                peaks.push_back(make_pair(i, samples[i]));
+                if (wait_for_down == true) // Found the hill going down, store it.
+                {
+                    peaks.push_back(make_pair(i, samples[i]));
+                }
+                wait_for_up   = true;
+                wait_for_down = false;
             }
-            wait_for_up   = true;
-            wait_for_down = false;
-        }
-        else
-        {
-            wait_for_up   = false;
-            wait_for_down = false;
+            else
+            {
+                wait_for_up   = false;
+                wait_for_down = false;
+            }
         }
     }
-//    cout << "table of peaks:" << endl;
+
+//    cout << "\ntable of peaks (" << peaks.size() << "):" << endl;
 //    for (unsigned int i = 0; i < peaks.size(); i++)
 //    {
-//        cout << peaks[i].first << ":" << peaks[i].second << endl;
+//        cout << peaks[i].first << "\t" << peaks[i].second << endl;
 //    }
 
-    // Create the zero crossing line based on peaks.
+    // Clean table of peaks (remove wrong peak due to small glitches).
     if (peaks.size() >= 2)
     {
+        unsigned int j = 0;
+        while (j < peaks.size() - 1)
+        {
+            if (((peaks[j+1].second < 0.0) && (peaks[j+1].second < 0.0)) ||
+                ((peaks[j+1].second > 0.0) && (peaks[j+1].second > 0.0)))
+            {
+                // 2 consecutives peaks are negative or positive.
+                // It looks strange, if the diff is not enough, remove the
+                // smallest one.
+                float diff_value = qAbs(qAbs(peaks[j+1].second) - qAbs(peaks[j].second));
+                int   diff_index = qAbs(qAbs(peaks[j+1].first)  - qAbs(peaks[j].first));
+                if ((diff_index == 1) ||
+                   ((diff_index <= 3) && (diff_value < 0.1)))
+                {
+                    if (qAbs(peaks[j].second) <= qAbs(peaks[j+1].second))
+                    {
+                        //cout << "remove " << peaks[j].first << endl;
+                        peaks.erase(peaks.begin() + j);
+                    }
+                    else
+                    {
+                        //cout << "remove " << peaks[j+1].first << endl;
+                        peaks.erase(peaks.begin() + j + 1);
+                    }
+                }
+                else
+                {
+                    j++;
+                }
+            }
+            else
+            {
+                j++;
+            }
+        }
+    }
+
+//    cout << "table of peaks after cleanup:" << endl;
+//    for (unsigned int i = 0; i < peaks.size(); i++)
+//    {
+//        cout << peaks[i].first << "\t" << peaks[i].second << endl;
+//    }
+
+    float amplitude  = this->get_signal_amplitude(samples);
+    //cout << "moyenne=" << amplitude << endl;
+
+    // If there are a lot of peaks, it means we are running fast (maybe a scratch).
+    // So adjust the zero crossing line.
+    //if ((peaks.size() > 8) && (qAbs(amplitude) > 0.1))
+    if (peaks.size() > 8)
+    {
+        cout << "USE custom crossing line : " << amplitude << endl;
+        fill(zero_crossing_line.begin(), zero_crossing_line.end(), amplitude);
+    }
+
+#if 0
+    // Check if the signal is not always crossing the zero line.
+    bool use_custom_crossing_line = false;
+    for (unsigned int i = 0; i < peaks.size(); i++)
+    {
+        if (((peaks[i].first < 0) && (peaks[i].second > 0.0)) ||
+            ((peaks[i].first > 0) && (peaks[i].second < 0.0)))
+        {
+            use_custom_crossing_line = true;
+        }
+    }
+
+    // Create the zero crossing line based on peaks.
+    if ((use_custom_crossing_line == true) && (peaks.size() >= 2))
+    {
+//            cout << "table of peaks after cleanup:" << endl;
+//            for (unsigned int i = 0; i < peaks.size(); i++)
+//            {
+//                cout << peaks[i].first << "\t" << peaks[i].second << endl;
+//            }
+//        cout << "USE custom crossing line" << endl;
         fill(zero_crossing_line.begin(), zero_crossing_line.end(), -99.0f);
         int unknowns_index_start = 0;
         int unknowns_index_end   = 0;
         for (unsigned int i = 0; i < peaks.size() - 1; i++)
         {
             // Calculate index and values in the middle of 2 peaks.
-            int index = qRound((float)peaks[i].first + ((float)(peaks[i+1].first - peaks[i].first) / 2.0));
+            int index = qRound((float)qAbs(peaks[i].first) + ((float)(qAbs(peaks[i+1].first) - qAbs(peaks[i].first)) / 2.0));
             float value = qMax(peaks[i].second, peaks[i+1].second) - ((float)(qAbs(peaks[i].second) + qAbs(peaks[i+1].second)) / 2.0);
 
             // Add the value at the right place.
@@ -277,12 +391,14 @@ void Coded_vinyl::calculate_zero_crossing_line(vector<float> &zero_crossing_line
             unknowns_index_end = zero_crossing_line.size() - 1;
         }
         this->interpolate_unknown_values(zero_crossing_line, unknowns_index_start, unknowns_index_end);
+
+//        cout << "nb;samples;zero crossing line:" << endl;
+//        for (unsigned int i = 0; i < samples.size(); i++)
+//        {
+//            cout << i << ";" << samples[i] << ";" << zero_crossing_line[i] << endl;
+//        }
     }
-//    cout << "nb;samples;zero crossing line:" << endl;
-//    for (unsigned int i = 0; i < samples.size(); i++)
-//    {
-//        cout << i << ";" << samples[i] << ";" << zero_crossing_line[i] << endl;
-//    }
+#endif
 }
 
 void Coded_vinyl::interpolate_unknown_values(vector<float> &table, int unknowns_index_start, int unknowns_index_end)
@@ -338,7 +454,7 @@ float Coded_vinyl::calculate_speed()
         speed = speed / (float)div;
     }
 
-    // Validate speed againt average signal amplitude.
+    // Validate speed against average signal amplitude.
     if (speed_found == true)
     {
         speed_found = this->validate_and_adjust_speed_against_amplitude(speed);
@@ -473,26 +589,9 @@ short int Coded_vinyl::calculate_direction()
 bool Coded_vinyl::validate_and_adjust_speed_against_amplitude(float &speed)
 {
     // Get average signal amplitude.
-    float amplitude  = 0.0;
-    unsigned int div = 0;
-    for (unsigned int i = 0; i < this->samples_channel_1.size(); i++)
-    {
-        if (this->samples_channel_1[i] != -99)
-        {
-            amplitude += qAbs(this->samples_channel_1[i]);
-            div++;
-        }
-    }
-    for (unsigned int j = 0; j < this->samples_channel_2.size(); j++)
-    {
-        if (this->samples_channel_2[j] != -99)
-        {
-            amplitude += qAbs(this->samples_channel_2[j]);
-            div++;
-        }
-    }
-    amplitude = amplitude / (float)div;
-
+    float amplitude = (this->get_signal_average_amplitude(this->samples_channel_1)
+                      + this->get_signal_average_amplitude(this->samples_channel_2)) / 2.0f;
+    
     // Validate "normal" speed (more than 0.30) against signal amplitude.
     if (qAbs(speed) > 0.30)
     {
@@ -573,6 +672,40 @@ void Coded_vinyl::align_samples()
             this->zero_cross_list_2[0].second = diff;
         }
     }
+}
+
+float Coded_vinyl::get_signal_average_amplitude(vector<float> &samples)
+{
+    // Get the average amplitude of the signal (only abosoute value)
+    float amplitude  = 0.0;
+    unsigned int div = 0;
+    for (unsigned int i = 0; i < samples.size(); i++)
+    {
+        if (samples[i] != -99)
+        {
+            amplitude += qAbs(samples[i]);
+            div++;
+        }
+    }
+    
+    return amplitude / (float)div;
+}
+
+float Coded_vinyl::get_signal_amplitude(vector<float> &samples)
+{
+    // Get the amplitude of the signal (a true symetrical sinusoidal signal should return 0.0).
+    float amplitude  = 0.0;
+    unsigned int div = 0;
+    for (unsigned int i = 0; i < samples.size(); i++)
+    {
+        if (samples[i] != -99)
+        {
+            amplitude += samples[i];
+            div++;
+        }
+    }
+    
+    return amplitude / (float)div;
 }
 
 float Coded_vinyl::get_volume()

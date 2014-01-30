@@ -135,6 +135,9 @@ class Coded_vinyl
         void      keep_unused_samples();
         void      remove_used_samples(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
         void      align_samples();
+        float     get_signal_average_amplitude(vector<float> &samples);
+        float     get_signal_amplitude(vector<float> &samples);
+        void      amplify_and_clip_signal(float symetric_amp, vector<float> &samples);
 
     public:
         /**
