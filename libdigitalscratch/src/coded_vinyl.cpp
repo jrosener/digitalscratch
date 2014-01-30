@@ -152,18 +152,8 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
     this->calculate_zero_crossing_line(zero_crossing_line, samples);
 #endif
 #if 0
-    // Check if true amplitude is not close to 0.
-    float amplitude = this->get_signal_amplitude(samples);
-    if (qAbs(amplitude) > 0.25)
-    {
-        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
-        for (unsigned int i = 0; i < samples.size(); i++)
-        {
-            cout << i << ";" << samples[i] << endl;
-        }
-        // Amplify the signal and clip it (zero crossing should stay the same).
-        this->amplify_and_clip_signal(amplitude, samples);
-    }
+    // Amplify signal until clipping (it centers it).
+    this->center_signal(samples);
 #endif
 
     // Iterate over 2 sample channels, get size of sinusoidal wave areas by catching samples crossing zero.
@@ -219,6 +209,22 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
                 }
             }
         }
+    }
+}
+
+void Coded_vinyl::center_signal(vector<float> &samples)
+{
+    // Check if true amplitude is not close to 0.
+    float amplitude = this->get_signal_amplitude(samples);
+    if (qAbs(amplitude) > 0.25)
+    {
+        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
+        for (unsigned int i = 0; i < samples.size(); i++)
+        {
+            cout << i << ";" << samples[i] << endl;
+        }
+        // Amplify the signal and clip it (zero crossing should stay the same).
+        this->amplify_and_clip_signal(amplitude, samples);
     }
 }
 
