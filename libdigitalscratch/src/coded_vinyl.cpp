@@ -105,6 +105,12 @@ float Coded_vinyl::get_speed()
         return 0.0;
     }
 
+#if 0 // TODO check if this is reaaly an improvement.
+    // Center the signal if necessary.
+    this->center_signal(this->samples_channel_1);
+    this->center_signal(this->samples_channel_1);
+#endif
+
     // For both channels, get the list of zero crossing.
     this->fill_zero_cross_list(this->zero_cross_list_1, this->samples_channel_1);
     this->fill_zero_cross_list(this->zero_cross_list_2, this->samples_channel_2);
@@ -150,10 +156,6 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
 #if 0
     // Create the zero crossing line based on peaks.
     this->calculate_zero_crossing_line(zero_crossing_line, samples);
-#endif
-#if 0
-    // Amplify signal until clipping (it centers it).
-    this->center_signal(samples);
 #endif
 
     // Iterate over 2 sample channels, get size of sinusoidal wave areas by catching samples crossing zero.
@@ -218,13 +220,34 @@ void Coded_vinyl::center_signal(vector<float> &samples)
     float amplitude = this->get_signal_amplitude(samples);
     if (qAbs(amplitude) > 0.25)
     {
-        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
+//        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
+//        cout << "before" << endl;
+//        for (unsigned int i = 0; i < samples.size(); i++)
+//        {
+//            cout << i << ";" << samples[i] << endl;
+//        }
+        // Amplify the signal.
         for (unsigned int i = 0; i < samples.size(); i++)
         {
-            cout << i << ";" << samples[i] << endl;
+            if (samples[i] != -99)
+            {
+                samples[i] -= amplitude;
+                // Clip if necessary.
+                if (samples[i] >= 1.0)
+                {
+                    samples[i] = 0.99;
+                }
+                else if (samples[i] <= -1.0)
+                {
+                    samples[i] = -0.99;
+                }
+            }
         }
-        // Amplify the signal and clip it (zero crossing should stay the same).
-        this->amplify_and_clip_signal(amplitude, samples);
+//        cout << "after" << endl;
+//        for (unsigned int i = 0; i < samples.size(); i++)
+//        {
+//            cout << i << ";" << samples[i] << endl;
+//        }
     }
 }
 
