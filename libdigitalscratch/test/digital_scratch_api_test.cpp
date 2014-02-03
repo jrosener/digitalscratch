@@ -171,7 +171,7 @@ int id = -1;
                 // cout << endl;
 
                 // Speed diff should not be more than 0.01%.
-                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
+                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, qPrintable("expected speed = " + QString::number(expected_speed) + ", speed = " + QString::number(speed)));
 
                 // Volume should be < 1.0 only if speed < 0.90.
                 if (qAbs(expected_speed) < 0.90)

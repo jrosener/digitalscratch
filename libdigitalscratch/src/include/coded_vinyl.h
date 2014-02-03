@@ -130,8 +130,6 @@ class Coded_vinyl
 
     private:
         void      fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
-        void      calculate_zero_crossing_line(vector<float> &zero_crossing_line, vector<float> &samples);
-        void      interpolate_unknown_values(vector<float> &table, int unknowns_index_start, int unknowns_index_end);
         float     calculate_speed();
         float     calculate_average_speed_one_channel(vector< pair<bool, unsigned int> > &zero_cross_list);
         short int calculate_direction();
