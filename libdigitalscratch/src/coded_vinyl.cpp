@@ -58,6 +58,8 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
     this->too_diff_new_speed_counter         = 0;
     this->last_signal_was_centered           = false;
     this->last_zero_cross_list_size          = 0;
+    this->validating_turntable_started       = false;
+    this->validating_changing_direction      = false;
 
     this->set_reverse_direction(false);
 
@@ -100,7 +102,7 @@ float Coded_vinyl::get_speed()
     // If yes, it means we are not able to calculate speed, so return a null speed.
     if (this->samples_channel_1.size() > (this->sin_wave_area_size * DEFAULT_MAX_SIN_WAV_AREA_FACTOR))
     {
-        cout << "TOO MANY samples accumulated : speed = 0.0" << endl;
+//        cout << "TOO MANY samples accumulated : speed = 0.0" << endl;
         this->samples_channel_1.clear();
         this->samples_channel_2.clear();
         this->zero_cross_list_1.clear();
@@ -138,28 +140,28 @@ float Coded_vinyl::get_speed()
     this->fill_zero_cross_list(this->zero_cross_list_2, this->samples_channel_2);
     this->last_zero_cross_list_size = this->zero_cross_list_1.size() + this->zero_cross_list_2.size();
 
-    cout << "zero_cross_list:" << endl;
-    unsigned int max_size = qMax(this->zero_cross_list_1.size(), this->zero_cross_list_2.size());
-    for (unsigned int i = 0; i < max_size; i++)
-    {
-        if (i < this->zero_cross_list_1.size())
-        {
-            cout << this->zero_cross_list_1[i].first << ":" << this->zero_cross_list_1[i].second << ":";
-        }
-        else
-        {
-            cout << "X:X:";
-        }
-        if (i < this->zero_cross_list_2.size())
-        {
-            cout << this->zero_cross_list_2[i].first << ":" << this->zero_cross_list_2[i].second;
-        }
-        else
-        {
-            cout << "X:X";
-        }
-        cout << endl;
-    }
+//    cout << "zero_cross_list:" << endl;
+//    unsigned int max_size = qMax(this->zero_cross_list_1.size(), this->zero_cross_list_2.size());
+//    for (unsigned int i = 0; i < max_size; i++)
+//    {
+//        if (i < this->zero_cross_list_1.size())
+//        {
+//            cout << this->zero_cross_list_1[i].first << ":" << this->zero_cross_list_1[i].second << ":";
+//        }
+//        else
+//        {
+//            cout << "X:X:";
+//        }
+//        if (i < this->zero_cross_list_2.size())
+//        {
+//            cout << this->zero_cross_list_2[i].first << ":" << this->zero_cross_list_2[i].second;
+//        }
+//        else
+//        {
+//            cout << "X:X";
+//        }
+//        cout << endl;
+//    }
 
     // Calculate speed for all area and make the average value.
     float speed = this->calculate_speed();
@@ -167,7 +169,7 @@ float Coded_vinyl::get_speed()
 
     // Invalidate small speed if zero cross list does not contains homegeneous values.
     // TODO check if it is really an improvement
-#if 1
+#if 0
     if ((speed != NO_NEW_SPEED_FOUND) && (this->are_zero_cross_lists_homegeneous(speed) == false))
     {
         speed = NO_NEW_SPEED_FOUND;
@@ -200,6 +202,63 @@ float Coded_vinyl::get_speed()
 #endif
     }
 
+#if 1
+    // Specific cases when starting turntable.
+    if (speed != NO_NEW_SPEED_FOUND)
+    {
+        if (this->old_speed == 0.0f)
+        {
+            // We were stopped and would like to start.
+            if (qAbs(speed) != 0)
+            {
+                if (this->validating_turntable_started == false)
+                {
+                    // We are starting the turntable, we have to validate the speed, so keep speed = 0 for the moment.
+                    this->validating_turntable_started = true;
+                    speed = 0.0f;
+                }
+                else
+                {
+                    // Reset validation (and implicitely accept the current speed).
+                    this->validating_turntable_started = false;
+                }
+            }
+            else
+            {
+                // Validation failed, starting was wrong, reset the validation.
+                this->validating_turntable_started = false;
+            }
+        }
+    }
+#endif
+
+#if 1
+    // Specific case when changing direction.
+    if (speed != NO_NEW_SPEED_FOUND)
+    {
+        if (this->old_speed * speed < 0) // Direction just changed.
+        {
+            if (this->validating_changing_direction == false)
+            {
+                // Validate that we are changing direction.
+                this->validating_changing_direction = true;
+                speed = speed * -1.0f;
+            }
+            else
+            {
+                // Reset validation (and implicitely accept the new direction.
+                this->validating_changing_direction = false;
+            }
+        }
+        else
+        {
+            // Validation failed, so we were not really changing direction, reset the validation.
+            this->validating_changing_direction = false;
+        }
+    }
+#endif
+
+    // TODO: when running between 0.92 and 1.08 (-8% / +8%), change smoothly the speed.
 
     // Return a speed.
     if (speed != NO_NEW_SPEED_FOUND) // A new speed was found, use and store it.
@@ -211,7 +270,7 @@ float Coded_vinyl::get_speed()
     else // No speed was found, use the old one (but after 3 times, switch to 0).
     {
         //cout << "NO_NEW_SPEED_FOUND" << endl;
-#if 1
+#if 0
         speed = this->old_speed;
 
         // After 3 times with no new speed, switch to 0.
@@ -366,11 +425,11 @@ void Coded_vinyl::center_signal(vector<float> &samples)
             }
         }
         this->last_signal_was_centered = true;
-        cout << "SIGNAL CENTERED" << endl;
-        for (unsigned int i = 0; i < samples.size(); i++)
-        {
-            cout << i << ";" << samples[i] << endl;
-        }
+//        cout << "SIGNAL CENTERED" << endl;
+//        for (unsigned int i = 0; i < samples.size(); i++)
+//        {
+//            cout << i << ";" << samples[i] << endl;
+//        }
     }
     else
     {
@@ -628,7 +687,7 @@ void Coded_vinyl::remove_used_samples(vector< pair<bool, unsigned int> > &zero_c
 
     // Keep last sample area (after the zero crossing).
     if ((zero_cross_list.size() > 0) &&
-        ((zero_cross_list[0].second - 1) >= 0))
+        (((int)zero_cross_list[0].second - 1) >= 0))
     {
         samples.erase(samples.begin(), samples.begin() + (zero_cross_list[0].second - 1));
     }

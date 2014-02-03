@@ -79,6 +79,8 @@ class Coded_vinyl
         unsigned int too_diff_new_speed_counter;
         bool last_signal_was_centered;
         unsigned int last_zero_cross_list_size;
+        bool validating_turntable_started;
+        bool validating_changing_direction;
 
         /**
          * Sample rate of input data.
