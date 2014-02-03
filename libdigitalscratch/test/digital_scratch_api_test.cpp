@@ -131,25 +131,16 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_2()
     QVERIFY2(dscratch_delete_turntable(id2) == 0, "cleanup id 2");
 }
 
-/**
- * Test dscratch_analyze_recorded_datas() and dscratch_get_playing_parameters() and validate speed.
- *
- * Test Description:
- *      - Create a turntable with default parameters.
- *      - Call dscratch_analyze_recorded_datas() continously on next part of
- *        timecode. In the mean time check a little bit the quality of returned
- *        playing parameters.
- */
-void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
+void DigitalScratchApi_Test::l_dscratch_analyze_timecode(const char *vinyl_type, const char *txt_timecode_file)
 {
-    int id = -1;
+int id = -1;
 
     // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", SERATO_VINYL, 44100, &id) == 0, "create turntable");
+    QVERIFY2(dscratch_create_turntable("turntable", vinyl_type, 44100, &id) == 0, "create turntable");
 
     // Read text file containing timecode data.
     QStringList csv_data;
-    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_SERATO_33RPM_STOP_FAST, csv_data) == 0, "read CSV");
+    QVERIFY2(l_read_text_file_to_string_list(txt_timecode_file, csv_data) == 0, "read CSV");
 
     // Provide several times next part of timecode to digital-scratch and get
     // playing parameters.
@@ -174,10 +165,10 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
             {
                 QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume) == 0, "get playing parameters");
 
-                //cout << "expected speed=" << expected_speed << endl;
-                //cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
-                //cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
-                //cout << endl;
+                // cout << "expected speed=" << expected_speed << endl;
+                // cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
+                // cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
+                // cout << endl;
 
                 // Speed diff should not be more than 0.01%.
                 QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
@@ -200,6 +191,24 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
 }
 
 /**
+ * Test dscratch_analyze_recorded_datas() and dscratch_get_playing_parameters() and validate speed.
+ *
+ * Test Description:
+ *      - Create a turntable with default parameters.
+ *      - Call dscratch_analyze_recorded_datas() continously on next part of
+ *        timecode. In the mean time check a little bit the quality of returned
+ *        playing parameters.
+ */
+void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_stop_fast()
+{
+    l_dscratch_analyze_timecode(SERATO_VINYL, TIMECODE_SERATO_33RPM_STOP_FAST);
+}
+void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_noises()
+{
+    l_dscratch_analyze_timecode(SERATO_VINYL, TIMECODE_SERATO_33RPM_NOISES);
+}
+
+/**
  * Test dscratch_analyze_recorded_datas() and dscratch_get_playing_parameters.
  *
  * Test Description:
@@ -210,122 +219,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato()
  */
 void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
 {
-    int id = -1;
-
-    // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &id) == 0, "create turntable");
-
-    // Read text file containing timecode data.
-    QStringList csv_data;
-    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_FS_33RPM_SPEED100, csv_data) == 0, "read CSV");
-
-    // Provide several times next part of timecode to digital-scratch and get
-    // playing parameters.
-    vector<float> channel_1;
-    vector<float> channel_2;
-    bool          eof             = false;
-    float         expected_speed  = 0.0;
-    float         speed           = 0.0;
-    float         volume          = 0.0;
-    while (eof == false)
-    {
-        // Get a chunk of timecode data.
-        eof = l_get_next_buffer_of_timecode(csv_data, channel_1, channel_2, expected_speed);
-
-        if (eof == false)
-        {
-            // Check dscratch_analyze_recorded_datas()
-            QVERIFY2(dscratch_analyze_recorded_datas(id, &channel_1[0], &channel_2[0], (int)channel_1.size()) == 0, "analyze data");
-
-            // Check if digital-scratch was able to find playing parameters.
-            if (expected_speed != -99.0)
-            {
-                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume) == 0, "get playing parameters");
-
-                cout << "expected speed=" << expected_speed << endl;
-                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
-                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
-                cout << endl;
-
-                // Speed diff should not be more than 0.01%.
-                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
-            }
-        }
-    }
-
-    // Cleanup.
-    QVERIFY2(dscratch_delete_turntable(id) == 0, "cleanup turntable");
-}
-
-/**
- * Test dscratch_analyze_recorded_datas_interleaved() and dscratch_get_playing_parameters().
- *
- * Test Description:
- *      - Create a turntable with default parameters.
- *      - Call dscratch_analyze_recorded_datas() continously on next part of
- *        timecode. In the mean time check a little bit the quality of returned
- *        playing parameters.
- */
-void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch_interleaved()
-{
-    int id = -1;
-
-    // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &id) == 0, "create turntable");
-
-    // Read text file containing timecode data.
-    QStringList csv_data;
-    QVERIFY2(l_read_text_file_to_string_list(TIMECODE_FS_33RPM_SPEED100, csv_data) == 0, "read CSV");
-
-    // Provide several times next part of timecode to digital-scratch and get
-    // playing parameters.
-    vector<float> channel_1;
-    vector<float> channel_2;
-    vector<float> tab_interleaved;
-    bool          eof             = false;
-    float         expected_speed  = 0.0;
-    float         speed           = 0.0;
-    float         volume          = 0.0;
-    while (eof == false)
-    {
-        // Get a chunk of timecode data.
-        eof = l_get_next_buffer_of_timecode(csv_data, channel_1, channel_2, expected_speed);
-
-        if (eof == false)
-        {
-            // Prepare interleaved data.
-            for (unsigned int i = 0; i < channel_1.size(); i++)
-            {
-                tab_interleaved.push_back(channel_1[i]);
-                tab_interleaved.push_back(channel_2[i]);
-                tab_interleaved.push_back(0.0);
-                tab_interleaved.push_back(0.0);
-            }
-
-            // Check dscratch_analyze_recorded_datas()
-            QVERIFY2(dscratch_analyze_recorded_datas_interleaved(id, 4, 0, 1, &tab_interleaved[0], (int)channel_1.size()) == 0, "analyze interleaved data");
-
-            // Check if digital-scratch was able to find playing parameters.
-            if (expected_speed != -99.0)
-            {
-                QVERIFY2(dscratch_get_playing_parameters(id, &speed, &volume) == 0, "get playing parameters");
-
-//                cout << "expected speed=" << expected_speed << endl;
-//                cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
-//                cout << "diff speed=" << qAbs(speed - expected_speed) << endl;
-//                cout << endl;
-
-                // Speed diff should not be more than 0.01%.
-                QVERIFY2(qAbs(speed - expected_speed) < 0.0001, "speed diff < 0.01%");
-            }
-
-            // Cleanup.
-            tab_interleaved.clear();
-        }
-    }
-
-    // Cleanup.
-    QVERIFY2(dscratch_delete_turntable(id) == 0, "cleanup turntable");
+    l_dscratch_analyze_timecode(FINAL_SCRATCH_VINYL, TIMECODE_FS_33RPM_SPEED100);
 }
 
 /**

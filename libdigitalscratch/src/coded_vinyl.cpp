@@ -54,6 +54,10 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
     this->input_amplify_coeff                = DEFAULT_INPUT_AMPLIFY_COEFF;
     this->old_speed                          = 0.0;
     this->current_speed                      = 0.0;
+    this->no_new_speed_found_counter         = 0;
+    this->too_diff_new_speed_counter         = 0;
+    this->last_signal_was_centered           = false;
+    this->last_zero_cross_list_size          = 0;
 
     this->set_reverse_direction(false);
 
@@ -105,50 +109,131 @@ float Coded_vinyl::get_speed()
         return 0.0;
     }
 
-#if 0 // TODO check if this is reaaly an improvement.
-    // Center the signal if necessary.
-    this->center_signal(this->samples_channel_1);
-    this->center_signal(this->samples_channel_2);
+//    cout << "samples raw" << endl;
+//    for (unsigned int i = 0; i < this->samples_channel_1.size(); i++)
+//    {
+//        cout << i << ":" << this->samples_channel_1[i] << ":" << this->samples_channel_2[i] << endl;
+//    }
+
+#if 1 // TODO check if this is really an improvement.
+    if ((this->old_speed != NO_NEW_SPEED_FOUND) &&
+        (this->old_speed != 0.0) &&
+        (this->last_zero_cross_list_size >= 6)) // Ensure the previous signal contains some full sinusoidal waves.
+    {
+        // Center the signal if necessary.
+        this->center_signal(this->samples_channel_1);
+        this->center_signal(this->samples_channel_2);
+    }
 #endif
+
+//    cout << "samples after center" << endl;
+//    for (unsigned int i = 0; i < this->samples_channel_1.size(); i++)
+//    {
+//        cout << i << ":" << this->samples_channel_1[i] << ":" << this->samples_channel_2[i] << endl;
+//    }
 
     // For both channels, get the list of zero crossing.
     this->fill_zero_cross_list(this->zero_cross_list_1, this->samples_channel_1);
     this->fill_zero_cross_list(this->zero_cross_list_2, this->samples_channel_2);
+    this->last_zero_cross_list_size = this->zero_cross_list_1.size() + this->zero_cross_list_2.size();
 
-//    cout << "zero_cross_list_1:" << endl;
-//    for (unsigned int i = 0; i < this->zero_cross_list_1.size(); i++)
+//    cout << "zero_cross_list:" << endl;
+//    unsigned int max_size = qMax(this->zero_cross_list_1.size(), this->zero_cross_list_2.size());
+//    for (unsigned int i = 0; i < max_size; i++)
 //    {
-//        cout << this->zero_cross_list_1[i].first << ":" << this->zero_cross_list_1[i].second << endl;
-//    }
-//    cout << "zero_cross_list_2:" << endl;
-//    for (unsigned int i = 0; i < this->zero_cross_list_2.size(); i++)
-//    {
-//        cout << this->zero_cross_list_2[i].first << ":" << this->zero_cross_list_2[i].second << endl;
+//        if (i < this->zero_cross_list_1.size())
+//        {
+//            cout << this->zero_cross_list_1[i].first << ":" << this->zero_cross_list_1[i].second << ":";
+//        }
+//        else
+//        {
+//            cout << "X:X:";
+//        }
+//        if (i < this->zero_cross_list_2.size())
+//        {
+//            cout << this->zero_cross_list_2[i].first << ":" << this->zero_cross_list_2[i].second;
+//        }
+//        else
+//        {
+//            cout << "X:X";
+//        }
+//        cout << endl;
 //    }
 
-    // Check if zero cross list contains homegeneous values.
-    float speed = NO_NEW_SPEED_FOUND;
-    if (this->are_zero_cross_lists_homegeneous() == true)
+    // Calculate speed for all area and make the average value.
+    float speed = this->calculate_speed();
+//cout << "calculated_speed=" << speed << endl;
+
+    // Invalidate small speed if zero cross list does not contains homegeneous values.
+    // TODO check if it is really an improvement
+#if 1
+    if ((speed != NO_NEW_SPEED_FOUND) && (this->are_zero_cross_lists_homegeneous(speed) == false))
     {
-        // Calculate speed for all area and make the average value.
-        speed = this->calculate_speed();
+        speed = NO_NEW_SPEED_FOUND;
     }
+#endif
+
+    // Check if the new speed could be possible (based on the old one).
+    if (speed != NO_NEW_SPEED_FOUND)
+    {
+#if 0 // TODO: does not work
+        // Can not be more than 10% difference except if it was 0.
+        if ((this->old_speed != 0.0) && (this->old_speed != NO_NEW_SPEED_FOUND))
+        {
+            float diff = speed - this->old_speed;
+            if (qAbs(diff) > 0.1)
+            {
+                this->too_diff_new_speed_counter++;
+                if (this->too_diff_new_speed_counter < 3)
+                {
+                    speed = this->old_speed;
+                    cout << "wrong speed, keep previous one, diff with previous speed = " << qAbs(diff) << endl;
+                }
+                else
+                {
+                    this->too_diff_new_speed_counter = 0;
+                    cout << "too many wrong speed, use the new one anyaway" << endl;
+                }
+            }
+        }
+#endif
+    }
+
 
     // Return a speed.
     if (speed != NO_NEW_SPEED_FOUND) // A new speed was found, use and store it.
     {
-        this->old_speed     = speed;
-        this->current_speed = speed;
+        this->old_speed                  = speed;
+        this->current_speed              = speed;
+        this->no_new_speed_found_counter = 0;
     }
-    else // No speed was found, use the old one.
+    else // No speed was found, use the old one (but after 3 times, switch to 0).
     {
+        //cout << "NO_NEW_SPEED_FOUND" << endl;
+#if 1
         speed = this->old_speed;
+
+        // After 3 times with no new speed, switch to 0.
+#else
+        this->no_new_speed_found_counter++;
+        if (this->no_new_speed_found_counter > 3)
+        {
+            speed               = 0.0;
+            this->old_speed     = speed;
+            this->current_speed = speed;
+            this->no_new_speed_found_counter = 0;
+        }
+        else
+        {
+            speed = this->old_speed;
+        }
+#endif
     }
 
     // Keep non-used samples in internal buffers (for the next time).
     // Put -99 to complete undefined samples.
     this->keep_unused_samples();
-
+//cout << " => returned speed=" << speed << endl;
     return speed;
 }
 
@@ -221,18 +306,88 @@ void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_
     }
 }
 
-bool Coded_vinyl::are_zero_cross_lists_homegeneous()
+bool Coded_vinyl::are_zero_cross_lists_homegeneous(float speed)
 {
 // TODO
     // Check that wave area are more or less of the same size (for the 2 channels).
 
     // Check that 2 corresponding zero cross (between 2 channels) are delayed by half the size of the wave area.
+    return this->is_signal_channels_shift_homegeneous(speed);
+}
+
+bool Coded_vinyl::is_signal_channels_shift_homegeneous(float speed)
+{
+    // Get time delays between corresponding zero crossing.
+    vector<int> delays;
+    unsigned int min_size = qMin(this->zero_cross_list_1.size(), this->zero_cross_list_2.size());
+    //cout << "speed =" << speed << endl;
+    if (qAbs(speed) < 0.1)
+    {
+        for (unsigned int i = 0; i < min_size; i++)
+        {
+            int delay = this->zero_cross_list_1[i].second - this->zero_cross_list_2[i].second;
+            delays.push_back(qAbs(delay));
+            //cout << "delay=" << qAbs(delay) << endl;
+            float theorical_wave_area = this->sin_wave_area_size / qAbs(speed);
+            if (((float)qAbs(delay) < (theorical_wave_area / 3.0)) ||
+                ((float)qAbs(delay) > theorical_wave_area))
+            {
+                //cout << "delay wrong !! delay=" << qAbs(delay) << "\ttheorical_wave_area=" << theorical_wave_area << "\tspeed=" << speed << endl;
+                return false;
+            }
+        }
+    }
+#if 0
+    // Check if max and min delays are close.
+    if (delays.size() > 0)
+    {
+        vector<int>::const_iterator it_max = max_element(delays.begin(), delays.end());
+        vector<int>::const_iterator it_min = min_element(delays.begin(), delays.end());
+        int diff = *it_max - *it_min;
+        if (qAbs(diff) > 5)
+        {
+            // Delays are too different.
+            cout << "signal_channels_shit NOT homogenous ! (max diff=" << diff << ")" << endl;
+
+            // Show zero lists.
+            cout << "zero_cross_list:" << endl;
+            unsigned int max_size = qMax(this->zero_cross_list_1.size(), this->zero_cross_list_2.size());
+            for (unsigned int i = 0; i < max_size; i++)
+            {
+                if (i < this->zero_cross_list_1.size())
+                {
+                    cout << this->zero_cross_list_1[i].first << ":" << this->zero_cross_list_1[i].second << ":";
+                }
+                else
+                {
+                    cout << "X:X:";
+                }
+                if (i < this->zero_cross_list_2.size())
+                {
+                    cout << this->zero_cross_list_2[i].first << ":" << this->zero_cross_list_2[i].second;
+                    if (i < delays.size())
+                    {
+                        cout << "\t" << delays[i] << endl;
+                    }
+                }
+                else
+                {
+                    cout << "X:X" << endl;
+                }
+            }
+
+            return false;
+        }
+    }
+#endif
+    return true;
 }
 
 void Coded_vinyl::center_signal(vector<float> &samples)
 {
     // Check if true amplitude is not close to 0.
     float amplitude = this->get_signal_amplitude(samples);
+//    cout << "amplitude" << amplitude << endl;
     if (qAbs(amplitude) > 0.25)
     {
 //        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
@@ -258,11 +413,16 @@ void Coded_vinyl::center_signal(vector<float> &samples)
                 }
             }
         }
+        this->last_signal_was_centered = true;
 //        cout << "after" << endl;
 //        for (unsigned int i = 0; i < samples.size(); i++)
 //        {
 //            cout << i << ";" << samples[i] << endl;
 //        }
+    }
+    else
+    {
+        this->last_signal_was_centered = false;
     }
 }
 
@@ -525,19 +685,19 @@ float Coded_vinyl::calculate_average_speed_one_channel(vector< pair<bool, unsign
         return NO_NEW_SPEED_FOUND;
     }
 
-    // Iterate over ranges of zero crossing an calculate the speed.
+    // Iterate over ranges of zero crossing and calculate the speed.
     float speed = 0.0;
     int   div   = 0;
     for (unsigned int i = 0; i < zero_cross_list.size() - 1; i++)
     {
         unsigned int range = zero_cross_list[i+1].second - zero_cross_list[i].second;
 //        cout << range << endl;
-        speed += this->sin_wave_area_size / (float)range;
+        speed += (float)range;
         div++;
     }
-    if (div > 1)
+    if (div >= 1)
     {
-        speed = speed / (float)div;
+        speed = this->sin_wave_area_size / (speed / (float)div);
     }
 
     return speed;
@@ -666,9 +826,20 @@ bool Coded_vinyl::validate_and_adjust_speed_against_amplitude(float &speed)
 
 void Coded_vinyl::keep_unused_samples()
 {
-    this->remove_used_samples(this->zero_cross_list_1, this->samples_channel_1);
-    this->remove_used_samples(this->zero_cross_list_2, this->samples_channel_2);
-    this->align_samples();
+    if (this->last_signal_was_centered == false)
+    {
+        this->remove_used_samples(this->zero_cross_list_1, this->samples_channel_1);
+        this->remove_used_samples(this->zero_cross_list_2, this->samples_channel_2);
+        this->align_samples();
+    }
+    else
+    {
+        // In case the signal was centered, do not use old samples.
+        this->samples_channel_1.clear();
+        this->samples_channel_2.clear();
+        this->zero_cross_list_1.clear();
+        this->zero_cross_list_2.clear();
+    }
 }
 
 void Coded_vinyl::remove_used_samples(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples)
@@ -686,6 +857,11 @@ void Coded_vinyl::remove_used_samples(vector< pair<bool, unsigned int> > &zero_c
 
         // Update the index of the first zero crossing.
         zero_cross_list[0].second = 0;
+    }
+    else
+    {
+        // In any other cases, clean the sample table.
+        samples.clear();
     }
 }
 

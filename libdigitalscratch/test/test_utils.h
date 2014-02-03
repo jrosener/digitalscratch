@@ -7,6 +7,7 @@ using std::vector;
 // Timecode file name.
 #define TIMECODE_FS_33RPM_SPEED100      "test/data/finalscratch_-_33rpm_0pitch.txt"
 #define TIMECODE_SERATO_33RPM_STOP_FAST "test/data/serato_perf_-_33rpm_0pitch_-_stopping_fast.txt"
+#define TIMECODE_SERATO_33RPM_NOISES    "test/data/serato_perf_-_33rpm_0pitch_-_noises.txt"
 
 /**
  * This function create 2 tables of float with 5 parameters.

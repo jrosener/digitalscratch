@@ -75,6 +75,10 @@ class Coded_vinyl
         vector< pair<bool, unsigned int> > zero_cross_list_2;
         float old_speed;
         float current_speed;
+        unsigned int no_new_speed_found_counter;
+        unsigned int too_diff_new_speed_counter;
+        bool last_signal_was_centered;
+        unsigned int last_zero_cross_list_size;
 
         /**
          * Sample rate of input data.
@@ -139,7 +143,8 @@ class Coded_vinyl
         float     get_signal_amplitude(vector<float> &samples);
         void      amplify_and_clip_signal(float symetric_amp, vector<float> &samples);
         void      center_signal(vector<float> &samples);
-        bool      are_zero_cross_lists_homegeneous();
+        bool      are_zero_cross_lists_homegeneous(float speed);
+        bool      is_signal_channels_shift_homegeneous(float speed);
 
     public:
         /**
