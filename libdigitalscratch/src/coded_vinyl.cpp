@@ -259,6 +259,7 @@ float Coded_vinyl::get_speed()
 #endif
 
     // TODO: when running between 0.92 and 1.08 (-8% / +8%), change smoothly the speed.
+    this->smoothly_change_speed(speed);
 
     // Return a speed.
     if (speed != NO_NEW_SPEED_FOUND) // A new speed was found, use and store it.
@@ -295,6 +296,20 @@ float Coded_vinyl::get_speed()
     this->keep_unused_samples();
 //cout << " => returned speed=" << speed << endl;
     return speed;
+}
+
+void Coded_vinyl::smoothly_change_speed(float &speed)
+{
+    if ((this->old_speed != NO_NEW_SPEED_FOUND) && (speed != NO_NEW_SPEED_FOUND))
+    {
+        float diff = speed - this->old_speed;
+        if ((qAbs(diff) < 0.1) && (this->old_speed * speed > 0.0f)) // same sign and diff not more than 1%
+        {
+            // Only change speed by half of the diff with the previous speed.
+            diff = diff / 2.0f;
+            speed = speed + diff;
+        }
+    }
 }
 
 void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples)

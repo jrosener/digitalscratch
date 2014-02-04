@@ -81,6 +81,7 @@ class Coded_vinyl
         unsigned int last_zero_cross_list_size;
         bool validating_turntable_started;
         bool validating_changing_direction;
+        void smoothly_change_speed(float &speed);
 
         /**
          * Sample rate of input data.
