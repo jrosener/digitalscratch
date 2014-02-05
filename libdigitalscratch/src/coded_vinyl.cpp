@@ -93,7 +93,7 @@ void Coded_vinyl::add_sound_data(vector<float> &input_samples_1,
 float Coded_vinyl::get_speed()
 {
     Utils::trace_analyze_vinyl(TRACE_PREFIX_CODED_VINYL, "Searching new speed...");
-
+//cout << "buffer size=" << this->samples_channel_1.size() << endl;
     this->calculate_sin_wave_area_size();
 
 //    cout << "samples_channel_1.size()=" << this->samples_channel_1.size() << endl;
@@ -118,7 +118,7 @@ float Coded_vinyl::get_speed()
 //        cout << i << ":" << this->samples_channel_1[i] << ":" << this->samples_channel_2[i] << endl;
 //    }
 
-#if 1 // TODO check if this is really an improvement.
+#if 1
     if ((this->old_speed != NO_NEW_SPEED_FOUND) &&
         (this->old_speed != 0.0) &&
         (this->last_zero_cross_list_size >= 6)) // Ensure the previous signal contains some full sinusoidal waves.
@@ -166,6 +166,7 @@ float Coded_vinyl::get_speed()
     // Calculate speed for all area and make the average value.
     float speed = this->calculate_speed();
 //cout << "calculated_speed=" << speed << endl;
+//if (speed == NO_NEW_SPEED_FOUND) cout << "calculated : NO_NEW_SPEED_FOUND" << endl;
 
     // Invalidate small speed if zero cross list does not contains homegeneous values.
     // TODO check if it is really an improvement
@@ -258,7 +259,7 @@ float Coded_vinyl::get_speed()
     }
 #endif
 
-    // TODO: when running between 0.92 and 1.08 (-8% / +8%), change smoothly the speed.
+    // Change speed smoothly.
     this->smoothly_change_speed(speed);
 
     // Return a speed.
@@ -279,6 +280,7 @@ float Coded_vinyl::get_speed()
         this->no_new_speed_found_counter++;
         if (this->no_new_speed_found_counter > 3)
         {
+           // cout << "3 no new speed found, switch to 0" << endl;
             speed               = 0.0;
             this->old_speed     = speed;
             this->current_speed = speed;
