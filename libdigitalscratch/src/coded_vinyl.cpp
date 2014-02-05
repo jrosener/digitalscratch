@@ -102,7 +102,7 @@ float Coded_vinyl::get_speed()
     // If yes, it means we are not able to calculate speed, so return a null speed.
     if (this->samples_channel_1.size() > (this->sin_wave_area_size * DEFAULT_MAX_SIN_WAV_AREA_FACTOR))
     {
-//        cout << "TOO MANY samples accumulated : speed = 0.0" << endl;
+        //cout << "TOO MANY samples accumulated : speed = 0.0" << endl;
         this->samples_channel_1.clear();
         this->samples_channel_2.clear();
         this->zero_cross_list_1.clear();
@@ -126,6 +126,10 @@ float Coded_vinyl::get_speed()
         // Center the signal if necessary.
         this->center_signal(this->samples_channel_1);
         this->center_signal(this->samples_channel_2);
+    }
+    else
+    {
+        this->last_signal_was_centered = false;
     }
 #endif
 
@@ -167,6 +171,14 @@ float Coded_vinyl::get_speed()
     float speed = this->calculate_speed();
 //cout << "calculated_speed=" << speed << endl;
 //if (speed == NO_NEW_SPEED_FOUND) cout << "calculated : NO_NEW_SPEED_FOUND" << endl;
+//   if (speed == NO_NEW_SPEED_FOUND)
+//   {
+//        cout << "NO_NEW_SPEED_FOUND => samples:" << endl;
+//        for (unsigned int i = 0; i < this->samples_channel_1.size(); i++)
+//        {
+//            cout << i << ":" << this->samples_channel_1[i] << ":" << this->samples_channel_2[i] << endl;
+//        }
+//   }
 
     // Invalidate small speed if zero cross list does not contains homegeneous values.
     // TODO check if it is really an improvement
@@ -416,6 +428,7 @@ void Coded_vinyl::center_signal(vector<float> &samples)
     // Check if true amplitude is not close to 0.
     float amplitude = this->get_signal_amplitude(samples);
 //    cout << "amplitude" << amplitude << endl;
+    this->last_signal_was_centered = false;
     if (qAbs(amplitude) > 0.25)
     {
 //        cout << "SIGNAL NOT CENTERED! " << amplitude << endl;
@@ -448,10 +461,6 @@ void Coded_vinyl::center_signal(vector<float> &samples)
 //            cout << i << ";" << samples[i] << endl;
 //        }
     }
-    else
-    {
-        this->last_signal_was_centered = false;
-    }
 }
 
 void Coded_vinyl::amplify_and_clip_signal(float symetric_amp, vector<float> &samples)
@@ -482,6 +491,7 @@ float Coded_vinyl::calculate_speed()
     bool  speed_found = false;
 //    cout << "ranges for channel 1:" << endl;
     tmp = this->calculate_average_speed_one_channel(this->zero_cross_list_1);
+//cout << "speed chan 1 = " << tmp;
     if (tmp != NO_NEW_SPEED_FOUND)
     {
         //cout << "speed channel 1: " << tmp << endl;
@@ -491,6 +501,7 @@ float Coded_vinyl::calculate_speed()
     }
 //    cout << "ranges for channel 2:" << endl;
     tmp = this->calculate_average_speed_one_channel(this->zero_cross_list_2);
+//cout << "\tspeed chan 2 = " << tmp << endl;
     if (tmp != NO_NEW_SPEED_FOUND)
     {
         //cout << "speed channel 2: " << tmp << endl;
@@ -687,6 +698,7 @@ void Coded_vinyl::keep_unused_samples()
         // In case the signal was centered, do not use old samples.
         this->samples_channel_1.clear();
         this->samples_channel_2.clear();
+        //cout << "signal was centered, clear samples" << endl;
     }
 
     // Clear zero cross list.
