@@ -55,7 +55,7 @@
  */
 #define MIXVIBES_SINUSOIDAL_FREQ_45RPM 1755
 
-#define DEFAULT_MIXVIBES_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.20f
+#define DEFAULT_MIXVIBES_MIN_AMPLITUDE_FOR_NORMAL_SPEED 0.10f
 #define DEFAULT_MIXVIBES_MIN_AMPLITUDE                  0.005f
 
 /**
@@ -64,10 +64,6 @@
  */
 class Mixvibes_vinyl : public Coded_vinyl
 {
-    /* Attributes */
-    private:
-        
-
     /* Constructor / Destructor */
     public:
         /**

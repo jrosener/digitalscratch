@@ -205,10 +205,12 @@ class Application_settings : public QObject
     void  set_min_amplitude_for_normal_speed(float in_amplitude);
     float get_min_amplitude_for_normal_speed();
     float get_min_amplitude_for_normal_speed_default();
+    float get_min_amplitude_for_normal_speed_default_from_vinyl_type(QString vinyl_type);
 
     void  set_min_amplitude(float in_amplitude);
     float get_min_amplitude();
     float get_min_amplitude_default();
+    float get_min_amplitude_default_from_vinyl_type(QString vinyl_type);
 
     void    set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);

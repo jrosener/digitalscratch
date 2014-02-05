@@ -44,17 +44,13 @@
     #define TRACE_PREFIX_CODED_VINYL "[Coded_vinyl]\t\t\t"
 #endif
 
-#define UNDEFINE   0
-#define MIN        1
-#define MIN_SEARCH 2
-#define MAX        3
-#define MAX_SEARCH 4
+#define MAX_SIN_WAV_AREA_FACTOR      100
+#define SPEED_FOR_VOLUME_CUT         0.90
+#define MAX_NO_NEW_SPEED_FOUND       3
+#define UNKNOWN_SAMPLE_VALUE         -99.0f
 
-#define DEFAULT_MAX_SIN_WAV_AREA_FACTOR            100
-#define SPEED_FOR_VOLUME_CUT                       0.90
-
-#define DEFAULT_INPUT_AMPLIFY_COEFF                1
-#define DEFAULT_RPM                                RPM_33
+#define DEFAULT_INPUT_AMPLIFY_COEFF  1
+#define DEFAULT_RPM                  RPM_33
 
 /**
  * Define a Coded_vinyl class.\n
@@ -69,12 +65,19 @@ class Coded_vinyl
         float min_amplitude;
 
     private:
+        // Signal.
+        int sample_rate;
+        unsigned short int rpm;
+        int input_amplify_coeff;
         vector<float> samples_channel_1;
         vector<float> samples_channel_2;
+
+        // Speed analysis.
         vector< pair<bool, unsigned int> > zero_cross_list_1;
         vector< pair<bool, unsigned int> > zero_cross_list_2;
         float old_speed;
         float current_speed;
+        float sin_wave_area_size;
         unsigned int no_new_speed_found_counter;
         unsigned int too_diff_new_speed_counter;
         bool last_signal_was_centered;
@@ -82,39 +85,7 @@ class Coded_vinyl
         bool validating_turntable_started;
         bool validating_changing_direction;
         void smoothly_change_speed(float &speed);
-
-        /**
-         * Sample rate of input data.
-         */
-        int sample_rate;
-
-        /**
-         * Boolean used to reverse direction (ex: Mixvibes vinyl).
-         */
         bool is_reverse_direction;
-
-        float sin_wave_area_size;
-
-        /**
-         * Coefficient used in progressive algorithm for volume changes.
-         */
-        float progressive_volume_coeff;
-
-        /**
-         * Amplitude (average input samples) value correponding to volume max.
-         */
-        float full_volume_amplitude;
-
-        /**
-         * Coeff used to amplify input signal.
-         */
-        int input_amplify_coeff;
-
-        /**
-         * Base RPM of the turntable.
-         */
-        unsigned short int rpm;
-
 
     /* Constructor / Destructor */
     public:
@@ -132,11 +103,14 @@ class Coded_vinyl
     /* Methods */
 
     private:
+        void      calculate_sin_wave_area_size();
         void      fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
         float     calculate_speed();
         float     calculate_average_speed_one_channel(vector< pair<bool, unsigned int> > &zero_cross_list);
         short int calculate_direction();
         bool      validate_and_adjust_speed_against_amplitude(float &speed);
+        void      validate_and_ajust_speed_when_starting(float &speed);
+        void      validate_and_ajust_speed_when_changing_direction(float &speed);
         void      keep_unused_samples();
         void      remove_used_samples(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
         void      align_samples();
@@ -144,8 +118,7 @@ class Coded_vinyl
         float     get_signal_amplitude(vector<float> &samples);
         void      amplify_and_clip_signal(float symetric_amp, vector<float> &samples);
         void      center_signal(vector<float> &samples);
-        bool      are_zero_cross_lists_homegeneous(float speed);
-        bool      is_signal_channels_shift_homegeneous(float speed);
+        void      store_and_return_speed(float &speed);
 
     public:
         /**
@@ -217,10 +190,16 @@ class Coded_vinyl
          */
         virtual int get_sinusoidal_frequency() = 0;
 
+        /**
+         * @brief Getter/Setter for the minimal acceptable amplitude for a normal speed.
+         */
         void  set_min_amplitude_for_normal_speed(float amplitude);
         float get_min_amplitude_for_normal_speed();
         virtual float get_default_min_amplitude_for_normal_speed() = 0;
 
+        /**
+         * @brief Getter/Setter for the minimal detectable amplitude.
+         */
         void  set_min_amplitude(float amplitude);
         float get_min_amplitude();
         virtual float get_default_min_amplitude() = 0;
@@ -235,21 +214,6 @@ class Coded_vinyl
          * Is reverse direction used ?.
          */
         bool get_reverse_direction();
-
-    private:
-        void calculate_sin_wave_area_size();
-
-        /**
-         * Get volume corresponding to average input signal amplitude.
-         * @return the volume value.
-         */
-        float get_real_volume();
-
-        /**
-         * Get a "smoothed" volume value, depending on old volume value.
-         * @return the new volume value.
-         */
-        float get_smoothed_volume(float new_volume);
 };
 
 #endif //_CODED_VINYL_H_

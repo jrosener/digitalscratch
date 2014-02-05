@@ -85,10 +85,6 @@
  */
 class Final_scratch_vinyl : public Coded_vinyl
 {
-    /* Attributes */
-    private:
-        
-
     /* Constructor / Destructor */
     public:
         /**

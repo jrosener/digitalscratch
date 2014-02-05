@@ -337,13 +337,21 @@ DLLIMPORT unsigned short int dscratch_get_rpm(int turntable_id);
  */
 DLLIMPORT unsigned short int dscratch_get_default_rpm();
 
+/**
+  * Getter/Setter for the minimal acceptable amplitude for a normal speed.
+  */
 DLLIMPORT int   dscratch_set_min_amplitude_for_normal_speed(int turntable_id, float amplitude);
 DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(int turntable_id);
 DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed();
+DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(const char *coded_vinyl_type);
 
+/**
+ * Getter/Setter for the minimal detectable amplitude.
+ */
 DLLIMPORT int   dscratch_set_min_amplitude(int turntable_id, float amplitude);
 DLLIMPORT float dscratch_get_min_amplitude(int turntable_id);
 DLLIMPORT float dscratch_get_default_min_amplitude();
+DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(const char *coded_vinyl_type);
 
 #ifdef __cplusplus
 }

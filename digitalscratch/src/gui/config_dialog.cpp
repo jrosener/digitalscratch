@@ -586,11 +586,10 @@ void Config_dialog::reset_motion_detection_params()
 {
     // Reset all motion detection parameters to their default values.
     this->autostart_detection_check->setChecked(this->settings->get_autostart_motion_detection_default());
-    this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findText(this->settings->get_vinyl_type_default()));
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
-    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default());
-    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default());
+    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->vinyl_type_select->currentText()));
+    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(this->vinyl_type_select->currentText()));
 }
 
 void Config_dialog::reset_shortcuts()

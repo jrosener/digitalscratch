@@ -711,6 +711,33 @@ DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed()
     return vinyl->get_default_min_amplitude_for_normal_speed();
 }
 
+DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(const char *coded_vinyl_type)
+{
+    float result = 0.0f;
+
+    Coded_vinyl *vinyl = NULL;
+    if (strcmp(coded_vinyl_type, SERATO_VINYL) == 0)
+    {
+        vinyl = new Serato_vinyl(44100);
+    }
+    else if (strcmp(coded_vinyl_type, FINAL_SCRATCH_VINYL) == 0)
+    {
+        vinyl = new Final_scratch_vinyl(44100);
+    }
+    else if (strcmp(coded_vinyl_type, MIXVIBES_VINYL) == 0)
+    {
+        vinyl = new Mixvibes_vinyl(44100);
+    }
+
+    if (vinyl != NULL)
+    {
+        result = vinyl->get_default_min_amplitude_for_normal_speed();
+    }
+    delete vinyl;
+
+    return result;
+}
+
 DLLIMPORT int dscratch_set_min_amplitude(int   turntable_id,
                                          float amplitude)
 {
@@ -741,4 +768,31 @@ DLLIMPORT float dscratch_get_default_min_amplitude()
 
     // Get amplitude from Coded_vinyl.
     return vinyl->get_default_min_amplitude();
+}
+
+DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(const char *coded_vinyl_type)
+{
+    float result = 0.0f;
+
+    Coded_vinyl *vinyl = NULL;
+    if (strcmp(coded_vinyl_type, SERATO_VINYL) == 0)
+    {
+        vinyl = new Serato_vinyl(44100);
+    }
+    else if (strcmp(coded_vinyl_type, FINAL_SCRATCH_VINYL) == 0)
+    {
+        vinyl = new Final_scratch_vinyl(44100);
+    }
+    else if (strcmp(coded_vinyl_type, MIXVIBES_VINYL) == 0)
+    {
+        vinyl = new Mixvibes_vinyl(44100);
+    }
+
+    if (vinyl != NULL)
+    {
+        result = vinyl->get_default_min_amplitude();
+    }
+    delete vinyl;
+
+    return result;
 }
