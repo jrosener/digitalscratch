@@ -75,7 +75,7 @@ echo "**************************** Copy source code ***************************"
 git checkout debian/changelog
 check_error
 cd ../../
-git archive --format zip --output $WORKINGPATH/archive.zip master
+git archive --format zip --output $WORKINGPATH/archive.zip $(git symbolic-ref --short -q HEAD)
 unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR
 check_error
 echo ""
