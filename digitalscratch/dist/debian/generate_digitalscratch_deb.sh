@@ -43,7 +43,7 @@ echo ""
 echo ""
 
 echo "************************* Get version from .pro ************************"
-VERSION=$(cat ../../digitalscratch.pro | grep -i '^VERSION =' | cut -d'=' -f2 | tr -d ' ')
+VERSION=$(cat ../../digitalscratch.pro | grep -i '^\s*VERSION =' | grep 'CURRENT_DATE' | cut -d'=' -f2 | tr -d ' ' | tr -d '\r')
 VERSION=${VERSION/\$\$\{CURRENT_DATE\}/$(date +%Y%m%d)}
 echo VERSION = $VERSION
 check_error
