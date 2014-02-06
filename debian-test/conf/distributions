@@ -1,0 +1,8 @@
+Origin: Julien Rosener
+Label: DigitalScratch-DEV Debian APT repository
+Codename: stable
+Architectures: amd64 i386 source
+Components: main
+Description: DigitalScratch-DEV Debian APT repository
+SignWith: yes
+
