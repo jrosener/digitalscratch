@@ -15,15 +15,16 @@ function check_error {
 # Usage
 function usage {
     echo ""
-    echo "Usage: generate_digitalscratch_deb.sh [archi]"
+    echo "Usage: generate_digitalscratch_deb.sh [archi] [repo_type]"
     echo ""
     echo "    [archi]  'amd64' or 'i386'"
+    echo "    [repo_type] 'test' or 'prod'"
     echo ""
     exit
 }
 
 # Check parameters
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
     usage
 fi
 
@@ -32,6 +33,17 @@ if [[ $1 == amd64 ]] ; then
     ARCHI=amd64
 elif [[ $1 == i386 ]] ; then
     ARCHI=i386
+else
+    usage
+fi
+
+# Get repo
+if [[ $2 == test ]] ; then
+    REPOPATH=$(readlink -f ../../../../gh-pages/debian-test/)
+    REPOURL=http://www.digital-scratch.org/debian-test/
+elif [[ $2 == prod ]] ; then
+    REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
+    REPOURL=http://www.digital-scratch.org/debian/
 else
     usage
 fi
@@ -52,7 +64,6 @@ echo ""
 
 echo "*************************** Prepare environment *************************"
 # Main vars
-REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
 VERSIONPACKAGE=$VERSION-1
 WORKINGPATH=$HOME/digitalscratch_$VERSION-make_package
 SOURCEDIR=digitalscratch_source
@@ -108,7 +119,7 @@ echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
 sudo pbuilder --clean
-sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB --othermirror "deb [trusted=yes] http://www.digital-scratch.org/debian/ stable main" --allow-untrusted
+sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB --othermirror "deb [trusted=yes] $REPOURL stable main" --allow-untrusted
 echo ""
 echo ""
 

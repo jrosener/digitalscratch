@@ -15,15 +15,16 @@ function check_error {
 # Usage
 function usage {
     echo ""
-    echo "Usage: generate_libdigitalscratch_deb.sh [archi]"
+    echo "Usage: generate_libdigitalscratch_deb.sh [archi] [repo_type]"
     echo ""
-    echo "    [archi]  'amd64' or 'i386'"
+    echo "    [archi]     'amd64' or 'i386'"
+    echo "    [repo_type] 'test' or 'prod'"
     echo ""
     exit
 }
 
 # Check parameters
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
     usage
 fi
 
@@ -32,6 +33,15 @@ if [[ $1 == amd64 ]] ; then
     ARCHI=amd64
 elif [[ $1 == i386 ]] ; then
     ARCHI=i386
+else
+    usage
+fi
+
+# Get repo
+if [[ $2 == test ]] ; then
+    REPOPATH=$(readlink -f ../../../../gh-pages/debian-test/)
+elif [[ $2 == prod ]] ; then
+    REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
 else
     usage
 fi
@@ -52,7 +62,6 @@ echo ""
 
 echo "*************************** Prepare environment *************************"
 # Main vars
-REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
 VERSIONPACKAGE=$VERSION-1
 WORKINGPATH=$HOME/libdigitalscratch_$VERSION-make_package
 SOURCEDIR=libdigitalscratch_source
