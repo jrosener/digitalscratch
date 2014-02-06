@@ -41,3 +41,42 @@ Description: Motion detection for vinyl turntable
  turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
  Serato or Mixvibes disc.
 
+Package: libkeyfinder-dev
+Source: libkeyfinder
+Version: 0.11.0-1
+Architecture: amd64
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 37
+Depends: libkeyfinder0 (= 0.11.0-1)
+Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
+Priority: extra
+Section: libdevel
+Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_amd64.deb
+Size: 3334
+SHA256: 09ea8514d750457b340923136242318d05b235589bacf17a1d85e7059c5e338d
+SHA1: 96825c1cae2098c7c1001487c0f498f2350bc65f
+MD5sum: 357ab09c51c1e44b7e0f448e8b1e6640
+Description: Key estimation library for DJs
+ libKeyFinder can be used to estimate the musical key of digital recordings.
+ .
+ This package contains the header file and library needed by software which
+ uses KeyFinder library.
+
+Package: libkeyfinder0
+Source: libkeyfinder
+Version: 0.11.0-1
+Architecture: amd64
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 184
+Depends: libfftw3-3, libboost-system1.49.0 (>= 1.49.0-1), libboost-thread1.49.0 (>= 1.49.0-1), libc6 (>= 2.2.5), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
+Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
+Priority: extra
+Section: libs
+Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_amd64.deb
+Size: 64312
+SHA256: 29b2c6e40d7e5988f82af9f11938f6d7088deb25cfff178e8d8606774e949f3d
+SHA1: 5fbc6e35c6eb6b14abda152be95b81872ca8590f
+MD5sum: 25d0d5b46c50a6fadd46228ba374f24c
+Description: Key estimation library for DJs
+ libKeyFinder can be used to estimate the musical key of digital recordings.
+
