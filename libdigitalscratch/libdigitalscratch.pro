@@ -22,6 +22,7 @@ unix {
     VERSION = 1.4.0+1.5.0SNAPSHOT$${CURRENT_DATE}
 }
 DEFINES += VERSION=$${VERSION}
+CONFIG += qt
 
 CONFIG(test) {
     QT       += testlib
