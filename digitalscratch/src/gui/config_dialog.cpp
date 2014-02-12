@@ -54,6 +54,7 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
 
     // Init player parameters widgets.
     this->base_dir_path    = new QLineEdit(this);
+    this->extern_prog      = new QLineEdit(this);
     this->gui_style_select = new QComboBox(this);
     QList<QString> *available_gui_styles = this->settings->get_available_gui_styles();
     for (int i = 0; i < available_gui_styles->size(); i++)
@@ -188,6 +189,12 @@ QWidget *Config_dialog::init_tab_player()
     // Player tab: select GUI style.
     QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
 
+    // Run external prog at startup.
+    QLabel *extern_prog_label = new QLabel(tr("External prog to run at startup: "), this);
+    this->extern_prog->setMinimumWidth(300);
+    QPushButton *extern_prog_button = new QPushButton(tr("Browse..."), this);
+    QObject::connect(extern_prog_button, SIGNAL(clicked()), this, SLOT(show_browse_extern_prog_window()));
+
     // Player tab: setup layout.
     QGridLayout *player_tab_layout = new QGridLayout(this);
     player_tab_layout->addWidget(base_dir_label,         0, 0);
@@ -195,6 +202,9 @@ QWidget *Config_dialog::init_tab_player()
     player_tab_layout->addWidget(base_dir_button,        0, 2);
     player_tab_layout->addWidget(gui_style_label,        1, 0);
     player_tab_layout->addWidget(this->gui_style_select, 1, 1);
+    player_tab_layout->addWidget(extern_prog_label,      2, 0);
+    player_tab_layout->addWidget(this->extern_prog,      2, 1);
+    player_tab_layout->addWidget(extern_prog_button,     2, 2);
 
     // Create tab.
     QWidget *player_tab = new QWidget(this);
@@ -207,6 +217,7 @@ void Config_dialog::fill_tab_player()
 {
     this->base_dir_path->setText(this->settings->get_tracks_base_dir_path());
     this->gui_style_select->setCurrentIndex(this->gui_style_select->findText(this->settings->get_gui_style()));
+    this->extern_prog->setText(this->settings->get_extern_prog());
 }
 
 QWidget *Config_dialog::init_tab_sound_card()
@@ -582,6 +593,23 @@ Config_dialog::show_browse_window()
     return true;
 }
 
+bool
+Config_dialog::show_browse_extern_prog_window()
+{
+    // Create browse window.
+    QString file_path = QFileDialog::getOpenFileName(this,
+                                                     tr("Select an external program"),
+                                                     QDir::homePath());
+
+    // Update base directory path.
+    if (file_path != NULL)
+    {
+        this->extern_prog->setText(file_path);
+    }
+
+    return true;
+}
+
 void Config_dialog::reset_motion_detection_params()
 {
     // Reset all motion detection parameters to their default values.
@@ -631,6 +659,9 @@ Config_dialog::accept()
 
     // Set gui style.
     this->settings->set_gui_style(this->gui_style_select->currentText());
+
+    // External prog run at startup.
+    this->settings->set_extern_prog(this->extern_prog->text());
 
     // Set autostart motion detection at startup.
     this->settings->set_autostart_motion_detection(this->autostart_detection_check->isChecked());

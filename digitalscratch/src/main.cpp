@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QApplication>
 #include <QTextCodec>
+#include <QProcess>
 #include "gui.h"
 #include "audio_track.h"
 #include "audio_file_decoding_process.h"
@@ -73,6 +74,13 @@ int main(int argc, char *argv[])
 
     // Application settings management.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
+
+    // Execute user's defined program at startup.
+    if (settings->get_extern_prog() != "")
+    {
+        QProcess *process = new QProcess();
+        process->start(settings->get_extern_prog());
+    }
 
     // Tracks.
     Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());

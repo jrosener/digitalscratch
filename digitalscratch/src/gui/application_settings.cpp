@@ -88,6 +88,9 @@ Application_settings::init_settings()
     if (this->settings->contains(BASE_DIR_PATH_CFG) == false) {
         this->settings->setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
     }
+    if (this->settings->contains(EXTERN_PROG_CFG) == false) {
+        this->settings->setValue(EXTERN_PROG_CFG, this->get_extern_prog_default());
+    }
     if (this->settings->contains(GUI_STYLE_CFG) == false) {
         this->settings->setValue(GUI_STYLE_CFG, this->get_gui_style_default());
     }
@@ -254,6 +257,18 @@ Application_settings::set_tracks_base_dir_path(QString in_tracks_base_dir_path)
     this->settings->setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
 }
 
+QString
+Application_settings::get_tracks_base_dir_path()
+{
+    return this->settings->value(BASE_DIR_PATH_CFG).toString();
+}
+
+QString
+Application_settings::get_tracks_base_dir_path_default()
+{
+    return QDir::homePath();
+}
+
 void
 Application_settings::set_browser_splitter_size(QByteArray in_state)
 {
@@ -266,17 +281,22 @@ Application_settings::get_browser_splitter_size()
     return this->settings->value(BROWSER_SPLITTER_SIZE_CFG).toByteArray();
 }
 
-
-QString
-Application_settings::get_tracks_base_dir_path()
+void
+Application_settings::set_extern_prog(QString in_extern_prog_path)
 {
-    return this->settings->value(BASE_DIR_PATH_CFG).toString();
+    this->settings->setValue(EXTERN_PROG_CFG, in_extern_prog_path);
 }
 
 QString
-Application_settings::get_tracks_base_dir_path_default()
+Application_settings::get_extern_prog()
 {
-    return QDir::homePath();
+    return this->settings->value(EXTERN_PROG_CFG).toString();
+}
+
+QString
+Application_settings::get_extern_prog_default()
+{
+    return "";
 }
 
 QList<QString>*

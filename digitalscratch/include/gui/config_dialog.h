@@ -84,6 +84,7 @@ class Config_dialog : public QDialog
 
  private:
     QLineEdit            *base_dir_path;
+    QLineEdit            *extern_prog;
     QComboBox            *gui_style_select;
     QComboBox            *sample_rate_select;
     QCheckBox            *auto_jack_connections_check;
@@ -143,6 +144,7 @@ class Config_dialog : public QDialog
 
  private slots:
     bool show_browse_window();
+    bool show_browse_extern_prog_window();
     void reset_shortcuts();
     void reset_motion_detection_params();
     void set_amplify_coeff_value(int in_value);

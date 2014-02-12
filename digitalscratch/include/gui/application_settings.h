@@ -58,6 +58,7 @@ using namespace std;
 #define GUI_STYLE_DEFAULT         "dark"
 #define SAMPLERS_VISIBLE_CFG      "player/samplers_visible"
 #define SAMPLERS_VISIBLE_DEFAULT  1
+#define EXTERN_PROG_CFG           "player/extern_prog"
 
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
 #define SAMPLE_RATE_DEFAULT                 44100
@@ -171,6 +172,10 @@ class Application_settings : public QObject
     void    set_tracks_base_dir_path(QString in_tracks_base_dir_path);
     QString get_tracks_base_dir_path();
     QString get_tracks_base_dir_path_default();
+
+    void    set_extern_prog(QString in_extern_prog_path);
+    QString get_extern_prog();
+    QString get_extern_prog_default();
 
     void            set_gui_style(QString in_gui_style);
     QString         get_gui_style();
