@@ -398,6 +398,31 @@ QProgressBar#Progress::chunk
    background-color: grey;
 }
 
+QWidget#Sampler_main_widget
+{
+    background: transparent;
+}
+
+
+QPushButton#Sampler_show_hide_buttons
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-collapse_off.png);
+}
+QPushButton#Sampler_show_hide_buttons:hover
+{
+   background-color: lightGray;
+   border:           1px solid orange;
+}
+QPushButton#Sampler_show_hide_buttons:checked
+{
+   background-color: gray;
+   image:            url(:/pixmaps/dark-collapse_on.png);
+}
+
 
 QPushButton#Sampler_play_buttons
 {

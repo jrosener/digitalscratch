@@ -260,6 +260,16 @@ Gui::apply_application_settings()
     }
     this->browser_splitter->restoreState(this->settings->get_browser_splitter_size());
 
+    // Show/hide samplers.
+    if (this->settings->get_samplers_visible() == true)
+    {
+        this->show_samplers();
+    }
+    else
+    {
+        this->hide_samplers();
+    }
+
     // Change base path for tracks browser.
     if (this->file_system_model->get_root_path() != this->settings->get_tracks_base_dir_path())
     {
@@ -645,6 +655,49 @@ Gui::show_refresh_audio_collection_dialog()
     qDebug() << "Gui::show_refresh_audio_collection_dialog done.";
 
     return true;
+}
+
+void
+Gui::show_hide_samplers()
+{
+    if (this->sampler1_widget->isVisible() == true)
+    {
+        // Hide samplers.
+        this->hide_samplers();
+    }
+    else
+    {
+        // Show samplers.
+        this->show_samplers();
+    }
+}
+
+void
+Gui::hide_samplers()
+{
+    this->show_hide_samplers_button->setChecked(false);
+    this->settings->set_samplers_visible(false);
+    this->sampler1_widget->setVisible(false);
+    this->sampler1_gbox->setMaximumHeight(20);
+    if (this->nb_decks > 1)
+    {
+        this->sampler2_widget->setVisible(false);
+        this->sampler2_gbox->setMaximumHeight(20);
+    }
+}
+
+void
+Gui::show_samplers()
+{
+    this->show_hide_samplers_button->setChecked(true);
+    this->settings->set_samplers_visible(true);
+    this->sampler1_gbox->setMaximumHeight(999);
+    this->sampler1_widget->setVisible(true);
+    if (this->nb_decks > 1)
+    {
+        this->sampler2_gbox->setMaximumHeight(999);
+        this->sampler2_widget->setVisible(true);
+    }
 }
 
 void
@@ -1185,7 +1238,14 @@ Gui::create_main_window()
     this->sampler1_trackname     = new QLabel*[this->nb_samplers];
     this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
     QVBoxLayout *sampler1_layout = new QVBoxLayout();
-    QString      sampler1_name("A");
+    this->sampler1_widget        = new QWidget();
+    this->sampler1_widget->setLayout(sampler1_layout);
+    sampler1_layout->setMargin(0);
+    QVBoxLayout *sampler1_layout_container = new QVBoxLayout();
+    sampler1_layout_container->addWidget(this->sampler1_widget);
+    sampler1_layout->setMargin(0);
+    this->sampler1_widget->setObjectName("Sampler_main_widget");
+    QString sampler1_name("A");
     for (int i = 0; i < this->nb_samplers; i++)
     {
         this->sampler1_buttons_play[i] = new QPushButton();
@@ -1233,7 +1293,7 @@ Gui::create_main_window()
     }
     this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
     this->sampler1_gbox->setObjectName("SamplerGBox");
-    this->sampler1_gbox->setLayout(sampler1_layout);
+    this->sampler1_gbox->setLayout(sampler1_layout_container);
 
     // Sampler 2 group box
     this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
@@ -1241,8 +1301,15 @@ Gui::create_main_window()
     this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
     this->sampler2_trackname     = new QLabel*[this->nb_samplers];
     this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
-    QGridLayout *sampler2_layout = new QGridLayout();
-    QString      sampler2_name("A");
+    QVBoxLayout *sampler2_layout = new QVBoxLayout();
+    this->sampler2_widget        = new QWidget();
+    this->sampler2_widget->setLayout(sampler2_layout);
+    sampler2_layout->setMargin(0);
+    QVBoxLayout *sampler2_layout_container = new QVBoxLayout();
+    sampler2_layout_container->addWidget(this->sampler2_widget);
+    sampler2_layout->setMargin(0);
+    this->sampler2_widget->setObjectName("Sampler_main_widget");
+    QString sampler2_name("A");
     for (int i = 0; i < this->nb_samplers; i++)
     {
         this->sampler2_buttons_play[i] = new QPushButton();
@@ -1286,25 +1353,27 @@ Gui::create_main_window()
         QObject::connect(container, SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
                          this,      SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
 
-
         sampler2_name[0].unicode()++; // Next sampler letter.
     }
-    sampler2_layout->setColumnStretch(0, 1);
-    sampler2_layout->setColumnStretch(1, 1);
-    sampler2_layout->setColumnStretch(2, 1);
-    sampler2_layout->setColumnStretch(3, 1);
-    sampler2_layout->setColumnStretch(4, 4);
-    sampler2_layout->setColumnStretch(5, 95);
     this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
     this->sampler2_gbox->setObjectName("SamplerGBox");
-    this->sampler2_gbox->setLayout(sampler2_layout);
+    this->sampler2_gbox->setLayout(sampler2_layout_container);
+
+    // Sampler's show/hide button.
+    this->show_hide_samplers_button = new QPushButton();
+    this->show_hide_samplers_button->setObjectName("Sampler_show_hide_buttons");
+    this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
+    this->show_hide_samplers_button->setFixedSize(12, 12);
+    this->show_hide_samplers_button->setCheckable(true);
+    this->show_hide_samplers_button->setChecked(true);
 
     // Samplers layout.
     QHBoxLayout *sampler_layout = new QHBoxLayout();
-    sampler_layout->addWidget(this->sampler1_gbox);
+    sampler_layout->addWidget(this->sampler1_gbox, 100);
+    sampler_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignVCenter);
     if (this->nb_decks > 1)
     {
-        sampler_layout->addWidget(this->sampler2_gbox);
+        sampler_layout->addWidget(this->sampler2_gbox, 100);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1833,6 +1902,9 @@ Gui::create_main_window()
                      this->deck1_key, SLOT(setText(const QString&)));
     QObject::connect(this->at_2,      SIGNAL(key_changed(QString)),
                      this->deck2_key, SLOT(setText(const QString&)));
+
+    // Show/hide samplers.
+    QObject::connect(this->show_hide_samplers_button, SIGNAL(clicked()), this, SLOT(show_hide_samplers()));
 
     // Name of samplers.
     QObject::connect(this->at_1_samplers[0], SIGNAL(name_changed(QString)),

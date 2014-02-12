@@ -56,6 +56,8 @@ using namespace std;
 #define GUI_STYLE_DARK            "dark"
 #define GUI_STYLE_DARK_CSS        SKINS_PATH "dark.css"
 #define GUI_STYLE_DEFAULT         "dark"
+#define SAMPLERS_VISIBLE_CFG      "player/samplers_visible"
+#define SAMPLERS_VISIBLE_DEFAULT  1
 
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
 #define SAMPLE_RATE_DEFAULT                 44100
@@ -214,6 +216,10 @@ class Application_settings : public QObject
 
     void    set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);
+
+    void set_samplers_visible(bool is_visible);
+    bool get_samplers_visible();
+    bool get_samplers_visible_default();
 
     // Runtime settings (not stored in preference file).
     void set_audio_collection_full_refresh(bool in_full_refresh);

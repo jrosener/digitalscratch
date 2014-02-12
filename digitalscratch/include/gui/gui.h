@@ -182,6 +182,8 @@ class Gui : QObject
     Audio_file_decoding_process        *dec_2;
     Audio_file_decoding_process       **dec_1_samplers;
     Audio_file_decoding_process       **dec_2_samplers;
+    QWidget                            *sampler1_widget;
+    QWidget                            *sampler2_widget;
     QPushButton                       **sampler1_buttons_play;
     QPushButton                       **sampler1_buttons_stop;
     QPushButton                       **sampler1_buttons_del;
@@ -238,6 +240,7 @@ class Gui : QObject
     QLabel                            **cue_point_deck2_labels;
     QPushButton                        *show_next_key_from_deck1_button;
     QPushButton                        *show_next_key_from_deck2_button;
+    QPushButton                        *show_hide_samplers_button;
     QPushButton                        *load_sample1_1_button;
     QPushButton                        *load_sample2_1_button;
     QPushButton                        *load_sample1_2_button;
@@ -297,6 +300,8 @@ class Gui : QObject
     void    analyze_audio_collection(bool is_all_files);
     void    set_help_shortcut_value();
     bool    can_stop_capture_and_playback();
+    void    hide_samplers();
+    void    show_samplers();
 
  private slots:
     bool show_config_window();
@@ -314,6 +319,7 @@ class Gui : QObject
     void select_and_run_audio_file_decoding_process_deck1();
     void select_and_run_audio_file_decoding_process_deck2();
     void run_audio_file_decoding_process();
+    void show_hide_samplers();
     void select_and_run_sample1_decoding_process_deck1();
     void select_and_run_sample2_decoding_process_deck1();
     void select_and_run_sample3_decoding_process_deck1();

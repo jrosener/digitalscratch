@@ -79,7 +79,6 @@ Application_settings::init_settings()
     //
     // General application parameters.
     //
-
     if (this->settings->contains(MAIN_WIN_SIZE_CFG) == false) {
         this->settings->setValue(MAIN_WIN_SIZE_CFG, this->get_main_window_size_default());
     }
@@ -91,6 +90,9 @@ Application_settings::init_settings()
     }
     if (this->settings->contains(GUI_STYLE_CFG) == false) {
         this->settings->setValue(GUI_STYLE_CFG, this->get_gui_style_default());
+    }
+    if (this->settings->contains(SAMPLERS_VISIBLE_CFG) == false) {
+        this->settings->setValue(SAMPLERS_VISIBLE_CFG, this->get_samplers_visible_default());
     }
 
     //
@@ -125,7 +127,6 @@ Application_settings::init_settings()
     //
     // Keyboard shortcuts.
     //
-
     if (this->settings->contains(KB_SWITCH_PLAYBACK) == false) {
         this->settings->setValue(KB_SWITCH_PLAYBACK, KB_SWITCH_PLAYBACK_DEFAULT);
     }
@@ -385,6 +386,24 @@ Application_settings::set_min_amplitude(float in_amplitude)
     {
         this->settings->setValue(MIN_AMPLITUDE, value);
     }
+}
+
+void
+Application_settings::set_samplers_visible(bool is_visible)
+{
+    this->settings->setValue(SAMPLERS_VISIBLE_CFG, is_visible);
+}
+
+bool
+Application_settings::get_samplers_visible()
+{
+    return this->settings->value(SAMPLERS_VISIBLE_CFG).toBool();
+}
+
+bool
+Application_settings::get_samplers_visible_default()
+{
+    return SAMPLERS_VISIBLE_DEFAULT;
 }
 
 //
