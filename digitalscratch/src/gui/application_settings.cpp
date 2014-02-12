@@ -116,10 +116,10 @@ Application_settings::init_settings()
         this->settings->setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
     }
     if (this->settings->contains(MIN_AMPLITUDE_NORMAL_SPEED) == false) {
-        this->settings->setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(SERATO_VINYL)));
+        this->settings->setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->settings->value(VINYL_TYPE_CFG).toString())));
     }
     if (this->settings->contains(MIN_AMPLITUDE) == false) {
-        this->settings->setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(SERATO_VINYL)));
+        this->settings->setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->settings->value(VINYL_TYPE_CFG).toString())));
     }
 
     //
