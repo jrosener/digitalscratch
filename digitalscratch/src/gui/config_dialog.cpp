@@ -110,6 +110,7 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->kb_collapse_browse           = new ShortcutQLabel(this);
     this->kb_fullscreen                = new ShortcutQLabel(this);
     this->kb_help                      = new ShortcutQLabel(this);
+    this->kb_file_search               = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler1    = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler2    = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler3    = new ShortcutQLabel(this);
@@ -453,6 +454,10 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(kb_help_label, 9, 3);
     shortcuts_layout->addWidget(this->kb_help, 9, 4, Qt::AlignVCenter);
 
+    QLabel *kb_file_search_label = new QLabel(tr("File search"), this);
+    shortcuts_layout->addWidget(kb_file_search_label, 10, 3);
+    shortcuts_layout->addWidget(this->kb_file_search, 10, 4, Qt::AlignVCenter);
+
     QPushButton *shortcut_reset_to_default = new QPushButton(this);
     shortcut_reset_to_default->setText(tr("Reset to default"));
     shortcuts_layout->addWidget(shortcut_reset_to_default, 11, 4, Qt::AlignRight);
@@ -483,6 +488,7 @@ QWidget *Config_dialog::init_tab_shortcuts()
     QObject::connect(this->kb_load_track_on_sampler3,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
     QObject::connect(this->kb_load_track_on_sampler4,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
     QObject::connect(this->kb_help,                      SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_file_search,               SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
 
     // Create tab.
     QWidget *shortcuts_tab = new QWidget(this);
@@ -511,7 +517,8 @@ bool Config_dialog::is_duplicate_shortcut(const QString& in_value)
         (this->kb_load_track_on_sampler2->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
         (this->kb_load_track_on_sampler3->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
         (this->kb_load_track_on_sampler4->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_help->text().compare(in_value,                     Qt::CaseInsensitive) == 0))
+        (this->kb_help->text().compare(in_value,                     Qt::CaseInsensitive) == 0) ||
+        (this->kb_file_search->text().compare(in_value,              Qt::CaseInsensitive) == 0))
     {
         return true;
     }
@@ -573,6 +580,7 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_load_track_on_sampler3->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3));
     this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
     this->kb_help->setText(this->settings->get_keyboard_shortcut(KB_HELP));
+    this->kb_file_search->setText(this->settings->get_keyboard_shortcut(KB_FILE_SEARCH));
 }
 
 bool
@@ -642,6 +650,7 @@ void Config_dialog::reset_shortcuts()
     this->kb_load_track_on_sampler3->setText(KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT);
     this->kb_load_track_on_sampler4->setText(KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
     this->kb_help->setText(KB_HELP_DEFAULT);
+    this->kb_file_search->setText(KB_FILE_SEARCH_DEFAULT);
 }
 
 void
@@ -703,6 +712,7 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3,    this->kb_load_track_on_sampler3->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4,    this->kb_load_track_on_sampler4->text());
     this->settings->set_keyboard_shortcut(KB_HELP,                      this->kb_help->text());
+    this->settings->set_keyboard_shortcut(KB_FILE_SEARCH,               this->kb_file_search->text());
 
     // Close window.
     this->done(QDialog::Accepted);

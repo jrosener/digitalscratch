@@ -190,6 +190,9 @@ Application_settings::init_settings()
     if (this->settings->contains(KB_HELP) == false) {
         this->settings->setValue(KB_HELP, KB_HELP_DEFAULT);
     }
+    if (this->settings->contains(KB_FILE_SEARCH) == false) {
+        this->settings->setValue(KB_FILE_SEARCH, KB_FILE_SEARCH_DEFAULT);
+    }
 }
 
 void

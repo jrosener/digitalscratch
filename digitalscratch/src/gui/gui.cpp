@@ -157,6 +157,8 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
 
     this->file_browser_gbox = new QGroupBox();
+    this->file_search       = new QLineEdit();
+    this->search_from_begin = false;
 
     this->decks_remaining_time    = new Remaining_time* [2];
     this->decks_remaining_time[0] = new Remaining_time();
@@ -180,6 +182,8 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->shortcut_show_next_keys        = new QShortcut(this->file_browser);
     this->shortcut_fullscreen            = new QShortcut(this->window);
     this->shortcut_help                  = new QShortcut(this->window);
+    this->shortcut_file_search           = new QShortcut(this->window);
+    this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
     this->shortcut_set_cue_points        = new QShortcut* [MAX_NB_CUE_POINTS];
     this->shortcut_go_to_cue_points      = new QShortcut* [MAX_NB_CUE_POINTS];
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
@@ -316,6 +320,8 @@ Gui::apply_application_settings()
     this->shortcut_show_next_keys->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS)));
     this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
     this->shortcut_help->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_HELP)));
+    this->shortcut_file_search->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FILE_SEARCH)));
+    this->shortcut_file_search_press_enter->setKey(QKeySequence("Enter"));
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
         this->shortcut_set_cue_points[i]->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i])));
@@ -473,6 +479,45 @@ Gui::show_help()
     }
 
     qDebug() << "Gui::show_help done.";
+}
+
+void
+Gui::set_focus_search_bar()
+{
+    qDebug() << "Gui::set_focus_search_bar...";
+
+    this->file_search->setFocus();
+    this->file_search->selectAll();
+    this->search_from_begin = true;
+
+    qDebug() << "Gui::set_focus_search_bar done.";
+}
+
+void
+Gui::press_enter_in_search_bar()
+{
+    qDebug() << "Gui::press_enter_in_search_bar...";
+cout << "pressed enter in search bar" << endl;
+    this->search_from_begin = false;
+    this->file_search_string(this->last_search_string);
+
+    qDebug() << "Gui::press_enter_in_search_bar done.";
+}
+
+void
+Gui::file_search_string(QString in_text)
+{
+    this->last_search_string = in_text;
+    if (this->search_from_begin == true)
+    {
+        cout << "searching from beginning " << qPrintable(in_text) << endl;
+        // TODO.
+    }
+    else
+    {
+        cout << "searching next " << qPrintable(in_text) << endl;
+        // TODO.
+    }
 }
 
 void
@@ -1696,9 +1741,16 @@ Gui::create_main_window()
     horiz_line->setObjectName("Horizontal_line");
     file_browser_layout->addWidget(horiz_line);
 
+    QVBoxLayout *file_browser_and_search_layout = new QVBoxLayout();
+    file_browser_and_search_layout->addWidget(this->file_browser);
+    file_browser_and_search_layout->addWidget(this->file_search);
+    file_browser_and_search_layout->setMargin(0);
+    QWidget *file_browser_and_search_widget = new QWidget();
+    file_browser_and_search_widget->setLayout(file_browser_and_search_layout);
+
     this->browser_splitter = new QSplitter();
     this->browser_splitter->addWidget(this->folder_browser);
-    this->browser_splitter->addWidget(this->file_browser);
+    this->browser_splitter->addWidget(file_browser_and_search_widget);
     this->browser_splitter->setStretchFactor(0, 1);
     this->browser_splitter->setStretchFactor(1, 4);
     file_browser_layout->addWidget(this->browser_splitter);
@@ -2028,6 +2080,12 @@ Gui::create_main_window()
         QObject::connect(play_cue_point_button_signal_mapper_deck2, SIGNAL(mapped(int)), this, SLOT(deck2_go_to_cue_point(int)));
         QObject::connect(del_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_del_cue_point(int)));
     }
+
+    // Search bar for file browser.
+    QObject::connect(this->shortcut_file_search, SIGNAL(activated()), this, SLOT(set_focus_search_bar()));
+    QObject::connect(this->file_search, SIGNAL(textChanged(QString)), this, SLOT(file_search_string(QString)));
+    QObject::connect(this->shortcut_file_search_press_enter, SIGNAL(activated()), this, SLOT(press_enter_in_search_bar()));
+    QObject::connect(this->file_search, SIGNAL(returnPressed()), this, SLOT(press_enter_in_search_bar()));
 
     // Progress for file analyzis and storage.
     QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
@@ -2856,8 +2914,6 @@ Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
     // Remove track loaded in the sampler.
     this->playback->del_sampler(in_deck_index, in_sampler_index);
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
-
-    // TODO !!
 
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);

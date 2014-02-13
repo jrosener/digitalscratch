@@ -116,6 +116,7 @@ class Config_dialog : public QDialog
     ShortcutQLabel       *kb_load_track_on_sampler3;
     ShortcutQLabel       *kb_load_track_on_sampler4;
     ShortcutQLabel       *kb_help;
+    ShortcutQLabel       *kb_file_search;
     Application_settings *settings;
 
  public:

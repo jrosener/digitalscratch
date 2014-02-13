@@ -170,6 +170,7 @@ class Gui : QObject
     QSplitter                          *browser_splitter;
     QTreeView                          *file_browser;
     QTreeView                          *folder_browser;
+    QLineEdit                          *file_search;
     QDialog                            *about_dialog;
     QDialog                            *refresh_audio_collection_dialog;
     QDialog                            *error_dialog;
@@ -219,6 +220,8 @@ class Gui : QObject
     QShortcut                          *shortcut_show_next_keys;
     QShortcut                          *shortcut_fullscreen;
     QShortcut                          *shortcut_help;
+    QShortcut                          *shortcut_file_search;
+    QShortcut                          *shortcut_file_search_press_enter;
     QGroupBox                          *help_groupbox;
     QGroupBox                          *file_browser_gbox;
     QPushButton                        *refresh_file_browser;
@@ -260,6 +263,8 @@ class Gui : QObject
     QLabel                             *help_browse_value2;
     QPushButton                        *start_capture_button;
     QPushButton                        *stop_capture_button;
+    bool                                search_from_begin;
+    QString                             last_search_string;
 
  public:
     Gui(Audio_track                        *in_at_1,
@@ -307,6 +312,9 @@ class Gui : QObject
     bool show_config_window();
     void set_fullscreen();
     void show_help();
+    void set_focus_search_bar();
+    void press_enter_in_search_bar();
+    void file_search_string(QString in_text);
     bool show_about_window();
     void done_about_window();
     bool show_refresh_audio_collection_dialog();

@@ -123,6 +123,8 @@ using namespace std;
 #define KB_FULLSCREEN_DEFAULT               "F"
 #define KB_HELP                             "keyboard_shortcuts/kb_help"
 #define KB_HELP_DEFAULT                     "H"
+#define KB_FILE_SEARCH                      "keyboard_shortcuts/kb_file_search"
+#define KB_FILE_SEARCH_DEFAULT              "Ctrl+F"
 
 const QString KB_SET_CUE_POINTS_ON_DECK[]          = { KB_SET_CUE_POINT1_ON_DECK,
                                                        KB_SET_CUE_POINT2_ON_DECK,
