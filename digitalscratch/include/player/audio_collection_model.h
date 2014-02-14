@@ -149,6 +149,7 @@ class Audio_collection_model : public QAbstractItemModel
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);
+    QModelIndex search(QString in_text);
 
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);

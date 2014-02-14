@@ -512,6 +512,8 @@ Gui::file_search_string(QString in_text)
     {
         cout << "searching from beginning " << qPrintable(in_text) << endl;
         // TODO.
+        QModelIndex index = this->file_system_model->search(in_text);
+        this->file_browser->setCurrentIndex(index);
     }
     else
     {
