@@ -6,7 +6,7 @@
 /*                                                                            */
 /*------------------------------------------( timecode_analyzis_process.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2013                                                   */
+/*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
