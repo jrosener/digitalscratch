@@ -49,22 +49,22 @@ void Audio_track_Test::testCaseFillSamples()
     at->reset();
     QVERIFY2(decoder->run(QString(DATA_DIR) + QString(DATA_TRACK_1), "", "") == true, "decode audio track 1");
     QVERIFY2(at->get_name()           == DATA_TRACK_1, "track 1 name");
-    QVERIFY2(at->get_length()         == 21622,        "track 1 length");
-    QVERIFY2(at->get_end_of_samples() == 1907140,      "track 1 end of sample");
+    QVERIFY2(at->get_length()         == 21681,        "track 1 length");
+    QVERIFY2(at->get_end_of_samples() == 1912320,      "track 1 end of sample");
 
     // Check decoded track content 2.
     at->reset();
     QVERIFY2(decoder->run(QString(DATA_DIR) + QString(DATA_TRACK_2), "", "") == true, "decode audio track 2");
     QVERIFY2(at->get_name()           == DATA_TRACK_2, "track 2 name");
-    QVERIFY2(at->get_length()         == 24109,        "track 2 length");
-    QVERIFY2(at->get_end_of_samples() == 2126462,      "track 2 end of sample");
+    QVERIFY2(at->get_length()         == 24163,        "track 2 length");
+    QVERIFY2(at->get_end_of_samples() == 2131200,      "track 2 end of sample");
 
     // Check decoded track content 3.
     at->reset();
     QVERIFY2(decoder->run(QString(DATA_DIR) + QString(DATA_TRACK_3), "", "") == true, "decode audio track 3");
     QVERIFY2(at->get_name()           == DATA_TRACK_3, "track 3 name");
-    QVERIFY2(at->get_length()         == 9073,         "track 3 length");
-    QVERIFY2(at->get_end_of_samples() == 800280,       "track 3 end of sample");
+    QVERIFY2(at->get_length()         == 9116,         "track 3 length");
+    QVERIFY2(at->get_end_of_samples() == 804096,       "track 3 end of sample");
 
     // Cleanup.
     delete decoder;
