@@ -156,9 +156,10 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->file_browser->setDragEnabled(true);
     this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
 
-    this->file_browser_gbox = new QGroupBox();
-    this->file_search       = new QLineEdit();
-    this->search_from_begin = false;
+    this->file_browser_gbox           = new QGroupBox();
+    this->file_search                 = new QLineEdit();
+    this->search_from_begin           = false;
+    this->file_browser_selected_index = 0;
 
     this->decks_remaining_time    = new Remaining_time* [2];
     this->decks_remaining_time[0] = new Remaining_time();
@@ -170,22 +171,23 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->about_dialog = NULL;
 
     // Init shortcuts.
-    this->shortcut_switch_playback       = new QShortcut(this->window);
-    this->shortcut_collapse_browser      = new QShortcut(this->file_browser);
-    this->shortcut_load_audio_file       = new QShortcut(this->file_browser);
-    this->shortcut_go_to_begin           = new QShortcut(this->window);
-    this->shortcut_get_next_audio_tracks = new QShortcut(this->window);
-    this->shortcut_load_sample_file_1    = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_2    = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_3    = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_4    = new QShortcut(this->file_browser);
-    this->shortcut_show_next_keys        = new QShortcut(this->file_browser);
-    this->shortcut_fullscreen            = new QShortcut(this->window);
-    this->shortcut_help                  = new QShortcut(this->window);
-    this->shortcut_file_search           = new QShortcut(this->window);
+    this->shortcut_switch_playback         = new QShortcut(this->window);
+    this->shortcut_collapse_browser        = new QShortcut(this->file_browser);
+    this->shortcut_load_audio_file         = new QShortcut(this->file_browser);
+    this->shortcut_go_to_begin             = new QShortcut(this->window);
+    this->shortcut_get_next_audio_tracks   = new QShortcut(this->window);
+    this->shortcut_load_sample_file_1      = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_2      = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_3      = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_4      = new QShortcut(this->file_browser);
+    this->shortcut_show_next_keys          = new QShortcut(this->file_browser);
+    this->shortcut_fullscreen              = new QShortcut(this->window);
+    this->shortcut_help                    = new QShortcut(this->window);
+    this->shortcut_file_search             = new QShortcut(this->window);
     this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
-    this->shortcut_set_cue_points        = new QShortcut* [MAX_NB_CUE_POINTS];
-    this->shortcut_go_to_cue_points      = new QShortcut* [MAX_NB_CUE_POINTS];
+    this->shortcut_file_search_press_esc   = new QShortcut(this->file_search);
+    this->shortcut_set_cue_points          = new QShortcut* [MAX_NB_CUE_POINTS];
+    this->shortcut_go_to_cue_points        = new QShortcut* [MAX_NB_CUE_POINTS];
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
         this->shortcut_set_cue_points[i]   = new QShortcut(this->window);
@@ -321,7 +323,8 @@ Gui::apply_application_settings()
     this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
     this->shortcut_help->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_HELP)));
     this->shortcut_file_search->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FILE_SEARCH)));
-    this->shortcut_file_search_press_enter->setKey(QKeySequence("Enter"));
+    this->shortcut_file_search_press_enter->setKey(QKeySequence(Qt::Key_Enter));
+    this->shortcut_file_search_press_esc->setKey(QKeySequence(Qt::Key_Escape));
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
         this->shortcut_set_cue_points[i]->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i])));
@@ -497,7 +500,7 @@ void
 Gui::press_enter_in_search_bar()
 {
     qDebug() << "Gui::press_enter_in_search_bar...";
-cout << "pressed enter in search bar" << endl;
+
     this->search_from_begin = false;
     this->file_search_string(this->last_search_string);
 
@@ -505,20 +508,61 @@ cout << "pressed enter in search bar" << endl;
 }
 
 void
+Gui::press_esc_in_search_bar()
+{
+    qDebug() << "Gui::press_esc_in_search_bar...";
+
+    this->file_browser->setFocus();
+
+    qDebug() << "Gui::press_esc_in_search_bar done.";
+}
+
+
+void
 Gui::file_search_string(QString in_text)
 {
-    this->last_search_string = in_text;
-    if (this->search_from_begin == true)
+    if (in_text != "")
     {
-        cout << "searching from beginning " << qPrintable(in_text) << endl;
-        // TODO.
-        QModelIndex index = this->file_system_model->search(in_text);
-        this->file_browser->setCurrentIndex(index);
-    }
-    else
-    {
-        cout << "searching next " << qPrintable(in_text) << endl;
-        // TODO.
+        // Store search text.
+        this->last_search_string = in_text;
+
+        // Search text in file browser (get a list of results).
+        QModelIndexList items = this->file_system_model->search(in_text);
+
+        if (this->search_from_begin == true)
+        {
+            // If we found file/dir name that match, return the first one.
+            if (items.size() > 0)
+            {
+                // Select item in file browser.
+                this->file_browser->setCurrentIndex(items[0]);
+                this->file_browser_selected_index = 0;
+            }
+            else
+            {
+                cout << "  no match" << endl;
+            }
+        }
+        else
+        {
+            // If we found file/dir name that match, return the next one.
+            if (items.size() > 0)
+            {
+                if ((int)this->file_browser_selected_index + 1 < items.size())
+                {
+                    // Select next item in file browser.
+                    this->file_browser_selected_index++;
+                }
+                else
+                {
+                    // Wrap search, so select first item again.
+                    this->file_browser_selected_index = 0;
+                }
+                this->file_browser->setCurrentIndex(items[this->file_browser_selected_index]);
+            }
+
+            this->search_from_begin = true;
+        }
     }
 }
 
@@ -2088,6 +2132,7 @@ Gui::create_main_window()
     QObject::connect(this->file_search, SIGNAL(textChanged(QString)), this, SLOT(file_search_string(QString)));
     QObject::connect(this->shortcut_file_search_press_enter, SIGNAL(activated()), this, SLOT(press_enter_in_search_bar()));
     QObject::connect(this->file_search, SIGNAL(returnPressed()), this, SLOT(press_enter_in_search_bar()));
+    QObject::connect(this->shortcut_file_search_press_esc, SIGNAL(activated()), this, SLOT(press_esc_in_search_bar()));
 
     // Progress for file analyzis and storage.
     QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),

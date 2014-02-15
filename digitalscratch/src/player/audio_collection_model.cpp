@@ -928,7 +928,7 @@ Audio_collection_model::set_next_keys(QString in_next_key,
     return dir_list;
 }
 
-QModelIndex
+QModelIndexList
 Audio_collection_model::search(QString in_text)
 {
     // Get elements that matches with in_text.
@@ -938,19 +938,6 @@ Audio_collection_model::search(QString in_text)
                                         -1,
                                         Qt::MatchFlags(Qt::MatchStartsWith | Qt::MatchWrap));
 
-    foreach (QModelIndex model_index, items)
-    {
-        cout << "model_index=" << qPrintable(static_cast<Audio_collection_item*>(model_index.internalPointer())->get_full_path()) << endl;
-    }
-
-    // If we found file/dir name that match, return the first one.
-    if (items.size() > 0)
-    {
-        return items[0];
-    }
-    else
-    {
-        return this->index(0, 0);
-    }
+    return items;
 }
 

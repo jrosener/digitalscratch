@@ -222,6 +222,7 @@ class Gui : QObject
     QShortcut                          *shortcut_help;
     QShortcut                          *shortcut_file_search;
     QShortcut                          *shortcut_file_search_press_enter;
+    QShortcut                          *shortcut_file_search_press_esc;
     QGroupBox                          *help_groupbox;
     QGroupBox                          *file_browser_gbox;
     QPushButton                        *refresh_file_browser;
@@ -265,6 +266,7 @@ class Gui : QObject
     QPushButton                        *stop_capture_button;
     bool                                search_from_begin;
     QString                             last_search_string;
+    unsigned int                        file_browser_selected_index;
 
  public:
     Gui(Audio_track                        *in_at_1,
@@ -314,6 +316,7 @@ class Gui : QObject
     void show_help();
     void set_focus_search_bar();
     void press_enter_in_search_bar();
+    void press_esc_in_search_bar();
     void file_search_string(QString in_text);
     bool show_about_window();
     void done_about_window();
