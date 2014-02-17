@@ -159,6 +159,7 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->file_browser_gbox           = new QGroupBox();
     this->file_search                 = new QLineEdit();
     this->search_from_begin           = false;
+    this->file_search->setPlaceholderText(tr("Search..."));
     this->file_browser_selected_index = 0;
 
     this->decks_remaining_time    = new Remaining_time* [2];
@@ -537,10 +538,6 @@ Gui::file_search_string(QString in_text)
                 // Select item in file browser.
                 this->file_browser->setCurrentIndex(items[0]);
                 this->file_browser_selected_index = 0;
-            }
-            else
-            {
-                cout << "  no match" << endl;
             }
         }
         else
