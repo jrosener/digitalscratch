@@ -86,6 +86,7 @@ class Config_dialog : public QDialog
     QLineEdit            *base_dir_path;
     QLineEdit            *extern_prog;
     QComboBox            *gui_style_select;
+    QComboBox            *nb_decks_select;
     QComboBox            *sample_rate_select;
     QCheckBox            *auto_jack_connections_check;
     QCheckBox            *autostart_detection_check;

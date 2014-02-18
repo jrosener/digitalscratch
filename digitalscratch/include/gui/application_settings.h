@@ -59,6 +59,8 @@ using namespace std;
 #define SAMPLERS_VISIBLE_CFG      "player/samplers_visible"
 #define SAMPLERS_VISIBLE_DEFAULT  1
 #define EXTERN_PROG_CFG           "player/extern_prog"
+#define NB_DECKS_CFG              "player/nb_decks"
+#define NB_DECKS_DEFAULT          2
 
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
 #define SAMPLE_RATE_DEFAULT                 44100
@@ -153,6 +155,7 @@ class Application_settings : public QObject
     QList<QString>            *available_vinyl_types;
     QList<unsigned short int> *available_rpms;
     QList<unsigned int>       *available_sample_rates;
+    QList<unsigned int>       *available_nb_decks;
     bool                       audio_collection_full_refresh;
 
  public:
@@ -183,6 +186,11 @@ class Application_settings : public QObject
     QString         get_gui_style();
     QString         get_gui_style_default();
     QList<QString>* get_available_gui_styles();
+
+    void                 set_nb_decks(unsigned int in_nb_decks);
+    unsigned int         get_nb_decks();
+    unsigned int         get_nb_decks_default();
+    QList<unsigned int>* get_available_nb_decks();
 
     void                 set_sample_rate(unsigned int in_sample_rate);
     unsigned int         get_sample_rate();

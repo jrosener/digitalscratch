@@ -61,6 +61,12 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     {
         this->gui_style_select->addItem(available_gui_styles->at(i));
     }
+    this->nb_decks_select = new QComboBox(this);
+    QList<unsigned int> *available_nb_decks = this->settings->get_available_nb_decks();
+    for (int i = 0; i < available_nb_decks->size(); i++)
+    {
+        this->nb_decks_select->addItem(QString::number(available_nb_decks->at(i)));
+    }
 
     // Init sound card parameters widgets.
     this->sample_rate_select = new QComboBox(this);
@@ -190,6 +196,9 @@ QWidget *Config_dialog::init_tab_player()
     // Player tab: select GUI style.
     QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
 
+    // Player tab: select number of decks.
+    QLabel *nb_decks_label = new QLabel(tr("Number of decks (needs to restart): "), this);
+
     // Run external prog at startup.
     QLabel *extern_prog_label = new QLabel(tr("External prog to run at startup: "), this);
     this->extern_prog->setMinimumWidth(300);
@@ -203,9 +212,11 @@ QWidget *Config_dialog::init_tab_player()
     player_tab_layout->addWidget(base_dir_button,        0, 2);
     player_tab_layout->addWidget(gui_style_label,        1, 0);
     player_tab_layout->addWidget(this->gui_style_select, 1, 1);
-    player_tab_layout->addWidget(extern_prog_label,      2, 0);
-    player_tab_layout->addWidget(this->extern_prog,      2, 1);
-    player_tab_layout->addWidget(extern_prog_button,     2, 2);
+    player_tab_layout->addWidget(nb_decks_label,         2, 0);
+    player_tab_layout->addWidget(this->nb_decks_select,  2, 1);
+    player_tab_layout->addWidget(extern_prog_label,      3, 0);
+    player_tab_layout->addWidget(this->extern_prog,      3, 1);
+    player_tab_layout->addWidget(extern_prog_button,     3, 2);
 
     // Create tab.
     QWidget *player_tab = new QWidget(this);
@@ -218,6 +229,7 @@ void Config_dialog::fill_tab_player()
 {
     this->base_dir_path->setText(this->settings->get_tracks_base_dir_path());
     this->gui_style_select->setCurrentIndex(this->gui_style_select->findText(this->settings->get_gui_style()));
+    this->nb_decks_select->setCurrentIndex(this->nb_decks_select->findText(QString::number(this->settings->get_nb_decks())));
     this->extern_prog->setText(this->settings->get_extern_prog());
 }
 
@@ -668,6 +680,9 @@ Config_dialog::accept()
 
     // Set gui style.
     this->settings->set_gui_style(this->gui_style_select->currentText());
+
+    // Set number of decks.
+    this->settings->set_nb_decks(this->nb_decks_select->currentText().toInt());
 
     // External prog run at startup.
     this->settings->set_extern_prog(this->extern_prog->text());

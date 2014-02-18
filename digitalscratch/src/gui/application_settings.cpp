@@ -54,6 +54,10 @@ Application_settings::Application_settings()
     this->available_rpms->append(RPM_33);
     this->available_rpms->append(RPM_45);
 
+    this->available_nb_decks = new QList<unsigned int>();
+    this->available_nb_decks->append(1);
+    this->available_nb_decks->append(2);
+
     this->available_sample_rates = new QList<unsigned int>();
     this->available_sample_rates->append(44100);
     this->available_sample_rates->append(48000);
@@ -96,6 +100,9 @@ Application_settings::init_settings()
     }
     if (this->settings->contains(SAMPLERS_VISIBLE_CFG) == false) {
         this->settings->setValue(SAMPLERS_VISIBLE_CFG, this->get_samplers_visible_default());
+    }
+    if (this->settings->contains(NB_DECKS_CFG) == false) {
+        this->settings->setValue(NB_DECKS_CFG, this->get_nb_decks_default());
     }
 
     //
@@ -325,6 +332,31 @@ Application_settings::set_gui_style(QString in_gui_style)
 {
     this->settings->setValue(GUI_STYLE_CFG, in_gui_style);
 }
+
+unsigned int
+Application_settings::get_nb_decks()
+{
+    return this->settings->value(NB_DECKS_CFG).toUInt();
+}
+
+unsigned int
+Application_settings::get_nb_decks_default()
+{
+    return NB_DECKS_DEFAULT;
+}
+
+void
+Application_settings::set_nb_decks(unsigned int in_nb_decks)
+{
+    this->settings->setValue(NB_DECKS_CFG, in_nb_decks);
+}
+
+QList<unsigned int>*
+Application_settings::get_available_nb_decks()
+{
+    return this->available_nb_decks;
+}
+
 
 //
 // Timecode signal detection settings.

@@ -49,15 +49,7 @@
 
 int main(int argc, char *argv[])
 {
-    unsigned short int nb_decks    = 2;
     unsigned short int nb_samplers = 4;
-
-    // Get number of decks from command line, default is 2.
-    if ((argc == 2) && (atoi(argv[1]) <= 2) && (atoi(argv[1]) > 0))
-    {
-        nb_decks = atoi(argv[1]);
-    }
-    qDebug() << "Main::main Number of decks:" << nb_decks;
 
     // Create application.
     QApplication app(argc, argv);
@@ -85,7 +77,7 @@ int main(int argc, char *argv[])
     // Tracks.
     Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
     Audio_track *at_2 = NULL;
-    if (nb_decks > 1) at_2 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
+    if (settings->get_nb_decks() > 1) at_2 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
     else              at_2 = new Audio_track(settings->get_sample_rate());
     Audio_track *ats[] = { at_1, at_2 };
 
@@ -100,7 +92,7 @@ int main(int argc, char *argv[])
     Audio_track *at_2_sampler_2  = NULL;
     Audio_track *at_2_sampler_3  = NULL;
     Audio_track *at_2_sampler_4  = NULL;
-    if (nb_decks > 1)
+    if (settings->get_nb_decks() > 1)
     {
         at_2_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
         at_2_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
@@ -144,21 +136,21 @@ int main(int argc, char *argv[])
 
     // Process which analyze captured timecode data.
     Timecode_analyzis_process *tcode_analyzis = new Timecode_analyzis_process(params,
-                                                                              nb_decks,
+                                                                              settings->get_nb_decks(),
                                                                               settings->get_vinyl_type(),
                                                                               settings->get_sample_rate());
     int *dscratch_ids;
-    dscratch_ids = new int[nb_decks];
-    for (int i = 0; i < nb_decks; i++)
+    dscratch_ids = new int[settings->get_nb_decks()];
+    for (unsigned int i = 0; i < settings->get_nb_decks(); i++)
     {
         dscratch_ids[i] = tcode_analyzis->get_dscratch_id(i);
     }
 
     // Playback process.
-    Audio_track_playback_process *playback = new Audio_track_playback_process(ats, at_samplers, params, nb_decks, nb_samplers);
+    Audio_track_playback_process *playback = new Audio_track_playback_process(ats, at_samplers, params, settings->get_nb_decks(), nb_samplers);
 
     // Access sound card.
-    Sound_card_access_rules *sound_card = new Jack_access_rules(nb_decks * 2);
+    Sound_card_access_rules *sound_card = new Jack_access_rules(settings->get_nb_decks() * 2);
 
     // Sound capture and playback process.
     Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_analyzis, playback, sound_card);
@@ -170,7 +162,7 @@ int main(int argc, char *argv[])
                        dec_samplers,
                        params_1, params_2,
                        playback,
-                       nb_decks,
+                       settings->get_nb_decks(),
                        sound_card,
                        capture_and_playback,
                        dscratch_ids);
