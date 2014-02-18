@@ -150,7 +150,7 @@ Waveform::generate_polyline()
         x = (float)(this->area_width * i) / (float)POINTS_MAX_SIZE;
         if (j <= this->at->get_end_of_samples())
         {
-            y = (float)(((float)(current_sample - 32768) * this->area_height) / (float)(-32768 * 2));
+            y = (float)(((float)(current_sample - SHRT_MAX) * this->area_height) / (float)(SHRT_MAX * -1 * 2));
             this->end_of_waveform = i;
         }
         else

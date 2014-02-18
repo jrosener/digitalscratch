@@ -359,9 +359,9 @@ Audio_track_playback_process::play_sampler(unsigned short int   in_deck_index,
                     index = in_deck_index * 2;
                     for (int j = 0; j < in_nb_samples; j++)
                     {
-                        sample                  = (float)*sample_pointer / 32768.0;
+                        sample                  = (float)*sample_pointer / (float)SHRT_MAX;
                         out_samples[index][j]   = out_samples[index][j] + sample - (out_samples[index][j] * sample);
-                        sample                  = (float)*(sample_pointer++) / 32768.0;
+                        sample                  = (float)*(sample_pointer++) / (float)SHRT_MAX;
                         out_samples[index+1][j] = out_samples[index+1][j] + sample - (out_samples[index+1][j] * sample);
                         sample_pointer++;
                     }

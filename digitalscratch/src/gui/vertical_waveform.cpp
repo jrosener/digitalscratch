@@ -106,7 +106,7 @@ Vertical_waveform::generate_polyline()
 
         // Adapt value to paiting area.
         x = (float)(this->area_width * i) / (float)V_WAVEFORM_POINTS_MAX_SIZE;
-        y = (float)(((float)(current_sample - 32768) * this->area_height) / (float)(-32768 * 2));
+        y = (float)(((float)(current_sample - SHRT_MAX) * this->area_height) / (float)(SHRT_MAX * -1 * 2));
         this->points[i].setX(x);
         this->points[i].setY(y);
 
