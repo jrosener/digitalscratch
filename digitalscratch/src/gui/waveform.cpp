@@ -215,7 +215,7 @@ Waveform::paintEvent(QPaintEvent *)
         this->move_cue_slider(i, this->cue_sliders_absolute_position[i]);
     }
 
-    qDebug() << "Vertical::paintEvent done.";
+    qDebug() << "Waveform::paintEvent done.";
 
     return;
 }

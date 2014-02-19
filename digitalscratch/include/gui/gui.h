@@ -53,7 +53,6 @@
 #include "playback_parameters.h"
 #include "sound_card_access_rules.h"
 #include "waveform.h"
-#include "vertical_waveform.h"
 #include "remaining_time.h"
 #include "application_settings.h"
 #include "application_const.h"
@@ -159,8 +158,6 @@ class Gui : QObject
     QLabel                             *deck2_key;
     Waveform                           *deck1_waveform;
     Waveform                           *deck2_waveform;
-    Vertical_waveform                  *deck1_vertical_waveform;
-    Vertical_waveform                  *deck2_vertical_waveform;
     QGraphicsView                      *deck1_view;
     QGraphicsView                      *deck2_view;
     QGraphicsScene                     *deck1_scene;

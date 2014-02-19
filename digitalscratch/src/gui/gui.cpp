@@ -1087,16 +1087,6 @@ Gui::create_main_window()
     this->deck1_waveform   = new Waveform(this->at_1, this->window);
     this->deck1_key->setObjectName("KeyValue");
 
-    // TODO: work on a vertical waveform.
-    //this->deck1_vertical_waveform       = new Vertical_waveform(this->at_1);
-    //this->deck1_scene = new QGraphicsScene();
-    //this->deck1_scene->setSceneRect(0, 0, 100, 100);
-    //this->deck1_scene->addWidget(this->deck1_vertical_waveform);
-    //this->deck1_scene->addWidget(this->deck1_track_name);
-    //this->deck1_scene->addRect(QRectF(0, 0, 50, 50));
-    //this->deck1_scene->addText("TEST");
-    //this->deck1_view = new QGraphicsView(this->deck1_scene);
-
     QLabel *deck1_tcode_speed           = new QLabel(tr("Speed (%): "));
     QLabel *deck1_tcode_speed_value     = new QLabel(tr("000.0"));
     deck1_tcode_speed->setObjectName("Speed");
@@ -1181,9 +1171,6 @@ Gui::create_main_window()
     this->deck2_key        = new QLabel();
     this->deck2_waveform   = new Waveform(this->at_2, this->window);
     this->deck2_key->setObjectName("KeyValue");
-
-    // TODO: work on a vertical waveform.
-    //this->deck2_vertical_waveform       = new Vertical_waveform(this->at_2, this->window);
 
     QLabel *deck2_tcode_speed           = new QLabel(tr("Speed (%): "));
     QLabel *deck2_tcode_speed_value     = new QLabel(tr("000.0"));
@@ -1279,8 +1266,6 @@ Gui::create_main_window()
     deck1_layout->addLayout(deck1_buttons_layout, 10);
     deck1_layout->addLayout(decks1_tcode_infos, 10);
     deck1_general_layout->addLayout(deck1_layout, 90);
-    // TODO: work on a vertical waveform.
-    //deck1_general_layout->addWidget(this->deck1_view, 10);
 
     deck2_layout->addWidget(deck2_track_name, 10);
     deck2_layout->addLayout(deck2_remaining_time_layout, 10);
@@ -1288,8 +1273,6 @@ Gui::create_main_window()
     deck2_layout->addLayout(deck2_buttons_layout, 10);
     deck2_layout->addLayout(decks2_tcode_infos, 10);
     deck2_general_layout->addLayout(deck2_layout, 90);
-    // TODO: work on a vertical waveform.
-    //deck2_general_layout->addWidget(this->deck2_vertical_waveform, 10);
 
     // Create deck group boxes.
     this->deck1_gbox = new PlaybackQGroupBox(tr("Deck 1"));
