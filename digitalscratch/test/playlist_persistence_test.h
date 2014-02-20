@@ -19,4 +19,5 @@ class Playlist_persistence_Test : public QObject
     void cleanupTestCase();
 
     void testCaseReadM3u();
+    void testCaseReadPls();
 };

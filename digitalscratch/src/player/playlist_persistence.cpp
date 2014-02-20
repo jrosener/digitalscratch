@@ -130,3 +130,76 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
 
     return true;
 }
+
+bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist)
+{
+    qDebug() << "Playlist_persistence::read_pls...";
+
+    // Check parameters.
+    if (io_playlist == NULL)
+    {
+        return false;
+    }
+    if (QFile::exists(in_file_name) == false)
+    {
+        return false;
+    }
+
+    // Get path of playlist file.
+    QFileInfo file_info(in_file_name);
+    QString   path(file_info.absolutePath());
+
+    // Populate list of audio track.
+    QFile file(in_file_name);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
+    {
+        // Set current path to the one from the playlist file. Needed for relative track file path.
+        QString old_path = QDir::currentPath();
+        QDir::setCurrent(path);
+
+        // Iterate over lines in playlist file.
+        QTextStream stream(&file);
+        while (stream.atEnd() == false)
+        {
+            // Get line.
+            QString line = stream.readLine();
+
+            // Get "FileX=" lines.
+            if (line.contains(QRegExp("^File\\w*=")) == true)
+            {
+                line = line.split("=")[1];
+
+                // Check if file exists.
+                QFileInfo line_info(line);
+                if (line_info.exists() == true)
+                {
+                    // Add track path to playlist object.
+                    io_playlist->add_track(line_info.absoluteFilePath());
+                }
+                else
+                {
+                    // File does not exist, maybe because path is a URI.
+                    line = QUrl::fromUserInput(line).toLocalFile();
+                    if (line.length() > 0)
+                    {
+                        // Try to check again if it exists.
+                        QFileInfo uri_info(line);
+                        if (uri_info.exists() == true)
+                        {
+                            // Add track path to playlist object.
+                            io_playlist->add_track(uri_info.absoluteFilePath());
+                        }
+                    }
+                }
+            }
+        }
+
+        // Put back the current path;
+        QDir::setCurrent(old_path);
+    }
+    file.close();
+
+    qDebug() << "Playlist_persistence::read_pls done.";
+
+    return true;
+}

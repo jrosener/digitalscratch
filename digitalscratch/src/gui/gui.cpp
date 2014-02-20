@@ -3044,12 +3044,13 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
     QFileInfo file_info(path);
     if (file_info.isFile() == true)
     {
-        // It is a playlist, parse it and show track list in file browser.
+        Playlist             *playlist         = new Playlist(file_info.absolutePath(), file_info.baseName());
+        Playlist_persistence *playlist_persist = new Playlist_persistence();
+
+        // It is a m3u playlist, parse it and show track list in file browser.
         if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
         {
             // Open M3U playlist
-            Playlist             *playlist         = new Playlist(file_info.absolutePath(), file_info.baseName());
-            Playlist_persistence *playlist_persist = new Playlist_persistence();
             if (playlist_persist->read_m3u(path, playlist) == true)
             {
                 // Populate file browser.
@@ -3057,13 +3058,26 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
             }
             else
             {
-                qWarning() << "Gui::on_file_browser_double_click: can not open playlist " << qPrintable(path);
+                qWarning() << "Gui::on_file_browser_double_click: can not open m3u playlist " << qPrintable(path);
             }
-
-            // Cleanup.
-            delete playlist;
-            delete playlist_persist;
         }
+        else if (file_info.suffix().compare(QString("pls"), Qt::CaseInsensitive) == 0)
+        {
+            // Open PLS playlist
+            if (playlist_persist->read_pls(path, playlist) == true)
+            {
+                // Populate file browser.
+                this->set_file_browser_playlist_tracks(playlist);
+            }
+            else
+            {
+                qWarning() << "Gui::on_file_browser_double_click: can not open pls playlist " << qPrintable(path);
+            }
+        }
+
+        // Cleanup.
+        delete playlist;
+        delete playlist_persist;
     }
     else
     {

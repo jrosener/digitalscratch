@@ -9,6 +9,7 @@
 #else
     #define URI_PREFIX    "file://"
 #endif
+
 #define PLAYLIST_M3U_FILE "playlist.m3u"
 #define PLAYLIST_M3U      "#EXTM3U\n"\
                           "#EXTINF:2316,\n"\
@@ -30,6 +31,24 @@
                           "# special chars\n"\
                           "track_éèà@ù&_4.mp3"
 
+#define PLAYLIST_PLS_FILE "playlist.pls"
+#define PLAYLIST_PLS      "[playlist]\n"\
+                          "\n"\
+                          "NumberOfEntries=6\n"\
+                          "File1=<DATA_DIR>/track_1.mp3\n"\
+                          "Title1=track 1 title\n"\
+                          "Length1=28\n"\
+                          "\n"\
+                          "File2=track_2.mp3\n"\
+                          "\n"\
+                          "File3=track_2.mp3\n"\
+                          "\n"\
+                          "File4=<URI_PREFIX><DATA_DIR>/track_does_not_exists.mp3\n"\
+                          "\n"\
+                          "File5=<URI_PREFIX><DATA_DIR>/track_%C3%A9%C3%A8%C3%A0%40%C3%B9%26_3.mp3\n"\
+                          "\n"\
+                          "File6=track_éèà@ù&_4.mp3"
+
 Playlist_persistence_Test::Playlist_persistence_Test()
 {
 
@@ -41,7 +60,7 @@ void Playlist_persistence_Test::initTestCase()
     this->playlist         = new Playlist("base_path", "playlist");
     this->playlist_persist = new Playlist_persistence();
 
-    // Create a test playlist file.
+    // Create an m3u test playlist file.
     QString m3u(PLAYLIST_M3U);
     m3u.replace("<DATA_DIR>",   QDir(DATA_DIR).absolutePath());
     m3u.replace("<URI_PREFIX>", URI_PREFIX);
@@ -51,6 +70,18 @@ void Playlist_persistence_Test::initTestCase()
          QTextStream m3u_stream(&m3u_file);
          m3u_stream << m3u.toUtf8();
          m3u_file.close();
+    }
+
+    // Create a pls test file.
+    QString pls(PLAYLIST_PLS);
+    pls.replace("<DATA_DIR>",   QDir(DATA_DIR).absolutePath());
+    pls.replace("<URI_PREFIX>", URI_PREFIX);
+    QFile pls_file(QDir(DATA_DIR).filePath(PLAYLIST_PLS_FILE));
+    if (pls_file.open(QIODevice::WriteOnly | QIODevice::Text) == true)
+    {
+         QTextStream pls_stream(&pls_file);
+         pls_stream << pls.toUtf8();
+         pls_file.close();
     }
 }
 
@@ -66,6 +97,21 @@ void Playlist_persistence_Test::testCaseReadM3u()
     // Read playlist.
     QString playlist_fullfilename = QDir(DATA_DIR).filePath(PLAYLIST_M3U_FILE);
     QVERIFY2(this->playlist_persist->read_m3u(playlist_fullfilename, this->playlist) == true, "Read M3U");
+
+    // Check tracklist.
+    QStringList tracklist = this->playlist->get_tracklist();
+    QVERIFY2(tracklist.count() == 4, "number of tracks");
+    QVERIFY2(tracklist[0]      == QDir(DATA_DIR).absoluteFilePath("track_1.mp3"),        "name of track 1");
+    QVERIFY2(tracklist[1]      == QDir(DATA_DIR).absoluteFilePath("track_2.mp3"),        "name of track 2");
+    QVERIFY2(tracklist[2]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_3.mp3"), "name of track 3");
+    QVERIFY2(tracklist[3]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_4.mp3"), "name of track 4");
+}
+
+void Playlist_persistence_Test::testCaseReadPls()
+{
+    // Read playlist.
+    QString playlist_fullfilename = QDir(DATA_DIR).filePath(PLAYLIST_PLS_FILE);
+    QVERIFY2(this->playlist_persist->read_pls(playlist_fullfilename, this->playlist) == true, "Read PLS");
 
     // Check tracklist.
     QStringList tracklist = this->playlist->get_tracklist();

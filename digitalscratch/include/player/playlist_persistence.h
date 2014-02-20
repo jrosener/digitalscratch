@@ -46,6 +46,7 @@ class Playlist_persistence : public QObject
 
   public:
     bool read_m3u(QString in_file_name, Playlist *&io_playlist);
+    bool read_pls(QString in_file_name, Playlist *&io_playlist);
 };
 
 #endif /* PLAYLIST_PERSISTENCE_H_ */
