@@ -58,6 +58,7 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QSizePolicy>
+#include <QtConcurrentRun>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -123,23 +124,27 @@ Gui::Gui(Audio_track                        *in_at_1,
     }
     else
     {
-        this->settings         = &Singleton<Application_settings>::get_instance();
-        this->at_1             = in_at_1;
-        this->at_2             = in_at_2;
-        this->at_1_samplers    = in_at_samplers[0];
-        this->at_2_samplers    = in_at_samplers[1];
-        this->nb_samplers      = in_nb_samplers;
-        this->dec_1            = in_dec_1;
-        this->dec_2            = in_dec_2;
-        this->dec_1_samplers   = in_dec_samplers[0];
-        this->dec_2_samplers   = in_dec_samplers[1];
-        this->params_1         = in_params_1;
-        this->params_2         = in_params_2;
-        this->playback         = in_playback;
-        this->nb_decks         = in_nb_decks;
-        this->sound_card       = in_sound_card;
-        this->capture_and_play = in_capture_and_playback;
-        this->dscratch_ids     = in_dscratch_ids;
+        this->settings                = &Singleton<Application_settings>::get_instance();
+        this->at_1                    = in_at_1;
+        this->at_2                    = in_at_2;
+        this->at_1_samplers           = in_at_samplers[0];
+        this->at_2_samplers           = in_at_samplers[1];
+        this->nb_samplers             = in_nb_samplers;
+        this->dec_1                   = in_dec_1;
+        this->dec_2                   = in_dec_2;
+        this->dec_1_samplers          = in_dec_samplers[0];
+        this->dec_2_samplers          = in_dec_samplers[1];
+        this->params_1                = in_params_1;
+        this->params_2                = in_params_2;
+        this->playback                = in_playback;
+        this->nb_decks                = in_nb_decks;
+        this->sound_card              = in_sound_card;
+        this->capture_and_play        = in_capture_and_playback;
+        this->dscratch_ids            = in_dscratch_ids;
+        this->is_windows_rendered     = false;
+        this->watcher_parse_directory = new QFutureWatcher<void>;
+        connect(this->watcher_parse_directory, SIGNAL(finished()),
+                this,                          SLOT(run_concurrent_read_collection_from_db()));
     }
 
     // Creates dynamic widgets.
@@ -221,6 +226,11 @@ Gui::Gui(Audio_track                        *in_at_1,
         this->start_capture_and_playback();
     }
 
+    // Show audio file collection (takes time, that's why we are first showing the main window).
+    QCoreApplication::processEvents();
+    this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
+    this->is_windows_rendered = true;
+
     qDebug() << "Gui::Gui: create object done.";
 
     return;
@@ -240,6 +250,7 @@ Gui::~Gui()
     this->settings->set_browser_splitter_size(this->browser_splitter->saveState());
 
     // Cleanup.
+    delete this->watcher_parse_directory;
     delete this->treeview_icon_provider;
     delete this->folder_system_model;
     delete this->folder_browser;
@@ -281,7 +292,10 @@ Gui::apply_application_settings()
     if (this->file_system_model->get_root_path() != this->settings->get_tracks_base_dir_path())
     {
         this->set_folder_browser_base_path(this->settings->get_tracks_base_dir_path());
-        this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
+        if (this->is_windows_rendered == true) // Do not do it if main window is not already displayed.
+        {
+            this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
+        }
     }
 
     // Apply motion detection settings for all turntables.
@@ -1769,7 +1783,7 @@ Gui::create_main_window()
 
     QVBoxLayout *file_browser_and_search_layout = new QVBoxLayout();
     file_browser_and_search_layout->addWidget(this->file_browser);
-    file_browser_and_search_layout->addWidget(this->file_search);
+    file_browser_and_search_layout->addWidget(this->file_search, 0, Qt::AlignBottom);
     file_browser_and_search_layout->setMargin(0);
     QWidget *file_browser_and_search_widget = new QWidget();
     file_browser_and_search_widget->setLayout(file_browser_and_search_layout);
@@ -2398,28 +2412,51 @@ Gui::set_file_browser_base_path(QString in_path)
 {
     qDebug() << "Gui::set_file_browser_base_path...";
 
-    // Stop any running file analysis.
-    this->file_system_model->stop_concurrent_read_collection_from_db();
-    this->file_system_model->stop_concurrent_analyse_audio_collection();
+    if (this->watcher_parse_directory->isRunning() == false)
+    {
+        // Hide file browser during directory analysis.
+        this->file_browser->setVisible(false);
 
-    // Show progress bar.
-    this->progress_label->setText(tr("Opening ") + in_path + "...");
-    this->progress_groupbox->show();
+        // Stop any running file analysis.
+        this->file_system_model->stop_concurrent_read_collection_from_db();
+        this->file_system_model->stop_concurrent_analyse_audio_collection();
 
-    // Set base path as title to file browser.
-    this->set_file_browser_title(in_path);
+        // Show progress bar.
+        this->progress_label->setText(tr("Opening ") + in_path + "...");
+        this->progress_groupbox->show();
+        this->progress_bar->setMinimum(0);
+        this->progress_bar->setMaximum(0);
 
-    // Change root path of file browser.
-    this->file_browser->setRootIndex(QModelIndex());
-    this->file_system_model->set_root_path(in_path);
+        // Set base path as title to file browser.
+        this->set_file_browser_title(in_path);
+
+        // Clear file browser.
+        this->file_system_model->clear();
+
+        // Change root path of file browser (do it in a non blocking external thread).
+        QFuture<QModelIndex> future = QtConcurrent::run(this->file_system_model, &Audio_collection_model::set_root_path, in_path);
+        this->watcher_parse_directory->setFuture(future);
+
+        // Reset progress.
+        this->progress_bar->reset();
+    }
+
+    qDebug() << "Gui::set_file_browser_base_path done.";
+
+    return true;
+}
+
+void
+Gui::run_concurrent_read_collection_from_db()
+{
+    // Show file browser again (file were analyse on disk).
+    this->file_browser->setVisible(true);
 
     // Get file info from DB.
     this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
                                                                    // Call sync_file_browser_to_audio_collection() when it's done.
 
-    qDebug() << "Gui::set_file_browser_base_path done.";
-
-    return true;
+    return;
 }
 
 bool
@@ -2427,24 +2464,41 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
 {
     qDebug() << "Gui::set_file_browser_playlist_tracks...";
 
-    // Stop any running file analysis.
-    this->file_system_model->stop_concurrent_read_collection_from_db();
-    this->file_system_model->stop_concurrent_analyse_audio_collection();
+    if (this->watcher_parse_directory->isRunning() == false)
+    {
+        // Hide file browser during playlist analysis.
+        this->file_browser->setVisible(false);
 
-    // Show progress bar.
-    this->progress_label->setText(tr("Opening ") + in_playlist->get_name() + "...");
-    this->progress_groupbox->show();
+        // Stop any running file analysis.
+        this->file_system_model->stop_concurrent_read_collection_from_db();
+        this->file_system_model->stop_concurrent_analyse_audio_collection();
 
-    // Set base path as title to file browser.
-    this->set_file_browser_title(in_playlist->get_name());
+        // Show progress bar.
+        this->progress_label->setText(tr("Opening ") + in_playlist->get_name() + "...");
+        this->progress_groupbox->show();
+        this->progress_bar->setMinimum(0);
+        this->progress_bar->setMaximum(0);
 
-    // Set list of tracks to the file browser.
-    this->file_browser->setRootIndex(QModelIndex());
-    this->file_system_model->set_playlist(in_playlist);
+        // Set base path as title to file browser.
+        this->set_file_browser_title(in_playlist->get_name());
 
-    // Get file info from DB.
-    this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
-                                                                   // Call sync_file_browser_to_audio_collection() when it's done.
+        // Clear file browser.
+        this->file_system_model->clear();
+
+        // Set list of tracks to the file browser.
+        this->file_browser->setRootIndex(QModelIndex());
+        this->file_system_model->set_playlist(in_playlist);
+
+        // Reset progress.
+        this->progress_bar->reset();
+
+        // Get file info from DB.
+        this->file_system_model->concurrent_read_collection_from_db(); // Run in another thread.
+                                                                       // Call sync_file_browser_to_audio_collection() when it's done.
+
+        // Show file browser again.
+        this->file_browser->setVisible(true);
+    }
 
     qDebug() << "Gui::set_file_browser_playlist_tracks done.";
 
@@ -3038,51 +3092,54 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
 {
     qDebug() << "Gui::on_file_browser_double_click...";
 
-    // Get path (file for a playlist, or just a directory).
-    QString path = this->folder_system_model->filePath(in_model_index);
-
-    QFileInfo file_info(path);
-    if (file_info.isFile() == true)
+    if (this->watcher_parse_directory->isRunning() == false)
     {
-        Playlist             *playlist         = new Playlist(file_info.absolutePath(), file_info.baseName());
-        Playlist_persistence *playlist_persist = new Playlist_persistence();
+        // Get path (file for a playlist, or just a directory).
+        QString path = this->folder_system_model->filePath(in_model_index);
 
-        // It is a m3u playlist, parse it and show track list in file browser.
-        if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
+        QFileInfo file_info(path);
+        if (file_info.isFile() == true)
         {
-            // Open M3U playlist
-            if (playlist_persist->read_m3u(path, playlist) == true)
-            {
-                // Populate file browser.
-                this->set_file_browser_playlist_tracks(playlist);
-            }
-            else
-            {
-                qWarning() << "Gui::on_file_browser_double_click: can not open m3u playlist " << qPrintable(path);
-            }
-        }
-        else if (file_info.suffix().compare(QString("pls"), Qt::CaseInsensitive) == 0)
-        {
-            // Open PLS playlist
-            if (playlist_persist->read_pls(path, playlist) == true)
-            {
-                // Populate file browser.
-                this->set_file_browser_playlist_tracks(playlist);
-            }
-            else
-            {
-                qWarning() << "Gui::on_file_browser_double_click: can not open pls playlist " << qPrintable(path);
-            }
-        }
+            Playlist             *playlist         = new Playlist(file_info.absolutePath(), file_info.baseName());
+            Playlist_persistence *playlist_persist = new Playlist_persistence();
 
-        // Cleanup.
-        delete playlist;
-        delete playlist_persist;
-    }
-    else
-    {
-        // It is a directory, open selected directory in file browser.
-        this->set_file_browser_base_path(path);
+            // It is a m3u playlist, parse it and show track list in file browser.
+            if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
+            {
+                // Open M3U playlist
+                if (playlist_persist->read_m3u(path, playlist) == true)
+                {
+                    // Populate file browser.
+                    this->set_file_browser_playlist_tracks(playlist);
+                }
+                else
+                {
+                    qWarning() << "Gui::on_file_browser_double_click: can not open m3u playlist " << qPrintable(path);
+                }
+            }
+            else if (file_info.suffix().compare(QString("pls"), Qt::CaseInsensitive) == 0)
+            {
+                // Open PLS playlist
+                if (playlist_persist->read_pls(path, playlist) == true)
+                {
+                    // Populate file browser.
+                    this->set_file_browser_playlist_tracks(playlist);
+                }
+                else
+                {
+                    qWarning() << "Gui::on_file_browser_double_click: can not open pls playlist " << qPrintable(path);
+                }
+            }
+
+            // Cleanup.
+            delete playlist;
+            delete playlist_persist;
+        }
+        else
+        {
+            // It is a directory, open selected directory in file browser.
+            this->set_file_browser_base_path(path);
+        }
     }
 
     qDebug() << "Gui::on_file_browser_double_click...";

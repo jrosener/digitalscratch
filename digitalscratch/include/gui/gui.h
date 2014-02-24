@@ -264,6 +264,8 @@ class Gui : QObject
     bool                                search_from_begin;
     QString                             last_search_string;
     unsigned int                        file_browser_selected_index;
+    bool                                is_windows_rendered;
+    QFutureWatcher<void>               *watcher_parse_directory;
 
  public:
     Gui(Audio_track                        *in_at_1,
@@ -409,6 +411,7 @@ class Gui : QObject
     void on_progress_cancel_button_click();
     void start_capture_and_playback();
     void stop_capture_and_playback();
+    void run_concurrent_read_collection_from_db();
 };
 
 #endif /* GUI_H_ */

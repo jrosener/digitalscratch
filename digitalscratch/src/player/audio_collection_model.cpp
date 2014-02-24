@@ -41,10 +41,10 @@
 #include <utils.h>
 #include <data_persistence.h>
 #include <singleton.h>
-#include <QtConcurrentRun>
 #include <QtConcurrentMap>
 #include <application_settings.h>
 #include <QMimeData>
+#include <QCoreApplication>
 
 Audio_collection_item::Audio_collection_item(const QList<QVariant> &in_data,
                                              QString                in_file_hash,
@@ -270,6 +270,7 @@ void Audio_collection_model::create_header(QString in_path, bool in_show_path)
     {
         delete this->rootItem;
     }
+
     this->rootItem = new Audio_collection_item(rootData, "", in_path, false, 0);
 }
 
@@ -941,3 +942,15 @@ Audio_collection_model::search(QString in_text)
     return items;
 }
 
+void
+Audio_collection_model::clear()
+{
+    if (this->rootItem != NULL)
+    {
+        this->beginRemoveRows(this->get_root_index(), 0, this->rowCount());
+        this->endRemoveRows();
+        this->rootItem->childItems.clear();
+        qDeleteAll(this->audio_item_list);
+        this->audio_item_list.clear();
+    }
+}
