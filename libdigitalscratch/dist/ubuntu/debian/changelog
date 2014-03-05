@@ -1,3 +1,10 @@
+libdigitalscratch (1.5.0-1ppa1~saucy1) saucy; urgency=low
+
+  * improved speed detection (fully new implementation)
+  * added options to set turntable's RPM 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 06 Mar 2014 00:30:21 +0100
+
 libdigitalscratch (1.4.0-1ppa1~saucy1) saucy; urgency=low
 
   * added an amplification factor for the input timecoded signal

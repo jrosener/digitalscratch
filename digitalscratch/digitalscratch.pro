@@ -5,9 +5,6 @@
 unix {
     CURRENT_DATE = $$system(date +%Y%m%d)
 }
-win32 {
-    CURRENT_DATE = $$system(win-external\tools\date.exe +%Y%m%d)
-}
 
 # Release version number.
 VERSION = 1.5.0
