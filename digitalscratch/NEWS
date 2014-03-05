@@ -7,6 +7,20 @@
 /*                                                                            */
 /*============================================================================*/
 
+digitalscratch-1.5.0:
+  * features:
+     - read .pls playlist format
+     - integrated libAV to support more audio formats
+     - possibility to call a script at startup
+  * configuration:
+     - added a config option to switch between 33 and 45 rpm
+     - added a config option to use only one deck
+  * graphics:
+     - added a show/hide button for the sampler area
+     - added a track search bar
+  * bug fix:
+     - application is blocked during audio file parsing at startup
+
 digitalscratch-1.4.0:
   * features:
      - new motion detection setting: amplification factor of the input timecoded signal

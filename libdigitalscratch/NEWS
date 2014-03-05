@@ -7,6 +7,10 @@
 /*                                                                            */
 /*============================================================================*/
 
+libdigitalscratch-1.5.0:
+  * improved speed detection (fully new implementation)
+  * added options to set turntable's RPM
+
 libdigitalscratch-1.4.0:
   * added an amplification factor for the input timecoded signal
   * support any sample rate

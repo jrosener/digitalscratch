@@ -12,15 +12,15 @@ win32 {
 }
 
 # Release version number.
-#VERSION = 1.4.0
+VERSION = 1.5.0
 
 # Snapshot version number.
-win32 {
-    VERSION = 1.5.0b
-}
-unix {
-    VERSION = 1.4.0+1.5.0SNAPSHOT$${CURRENT_DATE}
-}
+#win32 {
+#    VERSION = 1.6.0b
+#}
+#unix {
+#    VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
+#}
 DEFINES += VERSION=$${VERSION}
 CONFIG += qt
 
