@@ -1,17 +1,17 @@
 Package: digitalscratch
-Version: 1.4.0-1
+Version: 1.5.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 928
-Depends: libc6 (>= 2.2.5), libdigitalscratch1, libflac8 (>= 1.2.1), libgcc1 (>= 1:4.1.1), libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libmpg123-0 (>= 1.6.2), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.4.0)
+Installed-Size: 946
+Depends: libavcodec53 (>= 6:0.8.3-1~) | libavcodec-extra-53 (>= 6:0.8.9), libavformat53 (>= 6:0.8.3-1~), libavutil51 (>= 6:0.8.3-1~), libc6 (>= 2.2.5), libdigitalscratch1, libgcc1 (>= 1:4.1.1), libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.8.0), libqtgui4 (>= 4:4.7.0~beta1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.4.0)
 Homepage: http://www.digital-scratch.org
 Priority: extra
 Section: sound
-Filename: pool/main/d/digitalscratch/digitalscratch_1.4.0-1_amd64.deb
-Size: 542994
-SHA256: 8a794ea450e0e1f53d428cb9622946b2f1f7bb870798b917e296f26fd92d957b
-SHA1: 36ec4b6c361aa9f4f7872a58f23f765348c4b50c
-MD5sum: b6a62e9203a1654e5e355b32cf8e7e20
+Filename: pool/main/d/digitalscratch/digitalscratch_1.5.0-1_amd64.deb
+Size: 551878
+SHA256: e4884c13df971e167b38d14457782d5df96e34fbff28ffd19a01f108a24259ab
+SHA1: ec42674d4de8bfa902da82b22e4f22fb17ad6722
+MD5sum: 9a85f4a736076a063de05687561fb17e
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
