@@ -30,8 +30,7 @@ _libdigitalscratch_ (motion detection) is based on:
 
 _digitalscratch_ (audio player) is based on:
 * [Qt 5.x](http://qt-project.org)
-* [mpg123](http://www.mpg123.de/)
-* [FLAC](http://flac.sourceforge.net/)
+* [LibAV](http://libav.org)
 * [Sample rate library](http://www.mega-nerd.com/SRC/)
 * [JACK](http://jackaudio.org/)
 * [LibKeyFinder](http://www.ibrahimshaath.co.uk/keyfinder/)
@@ -44,18 +43,29 @@ Install
     sudo apt-get update
     sudo apt-get install digitalscratch
 
+### Debian
+    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
+    sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
+    sudo apt-get update
+    sudo apt-get install digitalscratch
+
 ### MS Windows
 See the download page: [http://www.digital-scratch.org/download.html](http://www.digital-scratch.org/download.html)
 
 Build
 --------------
 
-### Ubuntu 13.04 (raring)
+### GNU/Linux
 
-#### Install build tools
+#### Install build tools (Ubuntu 13.10)
     sudo apt-add-repository ppa:julien-rosener/digitalscratch
     sudo apt-get update
-    sudo apt-get install build-essential qt5-default libmpg123-dev libjack-jackd2-dev libsamplerate0-dev libflac-dev libkeyfinder-dev
+    sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev
+    
+#### Install build tools (Debian 7.2)
+    sudo apt-add-repository ppa:julien-rosener/digitalscratch
+    sudo apt-get update
+    sudo apt-get install build-essential qt-sdk libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev
 
 #### Compile and install _libdigitalscratch_
     cd libdigitalscratch
