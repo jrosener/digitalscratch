@@ -22,7 +22,7 @@ echo ---------------------------------------------------------------------------
 echo  Get version from .pro ...
 echo ----------------------------------------------------------------------------------
 echo.
-FOR /F "tokens=1-2 delims==" %%a IN ('FINDSTR /C:"VERSION = " ..\digitalscratch\digitalscratch.pro') DO set VERSION=%%b
+FOR /F "tokens=1-2 delims==" %%a IN ('FINDSTR /RC:"VERSION = " ..\digitalscratch\digitalscratch.pro ^| FINDSTR /VC:"#"') DO set VERSION=%%b
 if !errorlevel! neq 0 goto error
 set VERSION=%VERSION: =%
 SET OUTPUT_MSI=digitalscratch-%VERSION%.msi

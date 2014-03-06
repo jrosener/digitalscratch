@@ -37,6 +37,12 @@ typedef enum {
     AV_CLASS_CATEGORY_BITSTREAM_FILTER,
     AV_CLASS_CATEGORY_SWSCALER,
     AV_CLASS_CATEGORY_SWRESAMPLER,
+    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT = 40,
+    AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT,
+    AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_OUTPUT,
+    AV_CLASS_CATEGORY_DEVICE_INPUT,
     AV_CLASS_CATEGORY_NB, ///< not part of ABI/API
 }AVClassCategory;
 
@@ -260,9 +266,10 @@ void av_log_set_callback(void (*callback)(void*, int, const char*, va_list));
  *        lavu_log_constants "Logging Constant".
  * @param fmt The format string (printf-compatible) that specifies how
  *        subsequent arguments are converted to output.
- * @param ap The arguments referenced by the format string.
+ * @param vl The arguments referenced by the format string.
  */
-void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
+void av_log_default_callback(void *avcl, int level, const char *fmt,
+                             va_list vl);
 
 /**
  * Return the context name
