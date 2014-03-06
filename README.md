@@ -26,10 +26,10 @@ Digital-Scratch also provides a player which uses the library: _digitalscratch_.
 ### Software dependencies
 
 _libdigitalscratch_ (motion detection) is based on:
-* [Qt 5.x](http://qt-project.org)
+* [Qt](http://qt-project.org)
 
 _digitalscratch_ (audio player) is based on:
-* [Qt 5.x](http://qt-project.org)
+* [Qt](http://qt-project.org)
 * [LibAV](http://libav.org)
 * [Sample rate library](http://www.mega-nerd.com/SRC/)
 * [JACK](http://jackaudio.org/)
@@ -44,8 +44,8 @@ Install
     sudo apt-get install digitalscratch
 
 ### Debian
-    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
-    sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
+wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
+sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
     sudo apt-get update
     sudo apt-get install digitalscratch
 
@@ -63,7 +63,8 @@ Build
     sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev
     
 #### Install build tools (Debian 7.2)
-    sudo apt-add-repository ppa:julien-rosener/digitalscratch
+    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
+    sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
     sudo apt-get update
     sudo apt-get install build-essential qt-sdk libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev
 
