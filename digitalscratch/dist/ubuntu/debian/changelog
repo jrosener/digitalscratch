@@ -1,3 +1,20 @@
+digitalscratch (1.5.0-1ppa1~saucy1) saucy; urgency=low
+
+  * features:
+     - read .pls playlist format
+     - integrated libAV to support more audio formats
+     - possibility to call a script at startup
+  * configuration:
+     - added a config option to switch between 33 and 45 rpm
+     - added a config option to use only one deck
+  * graphics:
+     - added a show/hide button for the sampler area
+     - added a track search bar
+  * bug fix:
+     - application is blocked during audio file parsing at startup 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 06 Mar 2014 09:52:31 +0100
+
 digitalscratch (1.4.0-1ppa1~saucy1) saucy; urgency=low
 
   * features:
