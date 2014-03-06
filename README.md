@@ -44,8 +44,8 @@ Install
     sudo apt-get install digitalscratch
 
 ### Debian
-wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
-sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
+    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
+    sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
     sudo apt-get update
     sudo apt-get install digitalscratch
 
