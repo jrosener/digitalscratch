@@ -53,8 +53,14 @@ echo ""
 echo ""
 
 echo "************************* Get version from .pro ************************"
-VERSION=$(cat ../../libdigitalscratch.pro | grep -i '^\s*VERSION =' | grep 'CURRENT_DATE' | cut -d'=' -f2 | tr -d ' ' | tr -d '\r')
-VERSION=${VERSION/\$\$\{CURRENT_DATE\}/$(date +%Y%m%d)}
+VERSION=$(cat ../../libdigitalscratch.pro | grep -i '^\s*VERSION =')
+if [[ $VERSION =~ "CURRENT_DATE" ]]
+then
+  VERSION=$(cat ../../libdigitalscratch.pro | grep -i '^\s*VERSION =' | grep '\{CURRENT_DATE\}'  | cut -d'=' -f2 | tr -d ' ' | tr -d '\r')
+  VERSION=${VERSION/\$\$\{CURRENT_DATE\}/$(date +%Y%m%d)}
+else
+  VERSION=$(echo $VERSION | cut -d'=' -f2 | tr -d ' ' | tr -d '\r')
+fi
 echo VERSION = $VERSION
 check_error
 echo ""
