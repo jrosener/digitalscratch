@@ -215,31 +215,41 @@ win32 {
     DESTDIR_WIN = $${DESTDIR}
     CONFIG(debug, debug|release) {
         DESTDIR_WIN += debug
+        DESTDIR_PLATFORM_WIN += debug/platforms
         DLLS += %QTDIR%/bin/Qt5Cored.dll \
                 %QTDIR%/bin/Qt5Guid.dll \
                 %QTDIR%/bin/Qt5Widgetsd.dll \
                 %QTDIR%/bin/Qt5Concurrentd.dll \
                 %QTDIR%/bin/icu*.dll \
                 %QTDIR%/bin/Qt5Sqld.dll
+        DLLS_PLATFORMS = %QTDIR%/plugins/platforms/qwindowsd.dll
         CONFIG(test) {
            DLLS += %QTDIR%/bin/Qt5Testd.dll
         }
     } else {
         DESTDIR_WIN += release
+        DESTDIR_PLATFORM_WIN += release/platforms
         DLLS += %QTDIR%/bin/Qt5Core.dll \
                 %QTDIR%/bin/Qt5Gui.dll \
                 %QTDIR%/bin/Qt5Widgets.dll \
                 %QTDIR%/bin/Qt5Concurrent.dll \
                 %QTDIR%/bin/icu*.dll \
                 %QTDIR%/bin/Qt5Sql.dll
+        DLLS_PLATFORMS = %QTDIR%/plugins/platforms/qwindows.dll
         CONFIG(test) {
            DLLS += %QTDIR%/bin/Qt5Test.dll
         }
     }
     DLLS ~= s,/,\\,g
+    DLLS_PLATFORMS ~= s,/,\\,g
     DESTDIR_WIN ~= s,/,\\,g
+    DESTDIR_PLATFORM_WIN ~= s,/,\\,g
     for(FILE, DLLS){
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_WIN}) $$escape_expand(\\n\\t)
+    }
+    QMAKE_POST_LINK += $${QMAKE_MKDIR} $$quote($${DESTDIR_PLATFORM_WIN}) $$escape_expand(\\n\\t)
+    for(FILE, DLLS_PLATFORMS){
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_PLATFORM_WIN}) $$escape_expand(\\n\\t)
     }
 }
 ############################
