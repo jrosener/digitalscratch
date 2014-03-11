@@ -10,7 +10,7 @@ echo  Setup environment ...
 echo ----------------------------------------------------------------------------------
 echo.
 set CURDIR=%CD%
-set QTDIR=C:\Qt\5.2.0\msvc2010_opengl
+set QTDIR=C:\Qt\Qt5.2.0\5.2.0\msvc2010_opengl
 call "%QTDIR%\bin\qtenv2.bat"
 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x86
 cd /D %CURDIR% 
@@ -82,9 +82,9 @@ echo  Generate %OUTPUT_MSI%...
 echo ----------------------------------------------------------------------------------
 echo.
 del /Q /F %OUTPUT_MSI% 2> NUL
-"C:\Program Files (x86)\WiX Toolset v3.7\bin\heat.exe" dir "..\digitalscratch\release" -srd -cg digitalscratchCG -gg -scom -sreg -sfrag -dr INSTALLDIR -out "digitalscratchFiles.wxsfrg" -var var.digitalscratchFiles
-"C:\Program Files (x86)\WiX Toolset v3.7\bin\candle.exe" -dProductVersion=%VERSION% -ddigitalscratchFiles="..\digitalscratch\release" digitalscratchFiles.wxsfrg msi_config.wxs
-"C:\Program Files (x86)\WiX Toolset v3.7\bin\light.exe" -sw -ext WixUIExtension -dWixUIBannerBmp="top_banner.bmp" -dWixUIDialogBmp="side_banner.bmp" -out %OUTPUT_MSI% digitalscratchFiles.wixobj msi_config.wixobj
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "..\digitalscratch\release" -srd -cg digitalscratchCG -gg -scom -sreg -sfrag -dr INSTALLDIR -out "digitalscratchFiles.wxsfrg" -var var.digitalscratchFiles
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\candle.exe" -dProductVersion=%VERSION% -ddigitalscratchFiles="..\digitalscratch\release" digitalscratchFiles.wxsfrg msi_config.wxs
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\light.exe" -sw -ext WixUIExtension -dWixUIBannerBmp="top_banner.bmp" -dWixUIDialogBmp="side_banner.bmp" -out %OUTPUT_MSI% digitalscratchFiles.wixobj msi_config.wixobj
 del /Q /F *.wixobj 2> NUL
 del /Q /F *.wixpdb 2> NUL
 del /Q /F *.wxsfrg 2> NUL
