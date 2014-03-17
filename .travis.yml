@@ -1,4 +1,5 @@
 language: cpp
-compiler:
-  - gcc
-script: cd libdigitalscratch && qmake && make && cd ..\digitalscratch && qmake && make
+compiler: gcc
+before_install: sudo apt-get update
+install: sudo apt-get install build-essential qt5-default
+script: cd libdigitalscratch && qmake CONFIG+=test && make && ./libdigitalscratch-test
