@@ -2,9 +2,17 @@ language: cpp
 compiler: gcc
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq build-essential qt-sdk
+  - sudo apt-get install -qq build-essential qt-sdk libjack-jackd2-dev libsamplerate0-dev libavformat-dev libavcodec-dev libavutil-dev
 script:
   - cd libdigitalscratch
   - qmake CONFIG+=test
   - make
   - ./libdigitalscratch-test
+  - make clean
+  - qmake
+  - make
+  - sudo make install
+  - cd ../digitalscratch
+  - qmake CONFIG+=test
+  - make
+  - ./digitalscratch-test
