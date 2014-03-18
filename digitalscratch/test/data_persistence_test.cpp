@@ -114,42 +114,45 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
 
     // Iterate recursively over files in directory.
     QDir dir(MUSIC_PATH);
-    QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
-    QMultiMap<QString, QString> map;
-    QString hash("");
-    while (i.hasNext())
+    if (dir.exists() == true) // Skip the test if there are no test data.
     {
-        // Go to the next element (file or directory).
-        i.next();
-        if (i.fileInfo().isDir() == false)
+        QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
+        QMultiMap<QString, QString> map;
+        QString hash("");
+        while (i.hasNext())
         {
-            // The element is a file.
-            QString filename = i.fileName();
-            if (filename.endsWith(".mp3") == true)
+            // Go to the next element (file or directory).
+            i.next();
+            if (i.fileInfo().isDir() == false)
             {
-                // Prepare the audio track.
-                at_to_store->reset();
-                hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
-                at_to_store->set_hash(hash);
-                at_to_store->set_fullpath(i.filePath());
-                at_to_store->set_music_key("A1");
+                // The element is a file.
+                QString filename = i.fileName();
+                if (filename.endsWith(".mp3") == true)
+                {
+                    // Prepare the audio track.
+                    at_to_store->reset();
+                    hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
+                    at_to_store->set_hash(hash);
+                    at_to_store->set_fullpath(i.filePath());
+                    at_to_store->set_music_key("A1");
 
-                // Store the audio track.
-                QVERIFY2(data_persist->store_audio_track(at_to_store) == true, qPrintable(QString("store track ") + i.filePath()));
+                    // Store the audio track.
+                    QVERIFY2(data_persist->store_audio_track(at_to_store) == true, qPrintable(QString("store track ") + i.filePath()));
 
-                // Update audio track.
-                at_to_store->set_music_key("B1");
-                QVERIFY2(data_persist->store_audio_track(at_to_store) == true, qPrintable(QString("update track ") + i.filePath()));
+                    // Update audio track.
+                    at_to_store->set_music_key("B1");
+                    QVERIFY2(data_persist->store_audio_track(at_to_store) == true, qPrintable(QString("update track ") + i.filePath()));
 
-                // Get data in another Audio track object and compare values.
-                at_from_db->reset();
-                at_from_db->set_hash(hash);
-                QVERIFY2(data_persist->get_audio_track(at_from_db) == true,           qPrintable(QString("get audio track") + i.filePath()));
-                QVERIFY2(at_from_db->get_path()      == at_to_store->get_path(),      qPrintable(QString("path from DB") + i.filePath()));
-                QVERIFY2(at_from_db->get_filename()  == at_to_store->get_filename(),  qPrintable(QString("filename from DB") + i.filePath()));
-                QVERIFY2(at_from_db->get_music_key() == at_to_store->get_music_key(), qPrintable(QString("key from DB") + i.filePath()));
-            }
-      }
+                    // Get data in another Audio track object and compare values.
+                    at_from_db->reset();
+                    at_from_db->set_hash(hash);
+                    QVERIFY2(data_persist->get_audio_track(at_from_db) == true,           qPrintable(QString("get audio track") + i.filePath()));
+                    QVERIFY2(at_from_db->get_path()      == at_to_store->get_path(),      qPrintable(QString("path from DB") + i.filePath()));
+                    QVERIFY2(at_from_db->get_filename()  == at_to_store->get_filename(),  qPrintable(QString("filename from DB") + i.filePath()));
+                    QVERIFY2(at_from_db->get_music_key() == at_to_store->get_music_key(), qPrintable(QString("key from DB") + i.filePath()));
+                }
+          }
+        }
     }
 
     // Cleanup.

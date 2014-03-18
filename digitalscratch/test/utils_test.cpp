@@ -1,7 +1,7 @@
 #include <QtTest>
 #include <utils_test.h>
 #include <iostream>
-#include <QtConcurrent>
+#include <QtConcurrentMap>
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"
@@ -51,44 +51,47 @@ void Utils_Test::testCaseGetFileHashCharge()
 
     // Iterate recursively over files in directory.
     QDir dir(MUSIC_PATH);
-    QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
-    QMultiMap<QString, QString> map;
-    QString hash("");
-    while (i.hasNext())
+    if (dir.exists() == true) // Skip the test if there are no test data.
     {
-        // Go to the next element (file or directory).
-        i.next();
-        if (i.fileInfo().isDir() == false)
+        QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
+        QMultiMap<QString, QString> map;
+        QString hash("");
+        while (i.hasNext())
         {
-            // The element is a file.
-            QString filename = i.fileName();
-            if (filename.endsWith(".mp3") == true)
+            // Go to the next element (file or directory).
+            i.next();
+            if (i.fileInfo().isDir() == false)
             {
-                // Get hash of this mp3.
-                hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
+                // The element is a file.
+                QString filename = i.fileName();
+                if (filename.endsWith(".mp3") == true)
+                {
+                    // Get hash of this mp3.
+                    hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
 
-                // Store the hash in a map.
-                map.insertMulti(hash, i.filePath());
-            }
-      }
-    }
-
-    // Check if there is no duplicate hash.
-    QMapIterator<QString, QString> j(map);
-    while (j.hasNext())
-    {
-        j.next();
-        QList<QString> values = map.values(j.key());
-        QString dup_file_hashes = "";
-        if (values.size() > 1)
-        {
-            // Duplicate hash found.
-            for (int k = 0; k < values.size(); ++k)
-            {
-                dup_file_hashes += values.at(k) + " | ";
-            }
+                    // Store the hash in a map.
+                    map.insertMulti(hash, i.filePath());
+                }
+          }
         }
-        QVERIFY2(values.size() == 1, qPrintable("same hash for several audio tracks: " + dup_file_hashes));
+
+        // Check if there is no duplicate hash.
+        QMapIterator<QString, QString> j(map);
+        while (j.hasNext())
+        {
+            j.next();
+            QList<QString> values = map.values(j.key());
+            QString dup_file_hashes = "";
+            if (values.size() > 1)
+            {
+                // Duplicate hash found.
+                for (int k = 0; k < values.size(); ++k)
+                {
+                    dup_file_hashes += values.at(k) + " | ";
+                }
+            }
+            QVERIFY2(values.size() == 1, qPrintable("same hash for several audio tracks: " + dup_file_hashes));
+        }
     }
 }
 
