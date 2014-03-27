@@ -247,6 +247,9 @@ win32 {
     for(FILE, DLLS){
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_WIN}) $$escape_expand(\\n\\t)
     }
+    exists($${DESTDIR_PLATFORM_WIN}) {
+        QMAKE_POST_LINK += $${QMAKE_DEL_DIR} /S /Q $$quote($${DESTDIR_PLATFORM_WIN}) $$escape_expand(\\n\\t)
+    }
     QMAKE_POST_LINK += $${QMAKE_MKDIR} $$quote($${DESTDIR_PLATFORM_WIN}) $$escape_expand(\\n\\t)
     for(FILE, DLLS_PLATFORMS){
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_PLATFORM_WIN}) $$escape_expand(\\n\\t)
