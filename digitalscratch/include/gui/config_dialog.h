@@ -88,7 +88,11 @@ class Config_dialog : public QDialog
     QComboBox            *gui_style_select;
     QComboBox            *nb_decks_select;
     QComboBox            *sample_rate_select;
+    QCheckBox            *device_jack_check;
     QCheckBox            *auto_jack_connections_check;
+    QCheckBox            *device_internal_check;
+    QComboBox            *device_internal_select;
+
     QCheckBox            *autostart_detection_check;
     QComboBox            *vinyl_type_select;
     QComboBox            *rpm_select;

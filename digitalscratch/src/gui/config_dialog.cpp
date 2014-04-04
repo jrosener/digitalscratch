@@ -42,6 +42,8 @@
 #include <QPushButton>
 #include <QtDebug>
 #include <QMessageBox>
+#include <QSizePolicy>
+#include <QButtonGroup>
 #include "config_dialog.h"
 #include <digital_scratch_api.h>
 #include <iostream>
@@ -75,6 +77,14 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     {
         this->sample_rate_select->addItem(QString::number(available_sample_rates->at(i)));
     }
+    this->device_jack_check = new QCheckBox(this);
+    this->device_jack_check->setTristate(false);
+    this->auto_jack_connections_check = new QCheckBox(this);
+    this->auto_jack_connections_check->setTristate(false);
+    this->device_internal_check = new QCheckBox(this);
+    this->device_internal_check->setTristate(false);
+    this->device_internal_select = new QComboBox(this);
+    // TODO fill device_internal_select
 
     // Init motion detection parameters widgets.
     this->amplify_coeff                            = new QSlider(Qt::Horizontal, this);
@@ -95,10 +105,8 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     {
         this->rpm_select->addItem(QString::number(available_rpms->at(i)));
     }
-    this->autostart_detection_check                = new QCheckBox(this);
-    this->auto_jack_connections_check              = new QCheckBox(this);
+    this->autostart_detection_check = new QCheckBox(this);
     this->autostart_detection_check->setTristate(false);
-    this->auto_jack_connections_check->setTristate(false);
 
     // Init keyboard shortcuts widgets.
     this->kb_switch_playback           = new ShortcutQLabel(this);
@@ -197,7 +205,7 @@ QWidget *Config_dialog::init_tab_player()
     QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
 
     // Player tab: select number of decks.
-    QLabel *nb_decks_label = new QLabel(tr("Number of decks (needs to restart): "), this);
+    QLabel *nb_decks_label = new QLabel(tr("Number of decks (restart required): "), this);
 
     // Run external prog at startup.
     QLabel *extern_prog_label = new QLabel(tr("External prog to run at startup: "), this);
@@ -235,22 +243,58 @@ void Config_dialog::fill_tab_player()
 
 QWidget *Config_dialog::init_tab_sound_card()
 {
-    // Sound card tab: select sample rate.
-    QLabel *sample_rate_label = new QLabel(tr("Sample rate (need to restart): "), this);
+    // Sound card tab: setup main layout.
+    QVBoxLayout *sound_card_layout = new QVBoxLayout(this);
 
-    // Sound card tab: auto connect JACK.
+    // Select sample rate.
+    QLabel *sample_rate_label = new QLabel(tr("Sample rate (restart required): "), this);
+    QHBoxLayout *sample_rate_layout = new QHBoxLayout();
+    sample_rate_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    sample_rate_layout->addWidget(sample_rate_label, 0, Qt::AlignLeft);
+    this->sample_rate_select->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    sample_rate_layout->addWidget(this->sample_rate_select, 0, Qt::AlignLeft);
+    sample_rate_layout->addStretch(10);
+    sound_card_layout->addLayout(sample_rate_layout);
+
+    // Select sound device.
+    QGridLayout *device_layout = new QGridLayout();
+    device_layout->setColumnStretch(3, 10);
+    sound_card_layout->addLayout(device_layout);
+    QLabel *device_label = new QLabel(tr("Device: "), this);
+    device_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(device_label, 0, 0, Qt::AlignLeft);
+
+    // Select sound device : choice 1 (jack).
+    this->device_jack_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(this->device_jack_check, 0, 1, Qt::AlignLeft);
+    QLabel *jack_label = new QLabel(tr("JACK"), this);
+    jack_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(jack_label, 0, 2, Qt::AlignLeft);
     QLabel *auto_jack_connections_label = new QLabel(tr("Connect automatically JACK ports: "), this);
+    auto_jack_connections_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(auto_jack_connections_label, 1, 2, Qt::AlignLeft);
+    this->auto_jack_connections_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(this->auto_jack_connections_check, 1, 3, Qt::AlignLeft);
 
-    // Sound card tab: setup layout.
-    QGridLayout *soundcard_tab_layout = new QGridLayout(this);
-    soundcard_tab_layout->addWidget(sample_rate_label,                 0, 0);
-    soundcard_tab_layout->addWidget(this->sample_rate_select,          0, 1);
-    soundcard_tab_layout->addWidget(auto_jack_connections_label,       1, 0);
-    soundcard_tab_layout->addWidget(this->auto_jack_connections_check, 1, 1);
+    // Select sound device : choice 2 (internal).
+    this->device_internal_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(device_internal_check, 2, 1, Qt::AlignLeft);
+    QLabel *internal_label = new QLabel(tr("Internal"), this);
+    internal_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(internal_label, 2, 2, Qt::AlignLeft);
+    device_internal_select->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    device_layout->addWidget(device_internal_select, 3, 2, Qt::AlignLeft);
+
+    // Make device choices exclusive.
+    QButtonGroup *device_choices = new QButtonGroup(this);
+    device_choices->addButton(this->device_jack_check);
+    device_choices->addButton(this->device_internal_check);
+    device_choices->setExclusive(true);
 
     // Create tab.
+    sound_card_layout->addStretch(10);
     QWidget *soundcard_tab = new QWidget(this);
-    soundcard_tab->setLayout(soundcard_tab_layout);
+    soundcard_tab->setLayout(sound_card_layout);
 
     return soundcard_tab;
 }
@@ -286,7 +330,7 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(this->amplify_coeff_value, 3, 2);
     QObject::connect(this->amplify_coeff, SIGNAL(valueChanged(int)), this, SLOT(set_amplify_coeff_value(int)));
 
-    QLabel *min_amplitude_for_normal_speed_label = new QLabel(tr("Minimal signal amplitude for normal speed:"), this);
+    QLabel *min_amplitude_for_normal_speed_label = new QLabel(tr("Minimal signal amplitude @ speed = 100%:"), this);
     this->min_amplitude_for_normal_speed->setMinimum(1);
     this->min_amplitude_for_normal_speed->setMaximum(99);
     this->min_amplitude_for_normal_speed->setSingleStep(1);
