@@ -1,3 +1,9 @@
+libdigitalscratch (1.5.0-1ppa1~trusty1) trusty; urgency=medium
+
+  * built for Ubuntu 14.04 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 03 Jun 2014 18:00:47 +0200
+
 libdigitalscratch (1.5.0-1ppa1~saucy1) saucy; urgency=low
 
   * improved speed detection (fully new implementation)

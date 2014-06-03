@@ -88,19 +88,25 @@ echo ""
 echo "**************************** Get source code ***************************"
 git checkout debian/changelog
 check_error
-cd ../../
-git archive --format zip --output $WORKINGPATH/archive.zip $(git symbolic-ref --short -q HEAD)
-unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR_ORIG
-rm -v -rf $WORKINGPATH/$SOURCEDIR_ORIG/dist
-check_error
 echo ""
 echo ""
 
 if [[ $2 == --rebuild ]] ; then
     echo "************************* Copy old source package ***********************"
     cp -v $3 $WORKINGPATH
+    cd $WORKINGPATH
+    tar xvzf $3
+    rm -v -rf $SOURCEDIR_ORIG/dist
+    check_error
+    cd $ORIGDIR
+    cd ../../
 else
     echo "******************** Compress orig source directory *********************"
+    cd ../../
+    git archive --format zip --output $WORKINGPATH/archive.zip $(git symbolic-ref --short -q HEAD)
+    unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR_ORIG
+    rm -v -rf $WORKINGPATH/$SOURCEDIR_ORIG/dist
+    check_error
     ORIGDIR=$(pwd)
     cd $WORKINGPATH
     tar cvzf $TARPACK $SOURCEDIR_ORIG
