@@ -251,8 +251,7 @@ QWidget *Config_dialog::init_tab_sound_card()
     QHBoxLayout *sample_rate_layout = new QHBoxLayout();
     sample_rate_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     sample_rate_layout->addWidget(sample_rate_label, 0, Qt::AlignLeft);
-    this->sample_rate_select->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    sample_rate_layout->addWidget(this->sample_rate_select, 0, Qt::AlignLeft);
+    sample_rate_layout->addWidget(this->sample_rate_select, 10, Qt::AlignLeft);
     sample_rate_layout->addStretch(10);
     sound_card_layout->addLayout(sample_rate_layout);
 
@@ -292,7 +291,7 @@ QWidget *Config_dialog::init_tab_sound_card()
     device_choices->setExclusive(true);
 
     // Create tab.
-    sound_card_layout->addStretch(10);
+    //sound_card_layout->addStretch(1);
     QWidget *soundcard_tab = new QWidget(this);
     soundcard_tab->setLayout(sound_card_layout);
 
@@ -303,6 +302,9 @@ void Config_dialog::fill_tab_sound_card()
 {
     this->sample_rate_select->setCurrentIndex(this->sample_rate_select->findText(QString::number(this->settings->get_sample_rate())));
     this->auto_jack_connections_check->setChecked(this->settings->get_auto_jack_connections());
+    // TODO
+    //this->device_jack_check->setChecked(this->settings->get);
+    //this->device_internal_check(this->settings->get);
 }
 
 QWidget *Config_dialog::init_tab_motion_detect()
