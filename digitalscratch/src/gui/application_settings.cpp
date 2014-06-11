@@ -63,6 +63,10 @@ Application_settings::Application_settings()
     this->available_sample_rates->append(48000);
     this->available_sample_rates->append(96000);
 
+    this->available_sound_cards = new QList<QString>();
+    this->available_sound_cards->append("sound card 1");
+    // TODO : get available sound cards
+
     this->audio_collection_full_refresh = true;
 
     this->init_settings();
@@ -75,6 +79,7 @@ Application_settings::~Application_settings()
     delete this->available_vinyl_types;
     delete this->available_rpms;
     delete this->available_sample_rates;
+    delete this->available_sound_cards;
 }
 
 void
@@ -113,6 +118,9 @@ Application_settings::init_settings()
     }
     if (this->settings->contains(AUTO_JACK_CONNECTIONS_CFG) == false) {
         this->settings->setValue(AUTO_JACK_CONNECTIONS_CFG, this->get_auto_jack_connections_default());
+    }
+    if (this->settings->contains(SOUND_DRIVER_CFG) == false) {
+        this->settings->setValue(SOUND_DRIVER_CFG, this->get_sound_driver_default());
     }
 
     //
@@ -514,6 +522,50 @@ Application_settings::set_auto_jack_connections(bool in_autoconnect)
 {
     this->settings->setValue(AUTO_JACK_CONNECTIONS_CFG, in_autoconnect);
 }
+
+void
+Application_settings::set_sound_driver(QString in_driver)
+{
+    this->settings->setValue(SOUND_DRIVER_CFG, in_driver);
+}
+
+QString
+Application_settings::get_sound_driver()
+{
+    return this->settings->value(SOUND_DRIVER_CFG).toString();
+}
+
+QString
+Application_settings::get_sound_driver_default()
+{
+    return SOUND_DRIVER_DEFAULT;
+}
+
+void
+Application_settings::set_internal_sound_card(QString in_card)
+{
+    this->settings->setValue(SOUND_CARD_CFG, in_card);
+}
+
+QString
+Application_settings::get_internal_sound_card()
+{
+    return this->settings->value(SOUND_CARD_CFG).toString();
+}
+
+QString
+Application_settings::get_internal_sound_card_default()
+{
+    return SOUND_CARD_DEFAULT;
+}
+
+QList<QString>*
+Application_settings::get_available_internal_sound_cards()
+{
+    return this->available_sound_cards;
+}
+
+
 
 bool
 Application_settings::get_autostart_motion_detection()

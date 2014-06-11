@@ -84,7 +84,11 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->device_internal_check = new QCheckBox(this);
     this->device_internal_check->setTristate(false);
     this->device_internal_select = new QComboBox(this);
-    // TODO fill device_internal_select
+    QList<QString> *available_sound_cards = this->settings->get_available_internal_sound_cards();
+    for (int i = 0; i < available_sound_cards->size(); i++)
+    {
+        this->device_internal_select->addItem(available_sound_cards->at(i));
+    }
 
     // Init motion detection parameters widgets.
     this->amplify_coeff                            = new QSlider(Qt::Horizontal, this);
@@ -259,7 +263,7 @@ QWidget *Config_dialog::init_tab_sound_card()
     QGridLayout *device_layout = new QGridLayout();
     device_layout->setColumnStretch(3, 10);
     sound_card_layout->addLayout(device_layout);
-    QLabel *device_label = new QLabel(tr("Device: "), this);
+    QLabel *device_label = new QLabel(tr("Sound device access: "), this);
     device_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     device_layout->addWidget(device_label, 0, 0, Qt::AlignLeft);
 
@@ -291,7 +295,6 @@ QWidget *Config_dialog::init_tab_sound_card()
     device_choices->setExclusive(true);
 
     // Create tab.
-    //sound_card_layout->addStretch(1);
     QWidget *soundcard_tab = new QWidget(this);
     soundcard_tab->setLayout(sound_card_layout);
 
@@ -302,9 +305,15 @@ void Config_dialog::fill_tab_sound_card()
 {
     this->sample_rate_select->setCurrentIndex(this->sample_rate_select->findText(QString::number(this->settings->get_sample_rate())));
     this->auto_jack_connections_check->setChecked(this->settings->get_auto_jack_connections());
-    // TODO
-    //this->device_jack_check->setChecked(this->settings->get);
-    //this->device_internal_check(this->settings->get);
+    if (this->settings->get_sound_driver() == SOUND_DRIVER_INTERNAL)
+    {
+        this->device_internal_check->setChecked(true);
+    }
+    else
+    {
+        this->device_jack_check->setChecked(true);
+    }
+    this->device_internal_select->setCurrentIndex(this->device_internal_select->findText(this->settings->get_internal_sound_card()));
 }
 
 QWidget *Config_dialog::init_tab_motion_detect()
@@ -744,8 +753,15 @@ Config_dialog::accept()
 
     // Set sound card settings.
     this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
-
-    // Set auto JACK port connections.
+    if (this->device_internal_check->isChecked() == true)
+    {
+        this->settings->set_sound_driver(SOUND_DRIVER_INTERNAL);
+    }
+    else
+    {
+        this->settings->set_sound_driver(SOUND_DRIVER_JACK);
+    }
+    this->settings->set_internal_sound_card(this->device_internal_select->currentText());
     this->settings->set_auto_jack_connections(this->auto_jack_connections_check->isChecked());
 
     // Set motion detection settings.

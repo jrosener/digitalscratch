@@ -66,6 +66,12 @@ using namespace std;
 #define SAMPLE_RATE_DEFAULT                 44100
 #define AUTO_JACK_CONNECTIONS_CFG           "sound_card/auto_jack_connections"
 #define AUTO_JACK_CONNECTIONS_DEFAULT       1
+#define SOUND_DRIVER_CFG                    "sound_card/driver_select"
+#define SOUND_DRIVER_JACK                   "jack"
+#define SOUND_DRIVER_INTERNAL               "internal"
+#define SOUND_DRIVER_DEFAULT                SOUND_DRIVER_JACK
+#define SOUND_CARD_CFG                      "sound_card/sound_card_id"
+#define SOUND_CARD_DEFAULT                  "0"
 
 #define AUTOSTART_MOTION_DETECTION_CFG      "motion_detection/auto_start_motion_detection"
 #define AUTOSTART_MOTION_DETECTION_DEFAULT  0
@@ -156,6 +162,7 @@ class Application_settings : public QObject
     QList<unsigned short int> *available_rpms;
     QList<unsigned int>       *available_sample_rates;
     QList<unsigned int>       *available_nb_decks;
+    QList<QString>            *available_sound_cards;
     bool                       audio_collection_full_refresh;
 
  public:
@@ -196,6 +203,14 @@ class Application_settings : public QObject
     unsigned int         get_sample_rate();
     unsigned int         get_sample_rate_default();
     QList<unsigned int>* get_available_sample_rates();
+
+    void            set_sound_driver(QString in_driver);
+    QString         get_sound_driver();
+    QString         get_sound_driver_default();
+    void            set_internal_sound_card(QString in_card);
+    QString         get_internal_sound_card();
+    QString         get_internal_sound_card_default();
+    QList<QString>* get_available_internal_sound_cards();
 
     void            set_auto_jack_connections(bool in_autoconnect);
     bool            get_auto_jack_connections();
