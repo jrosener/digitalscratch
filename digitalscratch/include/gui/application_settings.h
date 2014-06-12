@@ -35,6 +35,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QAudioDeviceInfo>
 #include <application_const.h>
 
 using namespace std;
@@ -162,7 +163,7 @@ class Application_settings : public QObject
     QList<unsigned short int> *available_rpms;
     QList<unsigned int>       *available_sample_rates;
     QList<unsigned int>       *available_nb_decks;
-    QList<QString>            *available_sound_cards;
+    QList<QAudioDeviceInfo>   *available_sound_cards;
     bool                       audio_collection_full_refresh;
 
  public:
@@ -210,7 +211,7 @@ class Application_settings : public QObject
     void            set_internal_sound_card(QString in_card);
     QString         get_internal_sound_card();
     QString         get_internal_sound_card_default();
-    QList<QString>* get_available_internal_sound_cards();
+    QList<QAudioDeviceInfo>* get_available_internal_sound_cards();
 
     void            set_auto_jack_connections(bool in_autoconnect);
     bool            get_auto_jack_connections();

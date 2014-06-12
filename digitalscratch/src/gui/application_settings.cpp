@@ -63,9 +63,12 @@ Application_settings::Application_settings()
     this->available_sample_rates->append(48000);
     this->available_sample_rates->append(96000);
 
-    this->available_sound_cards = new QList<QString>();
-    this->available_sound_cards->append("sound card 1");
-    // TODO : get available sound cards
+    this->available_sound_cards = new QList<QAudioDeviceInfo>();
+    QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    for(int i = 0; i < devices.size(); ++i)
+    {
+        this->available_sound_cards->append(devices.at(i));
+    }
 
     this->audio_collection_full_refresh = true;
 
@@ -559,7 +562,7 @@ Application_settings::get_internal_sound_card_default()
     return SOUND_CARD_DEFAULT;
 }
 
-QList<QString>*
+QList<QAudioDeviceInfo>*
 Application_settings::get_available_internal_sound_cards()
 {
     return this->available_sound_cards;

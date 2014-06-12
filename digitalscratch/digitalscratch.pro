@@ -40,7 +40,7 @@ contains(QT_VERSION, ^4\\.[0-9]\\..*) {
 }
 else {
     # Qt 5 and more
-    QT += gui widgets sql concurrent
+    QT += gui widgets sql concurrent multimedia
 }
 CONFIG(test) {
     QT       += testlib
