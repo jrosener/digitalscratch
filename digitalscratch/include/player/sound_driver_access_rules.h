@@ -30,8 +30,8 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SOUND_CARD_ACCESS_RULES_H_
-#define SOUND_CARD_ACCESS_RULES_H_
+#ifndef SOUND_DRIVER_ACCESS_RULES_H_
+#define SOUND_DRIVER_ACCESS_RULES_H_
 
 #include <iostream>
 #include <QObject>
@@ -40,7 +40,7 @@
 
 using namespace std;
 
-class Sound_card_access_rules : public QObject
+class Sound_driver_access_rules : public QObject
 {
     Q_OBJECT
 
@@ -50,8 +50,8 @@ class Sound_card_access_rules : public QObject
     bool                     running;
 
  public:
-    Sound_card_access_rules(unsigned short int in_nb_channels);
-    virtual ~Sound_card_access_rules();
+    Sound_driver_access_rules(unsigned short int in_nb_channels);
+    virtual ~Sound_driver_access_rules();
 
  public:
     bool is_running();
@@ -73,4 +73,4 @@ class Sound_card_access_rules : public QObject
    void error_msg(QString in_error_message);
 };
 
-#endif /* SOUND_CARD_ACCESS_RULES_H_ */
+#endif /* SOUND_DRIVER_ACCESS_RULES_H_ */

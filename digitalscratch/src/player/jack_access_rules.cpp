@@ -26,14 +26,14 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*        Behavior class: access sound card (open, close, list, ...)          */
+/*   Behavior class: access sound card via Jack (open, close, list, ...)      */
 /*                                                                            */
 /*============================================================================*/
 
 #include <QtDebug>
 
 #include "sound_capture_and_playback_process.h"
-#include "sound_card_access_rules.h"
+#include "sound_driver_access_rules.h"
 #include "jack_access_rules.h"
 #include <singleton.h>
 #include <application_settings.h>
@@ -57,7 +57,7 @@ int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_fr
     return 0;
 }
 
-Jack_access_rules::Jack_access_rules(unsigned short int in_nb_channels) : Sound_card_access_rules(in_nb_channels)
+Jack_access_rules::Jack_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
 {
     qDebug() << "Jack_access_rules::Jack_access_rules: create object...";
 

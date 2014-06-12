@@ -98,7 +98,7 @@ Gui::Gui(Audio_track                        *in_at_1,
          Playback_parameters                *in_params_2,
          Audio_track_playback_process       *in_playback,
          unsigned short int                  in_nb_decks,
-         Sound_card_access_rules            *in_sound_card,
+         Sound_driver_access_rules          *in_sound_card,
          Sound_capture_and_playback_process *in_capture_and_playback,
          int                                *in_dscratch_ids)
 {

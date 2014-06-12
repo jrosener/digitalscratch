@@ -26,7 +26,7 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*        Behavior class: access sound card (open, close, list, ...)          */
+/*   Behavior class: access sound card via Jack (open, close, list, ...)      */
 /*                                                                            */
 /*============================================================================*/
 
@@ -36,7 +36,7 @@
 #include <iostream>
 #include <QObject>
 #include <QString>
-#include <sound_card_access_rules.h>
+#include <sound_driver_access_rules.h>
 #include "jack/jack.h"
 #include <application_const.h>
 typedef jack_client_t *     AUDIO_STREAM_TYPE;
@@ -55,7 +55,7 @@ typedef jack_nframes_t      AUDIO_CALLBACK_NB_FRAMES_TYPE;
 
 using namespace std;
 
-class Jack_access_rules : public Sound_card_access_rules
+class Jack_access_rules : public Sound_driver_access_rules
 {
     Q_OBJECT
 

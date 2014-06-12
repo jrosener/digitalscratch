@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------( sound_capture_and_playback_process.h )-*/
+/*--------------------------------------------( Sound_driver_access_rules.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,35 +26,45 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/* Behavior class: process called each time there are new captured data and   */
-/*                 playable data are ready.                                   */
+/*        Behavior class: access sound card (open, close, list, ...)          */
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SOUND_CAPTURE_AND_PLAYBACK_PROCESS_H_
-#define SOUND_CAPTURE_AND_PLAYBACK_PROCESS_H_
+#include <QtDebug>
+#include "sound_driver_access_rules.h"
+#include <singleton.h>
+#include <application_settings.h>
 
-#include <timecode_analyzis_process.h>
-#include <audio_track_playback_process.h>
-#include <sound_driver_access_rules.h>
-#include <application_const.h>
-
-using namespace std;
-
-class Sound_capture_and_playback_process
+Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_channels)
 {
- private:
-    Timecode_analyzis_process    *tcode_analyzis;
-    Audio_track_playback_process *playback;
-    Sound_driver_access_rules    *sound_card;
+    qDebug() << "Sound_driver_access_rules::Sound_driver_access_rules: create object...";
 
- public:
-    Sound_capture_and_playback_process(Timecode_analyzis_process    *in_tcode_analyzis,
-                                       Audio_track_playback_process *in_playback,
-                                       Sound_driver_access_rules    *in_sound_card);
-    virtual ~Sound_capture_and_playback_process();
+    if ((in_nb_channels == 0) || (in_nb_channels > 4))
+    {
+        qFatal("Sound_driver_access_rules::Sound_driver_access_rules: DigitalScratch can only handle 2 decks maximum.");
+        return;
+    }
 
-    bool run(unsigned short int in_nb_buffer_frames);
-};
+    this->nb_channels = in_nb_channels;
+    this->callback_param = NULL;
+    this->running = false;
 
-#endif /* SOUND_CAPTURE_AND_PLAYBACK_PROCESS_H_ */
+    qDebug() << "Sound_driver_access_rules::Sound_driver_access_rules: create object done.";
+
+    return;
+}
+
+Sound_driver_access_rules::~Sound_driver_access_rules()
+{
+    qDebug() << "Sound_driver_access_rules::~Sound_driver_access_rules: delete object...";
+
+    qDebug() << "Sound_driver_access_rules::~Sound_driver_access_rules: delete object done.";
+
+    return;
+}
+
+bool
+Sound_driver_access_rules::is_running()
+{
+    return this->running;
+}

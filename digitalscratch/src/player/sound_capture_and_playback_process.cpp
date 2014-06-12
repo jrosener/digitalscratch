@@ -38,7 +38,7 @@
 
 Sound_capture_and_playback_process::Sound_capture_and_playback_process(Timecode_analyzis_process    *in_tcode_analyzis,
                                                                        Audio_track_playback_process *in_playback,
-                                                                       Sound_card_access_rules      *in_sound_card)
+                                                                       Sound_driver_access_rules    *in_sound_card)
 {
     qDebug() << "Sound_capture_and_playback_process::Sound_capture_and_playback_process: create object...";
 

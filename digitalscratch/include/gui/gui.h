@@ -51,7 +51,7 @@
 #include "audio_file_decoding_process.h"
 #include "audio_track_playback_process.h"
 #include "playback_parameters.h"
-#include "sound_card_access_rules.h"
+#include "sound_driver_access_rules.h"
 #include "waveform.h"
 #include "remaining_time.h"
 #include "application_settings.h"
@@ -196,7 +196,7 @@ class Gui : QObject
     Playback_parameters                *params_2;
     Audio_track_playback_process       *playback;
     unsigned short int                  nb_decks;
-    Sound_card_access_rules            *sound_card;
+    Sound_driver_access_rules          *sound_card;
     Sound_capture_and_playback_process *capture_and_play;
     QFileSystemModel                   *folder_system_model;
     Audio_collection_model             *file_system_model;
@@ -279,7 +279,7 @@ class Gui : QObject
         Playback_parameters                *in_params_2,
         Audio_track_playback_process       *in_playback,
         unsigned short int                  in_nb_decks,
-        Sound_card_access_rules            *in_sound_card,
+        Sound_driver_access_rules          *in_sound_card,
         Sound_capture_and_playback_process *in_capture_and_playback,
         int                                *in_dscratch_ids);
     virtual ~Gui();

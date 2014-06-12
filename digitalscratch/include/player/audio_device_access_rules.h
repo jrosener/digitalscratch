@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------( sound_card_access_rules.cpp )-*/
+/*----------------------------------------------( sound_device_access_rules.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,45 +26,44 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*        Behavior class: access sound card (open, close, list, ...)          */
+/* Behavior class: access internal sound card device (open, close, list, ...) */
 /*                                                                            */
 /*============================================================================*/
 
-#include <QtDebug>
-#include "sound_card_access_rules.h"
-#include <singleton.h>
-#include <application_settings.h>
+#ifndef SOUND_DEVICE_ACCESS_RULES_H_
+#define SOUND_DEVICE_ACCESS_RULES_H_
 
-Sound_card_access_rules::Sound_card_access_rules(unsigned short int in_nb_channels)
+#include <iostream>
+#include <QObject>
+#include <QString>
+#include <sound_driver_access_rules.h>
+#include <application_const.h>
+
+using namespace std;
+
+class Audio_device_access_rules : public Sound_driver_access_rules
 {
-    qDebug() << "Sound_card_access_rules::Sound_card_access_rules: create object...";
+    Q_OBJECT
 
-    if ((in_nb_channels == 0) || (in_nb_channels > 4))
-    {
-        qFatal("Sound_card_access_rules::Sound_card_access_rules: DigitalScratch can only handle 2 decks maximum.");
-        return;
-    }
+ public:
+    Audio_device_access_rules(unsigned short int in_nb_channels);
+    virtual ~Audio_device_access_rules();
 
-    this->nb_channels = in_nb_channels;
-    this->callback_param = NULL;
-    this->running = false;
+ public:
+    bool start(void *in_callback_param);
+    bool restart();
+    bool stop();
+    bool is_running();
+    bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
+                           float              **out_buffer_1,
+                           float              **out_buffer_2,
+                           float              **out_buffer_3,
+                           float              **out_buffer_4);
+    bool get_output_buffers(unsigned short int   in_nb_buffer_frames,
+                            float              **out_buffer_1,
+                            float              **out_buffer_2,
+                            float              **out_buffer_3,
+                            float              **out_buffer_4);
+};
 
-    qDebug() << "Sound_card_access_rules::Sound_card_access_rules: create object done.";
-
-    return;
-}
-
-Sound_card_access_rules::~Sound_card_access_rules()
-{
-    qDebug() << "Sound_card_access_rules::~Sound_card_access_rules: delete object...";
-
-    qDebug() << "Sound_card_access_rules::~Sound_card_access_rules: delete object done.";
-
-    return;
-}
-
-bool
-Sound_card_access_rules::is_running()
-{
-    return this->running;
-}
+#endif /* SOUND_DEVICE_ACCESS_RULES_H_ */
