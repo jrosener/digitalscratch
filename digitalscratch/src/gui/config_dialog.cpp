@@ -84,10 +84,10 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->device_internal_check = new QCheckBox(this);
     this->device_internal_check->setTristate(false);
     this->device_internal_select = new QComboBox(this);
-    QList<QAudioDeviceInfo> *available_sound_cards = this->settings->get_available_internal_sound_cards();
+    QList<QString> *available_sound_cards = this->settings->get_available_internal_sound_cards();
     for (int i = 0; i < available_sound_cards->size(); i++)
     {
-        this->device_internal_select->addItem(available_sound_cards->at(i).deviceName());
+        this->device_internal_select->addItem(available_sound_cards->at(i));
     }
 
     // Init motion detection parameters widgets.

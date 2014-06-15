@@ -30,14 +30,15 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SOUND_DEVICE_ACCESS_RULES_H_
-#define SOUND_DEVICE_ACCESS_RULES_H_
+#ifndef AUDIO_DEVICE_ACCESS_RULES_H_
+#define AUDIO_DEVICE_ACCESS_RULES_H_
 
 #include <iostream>
 #include <QObject>
 #include <QString>
 #include <sound_driver_access_rules.h>
 #include <application_const.h>
+#include <QAudioDeviceInfo>
 
 using namespace std;
 
@@ -50,10 +51,10 @@ class Audio_device_access_rules : public Sound_driver_access_rules
     virtual ~Audio_device_access_rules();
 
  public:
+    static QList<QString> *get_device_list();
     bool start(void *in_callback_param);
     bool restart();
     bool stop();
-    bool is_running();
     bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
                            float              **out_buffer_1,
                            float              **out_buffer_2,
@@ -66,4 +67,4 @@ class Audio_device_access_rules : public Sound_driver_access_rules
                             float              **out_buffer_4);
 };
 
-#endif /* SOUND_DEVICE_ACCESS_RULES_H_ */
+#endif /* AUDIO_DEVICE_ACCESS_RULES_H_ */

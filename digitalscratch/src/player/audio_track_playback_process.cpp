@@ -251,16 +251,18 @@ Audio_track_playback_process::play_audio_track(unsigned short int   in_deck_inde
         return false;
     }
 
-#if 0
+#if 1
     // Fake implementation (just play track), do not use playback parameters.
     short signed int *sample_pointer = &((this->ats[in_deck_index]->get_samples())[this->current_samples[in_deck_index]]);
+    std::copy(sample_pointer, sample_pointer + (in_nb_samples * 2), this->src_int_input_data);
+    src_short_to_float_array(this->src_int_input_data, this->src_float_input_data, in_nb_samples * 2);
+
     for (int i = (0 + (in_deck_index * 2));
          i < (in_nb_samples * this->nb_decks * 2);
          i = i + (this->nb_decks * 2))
     {
-        out_samples[i]   = *sample_pointer;
-        out_samples[i+1] = *(sample_pointer++);
-        sample_pointer++;
+        out_samples[i]   = &this->src_float_input_data[i];
+        out_samples[i+1] = &this->src_float_input_data[i+1];
     }
     this->current_samples[in_deck_index] += in_nb_samples*2;
 #else
