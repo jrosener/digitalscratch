@@ -1129,7 +1129,7 @@ Gui::create_main_window()
     this->restart_on_deck1_button = new QPushButton();
     this->restart_on_deck1_button->setObjectName("Restart_button");
     this->restart_on_deck1_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->restart_on_deck1_button->setFixedSize(24, 24);
+    this->restart_on_deck1_button->setFixedSize(15, 15);
     this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->restart_on_deck1_button->setCheckable(true);
 
@@ -1214,7 +1214,7 @@ Gui::create_main_window()
     this->restart_on_deck2_button = new QPushButton();
     this->restart_on_deck2_button->setObjectName("Restart_button");
     this->restart_on_deck2_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->restart_on_deck2_button->setFixedSize(24, 24);
+    this->restart_on_deck2_button->setFixedSize(15, 15);
     this->restart_on_deck2_button->setFocusPolicy(Qt::NoFocus);
     this->restart_on_deck2_button->setCheckable(true);
 
