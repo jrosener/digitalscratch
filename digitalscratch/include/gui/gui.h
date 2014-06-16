@@ -229,6 +229,16 @@ class Gui : QObject
     QGroupBox                          *progress_groupbox;
     QPushButton                        *load_track_on_deck1_button;
     QPushButton                        *load_track_on_deck2_button;
+    QPushButton                        *timecode_detect_on_deck1_toggle;
+    QPushButton                        *timecode_detect_on_deck2_toggle;
+    QPushButton                        *speed_up_on_deck1_button;
+    QPushButton                        *speed_up_on_deck2_button;
+    QPushButton                        *speed_down_on_deck1_button;
+    QPushButton                        *speed_down_on_deck2_button;
+    QPushButton                        *accel_up_on_deck1_button;
+    QPushButton                        *accel_up_on_deck2_button;
+    QPushButton                        *accel_down_on_deck1_button;
+    QPushButton                        *accel_down_on_deck2_button;
     QPushButton                        *restart_on_deck1_button;
     QPushButton                        *restart_on_deck2_button;
     QPushButton                       **cue_set_on_deck1_buttons;

@@ -1126,16 +1126,42 @@ Gui::create_main_window()
     this->deck1_track_name->setObjectName("TrackName");
     this->deck1_waveform->setObjectName("Waveform");
 
+    QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
+    QGridLayout *deck1_timecode_layout = new QGridLayout();
+    this->timecode_detect_on_deck1_toggle = new QPushButton(tr("&Timecode"));
+    this->timecode_detect_on_deck1_toggle->setObjectName("Timecode_toggle");
+    this->timecode_detect_on_deck1_toggle->setFocusPolicy(Qt::NoFocus);
+    deck1_timecode_layout->addWidget(this->timecode_detect_on_deck1_toggle, 0, 0);
+    QLabel *deck1_speed = new QLabel(tr("000.000%"));
+    deck1_speed->setObjectName("Speed_value");
+    deck1_speed->setAlignment(Qt::AlignCenter);
+    deck1_timecode_layout->addWidget(deck1_speed, 1, 0);
+    this->speed_up_on_deck1_button = new QPushButton(tr("speed +"));
+    this->speed_up_on_deck1_button ->setObjectName("Speed_button");
+    this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    deck1_timecode_layout->addWidget(speed_up_on_deck1_button, 0, 1);
+    this->speed_down_on_deck1_button = new QPushButton(tr("speed -"));
+    this->speed_down_on_deck1_button->setObjectName("Speed_button");
+    this->speed_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    deck1_timecode_layout->addWidget(speed_down_on_deck1_button, 1, 1);
+    this->accel_up_on_deck1_button = new QPushButton(tr("speed ↑"));
+    this->accel_up_on_deck1_button ->setObjectName("Speed_button");
+    this->accel_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    deck1_timecode_layout->addWidget(accel_up_on_deck1_button, 0, 2);
+    this->accel_down_on_deck1_button = new QPushButton(tr("speed ↓"));
+    this->accel_down_on_deck1_button ->setObjectName("Speed_button");
+    this->accel_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    deck1_timecode_layout->addWidget(accel_down_on_deck1_button, 1, 2);
+    deck1_buttons_layout->addLayout(deck1_timecode_layout);
+    deck1_buttons_layout->addStretch(100);
+
     this->restart_on_deck1_button = new QPushButton();
     this->restart_on_deck1_button->setObjectName("Restart_button");
     this->restart_on_deck1_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->restart_on_deck1_button->setFixedSize(15, 15);
     this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->restart_on_deck1_button->setCheckable(true);
-
-    QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
     deck1_buttons_layout->addWidget(this->restart_on_deck1_button, 1, Qt::AlignLeft | Qt::AlignTop);
-    deck1_buttons_layout->addStretch(100);
 
     this->cue_set_on_deck1_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
     this->cue_play_on_deck1_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
@@ -2059,6 +2085,8 @@ Gui::create_main_window()
     // Timecode informations (speed + volume), for each deck.
     QObject::connect(this->params_1,          SIGNAL(speed_changed(double)),
                      deck1_tcode_speed_value, SLOT(setNum(double)));
+    QObject::connect(this->params_1, SIGNAL(speed_changed(double)),
+                     deck1_speed,    SLOT(setNum(double)));
     QObject::connect(this->params_2,          SIGNAL(speed_changed(double)),
                      deck2_tcode_speed_value, SLOT(setNum(double)));
     QObject::connect(this->params_1,              SIGNAL(volume_changed(double)),

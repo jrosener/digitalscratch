@@ -125,8 +125,8 @@ QPushButton#Capture_buttons:pressed
 QPushButton#Capture_buttons:checked
 {
    color:            #f2f2ed;
-   background-color: gray;
-   border:           1px solid orange;
+   background-color: red;
+   border:           1px solid black;
 }
 
 QPushButton#Help_button
@@ -698,6 +698,38 @@ QPushButton#Load_track_sample_button_d:checked
    background-color: gray;
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-load_sample_white_d.png);
+}
+
+QLabel#Speed_value
+{
+    border: 1px solid gray;
+    color:  gray;
+    font:   7pt;
+}
+
+QPushButton#Speed_button
+{
+   background-color: gray;
+   border:           none;
+   color:            black;
+   border-radius:    0px;
+   padding:          4px;
+}
+QPushButton#Speed_button:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+}
+QPushButton#Speed_button:pressed
+{
+   color:            white;
+   background-color: lightGray;
+}
+QPushButton#Speed_button:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
 }
 
 QPushButton#Restart_button
