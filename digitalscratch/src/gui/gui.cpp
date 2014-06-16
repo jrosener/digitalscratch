@@ -1101,19 +1101,6 @@ Gui::create_main_window()
     this->deck1_waveform   = new Waveform(this->at_1, this->window);
     this->deck1_key->setObjectName("KeyValue");
 
-    QLabel *deck1_tcode_speed           = new QLabel(tr("Speed (%): "));
-    QLabel *deck1_tcode_speed_value     = new QLabel(tr("000.0"));
-    deck1_tcode_speed->setObjectName("Speed");
-    deck1_tcode_speed_value->setObjectName("Speed");
-    QLabel *deck1_tcode_amplitude       = new QLabel(tr("Volume (%): "));
-    QLabel *deck1_tcode_amplitude_value = new QLabel(tr("000.0"));
-    deck1_tcode_amplitude->setObjectName("Volume");
-    deck1_tcode_amplitude_value->setObjectName("Volume");
-    QHBoxLayout *decks1_tcode_infos = new QHBoxLayout;
-    decks1_tcode_infos->addWidget(deck1_tcode_speed,       1, Qt::AlignLeft);
-    decks1_tcode_infos->addWidget(deck1_tcode_speed_value, 2, Qt::AlignLeft);
-    decks1_tcode_infos->addWidget(deck1_tcode_amplitude,       1,  Qt::AlignLeft);
-    decks1_tcode_infos->addWidget(deck1_tcode_amplitude_value, 10, Qt::AlignLeft);
     QHBoxLayout *deck1_remaining_time_layout = new QHBoxLayout;
     deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->minus, 1,   Qt::AlignBottom);
     deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->min,   1,   Qt::AlignBottom);
@@ -1129,6 +1116,7 @@ Gui::create_main_window()
     QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
     QGridLayout *deck1_timecode_layout = new QGridLayout();
     this->timecode_detect_on_deck1_toggle = new QPushButton(tr("&Timecode"));
+    this->timecode_detect_on_deck1_toggle->setToolTip(tr("Enable/disable timecode speed detection"));
     this->timecode_detect_on_deck1_toggle->setObjectName("Timecode_toggle");
     this->timecode_detect_on_deck1_toggle->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(this->timecode_detect_on_deck1_toggle, 0, 0);
@@ -1136,19 +1124,23 @@ Gui::create_main_window()
     deck1_speed->setObjectName("Speed_value");
     deck1_speed->setAlignment(Qt::AlignCenter);
     deck1_timecode_layout->addWidget(deck1_speed, 1, 0);
-    this->speed_up_on_deck1_button = new QPushButton(tr("speed +"));
+    this->speed_up_on_deck1_button = new QPushButton("+");
+    this->speed_up_on_deck1_button->setToolTip("<p>" + tr("0.01% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_up_on_deck1_button ->setObjectName("Speed_button");
     this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(speed_up_on_deck1_button, 0, 1);
-    this->speed_down_on_deck1_button = new QPushButton(tr("speed -"));
+    this->speed_down_on_deck1_button = new QPushButton("-");
+    this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.01% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_down_on_deck1_button->setObjectName("Speed_button");
     this->speed_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(speed_down_on_deck1_button, 1, 1);
-    this->accel_up_on_deck1_button = new QPushButton(tr("speed ↑"));
+    this->accel_up_on_deck1_button = new QPushButton("↷");
+    this->accel_up_on_deck1_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->accel_up_on_deck1_button ->setObjectName("Speed_button");
     this->accel_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(accel_up_on_deck1_button, 0, 2);
-    this->accel_down_on_deck1_button = new QPushButton(tr("speed ↓"));
+    this->accel_down_on_deck1_button = new QPushButton("↶");
+    this->accel_down_on_deck1_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->accel_down_on_deck1_button ->setObjectName("Speed_button");
     this->accel_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(accel_down_on_deck1_button, 1, 2);
@@ -1304,7 +1296,6 @@ Gui::create_main_window()
     deck1_layout->addLayout(deck1_remaining_time_layout, 10);
     deck1_layout->addWidget(this->deck1_waveform, 70);
     deck1_layout->addLayout(deck1_buttons_layout, 10);
-    deck1_layout->addLayout(decks1_tcode_infos, 10);
     deck1_general_layout->addLayout(deck1_layout, 90);
 
     deck2_layout->addWidget(deck2_track_name, 10);
@@ -2083,14 +2074,10 @@ Gui::create_main_window()
                      this,           SLOT(set_sampler_state(int, int, bool)));
 
     // Timecode informations (speed + volume), for each deck.
-    QObject::connect(this->params_1,          SIGNAL(speed_changed(double)),
-                     deck1_tcode_speed_value, SLOT(setNum(double)));
     QObject::connect(this->params_1, SIGNAL(speed_changed(double)),
                      deck1_speed,    SLOT(setNum(double)));
     QObject::connect(this->params_2,          SIGNAL(speed_changed(double)),
                      deck2_tcode_speed_value, SLOT(setNum(double)));
-    QObject::connect(this->params_1,              SIGNAL(volume_changed(double)),
-                     deck1_tcode_amplitude_value, SLOT(setNum(double)));
     QObject::connect(this->params_2,              SIGNAL(volume_changed(double)),
                      deck2_tcode_amplitude_value, SLOT(setNum(double)));
 
