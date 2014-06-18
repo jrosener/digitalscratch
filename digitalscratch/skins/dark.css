@@ -746,6 +746,7 @@ QLabel#Speed_value
     font-family:         "DejaVuSans Mono";
     qproperty-alignment: 'AlignCenter';
     max-height:          15px;
+    min-width:           60px;
 }
 
 QPushButton#Speed_button

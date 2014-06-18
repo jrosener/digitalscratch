@@ -4130,11 +4130,6 @@ SpeedQPushButton::mousePressEvent(QMouseEvent *in_mouse_event)
     this->setProperty("pressed", true);
     this->redraw();
 
-    if (in_mouse_event->button() == Qt::RightButton)
-    {
-        emit this->right_clicked();
-    }
-
     QPushButton::mousePressEvent(in_mouse_event);
 
     qDebug() << "SpeedQPushButton::mousePressEvent done.";
@@ -4147,10 +4142,16 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
 {
     qDebug() << "SpeedQPushButton::mouseReleaseEvent...";
 
+    QPushButton::mouseReleaseEvent(in_mouse_event);
+
     this->setProperty("pressed", false);
     this->redraw();
 
-    QPushButton::mouseReleaseEvent(in_mouse_event);
+    // Forward the right click event.
+    if (in_mouse_event->button() == Qt::RightButton)
+    {
+        emit this->right_clicked();
+    }
 
     qDebug() << "SpeedQPushButton::mouseReleaseEvent done.";
 
