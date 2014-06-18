@@ -45,6 +45,7 @@
 #include <QFileIconProvider>
 #include <QSplitter>
 #include <QHBoxLayout>
+#include <QPushButton>
 
 #include "config_dialog.h"
 #include "audio_track.h"
@@ -95,6 +96,39 @@ class PlaybackQGroupBox : public QGroupBox
        void hover();
        void unhover();
        void file_dropped();
+};
+
+class SpeedQPushButton : public QPushButton
+{
+   Q_OBJECT
+
+   Q_PROPERTY(bool right_clicked
+              READ is_right_clicked
+              WRITE set_right_clicked
+              STORED true)
+   Q_PROPERTY(bool pressed
+              READ is_pressed
+              WRITE set_pressed
+              STORED true)
+   private:
+       bool l_right_clicked;
+       void set_right_clicked(bool is_right_clicked) { l_right_clicked = is_right_clicked; }
+       bool l_pressed;
+       void set_pressed(bool is_pressed) { l_pressed = is_pressed; }
+
+   protected:
+       void mousePressEvent(QMouseEvent *in_mouse_event);
+       void mouseReleaseEvent(QMouseEvent *in_mouse_event);
+
+   public:
+       SpeedQPushButton(const QString &title);
+       virtual ~SpeedQPushButton();
+       bool is_right_clicked() { return l_right_clicked; }
+       bool is_pressed() { return l_pressed; }
+       void redraw();
+
+   signals:
+       void right_clicked();
 };
 
 class QSamplerContainerWidget : public QWidget
@@ -232,14 +266,14 @@ class Gui : QObject
     QPushButton                        *load_track_on_deck2_button;
     QPushButton                        *timecode_detect_on_deck1_toggle;
     QPushButton                        *timecode_detect_on_deck2_toggle;
-    QPushButton                        *speed_up_on_deck1_button;
-    QPushButton                        *speed_up_on_deck2_button;
-    QPushButton                        *speed_down_on_deck1_button;
-    QPushButton                        *speed_down_on_deck2_button;
-    QPushButton                        *accel_up_on_deck1_button;
-    QPushButton                        *accel_up_on_deck2_button;
-    QPushButton                        *accel_down_on_deck1_button;
-    QPushButton                        *accel_down_on_deck2_button;
+    SpeedQPushButton                   *speed_up_on_deck1_button;
+    SpeedQPushButton                   *speed_up_on_deck2_button;
+    SpeedQPushButton                   *speed_down_on_deck1_button;
+    SpeedQPushButton                   *speed_down_on_deck2_button;
+    SpeedQPushButton                   *accel_up_on_deck1_button;
+    SpeedQPushButton                   *accel_up_on_deck2_button;
+    SpeedQPushButton                   *accel_down_on_deck1_button;
+    SpeedQPushButton                   *accel_down_on_deck2_button;
     QPushButton                        *restart_on_deck1_button;
     QPushButton                        *restart_on_deck2_button;
     QPushButton                       **cue_set_on_deck1_buttons;

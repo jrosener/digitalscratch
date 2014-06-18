@@ -740,7 +740,9 @@ QLabel#Speed_value
 {
     border: 1px solid gray;
     color:  gray;
-    font:   10pt;
+    font:   9pt;
+    padding-left: 3px;
+    padding-right: 3px;
     font-family: "Courier New";
 }
 
@@ -751,24 +753,18 @@ QPushButton#Speed_button
    color:            black;
    border-radius:    0px;
    padding:          1px;
-   width:            12px;
-   height:           12px;
 }
+
 QPushButton#Speed_button:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
 }
-QPushButton#Speed_button:pressed
+QPushButton#Speed_button[pressed="true"]
 {
    color:            white;
    background-color: lightGray;
-}
-QPushButton#Speed_button:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
 }
 
 QPushButton#Restart_button

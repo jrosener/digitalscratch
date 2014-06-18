@@ -1115,37 +1115,39 @@ Gui::create_main_window()
     this->deck1_waveform->setObjectName("Waveform");
 
     QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
-    QGridLayout *deck1_timecode_layout = new QGridLayout();
-    this->timecode_detect_on_deck1_toggle = new QPushButton(tr("&Timecode"));
-    this->timecode_detect_on_deck1_toggle->setToolTip(tr("Enable/disable timecode speed detection"));
-    this->timecode_detect_on_deck1_toggle->setObjectName("Timecode_toggle");
-    this->timecode_detect_on_deck1_toggle->setFocusPolicy(Qt::NoFocus);
-    deck1_timecode_layout->addWidget(this->timecode_detect_on_deck1_toggle, 0, 0);
-    this->deck1_speed = new QLabel(tr(" 000.0%"));
+
+    this->deck1_speed = new QLabel(tr("+000.0%"));
     this->deck1_speed->setObjectName("Speed_value");
     this->deck1_speed->setAlignment(Qt::AlignCenter);
-    deck1_timecode_layout->addWidget(deck1_speed, 1, 0);
-    this->speed_up_on_deck1_button = new QPushButton("+");
+    this->deck1_speed->setFixedHeight(15);
+    deck1_buttons_layout->addWidget(this->deck1_speed);
+
+    QGridLayout *deck1_speed_layout = new QGridLayout();
+    this->speed_up_on_deck1_button = new SpeedQPushButton("+");
     this->speed_up_on_deck1_button->setToolTip("<p>" + tr("+0.1% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_up_on_deck1_button->setObjectName("Speed_button");
     this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    deck1_timecode_layout->addWidget(speed_up_on_deck1_button, 0, 1);
-    this->speed_down_on_deck1_button = new QPushButton("-");
+    this->speed_up_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(speed_up_on_deck1_button, 0, 1);
+    this->speed_down_on_deck1_button = new SpeedQPushButton("-");
     this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.1% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_down_on_deck1_button->setObjectName("Speed_button");
     this->speed_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    deck1_timecode_layout->addWidget(speed_down_on_deck1_button, 1, 1);
-    this->accel_up_on_deck1_button = new QPushButton("↷");
+    this->speed_down_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(speed_down_on_deck1_button, 1, 1);
+    this->accel_up_on_deck1_button = new SpeedQPushButton("↷");
     this->accel_up_on_deck1_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->accel_up_on_deck1_button->setObjectName("Speed_button");
     this->accel_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    deck1_timecode_layout->addWidget(accel_up_on_deck1_button, 0, 2);
-    this->accel_down_on_deck1_button = new QPushButton("↶");
+    this->accel_up_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(accel_up_on_deck1_button, 0, 2);
+    this->accel_down_on_deck1_button = new SpeedQPushButton("↶");
     this->accel_down_on_deck1_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->accel_down_on_deck1_button->setObjectName("Speed_button");
     this->accel_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    deck1_timecode_layout->addWidget(accel_down_on_deck1_button, 1, 2);
-    deck1_buttons_layout->addLayout(deck1_timecode_layout);
+    this->accel_down_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(accel_down_on_deck1_button, 1, 2);
+    deck1_buttons_layout->addLayout(deck1_speed_layout);
     deck1_buttons_layout->addStretch(100);
 
     this->restart_on_deck1_button = new QPushButton();
@@ -4070,6 +4072,74 @@ PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
 
     // Send a signal saying that a file was dropped into the groupbox.
     emit file_dropped();
+}
+
+SpeedQPushButton::SpeedQPushButton(const QString &title) : QPushButton(title)
+{
+    qDebug() << "SpeedQPushButton::SpeedQPushButton: create object...";
+
+    // Init.
+    this->setProperty("right_clicked", false);
+    this->setProperty("pressed", false);
+
+    qDebug() << "SpeedQPushButton::SpeedQPushButton: create object done.";
+
+    return;
+}
+
+SpeedQPushButton::~SpeedQPushButton()
+{
+    qDebug() << "SpeedQPushButton::SpeedQPushButton: delete object...";
+
+    qDebug() << "SpeedQPushButton::SpeedQPushButton: delete object done.";
+
+    return;
+}
+
+void
+SpeedQPushButton::redraw()
+{
+    qDebug() << "SpeedQPushButton::redraw...";
+
+    this->style()->unpolish(this);
+    this->style()->polish(this);
+
+    qDebug() << "SpeedQPushButton::redraw done.";
+
+    return;
+}
+
+void
+SpeedQPushButton::mousePressEvent(QMouseEvent *in_mouse_event)
+{
+    qDebug() << "SpeedQPushButton::mousePressEvent...";
+
+    qDebug() << "SpeedQPushButton::pressEvent: x = " << in_mouse_event->x();
+    this->setProperty("right_clicked", (in_mouse_event->button() == Qt::RightButton));
+    this->setProperty("pressed", true);
+    this->redraw();
+
+    emit this->pressed();
+
+    qDebug() << "SpeedQPushButton::mousePressEvent done.";
+
+    return;
+}
+
+void
+SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
+{
+    qDebug() << "SpeedQPushButton::mouseReleaseEvent...";
+
+    this->setProperty("right_clicked", false);
+    this->setProperty("pressed", false);
+    this->redraw();
+
+    emit this->released();
+
+    qDebug() << "SpeedQPushButton::mouseReleaseEvent done.";
+
+    return;
 }
 
 QSamplerContainerWidget::QSamplerContainerWidget(unsigned short in_deck_index, unsigned short in_sampler_index) : QWidget()
