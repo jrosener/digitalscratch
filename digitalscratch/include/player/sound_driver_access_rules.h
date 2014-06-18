@@ -48,6 +48,7 @@ class Sound_driver_access_rules : public QObject
     unsigned short int       nb_channels;
     void                    *callback_param;
     bool                     running;
+    bool                     do_capture;
 
  public:
     Sound_driver_access_rules(unsigned short int in_nb_channels);
@@ -55,6 +56,7 @@ class Sound_driver_access_rules : public QObject
 
  public:
     bool is_running();
+    void set_capture(bool in_do_capture);
     virtual bool start(void *in_callback_param) = 0;
     virtual bool restart() = 0;
     virtual bool stop() = 0;

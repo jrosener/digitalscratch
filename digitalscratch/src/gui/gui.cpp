@@ -59,6 +59,7 @@
 #include <QMimeData>
 #include <QSizePolicy>
 #include <QtConcurrentRun>
+#include <math.h>
 
 #include "gui.h"
 #include "digital_scratch_api.h"
@@ -1120,28 +1121,28 @@ Gui::create_main_window()
     this->timecode_detect_on_deck1_toggle->setObjectName("Timecode_toggle");
     this->timecode_detect_on_deck1_toggle->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(this->timecode_detect_on_deck1_toggle, 0, 0);
-    QLabel *deck1_speed = new QLabel(tr("000.000%"));
-    deck1_speed->setObjectName("Speed_value");
-    deck1_speed->setAlignment(Qt::AlignCenter);
+    this->deck1_speed = new QLabel(tr(" 000.0%"));
+    this->deck1_speed->setObjectName("Speed_value");
+    this->deck1_speed->setAlignment(Qt::AlignCenter);
     deck1_timecode_layout->addWidget(deck1_speed, 1, 0);
     this->speed_up_on_deck1_button = new QPushButton("+");
-    this->speed_up_on_deck1_button->setToolTip("<p>" + tr("0.01% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->speed_up_on_deck1_button ->setObjectName("Speed_button");
+    this->speed_up_on_deck1_button->setToolTip("<p>" + tr("+0.1% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_up_on_deck1_button->setObjectName("Speed_button");
     this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(speed_up_on_deck1_button, 0, 1);
     this->speed_down_on_deck1_button = new QPushButton("-");
-    this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.01% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.1% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_down_on_deck1_button->setObjectName("Speed_button");
     this->speed_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(speed_down_on_deck1_button, 1, 1);
     this->accel_up_on_deck1_button = new QPushButton("↷");
     this->accel_up_on_deck1_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->accel_up_on_deck1_button ->setObjectName("Speed_button");
+    this->accel_up_on_deck1_button->setObjectName("Speed_button");
     this->accel_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(accel_up_on_deck1_button, 0, 2);
     this->accel_down_on_deck1_button = new QPushButton("↶");
     this->accel_down_on_deck1_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->accel_down_on_deck1_button ->setObjectName("Speed_button");
+    this->accel_down_on_deck1_button->setObjectName("Speed_button");
     this->accel_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     deck1_timecode_layout->addWidget(accel_down_on_deck1_button, 1, 2);
     deck1_buttons_layout->addLayout(deck1_timecode_layout);
@@ -2074,10 +2075,10 @@ Gui::create_main_window()
                      this,           SLOT(set_sampler_state(int, int, bool)));
 
     // Timecode informations (speed + volume), for each deck.
-    QObject::connect(this->params_1, SIGNAL(speed_changed(double)),
-                     deck1_speed,    SLOT(setNum(double)));
-    QObject::connect(this->params_2,          SIGNAL(speed_changed(double)),
-                     deck2_tcode_speed_value, SLOT(setNum(double)));
+    QObject::connect(this->params_1, SIGNAL(speed_changed(float)),
+                     this,           SLOT(update_deck1_speed(float)));
+    QObject::connect(this->params_2,          SIGNAL(speed_changed(float)),
+                     deck2_tcode_speed_value, SLOT(setNum(float)));
     QObject::connect(this->params_2,              SIGNAL(volume_changed(double)),
                      deck2_tcode_amplitude_value, SLOT(setNum(double)));
 
@@ -3431,6 +3432,15 @@ Gui::set_sampler_state(int  in_deck_index,
 
     return;
 }
+
+void
+Gui::update_deck1_speed(float in_speed)
+{
+    double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
+    QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
+    this->deck1_speed->setText(sp);
+}
+
 
 void
 Gui::deck1_jump_to_position(float in_position)

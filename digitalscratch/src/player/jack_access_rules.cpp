@@ -130,19 +130,22 @@ Jack_access_rules::start(void *in_callback_param)
     }
 
     // Create input ports.
-    this->input_port = new jack_port_t*[this->nb_channels];
-    for (int i = 0; i < this->nb_channels; i++)
+    if (this->do_capture == true)
     {
-        this->input_port[i] = jack_port_register(this->stream,
-                                                 input_port_names[i],
-                                                 JACK_DEFAULT_AUDIO_TYPE,
-                                                 JackPortIsInput,
-                                                 0);
-        if (this->input_port[i] == NULL)
+        this->input_port = new jack_port_t*[this->nb_channels];
+        for (int i = 0; i < this->nb_channels; i++)
         {
-            qWarning() << "Jack_access_rules::start: no more JACK input ports available";
-            emit error_msg(QString("No more Jack input ports available, please configure/start Jack server properly."));
-            return false;
+            this->input_port[i] = jack_port_register(this->stream,
+                                                     input_port_names[i],
+                                                     JACK_DEFAULT_AUDIO_TYPE,
+                                                     JackPortIsInput,
+                                                     0);
+            if (this->input_port[i] == NULL)
+            {
+                qWarning() << "Jack_access_rules::start: no more JACK input ports available";
+                emit error_msg(QString("No more Jack input ports available, please configure/start Jack server properly."));
+                return false;
+            }
         }
     }
 
@@ -198,23 +201,26 @@ Jack_access_rules::start(void *in_callback_param)
         }
         jack_free(ports);
 
-        ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
-        if (ports == NULL)
+        if (this->do_capture == true)
         {
-            qWarning() << "Jack_access_rules::start: no physical playback ports";
-            emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
-            return false;
-        }
-        for (int i = 0; i < this->nb_channels; i++)
-        {
-            if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+            ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
+            if (ports == NULL)
             {
-                qWarning() << "Jack_access_rules::start: cannot connect output ports";
-                emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
+                qWarning() << "Jack_access_rules::start: no physical playback ports";
+                emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
                 return false;
             }
+            for (int i = 0; i < this->nb_channels; i++)
+            {
+                if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+                {
+                    qWarning() << "Jack_access_rules::start: cannot connect output ports";
+                    emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
+                    return false;
+                }
+            }
+            jack_free(ports);
         }
-        jack_free(ports);
     }
 
     qDebug() << "Jack_access_rules::start: done.";
@@ -274,20 +280,31 @@ Jack_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_frames,
                                      float              **out_buffer_3,
                                      float              **out_buffer_4)
 {
+    bool result;
+
     qDebug() << "Jack_access_rules::get_input_buffers...";
 
-    // Get buffers from jack ports.
-    *out_buffer_1 = (float *)jack_port_get_buffer(this->input_port[0], in_nb_buffer_frames);
-    *out_buffer_2 = (float *)jack_port_get_buffer(this->input_port[1], in_nb_buffer_frames);
-    if (this->nb_channels >= 4)
+    if (this->do_capture == true)
     {
-        *out_buffer_3 = (float *)jack_port_get_buffer(this->input_port[2], in_nb_buffer_frames);
-        *out_buffer_4 = (float *)jack_port_get_buffer(this->input_port[3], in_nb_buffer_frames);
+        // Get buffers from jack ports.
+        *out_buffer_1 = (float *)jack_port_get_buffer(this->input_port[0], in_nb_buffer_frames);
+        *out_buffer_2 = (float *)jack_port_get_buffer(this->input_port[1], in_nb_buffer_frames);
+        if (this->nb_channels >= 4)
+        {
+            *out_buffer_3 = (float *)jack_port_get_buffer(this->input_port[2], in_nb_buffer_frames);
+            *out_buffer_4 = (float *)jack_port_get_buffer(this->input_port[3], in_nb_buffer_frames);
+        }
+
+        result = true;
+    }
+    else
+    {
+        result = false;
     }
 
     qDebug() << "Jack_access_rules::get_input_buffers: done.";
 
-    return true;
+    return result;
 }
 
 bool

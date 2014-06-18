@@ -47,6 +47,7 @@ Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_ch
 
     this->nb_channels = in_nb_channels;
     this->callback_param = NULL;
+    this->do_capture = true;
     this->running = false;
 
     qDebug() << "Sound_driver_access_rules::Sound_driver_access_rules: create object done.";
@@ -67,4 +68,10 @@ bool
 Sound_driver_access_rules::is_running()
 {
     return this->running;
+}
+
+void
+Sound_driver_access_rules::set_capture(bool in_do_capture)
+{
+    this->do_capture = in_do_capture;
 }

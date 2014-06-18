@@ -740,7 +740,8 @@ QLabel#Speed_value
 {
     border: 1px solid gray;
     color:  gray;
-    font:   7pt;
+    font:   10pt;
+    font-family: "Courier New";
 }
 
 QPushButton#Speed_button

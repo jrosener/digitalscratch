@@ -143,13 +143,23 @@ Audio_device_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_f
                                              float              **out_buffer_3,
                                              float              **out_buffer_4)
 {
+    bool result;
+
     qDebug() << "Audio_device_access_rules::get_input_buffers...";
 
     // TODO
+    if (this->do_capture == true)
+    {
+        result = true;
+    }
+    else
+    {
+        result = false;
+    }
 
     qDebug() << "Audio_device_access_rules::get_input_buffers: done.";
 
-    return true;
+    return result;
 }
 
 bool

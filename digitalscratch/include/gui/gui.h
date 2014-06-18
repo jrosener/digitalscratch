@@ -180,6 +180,7 @@ class Gui : QObject
     Audio_file_decoding_process        *dec_2;
     Audio_file_decoding_process       **dec_1_samplers;
     Audio_file_decoding_process       **dec_2_samplers;
+    QLabel                             *deck1_speed;
     QWidget                            *sampler1_widget;
     QWidget                            *sampler2_widget;
     QPushButton                       **sampler1_buttons_play;
@@ -422,6 +423,7 @@ class Gui : QObject
     void start_capture_and_playback();
     void stop_capture_and_playback();
     void run_concurrent_read_collection_from_db();
+    void update_deck1_speed(float in_speed);
 };
 
 #endif /* GUI_H_ */

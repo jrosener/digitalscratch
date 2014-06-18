@@ -74,7 +74,7 @@ class Playback_parameters : public QObject
     bool reset();
 
  signals:
-    void speed_changed(double in_speed);       // Speed.
+    void speed_changed(float in_speed);        // Speed.
     void volume_changed(double in_volume);     // Volume.
 };
 

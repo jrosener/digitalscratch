@@ -147,13 +147,17 @@ int main(int argc, char *argv[])
     }
 
     // Playback process.
-    Audio_track_playback_process *playback = new Audio_track_playback_process(ats, at_samplers, params, settings->get_nb_decks(), nb_samplers);
+    Audio_track_playback_process *at_playback = new Audio_track_playback_process(ats, at_samplers, params, settings->get_nb_decks(), nb_samplers);
 
     // Access sound card.
+    // TODO add settings to check if we want to use the timecode to get playback params or not (so no capture).
     Sound_driver_access_rules *sound_card = new Jack_access_rules(settings->get_nb_decks() * 2);
+    sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_analyzis, playback, sound_card);
+    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_analyzis, at_playback, sound_card);
+    // TODO if not using timecode to get playback params
+    //Only_playback_process *playback_external_params = new Playback_process_with_external_parameters(playback, sound_card);
 
     // Create GUI.
     Gui *gui = new Gui(at_1, at_2,
@@ -161,7 +165,7 @@ int main(int argc, char *argv[])
                        dec_1, dec_2,
                        dec_samplers,
                        params_1, params_2,
-                       playback,
+                       at_playback,
                        settings->get_nb_decks(),
                        sound_card,
                        capture_and_playback,
@@ -178,7 +182,7 @@ int main(int argc, char *argv[])
     delete sound_card;
     delete capture_and_playback;
     delete tcode_analyzis;
-    delete playback;
+    delete at_playback;
     delete params_1;
     delete params_2;
     delete dec_1;

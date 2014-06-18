@@ -32,7 +32,6 @@
 
 #include <QtDebug>
 #include <math.h>
-
 #include "playback_parameters.h"
 
 Playback_parameters::Playback_parameters()
@@ -74,7 +73,7 @@ Playback_parameters::set_speed(float in_speed)
     if (in_speed != this->speed)
     {
         this->speed = in_speed;
-        emit speed_changed((double)(floorf((this->speed * 100.0) * 10.0) / 10.0));
+        emit speed_changed(this->speed);
         //cout << in_speed << endl;
     }
 
