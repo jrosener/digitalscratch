@@ -738,12 +738,14 @@ QPushButton#Timecode_toggle:checked
 
 QLabel#Speed_value
 {
-    border: 1px solid gray;
-    color:  gray;
-    font:   9pt;
-    padding-left: 3px;
-    padding-right: 3px;
-    font-family: "Courier New";
+    border:             1px solid gray;
+    color:               gray;
+    font:                9pt;
+    padding-left:        3px;
+    padding-right:       3px;
+    font-family:         "DejaVuSans Mono";
+    qproperty-alignment: 'AlignCenter';
+    max-height:          15px;
 }
 
 QPushButton#Speed_button

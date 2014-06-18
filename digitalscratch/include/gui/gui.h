@@ -102,17 +102,11 @@ class SpeedQPushButton : public QPushButton
 {
    Q_OBJECT
 
-   Q_PROPERTY(bool right_clicked
-              READ is_right_clicked
-              WRITE set_right_clicked
-              STORED true)
    Q_PROPERTY(bool pressed
               READ is_pressed
               WRITE set_pressed
               STORED true)
    private:
-       bool l_right_clicked;
-       void set_right_clicked(bool is_right_clicked) { l_right_clicked = is_right_clicked; }
        bool l_pressed;
        void set_pressed(bool is_pressed) { l_pressed = is_pressed; }
 
@@ -123,7 +117,6 @@ class SpeedQPushButton : public QPushButton
    public:
        SpeedQPushButton(const QString &title);
        virtual ~SpeedQPushButton();
-       bool is_right_clicked() { return l_right_clicked; }
        bool is_pressed() { return l_pressed; }
        void redraw();
 
@@ -457,7 +450,9 @@ class Gui : QObject
     void start_capture_and_playback();
     void stop_capture_and_playback();
     void run_concurrent_read_collection_from_db();
-    void update_deck1_speed(float in_speed);
+    void update_deck1_speed_label(float in_speed);
+    void speed_up_01pcent();
+    void speed_up_1pcent();
 };
 
 #endif /* GUI_H_ */

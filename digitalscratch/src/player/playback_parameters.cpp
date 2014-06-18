@@ -92,6 +92,22 @@ Playback_parameters::get_speed()
 }
 
 bool
+Playback_parameters::inc_speed(float in_speed)
+{
+    qDebug() << "Playback_parameters::inc_speed...";
+
+    if (in_speed != 0.0)
+    {
+        this->speed += in_speed;
+        emit speed_changed(this->speed);
+    }
+
+    qDebug() << "Playback_parameters::inc_speed done.";
+
+    return true;
+}
+
+bool
 Playback_parameters::set_new_speed(bool in_new)
 {
     qDebug() << "Playback_parameters::set_new_speed...";

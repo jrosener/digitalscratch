@@ -59,6 +59,7 @@ class Playback_parameters : public QObject
  public:
     bool  set_speed(float in_speed);
     float get_speed();
+    bool  inc_speed(float in_speed);
     bool  set_new_speed(bool in_new);
     bool  is_new_speed();
 

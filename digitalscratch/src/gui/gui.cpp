@@ -1118,8 +1118,7 @@ Gui::create_main_window()
 
     this->deck1_speed = new QLabel(tr("+000.0%"));
     this->deck1_speed->setObjectName("Speed_value");
-    this->deck1_speed->setAlignment(Qt::AlignCenter);
-    this->deck1_speed->setFixedHeight(15);
+
     deck1_buttons_layout->addWidget(this->deck1_speed);
 
     QGridLayout *deck1_speed_layout = new QGridLayout();
@@ -1128,6 +1127,8 @@ Gui::create_main_window()
     this->speed_up_on_deck1_button->setObjectName("Speed_button");
     this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
     this->speed_up_on_deck1_button->setFixedSize(15, 15);
+    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(clicked()),       this, SLOT(speed_up_01pcent()));
+    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(right_clicked()), this, SLOT(speed_up_1pcent()));
     deck1_speed_layout->addWidget(speed_up_on_deck1_button, 0, 1);
     this->speed_down_on_deck1_button = new SpeedQPushButton("-");
     this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.1% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
@@ -2078,7 +2079,7 @@ Gui::create_main_window()
 
     // Timecode informations (speed + volume), for each deck.
     QObject::connect(this->params_1, SIGNAL(speed_changed(float)),
-                     this,           SLOT(update_deck1_speed(float)));
+                     this,           SLOT(update_deck1_speed_label(float)));
     QObject::connect(this->params_2,          SIGNAL(speed_changed(float)),
                      deck2_tcode_speed_value, SLOT(setNum(float)));
     QObject::connect(this->params_2,              SIGNAL(volume_changed(double)),
@@ -3436,13 +3437,24 @@ Gui::set_sampler_state(int  in_deck_index,
 }
 
 void
-Gui::update_deck1_speed(float in_speed)
+Gui::update_deck1_speed_label(float in_speed)
 {
     double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
     this->deck1_speed->setText(sp);
 }
 
+void
+Gui::speed_up_01pcent()
+{
+    this->params_1->inc_speed(0.001);
+}
+
+void
+Gui::speed_up_1pcent()
+{
+    this->params_1->inc_speed(0.01);
+}
 
 void
 Gui::deck1_jump_to_position(float in_position)
@@ -4114,12 +4126,16 @@ SpeedQPushButton::mousePressEvent(QMouseEvent *in_mouse_event)
 {
     qDebug() << "SpeedQPushButton::mousePressEvent...";
 
-    qDebug() << "SpeedQPushButton::pressEvent: x = " << in_mouse_event->x();
-    this->setProperty("right_clicked", (in_mouse_event->button() == Qt::RightButton));
+    // Force state "pressed" in style sheet even it is a right click event.
     this->setProperty("pressed", true);
     this->redraw();
 
-    emit this->pressed();
+    if (in_mouse_event->button() == Qt::RightButton)
+    {
+        emit this->right_clicked();
+    }
+
+    QPushButton::mousePressEvent(in_mouse_event);
 
     qDebug() << "SpeedQPushButton::mousePressEvent done.";
 
@@ -4131,11 +4147,10 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
 {
     qDebug() << "SpeedQPushButton::mouseReleaseEvent...";
 
-    this->setProperty("right_clicked", false);
     this->setProperty("pressed", false);
     this->redraw();
 
-    emit this->released();
+    QPushButton::mouseReleaseEvent(in_mouse_event);
 
     qDebug() << "SpeedQPushButton::mouseReleaseEvent done.";
 
