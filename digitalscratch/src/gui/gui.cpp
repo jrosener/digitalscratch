@@ -1097,7 +1097,7 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Create track name, key, position and timecode infos.
-    this->deck1_track_name = new QLabel();
+    this->deck1_track_name = new QLabel(tr("     T r a c k  # 1"));
     this->deck1_key        = new QLabel();
     this->deck1_waveform   = new Waveform(this->at_1, this->window);
     this->deck1_key->setObjectName("KeyValue");
@@ -1203,7 +1203,7 @@ Gui::create_main_window()
         deck1_buttons_layout->addLayout(deck1_cue_points_layout, 1);
     }
 
-    this->deck2_track_name = new QLabel();
+    this->deck2_track_name = new QLabel(tr("     T r a c k  # 2"));
     this->deck2_key        = new QLabel();
     this->deck2_waveform   = new Waveform(this->at_2, this->window);
     this->deck2_key->setObjectName("KeyValue");
