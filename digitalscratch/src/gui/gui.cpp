@@ -105,114 +105,51 @@ Gui::Gui(Audio_track                        *in_at_1,
 {
     qDebug() << "Gui::Gui: create object...";
 
-    // Set attributes.
-    this->window_style = GUI_STYLE_DEFAULT;
-    this->window       = new QWidget;
-    if (in_at_1          == NULL ||
-        in_at_2          == NULL ||
-        in_at_samplers   == NULL ||
-        in_dec_1         == NULL ||
-        in_dec_2         == NULL ||
-        in_dec_samplers  == NULL ||
-        in_params_1      == NULL ||
-        in_params_2      == NULL ||
-        in_playback      == NULL ||
-        in_sound_card    == NULL ||
-        in_capture_and_playback == NULL)
+    // Check input parameters.
+    if (in_at_1                 == NULL ||
+        in_at_2                 == NULL ||
+        in_at_samplers          == NULL ||
+        in_dec_1                == NULL ||
+        in_dec_2                == NULL ||
+        in_dec_samplers         == NULL ||
+        in_params_1             == NULL ||
+        in_params_2             == NULL ||
+        in_playback             == NULL ||
+        in_sound_card           == NULL ||
+        in_capture_and_playback == NULL ||
+        in_dscratch_ids         == NULL)
     {
         qFatal("Gui::Gui: Incorrect parameters.");
         return;
     }
-    else
-    {
-        this->settings                = &Singleton<Application_settings>::get_instance();
-        this->at_1                    = in_at_1;
-        this->at_2                    = in_at_2;
-        this->at_1_samplers           = in_at_samplers[0];
-        this->at_2_samplers           = in_at_samplers[1];
-        this->nb_samplers             = in_nb_samplers;
-        this->dec_1                   = in_dec_1;
-        this->dec_2                   = in_dec_2;
-        this->dec_1_samplers          = in_dec_samplers[0];
-        this->dec_2_samplers          = in_dec_samplers[1];
-        this->params_1                = in_params_1;
-        this->params_2                = in_params_2;
-        this->playback                = in_playback;
-        this->nb_decks                = in_nb_decks;
-        this->sound_card              = in_sound_card;
-        this->capture_and_play        = in_capture_and_playback;
-        this->dscratch_ids            = in_dscratch_ids;
-        this->is_windows_rendered     = false;
-        this->watcher_parse_directory = new QFutureWatcher<void>;
-        connect(this->watcher_parse_directory, SIGNAL(finished()),
-                this,                          SLOT(run_concurrent_read_collection_from_db()));
-    }
 
-    // Creates dynamic widgets.
-    this->treeview_icon_provider = new TreeViewIconProvider();
-    this->folder_system_model = new QFileSystemModel();
-    this->folder_system_model->setIconProvider(this->treeview_icon_provider);
-    this->folder_browser = new QTreeView();
-    this->folder_browser->setModel(this->folder_system_model);
+    // Get decks/tracks and sound capture/playback engine.
+    this->at_1                    = in_at_1;
+    this->at_2                    = in_at_2;
+    this->at_1_samplers           = in_at_samplers[0];
+    this->at_2_samplers           = in_at_samplers[1];
+    this->nb_samplers             = in_nb_samplers;
+    this->dec_1                   = in_dec_1;
+    this->dec_2                   = in_dec_2;
+    this->dec_1_samplers          = in_dec_samplers[0];
+    this->dec_2_samplers          = in_dec_samplers[1];
+    this->params_1                = in_params_1;
+    this->params_2                = in_params_2;
+    this->playback                = in_playback;
+    this->nb_decks                = in_nb_decks;
+    this->sound_card              = in_sound_card;
+    this->capture_and_play        = in_capture_and_playback;
+    this->dscratch_ids            = in_dscratch_ids;
 
-    this->file_system_model = new Audio_collection_model();
-    this->file_browser = new QTreeView();
-    this->file_browser->setModel(this->file_system_model);
-    this->file_browser->setSelectionMode(QAbstractItemView::SingleSelection);
-    this->file_browser->setDragEnabled(true);
-    this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
+    // Get app settings.
+    this->settings = &Singleton<Application_settings>::get_instance();
 
-    this->file_browser_gbox           = new QGroupBox();
-    this->file_search                 = new QLineEdit();
-    this->search_from_begin           = false;
-    this->file_search->setPlaceholderText(tr("Search..."));
-    this->file_browser_selected_index = 0;
-
-    this->decks_remaining_time    = new Remaining_time* [2];
-    this->decks_remaining_time[0] = new Remaining_time();
-    this->decks_remaining_time[1] = new Remaining_time();
-
-    // Init dialogs.
-    this->config_dialog = NULL;
-    this->refresh_audio_collection_dialog = NULL;
-    this->about_dialog = NULL;
-
-    // Init shortcuts.
-    this->shortcut_switch_playback         = new QShortcut(this->window);
-    this->shortcut_collapse_browser        = new QShortcut(this->file_browser);
-    this->shortcut_load_audio_file         = new QShortcut(this->file_browser);
-    this->shortcut_go_to_begin             = new QShortcut(this->window);
-    this->shortcut_get_next_audio_tracks   = new QShortcut(this->window);
-    this->shortcut_load_sample_file_1      = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_2      = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_3      = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_4      = new QShortcut(this->file_browser);
-    this->shortcut_show_next_keys          = new QShortcut(this->file_browser);
-    this->shortcut_fullscreen              = new QShortcut(this->window);
-    this->shortcut_help                    = new QShortcut(this->window);
-    this->shortcut_file_search             = new QShortcut(this->window);
-    this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
-    this->shortcut_file_search_press_esc   = new QShortcut(this->file_search);
-    this->shortcut_set_cue_points          = new QShortcut* [MAX_NB_CUE_POINTS];
-    this->shortcut_go_to_cue_points        = new QShortcut* [MAX_NB_CUE_POINTS];
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        this->shortcut_set_cue_points[i]   = new QShortcut(this->window);
-        this->shortcut_go_to_cue_points[i] = new QShortcut(this->window);
-    }
-
-    // Create main window.
+    // Create and show the main window.
     if (this->create_main_window() != true)
     {
         qFatal("Gui::Gui: Creation of main window failed.");
         return;
     }
-
-    // Apply previous window position.
-    this->window->move(this->settings->get_main_window_position());
-
-    // Apply previous window size.
-    this->window->resize(this->settings->get_main_window_size());
 
     // Apply application settings.
     if (this->apply_application_settings() != true)
@@ -221,16 +158,14 @@ Gui::Gui(Audio_track                        *in_at_1,
         return;
     }
 
-    // Run motion detection.
+    // Run motion detection if the setting auto_start_motion_detection=ON.
     if (this->settings->get_autostart_motion_detection() == true)
     {
         this->start_capture_and_playback();
     }
 
-    // Show audio file collection (takes time, that's why we are first showing the main window).
-    QCoreApplication::processEvents();
-    this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
-    this->is_windows_rendered = true;
+    // Display audio file collection (takes time, that's why we are first showing the main window).
+    this->display_audio_file_collection();
 
     qDebug() << "Gui::Gui: create object done.";
 
@@ -251,6 +186,7 @@ Gui::~Gui()
     this->settings->set_browser_splitter_size(this->browser_splitter->saveState());
 
     // Cleanup.
+    this->clean_keyboard_shortcuts();
     delete this->watcher_parse_directory;
     delete this->treeview_icon_provider;
     delete this->folder_system_model;
@@ -293,7 +229,7 @@ Gui::apply_application_settings()
     if (this->file_system_model->get_root_path() != this->settings->get_tracks_base_dir_path())
     {
         this->set_folder_browser_base_path(this->settings->get_tracks_base_dir_path());
-        if (this->is_windows_rendered == true) // Do not do it if main window is not already displayed.
+        if (this->is_window_rendered == true) // Do not do it if main window is not already displayed.
         {
             this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
         }
@@ -1024,6 +960,21 @@ Gui::create_main_window()
 {
     qDebug() << "Gui::create_main_window...";
 
+    // Init main window.
+    this->is_window_rendered = false;
+    this->window_style       = GUI_STYLE_DEFAULT;
+    this->window             = new QWidget();
+
+    // Creates dynamic widgets.
+    this->decks_remaining_time    = new Remaining_time* [2];
+    this->decks_remaining_time[0] = new Remaining_time();
+    this->decks_remaining_time[1] = new Remaining_time();
+
+    // Init pop-up dialogs.
+    this->config_dialog                   = NULL;
+    this->refresh_audio_collection_dialog = NULL;
+    this->about_dialog                    = NULL;
+
     ////////////////////////////////////////////////////////////////////////////
     // Configuration + logo.
     ////////////////////////////////////////////////////////////////////////////
@@ -1486,9 +1437,6 @@ Gui::create_main_window()
     // Deck and sampler selection.
     ////////////////////////////////////////////////////////////////////////////
 
-    // Connect keyboard shortcut to switch selection of decks/samplers.
-    QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
-
     // Create mouse action to select deck/sampler.
     QObject::connect(this->deck1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
     QObject::connect(this->deck2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
@@ -1533,6 +1481,30 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
     // Folder, playlist and file browser.
     ////////////////////////////////////////////////////////////////////////////
+
+    // Create a folder browser.
+    this->treeview_icon_provider = new TreeViewIconProvider();
+    this->folder_system_model = new QFileSystemModel();
+    this->folder_system_model->setIconProvider(this->treeview_icon_provider);
+    this->folder_browser = new QTreeView();
+    this->folder_browser->setModel(this->folder_system_model);
+
+    // Create a file browser.
+    this->file_system_model = new Audio_collection_model();
+    this->file_browser = new QTreeView();
+    this->file_browser->setModel(this->file_system_model);
+    this->file_browser->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->file_browser->setDragEnabled(true);
+    this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
+
+    this->file_browser_gbox           = new QGroupBox();
+    this->file_search                 = new QLineEdit();
+    this->search_from_begin           = false;
+    this->file_search->setPlaceholderText(tr("Search..."));
+    this->file_browser_selected_index = 0;
+
+    // Init shortcuts.
+    this->init_keyboard_shortcuts();
 
     // Customize folder and playlist browser.
     this->folder_browser->setColumnHidden(1, true);
@@ -1973,6 +1945,9 @@ Gui::create_main_window()
     // Make connections.
     ////////////////////////////////////////////////////////////////////////////
 
+    // Connect keyboard shortcut to switch selection of decks/samplers.
+    QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
+
     // Open configuration window.
     QObject::connect(config_button, SIGNAL(clicked()), this, SLOT(show_config_window()));
 
@@ -2159,6 +2134,10 @@ Gui::create_main_window()
     QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressValueChanged(int)),
                      this,                                             SLOT(update_refresh_progress_value(int)));
 
+    this->watcher_parse_directory = new QFutureWatcher<void>;
+    connect(this->watcher_parse_directory, SIGNAL(finished()),
+            this,                          SLOT(run_concurrent_read_collection_from_db()));
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Main window.
@@ -2193,9 +2172,55 @@ Gui::create_main_window()
     // Display main window.
     this->window->show();
 
+    // Set window position/size from last run.
+    this->window->move(this->settings->get_main_window_position());
+    this->window->resize(this->settings->get_main_window_size());
+
     qDebug() << "Gui::create_main_window done.";
 
     return true;
+}
+
+void
+Gui::init_keyboard_shortcuts()
+{
+    this->shortcut_switch_playback         = new QShortcut(this->window);
+    this->shortcut_collapse_browser        = new QShortcut(this->file_browser);
+    this->shortcut_load_audio_file         = new QShortcut(this->file_browser);
+    this->shortcut_go_to_begin             = new QShortcut(this->window);
+    this->shortcut_get_next_audio_tracks   = new QShortcut(this->window);
+    this->shortcut_load_sample_file_1      = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_2      = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_3      = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_4      = new QShortcut(this->file_browser);
+    this->shortcut_show_next_keys          = new QShortcut(this->file_browser);
+    this->shortcut_fullscreen              = new QShortcut(this->window);
+    this->shortcut_help                    = new QShortcut(this->window);
+    this->shortcut_file_search             = new QShortcut(this->window);
+    this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
+    this->shortcut_file_search_press_esc   = new QShortcut(this->file_search);
+    this->shortcut_set_cue_points          = new QShortcut* [MAX_NB_CUE_POINTS];
+    this->shortcut_go_to_cue_points        = new QShortcut* [MAX_NB_CUE_POINTS];
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->shortcut_set_cue_points[i]   = new QShortcut(this->window);
+        this->shortcut_go_to_cue_points[i] = new QShortcut(this->window);
+    }
+}
+
+void
+Gui::clean_keyboard_shortcuts()
+{
+    delete [] this->shortcut_set_cue_points;
+    delete [] this->shortcut_go_to_cue_points;
+}
+
+void
+Gui::display_audio_file_collection()
+{
+    QCoreApplication::processEvents();
+    this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
+    this->is_window_rendered = true;
 }
 
 void

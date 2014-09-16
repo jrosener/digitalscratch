@@ -302,7 +302,7 @@ class Gui : QObject
     bool                                search_from_begin;
     QString                             last_search_string;
     unsigned int                        file_browser_selected_index;
-    bool                                is_windows_rendered;
+    bool                                is_window_rendered;
     QFutureWatcher<void>               *watcher_parse_directory;
 
  public:
@@ -324,6 +324,9 @@ class Gui : QObject
 
  private:
     bool    create_main_window();
+    void    init_keyboard_shortcuts();
+    void    clean_keyboard_shortcuts();
+    void    display_audio_file_collection();
     bool    apply_main_window_style();
     bool    set_file_browser_playlist_tracks(Playlist *in_playlist);
     bool    set_file_browser_base_path(QString in_path);
