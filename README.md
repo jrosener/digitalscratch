@@ -84,7 +84,7 @@ Build
 
 #### Install build environment
 * Install the [Microsoft Windows SDK 7.1](http://www.microsoft.com/en-us/download/details.aspx?id=8279)
-* Install [Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator](http://qt-project.org/downloads)
+* Install [Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator](http://www.qt.io/download/)
     
 #### Compile _libdigitalscratch_ and _digitalscratch_ player
 * Start Qt Creator
