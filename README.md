@@ -85,6 +85,7 @@ Build
 #### Install build environment
 * Install the [Microsoft Windows SDK 7.1](http://www.microsoft.com/en-us/download/details.aspx?id=8279)
 * Install [Qt 5.x for Windows 32-bit (VS 2010, OpenGL), including QtCreator](http://www.qt.io/download/)
+* If building Digital-Scratch fails with an error LNK1123, overwrite _C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\cvtres.exe_ with the one from _C:\Windows\Microsoft.NET\Framework\v4.0.30319\cvtres.exe_
     
 #### Compile _libdigitalscratch_ and _digitalscratch_ player
 * Start Qt Creator
