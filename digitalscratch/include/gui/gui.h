@@ -174,6 +174,7 @@ class Gui : QObject
     Q_OBJECT
 
  private:
+    // Header area.
     QPushButton                        *config_button;
     QPushButton                        *fullscreen_button;
     QPushButton                        *stop_capture_button;
@@ -183,16 +184,33 @@ class Gui : QObject
     QPushButton                        *quit_button;
     QHBoxLayout                        *header_layout;
 
+    // Decks area.
+    QHBoxLayout                        *decks_layout;
+    Remaining_time                    **decks_remaining_time;
+
+    // Deck 1.
+    QLabel                             *deck1_track_name;
+    QLabel                             *deck1_key;
+    Waveform                           *deck1_waveform;
+    QHBoxLayout                        *deck1_remaining_time_layout;
+    QHBoxLayout                        *deck1_buttons_layout;
+    QLabel                             *deck1_speed;
+    SpeedQPushButton                   *speed_up_on_deck1_button;
+    SpeedQPushButton                   *speed_down_on_deck1_button;
+    SpeedQPushButton                   *accel_up_on_deck1_button;
+    SpeedQPushButton                   *accel_down_on_deck1_button;
+    QPushButton                        *restart_on_deck1_button;
+    QPushButton                       **cue_set_on_deck1_buttons;
+    QPushButton                       **cue_play_on_deck1_buttons;
+    QPushButton                       **cue_del_on_deck1_buttons;
+    QLabel                            **cue_point_deck1_labels;
+
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
     PlaybackQGroupBox                  *sampler1_gbox;
     PlaybackQGroupBox                  *sampler2_gbox;
-    QLabel                             *deck1_track_name;
     QLabel                             *deck2_track_name;
-    Remaining_time                    **decks_remaining_time;
-    QLabel                             *deck1_key;
     QLabel                             *deck2_key;
-    Waveform                           *deck1_waveform;
     Waveform                           *deck2_waveform;
     QGraphicsView                      *deck1_view;
     QGraphicsView                      *deck2_view;
@@ -216,7 +234,6 @@ class Gui : QObject
     Audio_file_decoding_process        *dec_2;
     Audio_file_decoding_process       **dec_1_samplers;
     Audio_file_decoding_process       **dec_2_samplers;
-    QLabel                             *deck1_speed;
     QWidget                            *sampler1_widget;
     QWidget                            *sampler2_widget;
     QPushButton                       **sampler1_buttons_play;
@@ -268,20 +285,11 @@ class Gui : QObject
     QPushButton                        *load_track_on_deck2_button;
     QPushButton                        *timecode_detect_on_deck1_toggle;
     QPushButton                        *timecode_detect_on_deck2_toggle;
-    SpeedQPushButton                   *speed_up_on_deck1_button;
     SpeedQPushButton                   *speed_up_on_deck2_button;
-    SpeedQPushButton                   *speed_down_on_deck1_button;
     SpeedQPushButton                   *speed_down_on_deck2_button;
-    SpeedQPushButton                   *accel_up_on_deck1_button;
     SpeedQPushButton                   *accel_up_on_deck2_button;
-    SpeedQPushButton                   *accel_down_on_deck1_button;
     SpeedQPushButton                   *accel_down_on_deck2_button;
-    QPushButton                        *restart_on_deck1_button;
     QPushButton                        *restart_on_deck2_button;
-    QPushButton                       **cue_set_on_deck1_buttons;
-    QPushButton                       **cue_play_on_deck1_buttons;
-    QPushButton                       **cue_del_on_deck1_buttons;
-    QLabel                            **cue_point_deck1_labels;
     QPushButton                       **cue_set_on_deck2_buttons;
     QPushButton                       **cue_play_on_deck2_buttons;
     QPushButton                       **cue_del_on_deck2_buttons;
@@ -336,6 +344,10 @@ class Gui : QObject
     void init_header_buttons();
     void clean_header_buttons();
     void connect_header_buttons();
+    void init_decks_area();
+    void init_deck1_area();
+    void clean_decks_area();
+    //void connect_decks_area();
 
     void display_audio_file_collection();
     bool apply_main_window_style();

@@ -193,6 +193,7 @@ Gui::~Gui()
     // Cleanup.
     this->clean_keyboard_shortcuts();
     this->clean_header_buttons();
+    this->clean_decks_area();
     delete this->watcher_parse_directory;
     delete this->treeview_icon_provider;
     delete this->folder_system_model;
@@ -200,7 +201,6 @@ Gui::~Gui()
     delete this->file_system_model;
     delete this->file_browser;
     delete this->window;
-    delete [] this->decks_remaining_time;
 
     qDebug() << "Gui::Gui: delete object done.";
 
@@ -989,250 +989,8 @@ Gui::create_main_window()
     // Header buttons.
     this->init_header_buttons();
 
-    ////////////////////////////////////////////////////////////////////////////
     // Decks.
-    ////////////////////////////////////////////////////////////////////////////
-
-    this->decks_remaining_time    = new Remaining_time* [2];
-    this->decks_remaining_time[0] = new Remaining_time();
-    this->decks_remaining_time[1] = new Remaining_time();
-
-    // Create track name, key, position and timecode infos.
-    this->deck1_track_name = new QLabel(tr("     T r a c k  # 1"));
-    this->deck1_key        = new QLabel();
-    this->deck1_waveform   = new Waveform(this->at_1, this->window);
-    this->deck1_key->setObjectName("KeyValue");
-
-    QHBoxLayout *deck1_remaining_time_layout = new QHBoxLayout;
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->minus, 1,   Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->min,   1,   Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep1,  1,   Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sec,   1,   Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep2,  1,   Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->msec,  1,   Qt::AlignBottom);
-    deck1_remaining_time_layout->addWidget(this->deck1_key,                      100, Qt::AlignRight);
-
-    this->deck1_track_name->setObjectName("TrackName");
-    this->deck1_waveform->setObjectName("Waveform");
-
-    QHBoxLayout *deck1_buttons_layout = new QHBoxLayout();
-
-    this->deck1_speed = new QLabel(tr("+000.0%"));
-    this->deck1_speed->setObjectName("Speed_value");
-
-    deck1_buttons_layout->addWidget(this->deck1_speed);
-
-    QGridLayout *deck1_speed_layout = new QGridLayout();
-    this->speed_up_on_deck1_button = new SpeedQPushButton("+");
-    this->speed_up_on_deck1_button->setToolTip("<p>" + tr("+0.1% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->speed_up_on_deck1_button->setObjectName("Speed_button");
-    this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->speed_up_on_deck1_button->setFixedSize(15, 15);
-    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(clicked()),       this, SLOT(speed_up_01pcent()));
-    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(right_clicked()), this, SLOT(speed_up_1pcent()));
-    deck1_speed_layout->addWidget(speed_up_on_deck1_button, 0, 1);
-    this->speed_down_on_deck1_button = new SpeedQPushButton("-");
-    this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.1% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->speed_down_on_deck1_button->setObjectName("Speed_button");
-    this->speed_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->speed_down_on_deck1_button->setFixedSize(15, 15);
-    deck1_speed_layout->addWidget(speed_down_on_deck1_button, 1, 1);
-    this->accel_up_on_deck1_button = new SpeedQPushButton("↷");
-    this->accel_up_on_deck1_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->accel_up_on_deck1_button->setObjectName("Speed_button");
-    this->accel_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->accel_up_on_deck1_button->setFixedSize(15, 15);
-    deck1_speed_layout->addWidget(accel_up_on_deck1_button, 0, 2);
-    this->accel_down_on_deck1_button = new SpeedQPushButton("↶");
-    this->accel_down_on_deck1_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->accel_down_on_deck1_button->setObjectName("Speed_button");
-    this->accel_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->accel_down_on_deck1_button->setFixedSize(15, 15);
-    deck1_speed_layout->addWidget(accel_down_on_deck1_button, 1, 2);
-    deck1_buttons_layout->addLayout(deck1_speed_layout);
-    deck1_buttons_layout->addStretch(100);
-
-    this->restart_on_deck1_button = new QPushButton();
-    this->restart_on_deck1_button->setObjectName("Restart_button");
-    this->restart_on_deck1_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->restart_on_deck1_button->setFixedSize(15, 15);
-    this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->restart_on_deck1_button->setCheckable(true);
-    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, 1, Qt::AlignLeft | Qt::AlignTop);
-
-    this->cue_set_on_deck1_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
-    this->cue_play_on_deck1_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
-    this->cue_del_on_deck1_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
-    this->cue_point_deck1_labels    = new QLabel* [MAX_NB_CUE_POINTS];
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        this->cue_set_on_deck1_buttons[i] = new QPushButton();
-        this->cue_set_on_deck1_buttons[i]->setObjectName("Cue_set_button" + QString::number(i));
-        this->cue_set_on_deck1_buttons[i]->setToolTip("<p>" + tr("Set cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i]) + "</em>");
-        this->cue_set_on_deck1_buttons[i]->setFixedSize(15, 15);
-        this->cue_set_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
-        this->cue_set_on_deck1_buttons[i]->setCheckable(true);
-
-        this->cue_play_on_deck1_buttons[i] = new QPushButton();
-        this->cue_play_on_deck1_buttons[i]->setObjectName("Cue_play_button" + QString::number(i));
-        this->cue_play_on_deck1_buttons[i]->setToolTip("<p>" + tr("Play from cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINTS_ON_DECK[i]) + "</em>");
-        this->cue_play_on_deck1_buttons[i]->setFixedSize(15, 15);
-        this->cue_play_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
-        this->cue_play_on_deck1_buttons[i]->setCheckable(true);
-
-        this->cue_del_on_deck1_buttons[i] = new QPushButton();
-        this->cue_del_on_deck1_buttons[i]->setObjectName("Cue_del_button" + QString::number(i));
-        this->cue_del_on_deck1_buttons[i]->setToolTip("<p>" + tr("Delete cue point") + " " + QString::number(i+1));
-        this->cue_del_on_deck1_buttons[i]->setFixedSize(15, 15);
-        this->cue_del_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
-        this->cue_del_on_deck1_buttons[i]->setCheckable(true);
-
-        this->cue_point_deck1_labels[i] = new QLabel("00:00:000");
-        this->cue_point_deck1_labels[i]->setObjectName("Cue_point_label");
-        this->cue_point_deck1_labels[i]->setAlignment(Qt::AlignCenter);
-
-        QHBoxLayout *deck1_cue_buttons_layout = new QHBoxLayout();
-        deck1_cue_buttons_layout->addWidget(this->cue_set_on_deck1_buttons[i],  1, Qt::AlignRight);
-        deck1_cue_buttons_layout->addWidget(this->cue_play_on_deck1_buttons[i], 1, Qt::AlignRight);
-        deck1_cue_buttons_layout->addWidget(this->cue_del_on_deck1_buttons[i],  1, Qt::AlignRight);
-
-        QVBoxLayout *deck1_cue_points_layout = new QVBoxLayout();
-        deck1_cue_points_layout->addLayout(deck1_cue_buttons_layout);
-        deck1_cue_points_layout->addWidget(this->cue_point_deck1_labels[i], Qt::AlignCenter);
-
-        deck1_buttons_layout->addStretch(5);
-        deck1_buttons_layout->addLayout(deck1_cue_points_layout, 1);
-    }
-
-    this->deck2_track_name = new QLabel(tr("     T r a c k  # 2"));
-    this->deck2_key        = new QLabel();
-    this->deck2_waveform   = new Waveform(this->at_2, this->window);
-    this->deck2_key->setObjectName("KeyValue");
-
-    QLabel *deck2_tcode_speed           = new QLabel(tr("Speed (%): "));
-    QLabel *deck2_tcode_speed_value     = new QLabel(tr("000.0"));
-    deck2_tcode_speed->setObjectName("Speed");
-    deck2_tcode_speed_value->setObjectName("Speed");
-    QLabel *deck2_tcode_amplitude       = new QLabel(tr("Volume (%): "));
-    QLabel *deck2_tcode_amplitude_value = new QLabel(tr("000.0"));
-    deck2_tcode_amplitude->setObjectName("Volume");
-    deck2_tcode_amplitude_value->setObjectName("Volume");
-    QHBoxLayout *decks2_tcode_infos = new QHBoxLayout;
-    decks2_tcode_infos->addWidget(deck2_tcode_speed,       1, Qt::AlignLeft);
-    decks2_tcode_infos->addWidget(deck2_tcode_speed_value, 2, Qt::AlignLeft);
-    decks2_tcode_infos->addWidget(deck2_tcode_amplitude,       1,  Qt::AlignLeft);
-    decks2_tcode_infos->addWidget(deck2_tcode_amplitude_value, 10, Qt::AlignLeft);
-    QHBoxLayout *deck2_remaining_time_layout = new QHBoxLayout;
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->minus, 1,   Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->min,   1,   Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep1,  1,   Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sec,   1,   Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep2,  1,   Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->msec,  1,   Qt::AlignBottom);
-    deck2_remaining_time_layout->addWidget(this->deck2_key,                      100, Qt::AlignRight);
-
-    this->deck2_track_name->setObjectName("TrackName");
-    this->deck2_waveform->setObjectName("Waveform");   
-
-    this->restart_on_deck2_button = new QPushButton();
-    this->restart_on_deck2_button->setObjectName("Restart_button");
-    this->restart_on_deck2_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
-    this->restart_on_deck2_button->setFixedSize(15, 15);
-    this->restart_on_deck2_button->setFocusPolicy(Qt::NoFocus);
-    this->restart_on_deck2_button->setCheckable(true);
-
-    QHBoxLayout *deck2_buttons_layout = new QHBoxLayout();
-    deck2_buttons_layout->addWidget(this->restart_on_deck2_button, 1, Qt::AlignLeft | Qt::AlignTop);
-    deck2_buttons_layout->addStretch(100);
-
-    this->cue_set_on_deck2_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
-    this->cue_play_on_deck2_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
-    this->cue_del_on_deck2_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
-    this->cue_point_deck2_labels    = new QLabel* [MAX_NB_CUE_POINTS];
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        this->cue_set_on_deck2_buttons[i] = new QPushButton();
-        this->cue_set_on_deck2_buttons[i]->setObjectName("Cue_set_button" + QString::number(i));
-        this->cue_set_on_deck2_buttons[i]->setToolTip("<p>" + tr("Set cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i]) + "</em>");
-        this->cue_set_on_deck2_buttons[i]->setFixedSize(15, 15);
-        this->cue_set_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
-        this->cue_set_on_deck2_buttons[i]->setCheckable(true);
-
-        this->cue_play_on_deck2_buttons[i] = new QPushButton();
-        this->cue_play_on_deck2_buttons[i]->setObjectName("Cue_play_button" + QString::number(i));
-        this->cue_play_on_deck2_buttons[i]->setToolTip("<p>" + tr("Play from cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINTS_ON_DECK[i]) + "</em>");
-        this->cue_play_on_deck2_buttons[i]->setFixedSize(15, 15);
-        this->cue_play_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
-        this->cue_play_on_deck2_buttons[i]->setCheckable(true);
-
-        this->cue_del_on_deck2_buttons[i] = new QPushButton();
-        this->cue_del_on_deck2_buttons[i]->setObjectName("Cue_del_button" + QString::number(i));
-        this->cue_del_on_deck2_buttons[i]->setToolTip("<p>" + tr("Delete cue point") + " " + QString::number(i+1));
-        this->cue_del_on_deck2_buttons[i]->setFixedSize(15, 15);
-        this->cue_del_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
-        this->cue_del_on_deck2_buttons[i]->setCheckable(true);
-
-
-        this->cue_point_deck2_labels[i] = new QLabel("00:00:000");
-        this->cue_point_deck2_labels[i]->setObjectName("Cue_point_label");
-        this->cue_point_deck2_labels[i]->setAlignment(Qt::AlignCenter);
-
-        QHBoxLayout *deck2_cue_buttons_layout = new QHBoxLayout();
-        deck2_cue_buttons_layout->addWidget(this->cue_set_on_deck2_buttons[i],  1, Qt::AlignRight);
-        deck2_cue_buttons_layout->addWidget(this->cue_play_on_deck2_buttons[i], 1, Qt::AlignRight);
-        deck2_cue_buttons_layout->addWidget(this->cue_del_on_deck2_buttons[i],  1, Qt::AlignRight);
-
-        QVBoxLayout *deck2_cue_points_layout = new QVBoxLayout();
-        deck2_cue_points_layout->addLayout(deck2_cue_buttons_layout);
-        deck2_cue_points_layout->addWidget(this->cue_point_deck2_labels[i], Qt::AlignCenter);
-
-        deck2_buttons_layout->addStretch(5);
-        deck2_buttons_layout->addLayout(deck2_cue_points_layout, 1);
-    }
-
-    // Create horizontal and vertical layout for each deck.
-    QHBoxLayout *deck1_general_layout = new QHBoxLayout();
-    QHBoxLayout *deck2_general_layout = new QHBoxLayout();
-    QVBoxLayout *deck1_layout = new QVBoxLayout();
-    QVBoxLayout *deck2_layout = new QVBoxLayout();
-
-    // Put track name, position and timecode info in decks layout.
-    deck1_layout->addWidget(deck1_track_name, 10);
-    deck1_layout->addLayout(deck1_remaining_time_layout, 10);
-    deck1_layout->addWidget(this->deck1_waveform, 70);
-    deck1_layout->addLayout(deck1_buttons_layout, 10);
-    deck1_general_layout->addLayout(deck1_layout, 90);
-
-    deck2_layout->addWidget(deck2_track_name, 10);
-    deck2_layout->addLayout(deck2_remaining_time_layout, 10);
-    deck2_layout->addWidget(this->deck2_waveform, 70);
-    deck2_layout->addLayout(deck2_buttons_layout, 10);
-    deck2_layout->addLayout(decks2_tcode_infos, 10);
-    deck2_general_layout->addLayout(deck2_layout, 90);
-
-    // Create deck group boxes.
-    this->deck1_gbox = new PlaybackQGroupBox(tr("Deck 1"));
-    this->deck1_gbox->setObjectName("DeckGBox");
-    this->deck2_gbox = new PlaybackQGroupBox(tr("Deck 2"));
-    this->deck2_gbox->setObjectName("DeckGBox");
-
-    // Enable drop in deck group boxes.
-    QObject::connect(this->deck1_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
-    QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
-
-    // Put horizontal layouts in group boxes.
-    this->deck1_gbox->setLayout(deck1_general_layout);
-    this->deck2_gbox->setLayout(deck2_general_layout);
-
-    // Create horizontal layout for 2 decks.
-    QHBoxLayout *decks_layout = new QHBoxLayout;
-
-    // Put decks in layout.
-    decks_layout->addWidget(this->deck1_gbox);
-    if (this->nb_decks > 1)
-    {
-        decks_layout->addWidget(this->deck2_gbox);
-    }
+    this->init_decks_area();
 
     ////////////////////////////////////////////////////////////////////////////
     // Samplers.
@@ -1984,10 +1742,11 @@ Gui::create_main_window()
     // Timecode informations (speed + volume), for each deck.
     QObject::connect(this->params_1, SIGNAL(speed_changed(float)),
                      this,           SLOT(update_deck1_speed_label(float)));
-    QObject::connect(this->params_2,          SIGNAL(speed_changed(float)),
-                     deck2_tcode_speed_value, SLOT(setNum(float)));
-    QObject::connect(this->params_2,              SIGNAL(volume_changed(double)),
-                     deck2_tcode_amplitude_value, SLOT(setNum(double)));
+// A REMETTRE !!!
+//    QObject::connect(this->params_2,          SIGNAL(speed_changed(float)),
+//                     deck2_tcode_speed_value, SLOT(setNum(float)));
+//    QObject::connect(this->params_2,              SIGNAL(volume_changed(double)),
+//                     deck2_tcode_amplitude_value, SLOT(setNum(double)));
 
     // Move in track when slider is moved on waveform.
     QObject::connect(this->deck1_waveform, SIGNAL(slider_position_changed(float)),
@@ -2092,7 +1851,7 @@ Gui::create_main_window()
 
     // Put every components in main layout.
     main_layout->addLayout(this->header_layout,     5);
-    main_layout->addLayout(decks_layout,   30);
+    main_layout->addLayout(this->decks_layout,   30);
     main_layout->addLayout(sampler_layout, 5);
     main_layout->addLayout(file_layout,    65);
     main_layout->addLayout(bottom_layout,  0);
@@ -2249,6 +2008,289 @@ Gui::connect_header_buttons()
 
     // Quit application.
     QObject::connect(this->quit_button, SIGNAL(clicked()), this, SLOT(can_close()));
+}
+
+void
+Gui::init_decks_area()
+{
+    // Init common elements for deck 1 and 2.
+    this->decks_remaining_time    = new Remaining_time* [2];
+
+    // Init deck 1.
+    this->init_deck1_area();
+
+    // Init deck 2.
+    this->deck2_track_name = new QLabel(tr("     T r a c k  # 2"));
+    this->deck2_key        = new QLabel();
+    this->deck2_waveform   = new Waveform(this->at_2, this->window);
+    this->deck2_key->setObjectName("KeyValue");
+
+    QLabel *deck2_tcode_speed           = new QLabel(tr("Speed (%): "));
+    QLabel *deck2_tcode_speed_value     = new QLabel(tr("000.0"));
+    deck2_tcode_speed->setObjectName("Speed");
+    deck2_tcode_speed_value->setObjectName("Speed");
+    QLabel *deck2_tcode_amplitude       = new QLabel(tr("Volume (%): "));
+    QLabel *deck2_tcode_amplitude_value = new QLabel(tr("000.0"));
+    deck2_tcode_amplitude->setObjectName("Volume");
+    deck2_tcode_amplitude_value->setObjectName("Volume");
+    QHBoxLayout *decks2_tcode_infos = new QHBoxLayout;
+    decks2_tcode_infos->addWidget(deck2_tcode_speed,       1, Qt::AlignLeft);
+    decks2_tcode_infos->addWidget(deck2_tcode_speed_value, 2, Qt::AlignLeft);
+    decks2_tcode_infos->addWidget(deck2_tcode_amplitude,       1,  Qt::AlignLeft);
+    decks2_tcode_infos->addWidget(deck2_tcode_amplitude_value, 10, Qt::AlignLeft);
+    QHBoxLayout *deck2_remaining_time_layout = new QHBoxLayout;
+    this->decks_remaining_time[1] = new Remaining_time();
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->minus, 1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->min,   1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep1,  1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sec,   1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->sep2,  1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->decks_remaining_time[1]->msec,  1,   Qt::AlignBottom);
+    deck2_remaining_time_layout->addWidget(this->deck2_key,                      100, Qt::AlignRight);
+
+    this->deck2_track_name->setObjectName("TrackName");
+    this->deck2_waveform->setObjectName("Waveform");
+
+    this->restart_on_deck2_button = new QPushButton();
+    this->restart_on_deck2_button->setObjectName("Restart_button");
+    this->restart_on_deck2_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->restart_on_deck2_button->setFixedSize(15, 15);
+    this->restart_on_deck2_button->setFocusPolicy(Qt::NoFocus);
+    this->restart_on_deck2_button->setCheckable(true);
+
+    QHBoxLayout *deck2_buttons_layout = new QHBoxLayout();
+    deck2_buttons_layout->addWidget(this->restart_on_deck2_button, 1, Qt::AlignLeft | Qt::AlignTop);
+    deck2_buttons_layout->addStretch(100);
+
+    this->cue_set_on_deck2_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
+    this->cue_play_on_deck2_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
+    this->cue_del_on_deck2_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
+    this->cue_point_deck2_labels    = new QLabel* [MAX_NB_CUE_POINTS];
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->cue_set_on_deck2_buttons[i] = new QPushButton();
+        this->cue_set_on_deck2_buttons[i]->setObjectName("Cue_set_button" + QString::number(i));
+        this->cue_set_on_deck2_buttons[i]->setToolTip("<p>" + tr("Set cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i]) + "</em>");
+        this->cue_set_on_deck2_buttons[i]->setFixedSize(15, 15);
+        this->cue_set_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
+        this->cue_set_on_deck2_buttons[i]->setCheckable(true);
+
+        this->cue_play_on_deck2_buttons[i] = new QPushButton();
+        this->cue_play_on_deck2_buttons[i]->setObjectName("Cue_play_button" + QString::number(i));
+        this->cue_play_on_deck2_buttons[i]->setToolTip("<p>" + tr("Play from cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINTS_ON_DECK[i]) + "</em>");
+        this->cue_play_on_deck2_buttons[i]->setFixedSize(15, 15);
+        this->cue_play_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
+        this->cue_play_on_deck2_buttons[i]->setCheckable(true);
+
+        this->cue_del_on_deck2_buttons[i] = new QPushButton();
+        this->cue_del_on_deck2_buttons[i]->setObjectName("Cue_del_button" + QString::number(i));
+        this->cue_del_on_deck2_buttons[i]->setToolTip("<p>" + tr("Delete cue point") + " " + QString::number(i+1));
+        this->cue_del_on_deck2_buttons[i]->setFixedSize(15, 15);
+        this->cue_del_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
+        this->cue_del_on_deck2_buttons[i]->setCheckable(true);
+
+
+        this->cue_point_deck2_labels[i] = new QLabel("00:00:000");
+        this->cue_point_deck2_labels[i]->setObjectName("Cue_point_label");
+        this->cue_point_deck2_labels[i]->setAlignment(Qt::AlignCenter);
+
+        QHBoxLayout *deck2_cue_buttons_layout = new QHBoxLayout();
+        deck2_cue_buttons_layout->addWidget(this->cue_set_on_deck2_buttons[i],  1, Qt::AlignRight);
+        deck2_cue_buttons_layout->addWidget(this->cue_play_on_deck2_buttons[i], 1, Qt::AlignRight);
+        deck2_cue_buttons_layout->addWidget(this->cue_del_on_deck2_buttons[i],  1, Qt::AlignRight);
+
+        QVBoxLayout *deck2_cue_points_layout = new QVBoxLayout();
+        deck2_cue_points_layout->addLayout(deck2_cue_buttons_layout);
+        deck2_cue_points_layout->addWidget(this->cue_point_deck2_labels[i], Qt::AlignCenter);
+
+        deck2_buttons_layout->addStretch(5);
+        deck2_buttons_layout->addLayout(deck2_cue_points_layout, 1);
+    }
+
+
+
+
+
+    // Create horizontal and vertical layout for each deck.
+    QHBoxLayout *deck1_general_layout = new QHBoxLayout();
+    QHBoxLayout *deck2_general_layout = new QHBoxLayout();
+    QVBoxLayout *deck1_layout = new QVBoxLayout();
+    QVBoxLayout *deck2_layout = new QVBoxLayout();
+
+    // Put track name, position and timecode info in decks layout.
+    deck1_layout->addWidget(deck1_track_name, 10);
+    deck1_layout->addLayout(this->deck1_remaining_time_layout, 10);
+    deck1_layout->addWidget(this->deck1_waveform, 70);
+    deck1_layout->addLayout(this->deck1_buttons_layout, 10);
+    deck1_general_layout->addLayout(deck1_layout, 90);
+
+    deck2_layout->addWidget(deck2_track_name, 10);
+    deck2_layout->addLayout(deck2_remaining_time_layout, 10);
+    deck2_layout->addWidget(this->deck2_waveform, 70);
+    deck2_layout->addLayout(deck2_buttons_layout, 10);
+    deck2_layout->addLayout(decks2_tcode_infos, 10);
+    deck2_general_layout->addLayout(deck2_layout, 90);
+
+    // Create deck group boxes.
+    this->deck1_gbox = new PlaybackQGroupBox(tr("Deck 1"));
+    this->deck1_gbox->setObjectName("DeckGBox");
+    this->deck2_gbox = new PlaybackQGroupBox(tr("Deck 2"));
+    this->deck2_gbox->setObjectName("DeckGBox");
+
+    // Enable drop in deck group boxes.
+    QObject::connect(this->deck1_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+    QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+
+    // Put horizontal layouts in group boxes.
+    this->deck1_gbox->setLayout(deck1_general_layout);
+    this->deck2_gbox->setLayout(deck2_general_layout);
+
+    // Create horizontal layout for 2 decks.
+    this->decks_layout = new QHBoxLayout;
+
+    // Put decks in layout.
+    this->decks_layout->addWidget(this->deck1_gbox);
+    if (this->nb_decks > 1)
+    {
+        this->decks_layout->addWidget(this->deck2_gbox);
+    }
+}
+
+void
+Gui::init_deck1_area()
+{
+    // Create track name, key and waveform.
+    this->deck1_track_name = new QLabel(tr("     T r a c k  # 1"));
+    this->deck1_key        = new QLabel();
+    this->deck1_waveform   = new Waveform(this->at_1, this->window);
+    this->deck1_track_name->setObjectName("TrackName");
+    this->deck1_key->setObjectName("KeyValue");
+    this->deck1_waveform->setObjectName("Waveform");
+
+    // Create remaining time.
+    this->deck1_remaining_time_layout = new QHBoxLayout;
+    this->decks_remaining_time[0] = new Remaining_time();
+    this->deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->minus, 1,   Qt::AlignBottom);
+    this->deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->min,   1,   Qt::AlignBottom);
+    this->deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep1,  1,   Qt::AlignBottom);
+    this->deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sec,   1,   Qt::AlignBottom);
+    this->deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->sep2,  1,   Qt::AlignBottom);
+    this->deck1_remaining_time_layout->addWidget(this->decks_remaining_time[0]->msec,  1,   Qt::AlignBottom);
+    this->deck1_remaining_time_layout->addWidget(this->deck1_key,                      100, Qt::AlignRight);
+
+    // Create buttons area.
+    this->deck1_buttons_layout = new QHBoxLayout();
+
+    // Speed management.
+    this->deck1_speed = new QLabel(tr("+000.0%"));
+    this->deck1_speed->setObjectName("Speed_value");
+    this->deck1_buttons_layout->addWidget(this->deck1_speed);
+    QGridLayout *deck1_speed_layout = new QGridLayout();
+    this->speed_up_on_deck1_button = new SpeedQPushButton("+");
+    this->speed_up_on_deck1_button->setToolTip("<p>" + tr("+0.1% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_up_on_deck1_button->setObjectName("Speed_button");
+    this->speed_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->speed_up_on_deck1_button->setFixedSize(15, 15);
+    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(clicked()),       this, SLOT(speed_up_01pcent()));
+    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(right_clicked()), this, SLOT(speed_up_1pcent()));
+    deck1_speed_layout->addWidget(speed_up_on_deck1_button, 0, 1);
+    this->speed_down_on_deck1_button = new SpeedQPushButton("-");
+    this->speed_down_on_deck1_button->setToolTip("<p>" + tr("-0.1% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_down_on_deck1_button->setObjectName("Speed_button");
+    this->speed_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->speed_down_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(speed_down_on_deck1_button, 1, 1);
+    this->accel_up_on_deck1_button = new SpeedQPushButton("↷");
+    this->accel_up_on_deck1_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->accel_up_on_deck1_button->setObjectName("Speed_button");
+    this->accel_up_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->accel_up_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(accel_up_on_deck1_button, 0, 2);
+    this->accel_down_on_deck1_button = new SpeedQPushButton("↶");
+    this->accel_down_on_deck1_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->accel_down_on_deck1_button->setObjectName("Speed_button");
+    this->accel_down_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->accel_down_on_deck1_button->setFixedSize(15, 15);
+    deck1_speed_layout->addWidget(accel_down_on_deck1_button, 1, 2);
+    this->deck1_buttons_layout->addLayout(deck1_speed_layout);
+    this->deck1_buttons_layout->addStretch(100);
+
+    // Restart button.
+    this->restart_on_deck1_button = new QPushButton();
+    this->restart_on_deck1_button->setObjectName("Restart_button");
+    this->restart_on_deck1_button->setToolTip("<p>" + tr("Jump to start") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->restart_on_deck1_button->setFixedSize(15, 15);
+    this->restart_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->restart_on_deck1_button->setCheckable(true);
+    deck1_buttons_layout->addWidget(this->restart_on_deck1_button, 1, Qt::AlignLeft | Qt::AlignTop);
+
+    // Cue point management.
+    this->cue_set_on_deck1_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
+    this->cue_play_on_deck1_buttons = new QPushButton* [MAX_NB_CUE_POINTS];
+    this->cue_del_on_deck1_buttons  = new QPushButton* [MAX_NB_CUE_POINTS];
+    this->cue_point_deck1_labels    = new QLabel* [MAX_NB_CUE_POINTS];
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->cue_set_on_deck1_buttons[i] = new QPushButton();
+        this->cue_set_on_deck1_buttons[i]->setObjectName("Cue_set_button" + QString::number(i));
+        this->cue_set_on_deck1_buttons[i]->setToolTip("<p>" + tr("Set cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i]) + "</em>");
+        this->cue_set_on_deck1_buttons[i]->setFixedSize(15, 15);
+        this->cue_set_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
+        this->cue_set_on_deck1_buttons[i]->setCheckable(true);
+
+        this->cue_play_on_deck1_buttons[i] = new QPushButton();
+        this->cue_play_on_deck1_buttons[i]->setObjectName("Cue_play_button" + QString::number(i));
+        this->cue_play_on_deck1_buttons[i]->setToolTip("<p>" + tr("Play from cue point") + " " + QString::number(i+1) + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINTS_ON_DECK[i]) + "</em>");
+        this->cue_play_on_deck1_buttons[i]->setFixedSize(15, 15);
+        this->cue_play_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
+        this->cue_play_on_deck1_buttons[i]->setCheckable(true);
+
+        this->cue_del_on_deck1_buttons[i] = new QPushButton();
+        this->cue_del_on_deck1_buttons[i]->setObjectName("Cue_del_button" + QString::number(i));
+        this->cue_del_on_deck1_buttons[i]->setToolTip("<p>" + tr("Delete cue point") + " " + QString::number(i+1));
+        this->cue_del_on_deck1_buttons[i]->setFixedSize(15, 15);
+        this->cue_del_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
+        this->cue_del_on_deck1_buttons[i]->setCheckable(true);
+
+        this->cue_point_deck1_labels[i] = new QLabel("00:00:000");
+        this->cue_point_deck1_labels[i]->setObjectName("Cue_point_label");
+        this->cue_point_deck1_labels[i]->setAlignment(Qt::AlignCenter);
+
+        QHBoxLayout *deck1_cue_buttons_layout = new QHBoxLayout();
+        deck1_cue_buttons_layout->addWidget(this->cue_set_on_deck1_buttons[i],  1, Qt::AlignRight);
+        deck1_cue_buttons_layout->addWidget(this->cue_play_on_deck1_buttons[i], 1, Qt::AlignRight);
+        deck1_cue_buttons_layout->addWidget(this->cue_del_on_deck1_buttons[i],  1, Qt::AlignRight);
+
+        QVBoxLayout *deck1_cue_points_layout = new QVBoxLayout();
+        deck1_cue_points_layout->addLayout(deck1_cue_buttons_layout);
+        deck1_cue_points_layout->addWidget(this->cue_point_deck1_labels[i], Qt::AlignCenter);
+
+        this->deck1_buttons_layout->addStretch(5);
+        this->deck1_buttons_layout->addLayout(deck1_cue_points_layout, 1);
+    }
+}
+
+void
+Gui::clean_decks_area()
+{
+    delete [] this->decks_remaining_time;
+    delete this->deck1_track_name;
+    delete this->deck1_key;
+    delete this->deck1_waveform;
+    delete this->deck1_remaining_time_layout;
+    delete this->deck1_buttons_layout;
+    delete this->deck1_speed;
+    delete this->speed_up_on_deck1_button;
+    delete this->speed_down_on_deck1_button;
+    delete this->accel_up_on_deck1_button;
+    delete this->accel_down_on_deck1_button;
+    delete this->restart_on_deck1_button;
+    delete [] this->cue_set_on_deck1_buttons;
+    delete [] this->cue_play_on_deck1_buttons;
+    delete [] this->cue_del_on_deck1_buttons;
+    delete [] this->cue_point_deck1_labels;
+
+    delete this->decks_layout;
 }
 
 void
