@@ -141,6 +141,11 @@ Gui::Gui(Audio_track                        *in_at_1,
     this->capture_and_play        = in_capture_and_playback;
     this->dscratch_ids            = in_dscratch_ids;
 
+    // Init pop-up dialogs.
+    this->config_dialog                   = NULL;
+    this->refresh_audio_collection_dialog = NULL;
+    this->about_dialog                    = NULL;
+
     // Get app settings.
     this->settings = &Singleton<Application_settings>::get_instance();
 
@@ -187,13 +192,13 @@ Gui::~Gui()
 
     // Cleanup.
     this->clean_keyboard_shortcuts();
+    this->clean_header_buttons();
     delete this->watcher_parse_directory;
     delete this->treeview_icon_provider;
     delete this->folder_system_model;
     delete this->folder_browser;
     delete this->file_system_model;
     delete this->file_browser;
-    delete this->config_dialog;
     delete this->window;
     delete [] this->decks_remaining_time;
 
@@ -396,6 +401,10 @@ Gui::show_config_window()
             return false;
         }
     }
+
+    // Cleanup.
+    delete this->config_dialog;
+    this->config_dialog = NULL;
 
     qDebug() << "Gui::show_config_window done.";
 
@@ -684,6 +693,10 @@ Gui::show_refresh_audio_collection_dialog()
         this->refresh_audio_collection_dialog->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         this->refresh_audio_collection_dialog->adjustSize();
         this->refresh_audio_collection_dialog->exec();
+
+        // Cleanup.
+        delete this->refresh_audio_collection_dialog;
+        this->refresh_audio_collection_dialog = NULL;
     }
     else
     {
@@ -760,6 +773,10 @@ Gui::show_about_window()
     qDebug() << "Gui::show_about_window...";
 
     // Create about window.
+    if (this->about_dialog != NULL)
+    {
+        delete this->about_dialog;
+    }
     this->about_dialog = new QDialog(this->window);
 
     // Set properties : title, icon.
@@ -904,6 +921,10 @@ Gui::show_about_window()
     // Show dialog.
     this->about_dialog->exec();
 
+    // Cleanup.
+    delete this->about_dialog;
+    this->about_dialog = NULL;
+
     qDebug() << "Gui::show_about_window done.";
 
     return true;
@@ -961,91 +982,20 @@ Gui::create_main_window()
     qDebug() << "Gui::create_main_window...";
 
     // Init main window.
+    this->window             = new QWidget();
     this->is_window_rendered = false;
     this->window_style       = GUI_STYLE_DEFAULT;
-    this->window             = new QWidget();
 
-    // Creates dynamic widgets.
-    this->decks_remaining_time    = new Remaining_time* [2];
-    this->decks_remaining_time[0] = new Remaining_time();
-    this->decks_remaining_time[1] = new Remaining_time();
-
-    // Init pop-up dialogs.
-    this->config_dialog                   = NULL;
-    this->refresh_audio_collection_dialog = NULL;
-    this->about_dialog                    = NULL;
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Configuration + logo.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Create configuration button.
-    QPushButton *config_button = new QPushButton("   " + tr("&Settings"));
-    config_button->setToolTip(tr("Change application settings..."));
-    config_button->setObjectName("Configuration_button");
-    config_button->setFocusPolicy(Qt::NoFocus);
-
-
-    // Create button to set full screen.
-    QPushButton *fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
-    fullscreen_button->setToolTip("<p>" + tr("Toggle fullscreen mode") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_FULLSCREEN) + "</em>");
-    fullscreen_button->setObjectName("Fullscreen_button");
-    fullscreen_button->setFocusPolicy(Qt::NoFocus);
-
-    // Create Stop capture button.
-    this->stop_capture_button = new QPushButton(tr("S&TOP"));
-    this->stop_capture_button->setToolTip("<p>" + tr("Stop turntable motion detection") + "</p>");
-    this->stop_capture_button->setObjectName("Capture_buttons");
-    this->stop_capture_button->setFocusPolicy(Qt::NoFocus);
-    this->stop_capture_button->setCheckable(true);
-    this->stop_capture_button->setChecked(true);
-
-    // Create DigitalScratch logo.
-    QPushButton *logo = new QPushButton();
-    logo->setToolTip(tr("About DigitalScratch..."));
-    logo->setObjectName("Logo");
-    logo->setIcon(QIcon(LOGO));
-    logo->setIconSize(QSize(112, 35));
-    logo->setMaximumWidth(112);
-    logo->setMaximumHeight(35);
-    logo->setFlat(true);
-    logo->setFocusPolicy(Qt::NoFocus);
-
-    // Create Start capture button.
-    this->start_capture_button = new QPushButton(tr("ST&ART"));
-    this->start_capture_button->setToolTip("<p>" + tr("Start turntable motion detection") + "</p>");
-    this->start_capture_button->setObjectName("Capture_buttons");
-    this->start_capture_button->setFocusPolicy(Qt::NoFocus);
-    this->start_capture_button->setCheckable(true);
-    this->start_capture_button->setChecked(false);
-
-    // Create help button.
-    QPushButton *help_button = new QPushButton("   " + tr("&Help"));
-    help_button->setToolTip("<p>" + tr("Show/hide keyboard shortcuts") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_HELP) + "</em>");
-    help_button->setObjectName("Help_button");
-    help_button->setFocusPolicy(Qt::NoFocus);
-
-    // Create quit button.
-    QPushButton *quit_button = new QPushButton("   " + tr("&Exit"));
-    quit_button->setToolTip(tr("Exit DigitalScratch"));
-    quit_button->setObjectName("Quit_button");
-    quit_button->setFocusPolicy(Qt::NoFocus);
-
-    // Create top horizontal layout.
-    QHBoxLayout *top_layout = new QHBoxLayout();
-
-    // Put configuration button and logo in configuration layout.
-    top_layout->addWidget(config_button,              1,   Qt::AlignLeft);
-    top_layout->addWidget(fullscreen_button,          1,   Qt::AlignLeft);
-    top_layout->addWidget(this->stop_capture_button,  100, Qt::AlignRight);
-    top_layout->addWidget(logo,                       1,   Qt::AlignCenter);
-    top_layout->addWidget(this->start_capture_button, 100, Qt::AlignLeft);
-    top_layout->addWidget(help_button,                1,   Qt::AlignRight);
-    top_layout->addWidget(quit_button,                1,   Qt::AlignRight);
+    // Header buttons.
+    this->init_header_buttons();
 
     ////////////////////////////////////////////////////////////////////////////
     // Decks.
     ////////////////////////////////////////////////////////////////////////////
+
+    this->decks_remaining_time    = new Remaining_time* [2];
+    this->decks_remaining_time[0] = new Remaining_time();
+    this->decks_remaining_time[1] = new Remaining_time();
 
     // Create track name, key, position and timecode infos.
     this->deck1_track_name = new QLabel(tr("     T r a c k  # 1"));
@@ -1948,28 +1898,7 @@ Gui::create_main_window()
     // Connect keyboard shortcut to switch selection of decks/samplers.
     QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
 
-    // Open configuration window.
-    QObject::connect(config_button, SIGNAL(clicked()), this, SLOT(show_config_window()));
-
-    // Set full screen.
-    QObject::connect(fullscreen_button,         SIGNAL(clicked()),   this, SLOT(set_fullscreen()));
-    QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
-
-    // Stop capture.
-    QObject::connect(this->stop_capture_button, SIGNAL(clicked()), this, SLOT(stop_capture_and_playback()));
-
-    // Open about window.
-    QObject::connect(logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
-
-    // Start capture.
-    QObject::connect(this->start_capture_button, SIGNAL(clicked()), this, SLOT(start_capture_and_playback()));
-
-    // Help button.
-    QObject::connect(help_button,         SIGNAL(clicked()),   this, SLOT(show_help()));
-    QObject::connect(this->shortcut_help, SIGNAL(activated()), this, SLOT(show_help()));
-
-    // Quit application.
-    QObject::connect(quit_button, SIGNAL(clicked()), this, SLOT(can_close()));
+    this->connect_header_buttons();
 
     // Open error window.
     QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
@@ -2162,7 +2091,7 @@ Gui::create_main_window()
     this->window->setLayout(main_layout);
 
     // Put every components in main layout.
-    main_layout->addLayout(top_layout,     5);
+    main_layout->addLayout(this->header_layout,     5);
     main_layout->addLayout(decks_layout,   30);
     main_layout->addLayout(sampler_layout, 5);
     main_layout->addLayout(file_layout,    65);
@@ -2213,6 +2142,113 @@ Gui::clean_keyboard_shortcuts()
 {
     delete [] this->shortcut_set_cue_points;
     delete [] this->shortcut_go_to_cue_points;
+}
+
+void
+Gui::init_header_buttons()
+{
+    // Create configuration button.
+    this->config_button = new QPushButton("   " + tr("&Settings"));
+    this->config_button->setToolTip(tr("Change application settings..."));
+    this->config_button->setObjectName("Configuration_button");
+    this->config_button->setFocusPolicy(Qt::NoFocus);
+
+    // Create button to set full screen.
+    this->fullscreen_button = new QPushButton("   " + tr("&Full-screen"));
+    this->fullscreen_button->setToolTip("<p>" + tr("Toggle fullscreen mode") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_FULLSCREEN) + "</em>");
+    this->fullscreen_button->setObjectName("Fullscreen_button");
+    this->fullscreen_button->setFocusPolicy(Qt::NoFocus);
+
+    // Create Stop capture button.
+    this->stop_capture_button = new QPushButton(tr("S&TOP"));
+    this->stop_capture_button->setToolTip("<p>" + tr("Stop turntable motion detection") + "</p>");
+    this->stop_capture_button->setObjectName("Capture_buttons");
+    this->stop_capture_button->setFocusPolicy(Qt::NoFocus);
+    this->stop_capture_button->setCheckable(true);
+    this->stop_capture_button->setChecked(true);
+
+    // Create DigitalScratch logo.
+    this->logo = new QPushButton();
+    this->logo->setToolTip(tr("About DigitalScratch..."));
+    this->logo->setObjectName("Logo");
+    this->logo->setIcon(QIcon(LOGO));
+    this->logo->setIconSize(QSize(112, 35));
+    this->logo->setMaximumWidth(112);
+    this->logo->setMaximumHeight(35);
+    this->logo->setFlat(true);
+    this->logo->setFocusPolicy(Qt::NoFocus);
+
+    // Create Start capture button.
+    this->start_capture_button = new QPushButton(tr("ST&ART"));
+    this->start_capture_button->setToolTip("<p>" + tr("Start turntable motion detection") + "</p>");
+    this->start_capture_button->setObjectName("Capture_buttons");
+    this->start_capture_button->setFocusPolicy(Qt::NoFocus);
+    this->start_capture_button->setCheckable(true);
+    this->start_capture_button->setChecked(false);
+
+    // Create help button.
+    this->help_button = new QPushButton("   " + tr("&Help"));
+    this->help_button->setToolTip("<p>" + tr("Show/hide keyboard shortcuts") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_HELP) + "</em>");
+    this->help_button->setObjectName("Help_button");
+    this->help_button->setFocusPolicy(Qt::NoFocus);
+
+    // Create quit button.
+    this->quit_button = new QPushButton("   " + tr("&Exit"));
+    this->quit_button->setToolTip(tr("Exit DigitalScratch"));
+    this->quit_button->setObjectName("Quit_button");
+    this->quit_button->setFocusPolicy(Qt::NoFocus);
+
+    // Create top horizontal layout.
+    this->header_layout = new QHBoxLayout();
+
+    // Put configuration button and logo in configuration layout.
+    this->header_layout->addWidget(this->config_button,        1,   Qt::AlignLeft);
+    this->header_layout->addWidget(this->fullscreen_button,    1,   Qt::AlignLeft);
+    this->header_layout->addWidget(this->stop_capture_button,  100, Qt::AlignRight);
+    this->header_layout->addWidget(this->logo,                 1,   Qt::AlignCenter);
+    this->header_layout->addWidget(this->start_capture_button, 100, Qt::AlignLeft);
+    this->header_layout->addWidget(this->help_button,          1,   Qt::AlignRight);
+    this->header_layout->addWidget(this->quit_button,          1,   Qt::AlignRight);
+}
+
+void
+Gui::clean_header_buttons()
+{
+    delete this->config_button;
+    delete this->fullscreen_button;
+    delete this->stop_capture_button;
+    delete this->logo;
+    delete this->start_capture_button;
+    delete this->help_button;
+    delete this->quit_button;
+    delete this->header_layout;
+}
+
+void
+Gui::connect_header_buttons()
+{
+    // Open configuration window.
+    QObject::connect(this->config_button, SIGNAL(clicked()), this, SLOT(show_config_window()));
+
+    // Set full screen.
+    QObject::connect(this->fullscreen_button,   SIGNAL(clicked()),   this, SLOT(set_fullscreen()));
+    QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
+
+    // Stop capture.
+    QObject::connect(this->stop_capture_button, SIGNAL(clicked()), this, SLOT(stop_capture_and_playback()));
+
+    // Open about window.
+    QObject::connect(this->logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
+
+    // Start capture.
+    QObject::connect(this->start_capture_button, SIGNAL(clicked()), this, SLOT(start_capture_and_playback()));
+
+    // Help button.
+    QObject::connect(this->help_button,   SIGNAL(clicked()),   this, SLOT(show_help()));
+    QObject::connect(this->shortcut_help, SIGNAL(activated()), this, SLOT(show_help()));
+
+    // Quit application.
+    QObject::connect(this->quit_button, SIGNAL(clicked()), this, SLOT(can_close()));
 }
 
 void

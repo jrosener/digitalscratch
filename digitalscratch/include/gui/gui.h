@@ -174,6 +174,15 @@ class Gui : QObject
     Q_OBJECT
 
  private:
+    QPushButton                        *config_button;
+    QPushButton                        *fullscreen_button;
+    QPushButton                        *stop_capture_button;
+    QPushButton                        *logo;
+    QPushButton                        *start_capture_button;
+    QPushButton                        *help_button;
+    QPushButton                        *quit_button;
+    QHBoxLayout                        *header_layout;
+
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
     PlaybackQGroupBox                  *sampler1_gbox;
@@ -297,8 +306,6 @@ class Gui : QObject
     QLabel                             *help_sample_value;
     QLabel                             *help_browse_value1;
     QLabel                             *help_browse_value2;
-    QPushButton                        *start_capture_button;
-    QPushButton                        *stop_capture_button;
     bool                                search_from_begin;
     QString                             last_search_string;
     unsigned int                        file_browser_selected_index;
@@ -323,32 +330,36 @@ class Gui : QObject
     virtual ~Gui();
 
  private:
-    bool    create_main_window();
-    void    init_keyboard_shortcuts();
-    void    clean_keyboard_shortcuts();
-    void    display_audio_file_collection();
-    bool    apply_main_window_style();
-    bool    set_file_browser_playlist_tracks(Playlist *in_playlist);
-    bool    set_file_browser_base_path(QString in_path);
-    bool    set_folder_browser_base_path(QString in_path);
-    bool    set_file_browser_title(QString in_title);
-    bool    restart_sound_card(short unsigned int in_nb_channels);
-    bool    apply_application_settings();
-    void    on_sampler_button_play_click(unsigned short int in_deck_index,
-                                         unsigned short int in_sampler_index);
-    void    on_sampler_button_stop_click(unsigned short int in_deck_index,
-                                         unsigned short int in_sampler_index);
-    void    on_sampler_button_del_click(unsigned short int in_deck_index,
-                                        unsigned short int in_sampler_index);
-    void    highlight_deck_sampler_area(unsigned short int in_deck_index);
-    void    highlight_border_deck_sampler_area(unsigned short int in_deck_index,
-                                               bool               switch_on);
-    void    resize_file_browser_columns();
-    void    analyze_audio_collection(bool is_all_files);
-    void    set_help_shortcut_value();
-    bool    can_stop_capture_and_playback();
-    void    hide_samplers();
-    void    show_samplers();
+    bool create_main_window();
+    void init_keyboard_shortcuts();
+    void clean_keyboard_shortcuts();
+    void init_header_buttons();
+    void clean_header_buttons();
+    void connect_header_buttons();
+
+    void display_audio_file_collection();
+    bool apply_main_window_style();
+    bool set_file_browser_playlist_tracks(Playlist *in_playlist);
+    bool set_file_browser_base_path(QString in_path);
+    bool set_folder_browser_base_path(QString in_path);
+    bool set_file_browser_title(QString in_title);
+    bool restart_sound_card(short unsigned int in_nb_channels);
+    bool apply_application_settings();
+    void on_sampler_button_play_click(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
+    void on_sampler_button_stop_click(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
+    void on_sampler_button_del_click(unsigned short int in_deck_index,
+                                     unsigned short int in_sampler_index);
+    void highlight_deck_sampler_area(unsigned short int in_deck_index);
+    void highlight_border_deck_sampler_area(unsigned short int in_deck_index,
+                                            bool               switch_on);
+    void resize_file_browser_columns();
+    void analyze_audio_collection(bool is_all_files);
+    void set_help_shortcut_value();
+    bool can_stop_capture_and_playback();
+    void hide_samplers();
+    void show_samplers();
 
  private slots:
     bool show_config_window();
