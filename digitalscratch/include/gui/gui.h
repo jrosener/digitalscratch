@@ -124,28 +124,6 @@ class SpeedQPushButton : public QPushButton
        void right_clicked();
 };
 
-class QSamplerContainerWidget : public QWidget
-{
-   Q_OBJECT
-
-   private:
-       unsigned short int deck_index;
-       unsigned short int sampler_index;
-
-   protected:
-       void dragEnterEvent(QDragEnterEvent *in_event);
-       void dropEvent(QDropEvent *in_event);
-
-   public:
-       QSamplerContainerWidget(unsigned short int in_deck_index,
-                               unsigned short int in_sampler_index);
-       virtual ~QSamplerContainerWidget();
-
-   signals:
-       void file_dropped_in_sampler(unsigned short int in_deck_index,
-                                    unsigned short int in_sampler_index);
-};
-
 class TreeViewIconProvider : public QFileIconProvider
 {
     public:
@@ -169,7 +147,7 @@ class TreeViewIconProvider : public QFileIconProvider
         void    set_default_icons();
 };
 
-class Gui : QObject
+class Gui : public QObject
 {
     Q_OBJECT
 
@@ -223,7 +201,7 @@ class Gui : QObject
     QLabel                            **cue_point_deck2_labels;
 
     // Samplers area.
-    QHBoxLayout                        *sampler_layout;
+    QHBoxLayout                        *samplers_layout;
 
     // Sampler 1.
     QPushButton                       **sampler1_buttons_play;
@@ -232,8 +210,14 @@ class Gui : QObject
     QLabel                            **sampler1_trackname;
     QLabel                            **sampler1_remainingtime;
     QWidget                            *sampler1_widget;
-    QSamplerContainerWidget            *sampler1_container;
 
+    // Sampler 2.
+    QPushButton                       **sampler2_buttons_play;
+    QPushButton                       **sampler2_buttons_stop;
+    QPushButton                       **sampler2_buttons_del;
+    QLabel                            **sampler2_trackname;
+    QLabel                            **sampler2_remainingtime;
+    QWidget                            *sampler2_widget;
 
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
@@ -261,13 +245,6 @@ class Gui : QObject
     Audio_file_decoding_process        *dec_2;
     Audio_file_decoding_process       **dec_1_samplers;
     Audio_file_decoding_process       **dec_2_samplers;
-    QWidget                            *sampler2_widget;
-    QPushButton                       **sampler2_buttons_play;
-    QPushButton                       **sampler2_buttons_stop;
-    QPushButton                       **sampler2_buttons_del;
-    QLabel                            **sampler2_trackname;
-    QLabel                            **sampler2_remainingtime;
-    QSamplerContainerWidget            *sampler2_container;
     Playback_parameters                *params_1;
     Playback_parameters                *params_2;
     Audio_track_playback_process       *playback;
@@ -498,6 +475,29 @@ class Gui : QObject
     void update_deck1_speed_label(float in_speed);
     void speed_up_01pcent();
     void speed_up_1pcent();
+};
+
+class QSamplerContainerWidget : public QWidget
+{
+   Q_OBJECT
+
+   private:
+       unsigned short int deck_index;
+       unsigned short int sampler_index;
+
+   protected:
+       void dragEnterEvent(QDragEnterEvent *in_event);
+       void dropEvent(QDropEvent *in_event);
+
+   public:
+       QSamplerContainerWidget(unsigned short int  in_deck_index,
+                               unsigned short int  in_sampler_index,
+                               Gui                *in_dropto_object);
+       virtual ~QSamplerContainerWidget();
+
+   signals:
+       void file_dropped_in_sampler(unsigned short int in_deck_index,
+                                    unsigned short int in_sampler_index);
 };
 
 #endif /* GUI_H_ */

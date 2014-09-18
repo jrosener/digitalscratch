@@ -1515,142 +1515,6 @@ Gui::create_main_window()
     QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
                      this,             SLOT(show_error_window(QString)));
 
-    // Remaining time for each deck.
-    QObject::connect(this->playback, SIGNAL(remaining_time_changed(unsigned int, int)),
-                     this,           SLOT(set_remaining_time(unsigned int, int)));
-
-    // Name of the track for each deck.
-    QObject::connect(this->at_1,             SIGNAL(name_changed(QString)),
-                     this->deck1_track_name, SLOT(setText(const QString&)));
-    QObject::connect(this->at_2,             SIGNAL(name_changed(QString)),
-                     this->deck2_track_name, SLOT(setText(const QString&)));
-
-    // Music key of the track for each deck.
-    QObject::connect(this->at_1,      SIGNAL(key_changed(QString)),
-                     this->deck1_key, SLOT(setText(const QString&)));
-    QObject::connect(this->at_2,      SIGNAL(key_changed(QString)),
-                     this->deck2_key, SLOT(setText(const QString&)));
-
-    // Show/hide samplers.
-    QObject::connect(this->show_hide_samplers_button, SIGNAL(clicked()), this, SLOT(show_hide_samplers()));
-
-    // Name of samplers.
-    QObject::connect(this->at_1_samplers[0], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_1_text(const QString&)));
-    QObject::connect(this->at_1_samplers[1], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_2_text(const QString&)));
-    QObject::connect(this->at_1_samplers[2], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_3_text(const QString&)));
-    QObject::connect(this->at_1_samplers[3], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_4_text(const QString&)));
-
-    QObject::connect(this->at_2_samplers[0], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_1_text(const QString&)));
-    QObject::connect(this->at_2_samplers[1], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_2_text(const QString&)));
-    QObject::connect(this->at_2_samplers[2], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_3_text(const QString&)));
-    QObject::connect(this->at_2_samplers[3], SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_4_text(const QString&)));
-
-    // Start stop samplers.
-    QObject::connect(sampler1_buttons_play[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_play_click()));
-    QObject::connect(sampler1_buttons_play[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_play_click()));
-    QObject::connect(sampler1_buttons_play[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_play_click()));
-    QObject::connect(sampler1_buttons_play[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_play_click()));
-
-    QObject::connect(sampler2_buttons_play[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_play_click()));
-    QObject::connect(sampler2_buttons_play[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_play_click()));
-    QObject::connect(sampler2_buttons_play[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_play_click()));
-    QObject::connect(sampler2_buttons_play[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_play_click()));
-
-    QObject::connect(sampler1_buttons_stop[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_stop_click()));
-    QObject::connect(sampler1_buttons_stop[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_stop_click()));
-    QObject::connect(sampler1_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_stop_click()));
-    QObject::connect(sampler1_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_stop_click()));
-
-    QObject::connect(sampler2_buttons_stop[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_stop_click()));
-    QObject::connect(sampler2_buttons_stop[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_stop_click()));
-    QObject::connect(sampler2_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_stop_click()));
-    QObject::connect(sampler2_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_stop_click()));
-
-    QObject::connect(sampler1_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_del_click()));
-    QObject::connect(sampler1_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_del_click()));
-    QObject::connect(sampler1_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_del_click()));
-    QObject::connect(sampler1_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_del_click()));
-
-    QObject::connect(sampler2_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_del_click()));
-    QObject::connect(sampler2_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_del_click()));
-    QObject::connect(sampler2_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_del_click()));
-    QObject::connect(sampler2_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_del_click()));
-
-    // Remaining time for samplers.
-    QObject::connect(this->playback, SIGNAL(sampler_remaining_time_changed(unsigned int, int, int)),
-                     this,           SLOT(set_sampler_remaining_time(unsigned int, int, int)));
-
-    // State for samplers.
-    QObject::connect(this->playback, SIGNAL(sampler_state_changed(int, int, bool)),
-                     this,           SLOT(set_sampler_state(int, int, bool)));
-
-    // Timecode informations (speed + volume), for each deck.
-    QObject::connect(this->params_1, SIGNAL(speed_changed(float)),
-                     this,           SLOT(update_deck1_speed_label(float)));
-
-    // Move in track when slider is moved on waveform.
-    QObject::connect(this->deck1_waveform, SIGNAL(slider_position_changed(float)),
-                     this,                 SLOT(deck1_jump_to_position(float)));
-    QObject::connect(this->deck2_waveform, SIGNAL(slider_position_changed(float)),
-                     this,                 SLOT(deck2_jump_to_position(float)));
-
-    // Keyboard shortcut to go back to the beginning of the track.
-    QObject::connect(this->shortcut_go_to_begin,    SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
-    QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck1_go_to_begin()));
-    QObject::connect(this->restart_on_deck2_button, SIGNAL(clicked()),   this, SLOT(deck2_go_to_begin()));
-
-    // Keyboard shortcut and buttons to set and play cue points.
-    QSignalMapper *set_cue_point_shortcut_signal_mapper      = new QSignalMapper(this);
-    QSignalMapper *play_cue_point_shortcut_signal_mapper     = new QSignalMapper(this);
-    QSignalMapper *set_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
-    QSignalMapper *play_cue_point_button_signal_mapper_deck1 = new QSignalMapper(this);
-    QSignalMapper *del_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        set_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_set_cue_points[i], i);
-        play_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_go_to_cue_points[i], i);
-        set_cue_point_button_signal_mapper_deck1->setMapping(this->cue_set_on_deck1_buttons[i], i);
-        play_cue_point_button_signal_mapper_deck1->setMapping(this->cue_play_on_deck1_buttons[i], i);
-        del_cue_point_button_signal_mapper_deck1->setMapping(this->cue_del_on_deck1_buttons[i], i);
-        QObject::connect(this->shortcut_set_cue_points[i],   SIGNAL(activated()), set_cue_point_shortcut_signal_mapper,      SLOT(map()));
-        QObject::connect(this->shortcut_go_to_cue_points[i], SIGNAL(activated()), play_cue_point_shortcut_signal_mapper,     SLOT(map()));
-        QObject::connect(this->cue_set_on_deck1_buttons[i],  SIGNAL(clicked()),   set_cue_point_button_signal_mapper_deck1,  SLOT(map()));
-        QObject::connect(this->cue_play_on_deck1_buttons[i], SIGNAL(clicked()),   play_cue_point_button_signal_mapper_deck1, SLOT(map()));
-        QObject::connect(this->cue_del_on_deck1_buttons[i],  SIGNAL(clicked()),   del_cue_point_button_signal_mapper_deck1,  SLOT(map()));
-    }
-    QObject::connect(set_cue_point_shortcut_signal_mapper,      SIGNAL(mapped(int)), this, SLOT(deck_set_cue_point(int)));
-    QObject::connect(play_cue_point_shortcut_signal_mapper,     SIGNAL(mapped(int)), this, SLOT(deck_go_to_cue_point(int)));
-    QObject::connect(set_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_set_cue_point(int)));
-    QObject::connect(play_cue_point_button_signal_mapper_deck1, SIGNAL(mapped(int)), this, SLOT(deck1_go_to_cue_point(int)));
-    QObject::connect(del_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_del_cue_point(int)));
-
-    if (this->nb_decks > 1)
-    {
-        QSignalMapper *set_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
-        QSignalMapper *play_cue_point_button_signal_mapper_deck2 = new QSignalMapper(this);
-        QSignalMapper *del_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
-        for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-        {
-            set_cue_point_button_signal_mapper_deck2->setMapping(this->cue_set_on_deck2_buttons[i], i);
-            play_cue_point_button_signal_mapper_deck2->setMapping(this->cue_play_on_deck2_buttons[i], i);
-            del_cue_point_button_signal_mapper_deck2->setMapping(this->cue_del_on_deck2_buttons[i], i);
-            QObject::connect(this->cue_set_on_deck2_buttons[i],  SIGNAL(clicked()), set_cue_point_button_signal_mapper_deck2,  SLOT(map()));
-            QObject::connect(this->cue_play_on_deck2_buttons[i], SIGNAL(clicked()), play_cue_point_button_signal_mapper_deck2, SLOT(map()));
-            QObject::connect(this->cue_del_on_deck2_buttons[i],  SIGNAL(clicked()), del_cue_point_button_signal_mapper_deck2, SLOT(map()));
-        }
-        QObject::connect(set_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_set_cue_point(int)));
-        QObject::connect(play_cue_point_button_signal_mapper_deck2, SIGNAL(mapped(int)), this, SLOT(deck2_go_to_cue_point(int)));
-        QObject::connect(del_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_del_cue_point(int)));
-    }
-
     // Search bar for file browser.
     QObject::connect(this->shortcut_file_search, SIGNAL(activated()), this, SLOT(set_focus_search_bar()));
     QObject::connect(this->file_search, SIGNAL(textChanged(QString)), this, SLOT(file_search_string(QString)));
@@ -1664,7 +1528,7 @@ Gui::create_main_window()
     QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
                      this,                                              SLOT(update_refresh_progress_value(int)));
 
-    // Progress for reading file dsta from storage.
+    // Progress for reading file data from storage.
     QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressRangeChanged(int,int)),
                      this->progress_bar,                               SLOT(setRange(int,int)));
     QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressValueChanged(int)),
@@ -1700,7 +1564,7 @@ Gui::create_main_window()
     // Put every components in main layout.
     main_layout->addLayout(this->header_layout,  5);
     main_layout->addLayout(this->decks_layout,   30);
-    main_layout->addLayout(this->sampler_layout, 5);
+    main_layout->addLayout(this->samplers_layout, 5);
     main_layout->addLayout(file_layout,    65);
     main_layout->addLayout(bottom_layout,  0);
     main_layout->addLayout(status_layout,  0);
@@ -2175,6 +2039,10 @@ Gui::clean_decks_area()
 void
 Gui::connect_decks_area()
 {
+    // Display speed for each deck.
+    QObject::connect(this->params_1, SIGNAL(speed_changed(float)),
+                     this,           SLOT(update_deck1_speed_label(float)));
+
     // Speed up/down (0.1% and 1%).
     QObject::connect(this->speed_up_on_deck1_button, SIGNAL(clicked()),       this, SLOT(speed_up_01pcent()));
     QObject::connect(this->speed_up_on_deck1_button, SIGNAL(right_clicked()), this, SLOT(speed_up_1pcent()));
@@ -2182,84 +2050,85 @@ Gui::connect_decks_area()
     // Enable track file dropping in deck group boxes.
     QObject::connect(this->deck1_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
     QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+
+    // Remaining time for each deck.
+    QObject::connect(this->playback, SIGNAL(remaining_time_changed(unsigned int, int)),
+                     this,           SLOT(set_remaining_time(unsigned int, int)));
+
+    // Name of the track for each deck.
+    QObject::connect(this->at_1,             SIGNAL(name_changed(QString)),
+                     this->deck1_track_name, SLOT(setText(const QString&)));
+    QObject::connect(this->at_2,             SIGNAL(name_changed(QString)),
+                     this->deck2_track_name, SLOT(setText(const QString&)));
+
+    // Music key of the track for each deck.
+    QObject::connect(this->at_1,      SIGNAL(key_changed(QString)),
+                     this->deck1_key, SLOT(setText(const QString&)));
+    QObject::connect(this->at_2,      SIGNAL(key_changed(QString)),
+                     this->deck2_key, SLOT(setText(const QString&)));
+
+    // Move in track when slider is moved on waveform.
+    QObject::connect(this->deck1_waveform, SIGNAL(slider_position_changed(float)),
+                     this,                 SLOT(deck1_jump_to_position(float)));
+    QObject::connect(this->deck2_waveform, SIGNAL(slider_position_changed(float)),
+                     this,                 SLOT(deck2_jump_to_position(float)));
+
+    // Keyboard shortcut to go back to the beginning of the track.
+    QObject::connect(this->shortcut_go_to_begin,    SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
+    QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck1_go_to_begin()));
+    QObject::connect(this->restart_on_deck2_button, SIGNAL(clicked()),   this, SLOT(deck2_go_to_begin()));
+
+    // Keyboard shortcut and buttons to set and play cue points.
+    QSignalMapper *set_cue_point_shortcut_signal_mapper      = new QSignalMapper(this);
+    QSignalMapper *play_cue_point_shortcut_signal_mapper     = new QSignalMapper(this);
+    QSignalMapper *set_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
+    QSignalMapper *play_cue_point_button_signal_mapper_deck1 = new QSignalMapper(this);
+    QSignalMapper *del_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        set_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_set_cue_points[i], i);
+        play_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_go_to_cue_points[i], i);
+        set_cue_point_button_signal_mapper_deck1->setMapping(this->cue_set_on_deck1_buttons[i], i);
+        play_cue_point_button_signal_mapper_deck1->setMapping(this->cue_play_on_deck1_buttons[i], i);
+        del_cue_point_button_signal_mapper_deck1->setMapping(this->cue_del_on_deck1_buttons[i], i);
+        QObject::connect(this->shortcut_set_cue_points[i],   SIGNAL(activated()), set_cue_point_shortcut_signal_mapper,      SLOT(map()));
+        QObject::connect(this->shortcut_go_to_cue_points[i], SIGNAL(activated()), play_cue_point_shortcut_signal_mapper,     SLOT(map()));
+        QObject::connect(this->cue_set_on_deck1_buttons[i],  SIGNAL(clicked()),   set_cue_point_button_signal_mapper_deck1,  SLOT(map()));
+        QObject::connect(this->cue_play_on_deck1_buttons[i], SIGNAL(clicked()),   play_cue_point_button_signal_mapper_deck1, SLOT(map()));
+        QObject::connect(this->cue_del_on_deck1_buttons[i],  SIGNAL(clicked()),   del_cue_point_button_signal_mapper_deck1,  SLOT(map()));
+    }
+    QObject::connect(set_cue_point_shortcut_signal_mapper,      SIGNAL(mapped(int)), this, SLOT(deck_set_cue_point(int)));
+    QObject::connect(play_cue_point_shortcut_signal_mapper,     SIGNAL(mapped(int)), this, SLOT(deck_go_to_cue_point(int)));
+    QObject::connect(set_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_set_cue_point(int)));
+    QObject::connect(play_cue_point_button_signal_mapper_deck1, SIGNAL(mapped(int)), this, SLOT(deck1_go_to_cue_point(int)));
+    QObject::connect(del_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_del_cue_point(int)));
+
+    if (this->nb_decks > 1)
+    {
+        QSignalMapper *set_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
+        QSignalMapper *play_cue_point_button_signal_mapper_deck2 = new QSignalMapper(this);
+        QSignalMapper *del_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
+        for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+        {
+            set_cue_point_button_signal_mapper_deck2->setMapping(this->cue_set_on_deck2_buttons[i], i);
+            play_cue_point_button_signal_mapper_deck2->setMapping(this->cue_play_on_deck2_buttons[i], i);
+            del_cue_point_button_signal_mapper_deck2->setMapping(this->cue_del_on_deck2_buttons[i], i);
+            QObject::connect(this->cue_set_on_deck2_buttons[i],  SIGNAL(clicked()), set_cue_point_button_signal_mapper_deck2,  SLOT(map()));
+            QObject::connect(this->cue_play_on_deck2_buttons[i], SIGNAL(clicked()), play_cue_point_button_signal_mapper_deck2, SLOT(map()));
+            QObject::connect(this->cue_del_on_deck2_buttons[i],  SIGNAL(clicked()), del_cue_point_button_signal_mapper_deck2, SLOT(map()));
+        }
+        QObject::connect(set_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_set_cue_point(int)));
+        QObject::connect(play_cue_point_button_signal_mapper_deck2, SIGNAL(mapped(int)), this, SLOT(deck2_go_to_cue_point(int)));
+        QObject::connect(del_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_del_cue_point(int)));
+    }
 }
 
 void
 Gui::init_samplers_area()
 {
+    // Init sampler 1 and 2.
     this->init_sampler1_area();
     this->init_sampler2_area();
-
-    // Sampler 2 group box
-    this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
-    this->sampler2_buttons_stop  = new QPushButton*[this->nb_samplers];
-    this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
-    this->sampler2_trackname     = new QLabel*[this->nb_samplers];
-    this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
-    QVBoxLayout *sampler2_layout = new QVBoxLayout();
-    this->sampler2_widget        = new QWidget();
-    this->sampler2_widget->setLayout(sampler2_layout);
-    sampler2_layout->setMargin(0);
-    QVBoxLayout *sampler2_layout_container = new QVBoxLayout();
-    sampler2_layout_container->addWidget(this->sampler2_widget);
-    sampler2_layout->setMargin(0);
-    this->sampler2_widget->setObjectName("Sampler_main_widget");
-    QString sampler2_name("A");
-    for (int i = 0; i < this->nb_samplers; i++)
-    {
-        this->sampler2_buttons_play[i] = new QPushButton();
-        this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler2_buttons_play[i]->setFixedSize(16, 16);
-        this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler2_buttons_play[i]->setCheckable(true);
-        this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
-        this->sampler2_buttons_stop[i] = new QPushButton();
-        this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler2_buttons_stop[i]->setFixedSize(16, 16);
-        this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler2_buttons_stop[i]->setCheckable(true);
-        this->sampler2_buttons_stop[i]->setChecked(true);
-        this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
-        this->sampler2_buttons_del[i] = new QPushButton();
-        this->sampler2_buttons_del[i]->setObjectName("Sampler_del_buttons");
-        this->sampler2_buttons_del[i]->setFixedSize(16, 16);
-        this->sampler2_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler2_buttons_del[i]->setCheckable(true);
-        this->sampler2_buttons_del[i]->setChecked(true);
-        this->sampler2_buttons_del[i]->setToolTip(tr("Delete sample"));
-        this->sampler2_trackname[i]     = new QLabel(tr("--"));
-        this->sampler2_remainingtime[i] = new QLabel("- 00");
-
-        this->sampler2_container = new QSamplerContainerWidget(1, i);
-        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
-        QLabel *sampler2_name_label = new QLabel(sampler2_name);
-        sampler2_name_label->setFixedWidth(15);
-        sampler_horz_layout->addWidget(sampler2_name_label,             1);
-        sampler_horz_layout->addWidget(this->sampler2_buttons_play[i],  1);
-        sampler_horz_layout->addWidget(this->sampler2_buttons_stop[i],  1);
-        sampler_horz_layout->addWidget(this->sampler2_buttons_del[i],   1);
-        sampler_horz_layout->addWidget(this->sampler2_remainingtime[i], 4);
-        sampler_horz_layout->addWidget(this->sampler2_trackname[i],     95);
-        sampler_horz_layout->setMargin(0);
-        this->sampler2_container->setLayout(sampler_horz_layout);
-        sampler2_layout->addWidget(this->sampler2_container);
-
-        // Connect drop actions (load file in sampler).
-        QObject::connect(this->sampler2_container, SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
-                         this,      SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
-
-        sampler2_name[0].unicode()++; // Next sampler letter.
-    }
-    this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
-    this->sampler2_gbox->setObjectName("SamplerGBox");
-    this->sampler2_gbox->setLayout(sampler2_layout_container);
-
-
-
-
-
-
-
 
     // Sampler's show/hide button.
     this->show_hide_samplers_button = new QPushButton();
@@ -2270,12 +2139,12 @@ Gui::init_samplers_area()
     this->show_hide_samplers_button->setChecked(true);
 
     // Samplers layout.
-    this->sampler_layout = new QHBoxLayout();
-    this->sampler_layout->addWidget(this->sampler1_gbox, 100);
-    this->sampler_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignVCenter);
+    this->samplers_layout = new QHBoxLayout();
+    this->samplers_layout->addWidget(this->sampler1_gbox, 100);
+    this->samplers_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignVCenter);
     if (this->nb_decks > 1)
     {
-        this->sampler_layout->addWidget(this->sampler2_gbox, 100);
+        this->samplers_layout->addWidget(this->sampler2_gbox, 100);
     }
 }
 
@@ -2322,7 +2191,7 @@ Gui::init_sampler1_area()
         this->sampler1_trackname[i]     = new QLabel(tr("--"));
         this->sampler1_remainingtime[i] = new QLabel("- 00");
 
-        this->sampler1_container = new QSamplerContainerWidget(0, i);
+        QSamplerContainerWidget *container = new QSamplerContainerWidget(0, i, this);
         QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
         QLabel *sampler1_name_label = new QLabel(sampler1_name);
         sampler1_name_label->setFixedWidth(15);
@@ -2333,8 +2202,8 @@ Gui::init_sampler1_area()
         sampler_horz_layout->addWidget(this->sampler1_remainingtime[i], 4);
         sampler_horz_layout->addWidget(this->sampler1_trackname[i],     95);
         sampler_horz_layout->setMargin(0);
-        this->sampler1_container->setLayout(sampler_horz_layout);
-        sampler1_layout->addWidget(this->sampler1_container);
+        container->setLayout(sampler_horz_layout);
+        sampler1_layout->addWidget(container);
 
         sampler1_name[0].unicode()++; // Next sampler letter.
     }
@@ -2346,7 +2215,65 @@ Gui::init_sampler1_area()
 void
 Gui::init_sampler2_area()
 {
+    // Sampler 2 group box
+    this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
+    this->sampler2_buttons_stop  = new QPushButton*[this->nb_samplers];
+    this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
+    this->sampler2_trackname     = new QLabel*[this->nb_samplers];
+    this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
+    QVBoxLayout *sampler2_layout = new QVBoxLayout();
+    this->sampler2_widget        = new QWidget();
+    this->sampler2_widget->setLayout(sampler2_layout);
+    sampler2_layout->setMargin(0);
+    QVBoxLayout *sampler2_layout_container = new QVBoxLayout();
+    sampler2_layout_container->addWidget(this->sampler2_widget);
+    sampler2_layout->setMargin(0);
+    this->sampler2_widget->setObjectName("Sampler_main_widget");
+    QString sampler2_name("A");
+    for (int i = 0; i < this->nb_samplers; i++)
+    {
+        this->sampler2_buttons_play[i] = new QPushButton();
+        this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
+        this->sampler2_buttons_play[i]->setFixedSize(16, 16);
+        this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler2_buttons_play[i]->setCheckable(true);
+        this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
+        this->sampler2_buttons_stop[i] = new QPushButton();
+        this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
+        this->sampler2_buttons_stop[i]->setFixedSize(16, 16);
+        this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler2_buttons_stop[i]->setCheckable(true);
+        this->sampler2_buttons_stop[i]->setChecked(true);
+        this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
+        this->sampler2_buttons_del[i] = new QPushButton();
+        this->sampler2_buttons_del[i]->setObjectName("Sampler_del_buttons");
+        this->sampler2_buttons_del[i]->setFixedSize(16, 16);
+        this->sampler2_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
+        this->sampler2_buttons_del[i]->setCheckable(true);
+        this->sampler2_buttons_del[i]->setChecked(true);
+        this->sampler2_buttons_del[i]->setToolTip(tr("Delete sample"));
+        this->sampler2_trackname[i]     = new QLabel(tr("--"));
+        this->sampler2_remainingtime[i] = new QLabel("- 00");
 
+        QSamplerContainerWidget *container = new QSamplerContainerWidget(1, i, this);
+        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
+        QLabel *sampler2_name_label = new QLabel(sampler2_name);
+        sampler2_name_label->setFixedWidth(15);
+        sampler_horz_layout->addWidget(sampler2_name_label,             1);
+        sampler_horz_layout->addWidget(this->sampler2_buttons_play[i],  1);
+        sampler_horz_layout->addWidget(this->sampler2_buttons_stop[i],  1);
+        sampler_horz_layout->addWidget(this->sampler2_buttons_del[i],   1);
+        sampler_horz_layout->addWidget(this->sampler2_remainingtime[i], 4);
+        sampler_horz_layout->addWidget(this->sampler2_trackname[i],     95);
+        sampler_horz_layout->setMargin(0);
+        container->setLayout(sampler_horz_layout);
+        sampler2_layout->addWidget(container);
+
+        sampler2_name[0].unicode()++; // Next sampler letter.
+    }
+    this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
+    this->sampler2_gbox->setObjectName("SamplerGBox");
+    this->sampler2_gbox->setLayout(sampler2_layout_container);
 }
 
 void
@@ -2359,15 +2286,79 @@ Gui::clean_samplers_area()
     delete [] this->sampler1_trackname;
     delete [] this->sampler1_remainingtime;
     delete this->sampler1_widget;
-    delete this->sampler1_container;
+
+    // Sampler 2.
+    delete [] this->sampler2_buttons_play;
+    delete [] this->sampler2_buttons_stop;
+    delete [] this->sampler2_buttons_del;
+    delete [] this->sampler2_trackname;
+    delete [] this->sampler2_remainingtime;
+    delete this->sampler2_widget;
 }
 
 void
 Gui::connect_samplers_area()
 {
-    // Connect drop actions (load file in sampler).
-    QObject::connect(this->sampler1_container, SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
-                     this,      SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
+    // Show/hide samplers.
+    QObject::connect(this->show_hide_samplers_button, SIGNAL(clicked()), this, SLOT(show_hide_samplers()));
+
+    // Name of samplers.
+    QObject::connect(this->at_1_samplers[0], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_1_1_text(const QString&)));
+    QObject::connect(this->at_1_samplers[1], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_1_2_text(const QString&)));
+    QObject::connect(this->at_1_samplers[2], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_1_3_text(const QString&)));
+    QObject::connect(this->at_1_samplers[3], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_1_4_text(const QString&)));
+
+    QObject::connect(this->at_2_samplers[0], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_2_1_text(const QString&)));
+    QObject::connect(this->at_2_samplers[1], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_2_2_text(const QString&)));
+    QObject::connect(this->at_2_samplers[2], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_2_3_text(const QString&)));
+    QObject::connect(this->at_2_samplers[3], SIGNAL(name_changed(QString)),
+                     this,                   SLOT(set_sampler_2_4_text(const QString&)));
+
+    // Start stop samplers.
+    QObject::connect(sampler1_buttons_play[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_play_click()));
+    QObject::connect(sampler1_buttons_play[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_play_click()));
+    QObject::connect(sampler1_buttons_play[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_play_click()));
+    QObject::connect(sampler1_buttons_play[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_play_click()));
+
+    QObject::connect(sampler2_buttons_play[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_play_click()));
+    QObject::connect(sampler2_buttons_play[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_play_click()));
+    QObject::connect(sampler2_buttons_play[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_play_click()));
+    QObject::connect(sampler2_buttons_play[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_play_click()));
+
+    QObject::connect(sampler1_buttons_stop[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_stop_click()));
+    QObject::connect(sampler1_buttons_stop[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_stop_click()));
+    QObject::connect(sampler1_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_stop_click()));
+    QObject::connect(sampler1_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_stop_click()));
+
+    QObject::connect(sampler2_buttons_stop[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_stop_click()));
+    QObject::connect(sampler2_buttons_stop[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_stop_click()));
+    QObject::connect(sampler2_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_stop_click()));
+    QObject::connect(sampler2_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_stop_click()));
+
+    QObject::connect(sampler1_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_del_click()));
+    QObject::connect(sampler1_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_del_click()));
+    QObject::connect(sampler1_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_del_click()));
+    QObject::connect(sampler1_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_del_click()));
+
+    QObject::connect(sampler2_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_del_click()));
+    QObject::connect(sampler2_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_del_click()));
+    QObject::connect(sampler2_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_del_click()));
+    QObject::connect(sampler2_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_del_click()));
+
+    // Remaining time for samplers.
+    QObject::connect(this->playback, SIGNAL(sampler_remaining_time_changed(unsigned int, int, int)),
+                     this,           SLOT(set_sampler_remaining_time(unsigned int, int, int)));
+
+    // State for samplers.
+    QObject::connect(this->playback, SIGNAL(sampler_state_changed(int, int, bool)),
+                     this,           SLOT(set_sampler_state(int, int, bool)));
 }
 
 void
@@ -4338,11 +4329,17 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
     return;
 }
 
-QSamplerContainerWidget::QSamplerContainerWidget(unsigned short in_deck_index, unsigned short in_sampler_index) : QWidget()
+QSamplerContainerWidget::QSamplerContainerWidget(unsigned short  in_deck_index,
+                                                 unsigned short  in_sampler_index,
+                                                 Gui            *in_dropto_object) : QWidget()
 {
     this->setAcceptDrops(true);
     this->deck_index    = in_deck_index;
     this->sampler_index = in_sampler_index;
+
+    // Connect drop actions (load file in sampler).
+    QObject::connect(this,             SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
+                     in_dropto_object, SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
     return;
 }
 
