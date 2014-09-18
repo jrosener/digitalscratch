@@ -205,13 +205,40 @@ class Gui : QObject
     QPushButton                       **cue_del_on_deck1_buttons;
     QLabel                            **cue_point_deck1_labels;
 
+    // Deck 2.
+    QLabel                             *deck2_track_name;
+    QLabel                             *deck2_key;
+    Waveform                           *deck2_waveform;
+    QHBoxLayout                        *deck2_remaining_time_layout;
+    QHBoxLayout                        *deck2_buttons_layout;
+    QLabel                             *deck2_speed;
+    SpeedQPushButton                   *speed_up_on_deck2_button;
+    SpeedQPushButton                   *speed_down_on_deck2_button;
+    SpeedQPushButton                   *accel_up_on_deck2_button;
+    SpeedQPushButton                   *accel_down_on_deck2_button;
+    QPushButton                        *restart_on_deck2_button;
+    QPushButton                       **cue_set_on_deck2_buttons;
+    QPushButton                       **cue_play_on_deck2_buttons;
+    QPushButton                       **cue_del_on_deck2_buttons;
+    QLabel                            **cue_point_deck2_labels;
+
+    // Samplers area.
+    QHBoxLayout                        *sampler_layout;
+
+    // Sampler 1.
+    QPushButton                       **sampler1_buttons_play;
+    QPushButton                       **sampler1_buttons_stop;
+    QPushButton                       **sampler1_buttons_del;
+    QLabel                            **sampler1_trackname;
+    QLabel                            **sampler1_remainingtime;
+    QWidget                            *sampler1_widget;
+    QSamplerContainerWidget            *sampler1_container;
+
+
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
     PlaybackQGroupBox                  *sampler1_gbox;
     PlaybackQGroupBox                  *sampler2_gbox;
-    QLabel                             *deck2_track_name;
-    QLabel                             *deck2_key;
-    Waveform                           *deck2_waveform;
     QGraphicsView                      *deck1_view;
     QGraphicsView                      *deck2_view;
     QGraphicsScene                     *deck1_scene;
@@ -234,18 +261,13 @@ class Gui : QObject
     Audio_file_decoding_process        *dec_2;
     Audio_file_decoding_process       **dec_1_samplers;
     Audio_file_decoding_process       **dec_2_samplers;
-    QWidget                            *sampler1_widget;
     QWidget                            *sampler2_widget;
-    QPushButton                       **sampler1_buttons_play;
-    QPushButton                       **sampler1_buttons_stop;
-    QPushButton                       **sampler1_buttons_del;
-    QLabel                            **sampler1_trackname;
-    QLabel                            **sampler1_remainingtime;
     QPushButton                       **sampler2_buttons_play;
     QPushButton                       **sampler2_buttons_stop;
     QPushButton                       **sampler2_buttons_del;
     QLabel                            **sampler2_trackname;
     QLabel                            **sampler2_remainingtime;
+    QSamplerContainerWidget            *sampler2_container;
     Playback_parameters                *params_1;
     Playback_parameters                *params_2;
     Audio_track_playback_process       *playback;
@@ -285,15 +307,6 @@ class Gui : QObject
     QPushButton                        *load_track_on_deck2_button;
     QPushButton                        *timecode_detect_on_deck1_toggle;
     QPushButton                        *timecode_detect_on_deck2_toggle;
-    SpeedQPushButton                   *speed_up_on_deck2_button;
-    SpeedQPushButton                   *speed_down_on_deck2_button;
-    SpeedQPushButton                   *accel_up_on_deck2_button;
-    SpeedQPushButton                   *accel_down_on_deck2_button;
-    QPushButton                        *restart_on_deck2_button;
-    QPushButton                       **cue_set_on_deck2_buttons;
-    QPushButton                       **cue_play_on_deck2_buttons;
-    QPushButton                       **cue_del_on_deck2_buttons;
-    QLabel                            **cue_point_deck2_labels;
     QPushButton                        *show_next_key_from_deck1_button;
     QPushButton                        *show_next_key_from_deck2_button;
     QPushButton                        *show_hide_samplers_button;
@@ -346,8 +359,14 @@ class Gui : QObject
     void connect_header_buttons();
     void init_decks_area();
     void init_deck1_area();
+    void init_deck2_area();
     void clean_decks_area();
-    //void connect_decks_area();
+    void connect_decks_area();
+    void init_samplers_area();
+    void init_sampler1_area();
+    void init_sampler2_area();
+    void clean_samplers_area();
+    void connect_samplers_area();
 
     void display_audio_file_collection();
     bool apply_main_window_style();
