@@ -190,6 +190,22 @@ int main(int argc, char *argv[])
     delete at_1;
     delete at_2;
     delete[] dscratch_ids;
+    delete dec_1_sampler_1;
+    delete dec_1_sampler_2;
+    delete dec_1_sampler_3;
+    delete dec_1_sampler_4;
+    delete dec_2_sampler_1;
+    delete dec_2_sampler_2;
+    delete dec_2_sampler_3;
+    delete dec_2_sampler_4;
+    delete at_1_sampler_1;
+    delete at_1_sampler_2;
+    delete at_1_sampler_3;
+    delete at_1_sampler_4;
+    delete at_2_sampler_1;
+    delete at_2_sampler_2;
+    delete at_2_sampler_3;
+    delete at_2_sampler_4;
 
     return 0;
 }

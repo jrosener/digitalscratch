@@ -1429,6 +1429,10 @@ Gui::init_deck2_area()
 void
 Gui::clean_decks_area()
 {
+    for (int i = 0; i < nb_decks; i++)
+    {
+        delete this->decks_remaining_time[i];
+    }
     delete [] this->decks_remaining_time;
 
     delete this->deck1_track_name;

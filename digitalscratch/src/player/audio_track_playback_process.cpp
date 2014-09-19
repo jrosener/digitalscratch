@@ -126,6 +126,7 @@ Audio_track_playback_process::~Audio_track_playback_process()
     delete [] this->remaining_times;
     delete [] this->sampler_current_samples;
     delete [] this->sampler_remaining_times;
+    delete [] this->sampler_current_states;
 
     // Close libsamplerate.
     for (unsigned short int i = 0; i < this->nb_decks; i++)
@@ -136,6 +137,8 @@ Audio_track_playback_process::~Audio_track_playback_process()
             src_delete(this->src_state[i]);
         }
     }
+    delete [] this->src_data;
+    delete [] this->src_state;
 
     qDebug() << "Audio_track_playback_process::~Audio_track_playback_process: delete object done.";
 

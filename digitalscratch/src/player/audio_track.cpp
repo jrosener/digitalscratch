@@ -74,7 +74,7 @@ Audio_track::~Audio_track()
 {
     qDebug() << "Audio_track::~Audio_track: delete object...";
 
-    delete this->samples;
+    delete [] this->samples;
 
     qDebug() << "Audio_track::~Audio_track: delete object done.";
 
