@@ -196,6 +196,7 @@ Gui::~Gui()
     this->clean_samplers_area();
     this->clean_file_browser_area();
     this->clean_bottom_help();
+    this->clean_bottom_status();
     delete this->window;
 
     qDebug() << "Gui::Gui: delete object done.";
@@ -987,6 +988,7 @@ Gui::create_main_window()
     this->init_samplers_area();
     this->init_file_browser_area();
     this->init_bottom_help();
+    this->init_bottom_status();
 
     ////////////////////////////////////////////////////////////////////////////
     // Deck and sampler selection.
@@ -1034,41 +1036,6 @@ Gui::create_main_window()
 
 
     ////////////////////////////////////////////////////////////////////////////
-    // Bottom progress bar layout.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Create groupbox for progress bar.
-    this->progress_groupbox = new QGroupBox();
-    this->progress_groupbox->hide();
-    this->progress_groupbox->setObjectName("Progress");
-
-    // Create progress bar.
-    this->progress_bar = new QProgressBar(this->progress_groupbox);
-    this->progress_bar->setObjectName("Progress");
-
-    // Create cancel button.
-    this->progress_cancel_button = new QPushButton(this->progress_groupbox);
-    this->progress_cancel_button->setObjectName("Progress");
-    this->progress_cancel_button->setFixedSize(16, 16);
-    this->progress_cancel_button->setFocusPolicy(Qt::NoFocus);
-    this->progress_cancel_button->setToolTip(tr("Cancel execution"));
-    QObject::connect(this->progress_cancel_button, SIGNAL(clicked()), this, SLOT(on_progress_cancel_button_click()));
-
-    // Create label.
-    this->progress_label = new QLabel(this->progress_groupbox);
-    this->progress_label->setObjectName("Progress");
-
-    // Create layout for progress bar.
-    QHBoxLayout *progress_layout = new QHBoxLayout;
-    progress_layout->addWidget(this->progress_bar);
-    progress_layout->addWidget(this->progress_cancel_button);
-    progress_layout->addWidget(this->progress_label);
-    this->progress_groupbox->setLayout(progress_layout);
-    QHBoxLayout *status_layout = new QHBoxLayout;
-    status_layout->addWidget(this->progress_groupbox);
-
-
-    ////////////////////////////////////////////////////////////////////////////
     // Make connections.
     ////////////////////////////////////////////////////////////////////////////
 
@@ -1113,7 +1080,7 @@ Gui::create_main_window()
     main_layout->addLayout(this->samplers_layout, 5);
     main_layout->addLayout(this->file_layout,     65);
     main_layout->addLayout(this->bottom_layout,   0);
-    main_layout->addLayout(status_layout,  0);
+    main_layout->addLayout(this->status_layout,   0);
 
     // Display main window.
     this->window->show();
@@ -2374,6 +2341,46 @@ void
 Gui::clean_bottom_help()
 {
     delete this->bottom_layout;
+}
+
+void
+Gui::init_bottom_status()
+{
+    // Create groupbox for progress bar.
+    this->progress_groupbox = new QGroupBox();
+    this->progress_groupbox->hide();
+    this->progress_groupbox->setObjectName("Progress");
+
+    // Create progress bar.
+    this->progress_bar = new QProgressBar(this->progress_groupbox);
+    this->progress_bar->setObjectName("Progress");
+
+    // Create cancel button.
+    this->progress_cancel_button = new QPushButton(this->progress_groupbox);
+    this->progress_cancel_button->setObjectName("Progress");
+    this->progress_cancel_button->setFixedSize(16, 16);
+    this->progress_cancel_button->setFocusPolicy(Qt::NoFocus);
+    this->progress_cancel_button->setToolTip(tr("Cancel execution"));
+    QObject::connect(this->progress_cancel_button, SIGNAL(clicked()), this, SLOT(on_progress_cancel_button_click()));
+
+    // Create label.
+    this->progress_label = new QLabel(this->progress_groupbox);
+    this->progress_label->setObjectName("Progress");
+
+    // Create layout for progress bar.
+    QHBoxLayout *progress_layout = new QHBoxLayout;
+    progress_layout->addWidget(this->progress_bar);
+    progress_layout->addWidget(this->progress_cancel_button);
+    progress_layout->addWidget(this->progress_label);
+    this->progress_groupbox->setLayout(progress_layout);
+    this->status_layout = new QHBoxLayout;
+    this->status_layout->addWidget(this->progress_groupbox);
+}
+
+void
+Gui::clean_bottom_status()
+{
+    delete this->status_layout;
 }
 
 void

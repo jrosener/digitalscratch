@@ -255,6 +255,9 @@ class Gui : public QObject
     // Bottom help area.
     QHBoxLayout                        *bottom_layout;
 
+    // Status area (progress bar).
+    QHBoxLayout                        *status_layout;
+
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
     PlaybackQGroupBox                  *sampler1_gbox;
@@ -358,6 +361,8 @@ class Gui : public QObject
     void connect_file_browser_area();
     void init_bottom_help();
     void clean_bottom_help();
+    void init_bottom_status();
+    void clean_bottom_status();
 
     void display_audio_file_collection();
     bool apply_main_window_style();
