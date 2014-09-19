@@ -195,6 +195,7 @@ Gui::~Gui()
     this->clean_decks_area();
     this->clean_samplers_area();
     this->clean_file_browser_area();
+    this->clean_bottom_help();
     delete this->window;
 
     qDebug() << "Gui::Gui: delete object done.";
@@ -985,6 +986,7 @@ Gui::create_main_window()
     this->init_decks_area();
     this->init_samplers_area();
     this->init_file_browser_area();
+    this->init_bottom_help();
 
     ////////////////////////////////////////////////////////////////////////////
     // Deck and sampler selection.
@@ -1030,117 +1032,6 @@ Gui::create_main_window()
     this->deck1_gbox->setProperty("selected", true);
     this->sampler1_gbox->setProperty("selected", true);
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Help.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Create help labels and pixmaps.
-    QLabel *help_display_lb        = new QLabel(tr("Display"));
-    QLabel *help_fullscreen_lb     = new QLabel(tr("Fullscreen"));
-    this->help_fullscreen_value    = new QLabel();
-    QLabel *help_help_lb           = new QLabel(tr("Help"));
-    this->help_help_value          = new QLabel();
-    QLabel *help_switch_deck_lb    = new QLabel(tr("Switch selected playback"));
-    this->help_switch_deck_value   = new QLabel();
-
-    QLabel *help_deck_lb           = new QLabel(tr("Selected deck"));
-    QLabel *help_load_deck_lb      = new QLabel(tr("Load/Restart track"));
-    this->help_load_deck_value     = new QLabel();
-    QLabel *help_next_track_lb     = new QLabel(tr("Highlight next tracks"));
-    this->help_next_track_value    = new QLabel();
-    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point 1/2/3/4"));
-    this->help_cue_value           = new QLabel();
-
-    QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
-    QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
-    this->help_sample_value        = new QLabel();
-    QLabel *help_online_lb         = new QLabel(tr("Online wiki help"));
-    QLabel *help_url_lb            = new QLabel("<a style=\"color: white\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
-    help_url_lb->setTextFormat(Qt::RichText);
-    help_url_lb->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    help_url_lb->setOpenExternalLinks(true);
-
-    QLabel *help_browser_lb        = new QLabel(tr("File browser"));
-    QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
-    this->help_browse_value1       = new QLabel();
-    QLabel *help_browse_lb2        = new QLabel(tr("Collapse all"));
-    this->help_browse_value2       = new QLabel();
-
-    this->set_help_shortcut_value();
-
-    help_display_lb->setObjectName("Help_title");
-    help_fullscreen_lb->setObjectName("Help");
-    help_help_lb->setObjectName("Help");
-    help_switch_deck_lb->setObjectName("Help");
-
-    help_deck_lb->setObjectName("Help_title");
-    help_load_deck_lb->setObjectName("Help");
-    help_next_track_lb->setObjectName("Help");
-    help_cue_lb->setObjectName("Help");
-
-    help_sampler_lb->setObjectName("Help_title");
-    help_sample_lb->setObjectName("Help");
-    help_online_lb->setObjectName("Help_title");
-    help_url_lb->setObjectName("Help_url");
-
-    help_browser_lb->setObjectName("Help_title");
-    help_browse_lb1->setObjectName("Help");
-    help_browse_lb2->setObjectName("Help");
-
-    // Main help layout.
-    QGridLayout *help_layout = new QGridLayout();
-
-    help_layout->addWidget(help_display_lb,           0, 0);
-    help_layout->addWidget(help_fullscreen_lb,        1, 0);
-    help_layout->addWidget(help_fullscreen_value,     1, 1, Qt::AlignLeft);
-    help_layout->addWidget(help_help_lb,              2, 0);
-    help_layout->addWidget(help_help_value,           2, 1, Qt::AlignLeft);
-    help_layout->addWidget(help_switch_deck_lb,       3, 0);
-    help_layout->addWidget(help_switch_deck_value,    3, 1, Qt::AlignLeft);
-
-    help_layout->addWidget(help_deck_lb,              0, 2);
-    help_layout->addWidget(help_load_deck_lb,         1, 2);
-    help_layout->addWidget(help_load_deck_value,      1, 3, Qt::AlignLeft);
-    help_layout->addWidget(help_next_track_lb,        2, 2);
-    help_layout->addWidget(help_next_track_value,     2, 3, Qt::AlignLeft);
-    help_layout->addWidget(help_cue_lb,               3, 2);
-    help_layout->addWidget(help_cue_value,            3, 3, Qt::AlignLeft);
-
-    help_layout->addWidget(help_sampler_lb,           0, 4);
-    help_layout->addWidget(help_sample_lb,            1, 4);
-    help_layout->addWidget(help_sample_value,         1, 5, Qt::AlignLeft);
-    help_layout->addWidget(help_online_lb,            3, 4);
-    help_layout->addWidget(help_url_lb,               3, 5, 1, 3, Qt::AlignLeft);
-
-    help_layout->addWidget(help_browser_lb,           0, 6);
-    help_layout->addWidget(help_browse_lb1,           1, 6);
-    help_layout->addWidget(help_browse_value1,        1, 7, Qt::AlignLeft);
-    help_layout->addWidget(help_browse_lb2,           2, 6);
-    help_layout->addWidget(help_browse_value2,        2, 7, Qt::AlignLeft);
-
-    help_layout->setColumnStretch(0, 1);
-    help_layout->setColumnStretch(1, 5);
-    help_layout->setColumnStretch(2, 1);
-    help_layout->setColumnStretch(3, 5);
-    help_layout->setColumnStretch(4, 1);
-    help_layout->setColumnStretch(5, 5);
-    help_layout->setColumnStretch(6, 1);
-    help_layout->setColumnStretch(7, 5);
-
-    // Create help group box.
-    this->help_groupbox = new QGroupBox();
-    this->help_groupbox->hide();
-    this->help_groupbox->setObjectName("Help");
-
-    // Put help horizontal layout in help group box.
-    this->help_groupbox->setLayout(help_layout);
-
-    // Create bottom horizontal layout.
-    QHBoxLayout *bottom_layout = new QHBoxLayout;
-
-    // Put help group box and configuration in bottom layout.
-    bottom_layout->addWidget(this->help_groupbox);
 
     ////////////////////////////////////////////////////////////////////////////
     // Bottom progress bar layout.
@@ -1221,7 +1112,7 @@ Gui::create_main_window()
     main_layout->addLayout(this->decks_layout,    30);
     main_layout->addLayout(this->samplers_layout, 5);
     main_layout->addLayout(this->file_layout,     65);
-    main_layout->addLayout(bottom_layout,  0);
+    main_layout->addLayout(this->bottom_layout,   0);
     main_layout->addLayout(status_layout,  0);
 
     // Display main window.
@@ -2366,6 +2257,123 @@ Gui::connect_file_browser_area()
     this->watcher_parse_directory = new QFutureWatcher<void>;
     connect(this->watcher_parse_directory, SIGNAL(finished()),
             this,                          SLOT(run_concurrent_read_collection_from_db()));
+}
+
+void
+Gui::init_bottom_help()
+{
+    // Create help labels and pixmaps.
+    QLabel *help_display_lb        = new QLabel(tr("Display"));
+    QLabel *help_fullscreen_lb     = new QLabel(tr("Fullscreen"));
+    this->help_fullscreen_value    = new QLabel();
+    QLabel *help_help_lb           = new QLabel(tr("Help"));
+    this->help_help_value          = new QLabel();
+    QLabel *help_switch_deck_lb    = new QLabel(tr("Switch selected playback"));
+    this->help_switch_deck_value   = new QLabel();
+
+    QLabel *help_deck_lb           = new QLabel(tr("Selected deck"));
+    QLabel *help_load_deck_lb      = new QLabel(tr("Load/Restart track"));
+    this->help_load_deck_value     = new QLabel();
+    QLabel *help_next_track_lb     = new QLabel(tr("Highlight next tracks"));
+    this->help_next_track_value    = new QLabel();
+    QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point 1/2/3/4"));
+    this->help_cue_value           = new QLabel();
+
+    QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
+    QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
+    this->help_sample_value        = new QLabel();
+    QLabel *help_online_lb         = new QLabel(tr("Online wiki help"));
+    QLabel *help_url_lb            = new QLabel("<a style=\"color: white\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
+    help_url_lb->setTextFormat(Qt::RichText);
+    help_url_lb->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    help_url_lb->setOpenExternalLinks(true);
+
+    QLabel *help_browser_lb        = new QLabel(tr("File browser"));
+    QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
+    this->help_browse_value1       = new QLabel();
+    QLabel *help_browse_lb2        = new QLabel(tr("Collapse all"));
+    this->help_browse_value2       = new QLabel();
+
+    this->set_help_shortcut_value();
+
+    help_display_lb->setObjectName("Help_title");
+    help_fullscreen_lb->setObjectName("Help");
+    help_help_lb->setObjectName("Help");
+    help_switch_deck_lb->setObjectName("Help");
+
+    help_deck_lb->setObjectName("Help_title");
+    help_load_deck_lb->setObjectName("Help");
+    help_next_track_lb->setObjectName("Help");
+    help_cue_lb->setObjectName("Help");
+
+    help_sampler_lb->setObjectName("Help_title");
+    help_sample_lb->setObjectName("Help");
+    help_online_lb->setObjectName("Help_title");
+    help_url_lb->setObjectName("Help_url");
+
+    help_browser_lb->setObjectName("Help_title");
+    help_browse_lb1->setObjectName("Help");
+    help_browse_lb2->setObjectName("Help");
+
+    // Main help layout.
+    QGridLayout *help_layout = new QGridLayout();
+
+    help_layout->addWidget(help_display_lb,           0, 0);
+    help_layout->addWidget(help_fullscreen_lb,        1, 0);
+    help_layout->addWidget(help_fullscreen_value,     1, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_help_lb,              2, 0);
+    help_layout->addWidget(help_help_value,           2, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_switch_deck_lb,       3, 0);
+    help_layout->addWidget(help_switch_deck_value,    3, 1, Qt::AlignLeft);
+
+    help_layout->addWidget(help_deck_lb,              0, 2);
+    help_layout->addWidget(help_load_deck_lb,         1, 2);
+    help_layout->addWidget(help_load_deck_value,      1, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_next_track_lb,        2, 2);
+    help_layout->addWidget(help_next_track_value,     2, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_cue_lb,               3, 2);
+    help_layout->addWidget(help_cue_value,            3, 3, Qt::AlignLeft);
+
+    help_layout->addWidget(help_sampler_lb,           0, 4);
+    help_layout->addWidget(help_sample_lb,            1, 4);
+    help_layout->addWidget(help_sample_value,         1, 5, Qt::AlignLeft);
+    help_layout->addWidget(help_online_lb,            3, 4);
+    help_layout->addWidget(help_url_lb,               3, 5, 1, 3, Qt::AlignLeft);
+
+    help_layout->addWidget(help_browser_lb,           0, 6);
+    help_layout->addWidget(help_browse_lb1,           1, 6);
+    help_layout->addWidget(help_browse_value1,        1, 7, Qt::AlignLeft);
+    help_layout->addWidget(help_browse_lb2,           2, 6);
+    help_layout->addWidget(help_browse_value2,        2, 7, Qt::AlignLeft);
+
+    help_layout->setColumnStretch(0, 1);
+    help_layout->setColumnStretch(1, 5);
+    help_layout->setColumnStretch(2, 1);
+    help_layout->setColumnStretch(3, 5);
+    help_layout->setColumnStretch(4, 1);
+    help_layout->setColumnStretch(5, 5);
+    help_layout->setColumnStretch(6, 1);
+    help_layout->setColumnStretch(7, 5);
+
+    // Create help group box.
+    this->help_groupbox = new QGroupBox();
+    this->help_groupbox->hide();
+    this->help_groupbox->setObjectName("Help");
+
+    // Put help horizontal layout in help group box.
+    this->help_groupbox->setLayout(help_layout);
+
+    // Create bottom horizontal layout.
+    this->bottom_layout = new QHBoxLayout;
+
+    // Put help group box and configuration in bottom layout.
+    this->bottom_layout->addWidget(this->help_groupbox);
+}
+
+void
+Gui::clean_bottom_help()
+{
+    delete this->bottom_layout;
 }
 
 void

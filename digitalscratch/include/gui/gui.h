@@ -252,6 +252,9 @@ class Gui : public QObject
     unsigned int                        file_browser_selected_index;
     QString                             last_search_string;
 
+    // Bottom help area.
+    QHBoxLayout                        *bottom_layout;
+
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
     PlaybackQGroupBox                  *sampler1_gbox;
@@ -353,6 +356,8 @@ class Gui : public QObject
     void init_file_browser_area();
     void clean_file_browser_area();
     void connect_file_browser_area();
+    void init_bottom_help();
+    void clean_bottom_help();
 
     void display_audio_file_collection();
     bool apply_main_window_style();
