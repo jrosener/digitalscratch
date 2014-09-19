@@ -219,6 +219,10 @@ class Gui : public QObject
     QLabel                            **sampler2_remainingtime;
     QWidget                            *sampler2_widget;
 
+    // File browser area.
+    QHBoxLayout                        *file_layout;
+
+
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
     PlaybackQGroupBox                  *sampler1_gbox;
@@ -344,6 +348,9 @@ class Gui : public QObject
     void init_sampler2_area();
     void clean_samplers_area();
     void connect_samplers_area();
+    void init_file_browser_area();
+    void clean_file_browser_area();
+    void connect_file_browser_area();
 
     void display_audio_file_collection();
     bool apply_main_window_style();
@@ -436,6 +443,8 @@ class Gui : public QObject
     void on_sampler_button_2_2_del_click();
     void on_sampler_button_2_3_del_click();
     void on_sampler_button_2_4_del_click();
+    void set_deck1_key(const QString& in_key);
+    void set_deck2_key(const QString& in_key);
     void set_remaining_time(unsigned int in_remaining_time, int in_deck_index);
     void set_sampler_remaining_time(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);
     void set_sampler_state(int in_deck_index, int in_sampler_index, bool in_state);
