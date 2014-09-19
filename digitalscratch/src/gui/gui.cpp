@@ -997,14 +997,6 @@ Gui::create_main_window()
     this->connect_decks_and_samplers_selection();
     this->connect_file_browser_area();
 
-    // Open error window.
-    QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
-                     this,             SLOT(show_error_window(QString)));
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Main window.
-    ////////////////////////////////////////////////////////////////////////////
-
     // Create main window.
     this->window->setWindowTitle(tr("DigitalScratch") + " " + QString(STR(VERSION)));
     this->window->setMinimumSize(800, 480);
@@ -1037,6 +1029,10 @@ Gui::create_main_window()
     // Set window position/size from last run.
     this->window->move(this->settings->get_main_window_position());
     this->window->resize(this->settings->get_main_window_size());
+
+    // Open error window.
+    QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
+                     this,             SLOT(show_error_window(QString)));
 
     qDebug() << "Gui::create_main_window done.";
 

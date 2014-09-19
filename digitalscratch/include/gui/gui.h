@@ -170,8 +170,10 @@ class Gui : public QObject
     QShortcut                          *shortcut_go_to_begin;
     QShortcut                         **shortcut_set_cue_points;
     QShortcut                         **shortcut_go_to_cue_points;
+    QShortcut                          *shortcut_switch_playback;
 
     // Deck 1.
+    PlaybackQGroupBox                  *deck1_gbox;
     QLabel                             *deck1_track_name;
     QLabel                             *deck1_key;
     Waveform                           *deck1_waveform;
@@ -189,6 +191,7 @@ class Gui : public QObject
     QLabel                            **cue_point_deck1_labels;
 
     // Deck 2.
+    PlaybackQGroupBox                  *deck2_gbox;
     QLabel                             *deck2_track_name;
     QLabel                             *deck2_key;
     Waveform                           *deck2_waveform;
@@ -207,8 +210,10 @@ class Gui : public QObject
 
     // Samplers area.
     QHBoxLayout                        *samplers_layout;
+    QPushButton                        *show_hide_samplers_button;
 
     // Sampler 1.
+    PlaybackQGroupBox                  *sampler1_gbox;
     QPushButton                       **sampler1_buttons_play;
     QPushButton                       **sampler1_buttons_stop;
     QPushButton                       **sampler1_buttons_del;
@@ -217,6 +222,7 @@ class Gui : public QObject
     QWidget                            *sampler1_widget;
 
     // Sampler 2.
+    PlaybackQGroupBox                  *sampler2_gbox;
     QPushButton                       **sampler2_buttons_play;
     QPushButton                       **sampler2_buttons_stop;
     QPushButton                       **sampler2_buttons_del;
@@ -226,6 +232,22 @@ class Gui : public QObject
 
     // File and folder browser area.
     QHBoxLayout                        *file_layout;
+    QSplitter                          *browser_splitter;
+    QGroupBox                          *file_browser_gbox;
+    QPushButton                        *refresh_file_browser;
+    QPushButton                        *load_track_on_deck1_button;
+    QPushButton                        *load_track_on_deck2_button;
+    QPushButton                        *load_sample1_1_button;
+    QPushButton                        *load_sample2_1_button;
+    QPushButton                        *load_sample1_2_button;
+    QPushButton                        *load_sample2_2_button;
+    QPushButton                        *load_sample1_3_button;
+    QPushButton                        *load_sample2_3_button;
+    QPushButton                        *load_sample1_4_button;
+    QPushButton                        *load_sample2_4_button;
+    QPushButton                        *show_next_key_from_deck1_button;
+    QPushButton                        *show_next_key_from_deck2_button;
+    QFutureWatcher<void>               *watcher_parse_directory;
 
     // Folder browser.
     TreeViewIconProvider               *treeview_icon_provider;
@@ -254,24 +276,37 @@ class Gui : public QObject
 
     // Bottom help area.
     QHBoxLayout                        *bottom_layout;
+    QGroupBox                          *help_groupbox;
+    QLabel                             *help_fullscreen_value;
+    QLabel                             *help_help_value;
+    QLabel                             *help_switch_deck_value;
+    QLabel                             *help_load_deck_value;
+    QLabel                             *help_next_track_value;
+    QLabel                             *help_cue_value;
+    QLabel                             *help_sample_value;
+    QLabel                             *help_browse_value1;
+    QLabel                             *help_browse_value2;
 
     // Status area (progress bar).
     QHBoxLayout                        *status_layout;
+    QProgressBar                       *progress_bar;
+    QLabel                             *progress_label;
+    QPushButton                        *progress_cancel_button;
+    QGroupBox                          *progress_groupbox;
 
-    PlaybackQGroupBox                  *deck1_gbox;
-    PlaybackQGroupBox                  *deck2_gbox;
-    PlaybackQGroupBox                  *sampler1_gbox;
-    PlaybackQGroupBox                  *sampler2_gbox;
-    QGraphicsView                      *deck1_view;
-    QGraphicsView                      *deck2_view;
-    QGraphicsScene                     *deck1_scene;
+    // Main window.
     QWidget                            *window;
-    Config_dialog                      *config_dialog;
     QString                             window_style;
-    QSplitter                          *browser_splitter;
+    bool                                is_window_rendered;
+    unsigned short int                  nb_decks;
+
+    // Pop dialogs.
+    Config_dialog                      *config_dialog;
     QDialog                            *about_dialog;
     QDialog                            *refresh_audio_collection_dialog;
     QDialog                            *error_dialog;
+
+    // Main processing elements.
     Audio_track                        *at_1;
     Audio_track                        *at_2;
     Audio_track                       **at_1_samplers;
@@ -284,45 +319,10 @@ class Gui : public QObject
     Playback_parameters                *params_1;
     Playback_parameters                *params_2;
     Audio_track_playback_process       *playback;
-    unsigned short int                  nb_decks;
     Sound_driver_access_rules          *sound_card;
     Sound_capture_and_playback_process *capture_and_play;
     int                                *dscratch_ids;
     Application_settings               *settings;
-    QShortcut                          *shortcut_switch_playback;
-    QGroupBox                          *help_groupbox;
-    QGroupBox                          *file_browser_gbox;
-    QPushButton                        *refresh_file_browser;
-    QProgressBar                       *progress_bar;
-    QLabel                             *progress_label;
-    QPushButton                        *progress_cancel_button;
-    QGroupBox                          *progress_groupbox;
-    QPushButton                        *load_track_on_deck1_button;
-    QPushButton                        *load_track_on_deck2_button;
-    QPushButton                        *timecode_detect_on_deck1_toggle;
-    QPushButton                        *timecode_detect_on_deck2_toggle;
-    QPushButton                        *show_next_key_from_deck1_button;
-    QPushButton                        *show_next_key_from_deck2_button;
-    QPushButton                        *show_hide_samplers_button;
-    QPushButton                        *load_sample1_1_button;
-    QPushButton                        *load_sample2_1_button;
-    QPushButton                        *load_sample1_2_button;
-    QPushButton                        *load_sample2_2_button;
-    QPushButton                        *load_sample1_3_button;
-    QPushButton                        *load_sample2_3_button;
-    QPushButton                        *load_sample1_4_button;
-    QPushButton                        *load_sample2_4_button;
-    QLabel                             *help_fullscreen_value;
-    QLabel                             *help_help_value;
-    QLabel                             *help_switch_deck_value;
-    QLabel                             *help_load_deck_value;
-    QLabel                             *help_next_track_value;
-    QLabel                             *help_cue_value;
-    QLabel                             *help_sample_value;
-    QLabel                             *help_browse_value1;
-    QLabel                             *help_browse_value2;
-    bool                                is_window_rendered;
-    QFutureWatcher<void>               *watcher_parse_directory;
 
  public:
     Gui(Audio_track                        *in_at_1,
