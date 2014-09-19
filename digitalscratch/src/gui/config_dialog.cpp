@@ -631,7 +631,7 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_switch_playback->setText(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK));
     this->kb_load_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK));
     this->kb_play_begin_track_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
-    this->kb_get_next_track_from_deck->setText(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
+    this->kb_get_next_track_from_deck->setText(this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS));
     this->kb_set_cue_point1_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK));
     this->kb_play_cue_point1_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK));
     this->kb_set_cue_point2_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT2_ON_DECK));
@@ -701,7 +701,7 @@ void Config_dialog::reset_shortcuts()
     this->kb_switch_playback->setText(KB_SWITCH_PLAYBACK_DEFAULT);
     this->kb_load_track_on_deck->setText(KB_LOAD_TRACK_ON_DECK_DEFAULT);
     this->kb_play_begin_track_on_deck->setText(KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
-    this->kb_get_next_track_from_deck->setText(KB_GET_NEXT_TRACK_FROM_DECK_DEFAULT);
+    this->kb_get_next_track_from_deck->setText(KB_SHOW_NEXT_KEYS_DEFAULT);
     this->kb_set_cue_point1_on_deck->setText(KB_SET_CUE_POINT1_ON_DECK_DEFAULT);
     this->kb_play_cue_point1_on_deck->setText(KB_PLAY_CUE_POINT1_ON_DECK_DEFAULT);
     this->kb_set_cue_point2_on_deck->setText(KB_SET_CUE_POINT2_ON_DECK_DEFAULT);
@@ -773,7 +773,7 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_SWITCH_PLAYBACK,           this->kb_switch_playback->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK,        this->kb_load_track_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK,  this->kb_play_begin_track_on_deck->text());
-    this->settings->set_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK,  this->kb_get_next_track_from_deck->text());
+    this->settings->set_keyboard_shortcut(KB_SHOW_NEXT_KEYS,            this->kb_get_next_track_from_deck->text());
     this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK,    this->kb_set_cue_point1_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK,   this->kb_play_cue_point1_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT2_ON_DECK,    this->kb_set_cue_point2_on_deck->text());

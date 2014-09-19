@@ -191,17 +191,10 @@ Gui::~Gui()
     this->settings->set_browser_splitter_size(this->browser_splitter->saveState());
 
     // Cleanup.
-    this->clean_keyboard_shortcuts();
     this->clean_header_buttons();
     this->clean_decks_area();
     this->clean_samplers_area();
     this->clean_file_browser_area();
-    delete this->watcher_parse_directory;
-    delete this->treeview_icon_provider;
-    delete this->folder_system_model;
-    delete this->folder_browser;
-    delete this->file_system_model;
-    delete this->file_browser;
     delete this->window;
 
     qDebug() << "Gui::Gui: delete object done.";
@@ -273,7 +266,6 @@ Gui::apply_application_settings()
     this->shortcut_collapse_browser->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)));
     this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
     this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
-    this->shortcut_get_next_audio_tracks->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK)));
     this->shortcut_load_sample_file_1->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)));
     this->shortcut_load_sample_file_2->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)));
     this->shortcut_load_sample_file_3->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)));
@@ -1190,39 +1182,17 @@ Gui::create_main_window()
     ////////////////////////////////////////////////////////////////////////////
 
     // Connect keyboard shortcut to switch selection of decks/samplers.
+    this->shortcut_switch_playback         = new QShortcut(this->window);
     QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
 
     this->connect_header_buttons();
     this->connect_decks_area();
     this->connect_samplers_area();
+    this->connect_file_browser_area();
 
     // Open error window.
     QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
                      this,             SLOT(show_error_window(QString)));
-
-    // Search bar for file browser.
-    QObject::connect(this->shortcut_file_search, SIGNAL(activated()), this, SLOT(set_focus_search_bar()));
-    QObject::connect(this->file_search, SIGNAL(textChanged(QString)), this, SLOT(file_search_string(QString)));
-    QObject::connect(this->shortcut_file_search_press_enter, SIGNAL(activated()), this, SLOT(press_enter_in_search_bar()));
-    QObject::connect(this->file_search, SIGNAL(returnPressed()), this, SLOT(press_enter_in_search_bar()));
-    QObject::connect(this->shortcut_file_search_press_esc, SIGNAL(activated()), this, SLOT(press_esc_in_search_bar()));
-
-    // Progress for file analyzis and storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
-                     this->progress_bar,                                SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
-                     this,                                              SLOT(update_refresh_progress_value(int)));
-
-    // Progress for reading file data from storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressRangeChanged(int,int)),
-                     this->progress_bar,                               SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressValueChanged(int)),
-                     this,                                             SLOT(update_refresh_progress_value(int)));
-
-    this->watcher_parse_directory = new QFutureWatcher<void>;
-    connect(this->watcher_parse_directory, SIGNAL(finished()),
-            this,                          SLOT(run_concurrent_read_collection_from_db()));
-
 
     ////////////////////////////////////////////////////////////////////////////
     // Main window.
@@ -1264,40 +1234,6 @@ Gui::create_main_window()
     qDebug() << "Gui::create_main_window done.";
 
     return true;
-}
-
-void
-Gui::init_keyboard_shortcuts()
-{
-    this->shortcut_switch_playback         = new QShortcut(this->window);
-    this->shortcut_collapse_browser        = new QShortcut(this->file_browser);
-    this->shortcut_load_audio_file         = new QShortcut(this->file_browser);
-    this->shortcut_go_to_begin             = new QShortcut(this->window);
-    this->shortcut_get_next_audio_tracks   = new QShortcut(this->window);
-    this->shortcut_load_sample_file_1      = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_2      = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_3      = new QShortcut(this->file_browser);
-    this->shortcut_load_sample_file_4      = new QShortcut(this->file_browser);
-    this->shortcut_show_next_keys          = new QShortcut(this->file_browser);
-    this->shortcut_fullscreen              = new QShortcut(this->window);
-    this->shortcut_help                    = new QShortcut(this->window);
-    this->shortcut_file_search             = new QShortcut(this->window);
-    this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
-    this->shortcut_file_search_press_esc   = new QShortcut(this->file_search);
-    this->shortcut_set_cue_points          = new QShortcut* [MAX_NB_CUE_POINTS];
-    this->shortcut_go_to_cue_points        = new QShortcut* [MAX_NB_CUE_POINTS];
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        this->shortcut_set_cue_points[i]   = new QShortcut(this->window);
-        this->shortcut_go_to_cue_points[i] = new QShortcut(this->window);
-    }
-}
-
-void
-Gui::clean_keyboard_shortcuts()
-{
-    delete [] this->shortcut_set_cue_points;
-    delete [] this->shortcut_go_to_cue_points;
 }
 
 void
@@ -1382,12 +1318,13 @@ Gui::clean_header_buttons()
 
 void
 Gui::connect_header_buttons()
-{
+{   
     // Open configuration window.
     QObject::connect(this->config_button, SIGNAL(clicked()), this, SLOT(show_config_window()));
 
     // Set full screen.
     QObject::connect(this->fullscreen_button,   SIGNAL(clicked()),   this, SLOT(set_fullscreen()));
+    this->shortcut_fullscreen = new QShortcut(this->window);
     QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
 
     // Stop capture.
@@ -1401,6 +1338,7 @@ Gui::connect_header_buttons()
 
     // Help button.
     QObject::connect(this->help_button,   SIGNAL(clicked()),   this, SLOT(show_help()));
+    this->shortcut_help = new QShortcut(this->window);
     QObject::connect(this->shortcut_help, SIGNAL(activated()), this, SLOT(show_help()));
 
     // Quit application.
@@ -1722,6 +1660,9 @@ Gui::clean_decks_area()
     delete [] this->cue_del_on_deck2_buttons;
     delete [] this->cue_point_deck2_labels;
 
+    delete [] this->shortcut_set_cue_points;
+    delete [] this->shortcut_go_to_cue_points;
+
     delete this->decks_layout;
 }
 
@@ -1763,6 +1704,7 @@ Gui::connect_decks_area()
                      this,                 SLOT(deck2_jump_to_position(float)));
 
     // Keyboard shortcut to go back to the beginning of the track.
+    this->shortcut_go_to_begin = new QShortcut(this->window);
     QObject::connect(this->shortcut_go_to_begin,    SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
     QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck1_go_to_begin()));
     QObject::connect(this->restart_on_deck2_button, SIGNAL(clicked()),   this, SLOT(deck2_go_to_begin()));
@@ -1773,8 +1715,12 @@ Gui::connect_decks_area()
     QSignalMapper *set_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
     QSignalMapper *play_cue_point_button_signal_mapper_deck1 = new QSignalMapper(this);
     QSignalMapper *del_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
+    this->shortcut_set_cue_points   = new QShortcut* [MAX_NB_CUE_POINTS];
+    this->shortcut_go_to_cue_points = new QShortcut* [MAX_NB_CUE_POINTS];
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
+        this->shortcut_set_cue_points[i]   = new QShortcut(this->window);
+        this->shortcut_go_to_cue_points[i] = new QShortcut(this->window);
         set_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_set_cue_points[i], i);
         play_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_go_to_cue_points[i], i);
         set_cue_point_button_signal_mapper_deck1->setMapping(this->cue_set_on_deck1_buttons[i], i);
@@ -2053,42 +1999,26 @@ Gui::connect_samplers_area()
 void
 Gui::init_file_browser_area()
 {
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Folder, playlist and file browser.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Create a folder browser.
+    // Create the folder browser.
     this->treeview_icon_provider = new TreeViewIconProvider();
-    this->folder_system_model = new QFileSystemModel();
+    this->folder_system_model    = new QFileSystemModel();
     this->folder_system_model->setIconProvider(this->treeview_icon_provider);
-    this->folder_browser = new QTreeView();
+    this->folder_browser         = new QTreeView();
     this->folder_browser->setModel(this->folder_system_model);
-
-    // Create a file browser.
-    this->file_system_model = new Audio_collection_model();
-    this->file_browser = new QTreeView();
-    this->file_browser->setModel(this->file_system_model);
-    this->file_browser->setSelectionMode(QAbstractItemView::SingleSelection);
-    this->file_browser->setDragEnabled(true);
-    this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
-
-    this->file_browser_gbox           = new QGroupBox();
-    this->file_search                 = new QLineEdit();
-    this->search_from_begin           = false;
-    this->file_search->setPlaceholderText(tr("Search..."));
-    this->file_browser_selected_index = 0;
-
-    // Init shortcuts.
-    this->init_keyboard_shortcuts();
-
-    // Customize folder and playlist browser.
     this->folder_browser->setColumnHidden(1, true);
     this->folder_browser->setColumnHidden(2, true);
     this->folder_browser->setColumnHidden(3, true);
     this->folder_browser->setHeaderHidden(true);
     this->folder_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->folder_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    // Create the file browser (track browser).
+    this->file_system_model = new Audio_collection_model();
+    this->file_browser      = new QTreeView();
+    this->file_browser->setModel(this->file_system_model);
+    this->file_browser->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->file_browser->setDragEnabled(true);
+    this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->header()->setSortIndicatorShown(true);
@@ -2097,7 +2027,251 @@ Gui::init_file_browser_area()
 #else
     this->file_browser->header()->setSectionsClickable(true);
 #endif
+
+    // Create the track search bar.
+    this->file_search                 = new QLineEdit();
+    this->search_from_begin           = false;
+    this->file_search->setPlaceholderText(tr("Search..."));
+    this->file_browser_selected_index = 0;    
+
+    // Create function buttons for file browser.
+    this->refresh_file_browser = new QPushButton();
+    this->refresh_file_browser->setObjectName("Refresh_browser_button");
+    this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
+    this->refresh_file_browser->setFixedSize(24, 24);
+    this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
+    this->refresh_file_browser->setCheckable(true);
+
+    this->load_track_on_deck1_button = new QPushButton();
+    this->load_track_on_deck1_button->setObjectName("Load_track_button_1");
+    this->load_track_on_deck1_button->setToolTip("<p>" + tr("Load selected track to deck 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
+    this->load_track_on_deck1_button->setFixedSize(24, 24);
+    this->load_track_on_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->load_track_on_deck1_button->setCheckable(true);
+
+    this->show_next_key_from_deck1_button = new QPushButton();
+    this->show_next_key_from_deck1_button->setObjectName("Show_next_key_button");
+    this->show_next_key_from_deck1_button->setToolTip("<p>" + tr("Show deck 1 next potential tracks") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS) + "</em>");
+    this->show_next_key_from_deck1_button->setFixedSize(24, 24);
+    this->show_next_key_from_deck1_button->setFocusPolicy(Qt::NoFocus);
+    this->show_next_key_from_deck1_button->setCheckable(true);
+
+    this->load_sample1_1_button = new QPushButton();
+    this->load_sample1_1_button->setObjectName("Load_track_sample_button_a");
+    this->load_sample1_1_button->setToolTip("<p>" + tr("Load selected track to sample A") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
+    this->load_sample1_1_button->setFixedSize(20, 20);
+    this->load_sample1_1_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_1_button->setCheckable(true);
+
+    this->load_sample1_2_button = new QPushButton();
+    this->load_sample1_2_button->setObjectName("Load_track_sample_button_b");
+    this->load_sample1_2_button->setToolTip("<p>" + tr("Load selected track to sample B") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
+    this->load_sample1_2_button->setFixedSize(20, 20);
+    this->load_sample1_2_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_2_button->setCheckable(true);
+
+    this->load_sample1_3_button = new QPushButton();
+    this->load_sample1_3_button->setObjectName("Load_track_sample_button_c");
+    this->load_sample1_3_button->setToolTip("<p>" + tr("Load selected track to sample C") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
+    this->load_sample1_3_button->setFixedSize(20, 20);
+    this->load_sample1_3_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_3_button->setCheckable(true);
+
+    this->load_sample1_4_button = new QPushButton();
+    this->load_sample1_4_button->setObjectName("Load_track_sample_button_d");
+    this->load_sample1_4_button->setToolTip("<p>" + tr("Load selected track to sample D") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
+    this->load_sample1_4_button->setFixedSize(20, 20);
+    this->load_sample1_4_button->setFocusPolicy(Qt::NoFocus);
+    this->load_sample1_4_button->setCheckable(true);
+
+    if (this->nb_decks > 1)
+    {
+        this->load_track_on_deck2_button = new QPushButton();
+        this->load_track_on_deck2_button->setObjectName("Load_track_button_2");
+        this->load_track_on_deck2_button->setToolTip("<p>" + tr("Load selected track to deck 2") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
+        this->load_track_on_deck2_button->setFixedSize(24, 24);
+        this->load_track_on_deck2_button->setFocusPolicy(Qt::NoFocus);
+        this->load_track_on_deck2_button->setCheckable(true);
+
+        this->show_next_key_from_deck2_button = new QPushButton();
+        this->show_next_key_from_deck2_button->setObjectName("Show_next_key_button");
+        this->show_next_key_from_deck2_button->setToolTip("<p>" + tr("Show deck 2 next potential tracks") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS) + "</em>");
+        this->show_next_key_from_deck2_button->setFixedSize(24, 24);
+        this->show_next_key_from_deck2_button->setFocusPolicy(Qt::NoFocus);
+        this->show_next_key_from_deck2_button->setCheckable(true);
+
+        this->load_sample2_1_button = new QPushButton();
+        this->load_sample2_1_button->setObjectName("Load_track_sample_button_a");
+        this->load_sample2_1_button->setToolTip("<p>" + tr("Load selected track to sample A") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
+        this->load_sample2_1_button->setFixedSize(20, 20);
+        this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_1_button->setCheckable(true);
+
+        this->load_sample2_2_button = new QPushButton();
+        this->load_sample2_2_button->setObjectName("Load_track_sample_button_b");
+        this->load_sample2_2_button->setToolTip("<p>" + tr("Load selected track to sample B") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
+        this->load_sample2_2_button->setFixedSize(20, 20);
+        this->load_sample2_2_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_2_button->setCheckable(true);        
+
+        this->load_sample2_3_button = new QPushButton();
+        this->load_sample2_3_button->setObjectName("Load_track_sample_button_c");
+        this->load_sample2_3_button->setToolTip("<p>" + tr("Load selected track to sample C") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
+        this->load_sample2_3_button->setFixedSize(20, 20);
+        this->load_sample2_3_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_3_button->setCheckable(true);
+
+        this->load_sample2_4_button = new QPushButton();
+        this->load_sample2_4_button->setObjectName("Load_track_sample_button_d");
+        this->load_sample2_4_button->setToolTip("<p>" + tr("Load selected track to sample D") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
+        this->load_sample2_4_button->setFixedSize(20, 20);
+        this->load_sample2_4_button->setFocusPolicy(Qt::NoFocus);
+        this->load_sample2_4_button->setCheckable(true);
+    }
+
+    // File browser buttons.
+    QWidget *file_browser_buttons_widget = new QWidget();
+    QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
+    QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_3_button);
+    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_4_button);
+    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout();
+    if (this->nb_decks > 1)
+    {
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_1_button);
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_2_button);
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
+        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
+    }
+    file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
+    file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
+    file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
+    file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 3, Qt::AlignCenter);
+    if (this->nb_decks > 1)
+    {
+        file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
+        file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
+        file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
+    }
+    file_browser_buttons_layout->setColumnStretch(0, 1);
+    file_browser_buttons_layout->setColumnStretch(1, 100);
+    file_browser_buttons_layout->setColumnStretch(2, 1);
+    file_browser_buttons_layout->setColumnStretch(3, 10);
+    if (this->nb_decks > 1)
+    {
+        file_browser_buttons_layout->setColumnStretch(4, 1);
+        file_browser_buttons_layout->setColumnStretch(5, 100);
+        file_browser_buttons_layout->setColumnStretch(6, 1);
+    }
+    file_browser_buttons_widget->setFixedHeight(37);
+
+    // Create layout and group box for file browser.
+    QVBoxLayout *file_browser_layout = new QVBoxLayout();
+    file_browser_layout->addWidget(file_browser_buttons_widget);
+
+    QFrame* horiz_line = new QFrame();
+    horiz_line->setFrameShape(QFrame::HLine);
+    horiz_line->setObjectName("Horizontal_line");
+    file_browser_layout->addWidget(horiz_line);
+
+    QVBoxLayout *file_browser_and_search_layout = new QVBoxLayout();
+    file_browser_and_search_layout->addWidget(this->file_browser);
+    file_browser_and_search_layout->addWidget(this->file_search, 0, Qt::AlignBottom);
+    file_browser_and_search_layout->setMargin(0);
+    QWidget *file_browser_and_search_widget = new QWidget();
+    file_browser_and_search_widget->setLayout(file_browser_and_search_layout);
+
+    this->browser_splitter = new QSplitter();
+    this->browser_splitter->addWidget(this->folder_browser);
+    this->browser_splitter->addWidget(file_browser_and_search_widget);
+    this->browser_splitter->setStretchFactor(0, 1);
+    this->browser_splitter->setStretchFactor(1, 4);
+    file_browser_layout->addWidget(this->browser_splitter);
+
+    this->file_browser_gbox = new QGroupBox();
+    this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
+    this->file_browser_gbox->setLayout(file_browser_layout);
+
+    this->file_layout = new QHBoxLayout();
+    this->file_layout->addWidget(this->file_browser_gbox, 50);
+}
+
+void
+Gui::clean_file_browser_area()
+{
+    delete this->watcher_parse_directory;
+    delete this->treeview_icon_provider;
+    delete this->folder_system_model;
+    delete this->folder_browser;
+    delete this->file_system_model;
+    delete this->file_browser;
+    delete this->file_layout;
+}
+
+void
+Gui::connect_file_browser_area()
+{
+    // Refresh track browser.
+    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
+
+    // Load track on deck.
+    QObject::connect(this->load_track_on_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+    if (this->nb_decks > 1)
+        QObject::connect(this->load_track_on_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+
+    // Show next tracks (based on music key).
+    QObject::connect(this->show_next_key_from_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck1()));
+    if (this->nb_decks > 1)
+        QObject::connect(this->show_next_key_from_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck2()));
+
+    // Open folder or playlist from file browser on double click.
+    QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
+
+    // Resize column with file name when expanding/collapsing a directory.
+    QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand(QModelIndex)));
+    QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand(QModelIndex)));
+
+    // Connect the keyboard shortcut that collapse tree.
+    this->shortcut_collapse_browser = new QShortcut(this->file_browser);
+    QObject::connect(this->shortcut_collapse_browser, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
+
+    // Connect the keyboard shortcut to start decoding process on selected file.
+    this->shortcut_load_audio_file = new QShortcut(this->file_browser);
+    QObject::connect(this->shortcut_load_audio_file, SIGNAL(activated()), this, SLOT(run_audio_file_decoding_process()));
+
+    // Sort track browser when clicking on header.
     QObject::connect(this->file_browser->header(), SIGNAL(sectionClicked(int)), this, SLOT(on_file_browser_header_click(int)));
+
+    // Connect the keyboard shortcut to show next audio file according to current music key.
+    this->shortcut_show_next_keys = new QShortcut(this->file_browser);
+    QObject::connect(this->shortcut_show_next_keys, SIGNAL(activated()), this, SLOT(show_next_keys()));
+
+    // Load track in sampler.
+    this->shortcut_load_sample_file_1 = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_2 = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
+    this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
+    QObject::connect(this->shortcut_load_sample_file_1, SIGNAL(activated()), this, SLOT(run_sample_1_decoding_process()));
+    QObject::connect(this->shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
+    QObject::connect(this->shortcut_load_sample_file_3, SIGNAL(activated()), this, SLOT(run_sample_3_decoding_process()));
+    QObject::connect(this->shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
+    QObject::connect(this->load_sample1_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
+    QObject::connect(this->load_sample1_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck1()));
+    QObject::connect(this->load_sample1_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck1()));
+    QObject::connect(this->load_sample1_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
+    if (this->nb_decks > 1)
+    {
+        QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
+        QObject::connect(this->load_sample2_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
+        QObject::connect(this->load_sample2_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
+        QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
+    }
+
+    // Connect thread states for audio collection read and write to DB.
+    QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
 
     // Add context menu for file browser (load track and samples).
     QAction *load_on_deck_1_action = new QAction(tr("Load on deck 1"), this);
@@ -2166,221 +2340,32 @@ Gui::init_file_browser_area()
         this->file_browser->addAction(load_on_sampler_2_action);
     }
 
-    // Open folder or playlist from file browser on double click.
-    QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
+    // Search bar for file browser.
+    this->shortcut_file_search             = new QShortcut(this->window);
+    this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
+    this->shortcut_file_search_press_esc   = new QShortcut(this->file_search);
+    QObject::connect(this->shortcut_file_search, SIGNAL(activated()), this, SLOT(set_focus_search_bar()));
+    QObject::connect(this->file_search, SIGNAL(textChanged(QString)), this, SLOT(file_search_string(QString)));
+    QObject::connect(this->shortcut_file_search_press_enter, SIGNAL(activated()), this, SLOT(press_enter_in_search_bar()));
+    QObject::connect(this->file_search, SIGNAL(returnPressed()), this, SLOT(press_enter_in_search_bar()));
+    QObject::connect(this->shortcut_file_search_press_esc, SIGNAL(activated()), this, SLOT(press_esc_in_search_bar()));
 
-    // Resize column with file name when expanding/collapsing a directory.
-    QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand(QModelIndex)));
-    QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand(QModelIndex)));
+    // Progress for file analyzis and storage.
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
+                     this->progress_bar,                                SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
+                     this,                                              SLOT(update_refresh_progress_value(int)));
 
-    // Connect the keyboard shortcut that collapse tree.
-    QObject::connect(this->shortcut_collapse_browser, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
+    // Progress for reading file data from storage.
+    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressRangeChanged(int,int)),
+                     this->progress_bar,                               SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressValueChanged(int)),
+                     this,                                             SLOT(update_refresh_progress_value(int)));
 
-    // Connect the keyboard shortcut to start decoding process on selected file.
-    QObject::connect(this->shortcut_load_audio_file, SIGNAL(activated()), this, SLOT(run_audio_file_decoding_process()));
-
-    // Connect the keyboard shortcut that will highlight next potential tracks.
-    QObject::connect(this->shortcut_get_next_audio_tracks, SIGNAL(activated()), this, SLOT(show_next_keys()));
-
-    // Connect keyboard shortcuts to start decoding for the sampler.
-    QObject::connect(this->shortcut_load_sample_file_1, SIGNAL(activated()), this, SLOT(run_sample_1_decoding_process()));
-    QObject::connect(this->shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
-    QObject::connect(this->shortcut_load_sample_file_3, SIGNAL(activated()), this, SLOT(run_sample_3_decoding_process()));
-    QObject::connect(this->shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
-
-    // Connect the keyboard shortcut to show next audio file according to current music key.
-    QObject::connect(this->shortcut_show_next_keys, SIGNAL(activated()), this, SLOT(show_next_keys()));
-
-    // Connect thread states for audio collection read and write to DB.
-    QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
-
-    // Create function buttons for file browser.
-    this->refresh_file_browser = new QPushButton();
-    this->refresh_file_browser->setObjectName("Refresh_browser_button");
-    this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
-    this->refresh_file_browser->setFixedSize(24, 24);
-    this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
-    this->refresh_file_browser->setCheckable(true);
-    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
-
-    this->load_track_on_deck1_button = new QPushButton();
-    this->load_track_on_deck1_button->setObjectName("Load_track_button_1");
-    this->load_track_on_deck1_button->setToolTip("<p>" + tr("Load selected track to deck 1") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
-    this->load_track_on_deck1_button->setFixedSize(24, 24);
-    this->load_track_on_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->load_track_on_deck1_button->setCheckable(true);
-    QObject::connect(this->load_track_on_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
-
-    this->show_next_key_from_deck1_button = new QPushButton();
-    this->show_next_key_from_deck1_button->setObjectName("Show_next_key_button");
-    this->show_next_key_from_deck1_button->setToolTip("<p>" + tr("Show deck 1 next potential tracks") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK) + "</em>");
-    this->show_next_key_from_deck1_button->setFixedSize(24, 24);
-    this->show_next_key_from_deck1_button->setFocusPolicy(Qt::NoFocus);
-    this->show_next_key_from_deck1_button->setCheckable(true);
-    QObject::connect(this->show_next_key_from_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck1()));
-
-    this->load_sample1_1_button = new QPushButton();
-    this->load_sample1_1_button->setObjectName("Load_track_sample_button_a");
-    this->load_sample1_1_button->setToolTip("<p>" + tr("Load selected track to sample A") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
-    this->load_sample1_1_button->setFixedSize(20, 20);
-    this->load_sample1_1_button->setFocusPolicy(Qt::NoFocus);
-    this->load_sample1_1_button->setCheckable(true);
-    QObject::connect(this->load_sample1_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
-
-    this->load_sample1_2_button = new QPushButton();
-    this->load_sample1_2_button->setObjectName("Load_track_sample_button_b");
-    this->load_sample1_2_button->setToolTip("<p>" + tr("Load selected track to sample B") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
-    this->load_sample1_2_button->setFixedSize(20, 20);
-    this->load_sample1_2_button->setFocusPolicy(Qt::NoFocus);
-    this->load_sample1_2_button->setCheckable(true);
-    QObject::connect(this->load_sample1_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck1()));
-
-    this->load_sample1_3_button = new QPushButton();
-    this->load_sample1_3_button->setObjectName("Load_track_sample_button_c");
-    this->load_sample1_3_button->setToolTip("<p>" + tr("Load selected track to sample C") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
-    this->load_sample1_3_button->setFixedSize(20, 20);
-    this->load_sample1_3_button->setFocusPolicy(Qt::NoFocus);
-    this->load_sample1_3_button->setCheckable(true);
-    QObject::connect(this->load_sample1_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck1()));
-
-    this->load_sample1_4_button = new QPushButton();
-    this->load_sample1_4_button->setObjectName("Load_track_sample_button_d");
-    this->load_sample1_4_button->setToolTip("<p>" + tr("Load selected track to sample D") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
-    this->load_sample1_4_button->setFixedSize(20, 20);
-    this->load_sample1_4_button->setFocusPolicy(Qt::NoFocus);
-    this->load_sample1_4_button->setCheckable(true);
-    QObject::connect(this->load_sample1_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
-
-    if (this->nb_decks > 1)
-    {
-        this->load_track_on_deck2_button = new QPushButton();
-        this->load_track_on_deck2_button->setObjectName("Load_track_button_2");
-        this->load_track_on_deck2_button->setToolTip("<p>" + tr("Load selected track to deck 2") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
-        this->load_track_on_deck2_button->setFixedSize(24, 24);
-        this->load_track_on_deck2_button->setFocusPolicy(Qt::NoFocus);
-        this->load_track_on_deck2_button->setCheckable(true);
-        QObject::connect(this->load_track_on_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
-
-        this->show_next_key_from_deck2_button = new QPushButton();
-        this->show_next_key_from_deck2_button->setObjectName("Show_next_key_button");
-        this->show_next_key_from_deck2_button->setToolTip("<p>" + tr("Show deck 2 next potential tracks") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK) + "</em>");
-        this->show_next_key_from_deck2_button->setFixedSize(24, 24);
-        this->show_next_key_from_deck2_button->setFocusPolicy(Qt::NoFocus);
-        this->show_next_key_from_deck2_button->setCheckable(true);
-        QObject::connect(this->show_next_key_from_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck2()));
-
-        this->load_sample2_1_button = new QPushButton();
-        this->load_sample2_1_button->setObjectName("Load_track_sample_button_a");
-        this->load_sample2_1_button->setToolTip("<p>" + tr("Load selected track to sample A") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
-        this->load_sample2_1_button->setFixedSize(20, 20);
-        this->load_sample2_1_button->setFocusPolicy(Qt::NoFocus);
-        this->load_sample2_1_button->setCheckable(true);
-        QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
-
-        this->load_sample2_2_button = new QPushButton();
-        this->load_sample2_2_button->setObjectName("Load_track_sample_button_b");
-        this->load_sample2_2_button->setToolTip("<p>" + tr("Load selected track to sample B") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
-        this->load_sample2_2_button->setFixedSize(20, 20);
-        this->load_sample2_2_button->setFocusPolicy(Qt::NoFocus);
-        this->load_sample2_2_button->setCheckable(true);
-        QObject::connect(this->load_sample2_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
-
-        this->load_sample2_3_button = new QPushButton();
-        this->load_sample2_3_button->setObjectName("Load_track_sample_button_c");
-        this->load_sample2_3_button->setToolTip("<p>" + tr("Load selected track to sample C") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
-        this->load_sample2_3_button->setFixedSize(20, 20);
-        this->load_sample2_3_button->setFocusPolicy(Qt::NoFocus);
-        this->load_sample2_3_button->setCheckable(true);
-        QObject::connect(this->load_sample2_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
-
-        this->load_sample2_4_button = new QPushButton();
-        this->load_sample2_4_button->setObjectName("Load_track_sample_button_d");
-        this->load_sample2_4_button->setToolTip("<p>" + tr("Load selected track to sample D") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
-        this->load_sample2_4_button->setFixedSize(20, 20);
-        this->load_sample2_4_button->setFocusPolicy(Qt::NoFocus);
-        this->load_sample2_4_button->setCheckable(true);
-        QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
-    }
-
-    // File browser buttons.
-    QWidget *file_browser_buttons_widget = new QWidget();
-    QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
-    QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_3_button);
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_4_button);
-    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout();
-    if (this->nb_decks > 1)
-    {
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_1_button);
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_2_button);
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
-    }
-    file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
-    file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
-    file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 3, Qt::AlignCenter);
-    if (this->nb_decks > 1)
-    {
-        file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
-        file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
-        file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
-    }
-    file_browser_buttons_layout->setColumnStretch(0, 1);
-    file_browser_buttons_layout->setColumnStretch(1, 100);
-    file_browser_buttons_layout->setColumnStretch(2, 1);
-    file_browser_buttons_layout->setColumnStretch(3, 10);
-    if (this->nb_decks > 1)
-    {
-        file_browser_buttons_layout->setColumnStretch(4, 1);
-        file_browser_buttons_layout->setColumnStretch(5, 100);
-        file_browser_buttons_layout->setColumnStretch(6, 1);
-    }
-    file_browser_buttons_widget->setFixedHeight(37);
-
-    // Create layout and group box for file browser.
-    QVBoxLayout *file_browser_layout = new QVBoxLayout();
-    file_browser_layout->addWidget(file_browser_buttons_widget);
-
-    QFrame* horiz_line = new QFrame();
-    horiz_line->setFrameShape(QFrame::HLine);
-    horiz_line->setObjectName("Horizontal_line");
-    file_browser_layout->addWidget(horiz_line);
-
-    QVBoxLayout *file_browser_and_search_layout = new QVBoxLayout();
-    file_browser_and_search_layout->addWidget(this->file_browser);
-    file_browser_and_search_layout->addWidget(this->file_search, 0, Qt::AlignBottom);
-    file_browser_and_search_layout->setMargin(0);
-    QWidget *file_browser_and_search_widget = new QWidget();
-    file_browser_and_search_widget->setLayout(file_browser_and_search_layout);
-
-    this->browser_splitter = new QSplitter();
-    this->browser_splitter->addWidget(this->folder_browser);
-    this->browser_splitter->addWidget(file_browser_and_search_widget);
-    this->browser_splitter->setStretchFactor(0, 1);
-    this->browser_splitter->setStretchFactor(1, 4);
-    file_browser_layout->addWidget(this->browser_splitter);
-
-    this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
-    this->file_browser_gbox->setLayout(file_browser_layout);
-
-    this->file_layout = new QHBoxLayout();
-    this->file_layout->addWidget(this->file_browser_gbox, 50);
-}
-
-void
-Gui::clean_file_browser_area()
-{
-    delete this->file_layout;
-}
-
-void
-Gui::connect_file_browser_area()
-{
-
+    // Parse directory thread.
+    this->watcher_parse_directory = new QFutureWatcher<void>;
+    connect(this->watcher_parse_directory, SIGNAL(finished()),
+            this,                          SLOT(run_concurrent_read_collection_from_db()));
 }
 
 void
@@ -2400,7 +2385,7 @@ Gui::set_help_shortcut_value()
     this->help_load_deck_value->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)
                                         + "/"
                                         + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK));
-    this->help_next_track_value->setText(this->settings->get_keyboard_shortcut(KB_GET_NEXT_TRACK_FROM_DECK));
+    this->help_next_track_value->setText(this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS));
     this->help_cue_value->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT1_ON_DECK)
                                   + "/"
                                   + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT1_ON_DECK)

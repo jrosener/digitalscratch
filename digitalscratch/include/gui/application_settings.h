@@ -97,8 +97,6 @@ using namespace std;
 #define KB_LOAD_TRACK_ON_DECK_DEFAULT       "F1"
 #define KB_PLAY_BEGIN_TRACK_ON_DECK         "keyboard_shortcuts/kb_play_begin_track_on_deck"
 #define KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT "F2"
-#define KB_GET_NEXT_TRACK_FROM_DECK         "keyboard_shortcuts/kb_get_next_track_from_deck"
-#define KB_GET_NEXT_TRACK_FROM_DECK_DEFAULT "F3"
 
 #define KB_SET_CUE_POINT1_ON_DECK           "keyboard_shortcuts/kb_set_cue_point1_on_deck"
 #define KB_SET_CUE_POINT1_ON_DECK_DEFAULT   "F5"

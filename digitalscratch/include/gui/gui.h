@@ -161,10 +161,15 @@ class Gui : public QObject
     QPushButton                        *help_button;
     QPushButton                        *quit_button;
     QHBoxLayout                        *header_layout;
+    QShortcut                          *shortcut_fullscreen;
+    QShortcut                          *shortcut_help;
 
     // Decks area.
     QHBoxLayout                        *decks_layout;
     Remaining_time                    **decks_remaining_time;
+    QShortcut                          *shortcut_go_to_begin;
+    QShortcut                         **shortcut_set_cue_points;
+    QShortcut                         **shortcut_go_to_cue_points;
 
     // Deck 1.
     QLabel                             *deck1_track_name;
@@ -219,9 +224,33 @@ class Gui : public QObject
     QLabel                            **sampler2_remainingtime;
     QWidget                            *sampler2_widget;
 
-    // File browser area.
+    // File and folder browser area.
     QHBoxLayout                        *file_layout;
 
+    // Folder browser.
+    TreeViewIconProvider               *treeview_icon_provider;
+    QFileSystemModel                   *folder_system_model;
+    QTreeView                          *folder_browser;
+
+    // Track browser.
+    Audio_collection_model             *file_system_model;
+    QTreeView                          *file_browser;
+    QShortcut                          *shortcut_collapse_browser;
+    QShortcut                          *shortcut_load_audio_file;
+    QShortcut                          *shortcut_load_sample_file_1;
+    QShortcut                          *shortcut_load_sample_file_2;
+    QShortcut                          *shortcut_load_sample_file_3;
+    QShortcut                          *shortcut_load_sample_file_4;
+    QShortcut                          *shortcut_show_next_keys;
+    QShortcut                          *shortcut_file_search;
+    QShortcut                          *shortcut_file_search_press_enter;
+    QShortcut                          *shortcut_file_search_press_esc;
+
+    // Track search bar.
+    QLineEdit                          *file_search;
+    bool                                search_from_begin;
+    unsigned int                        file_browser_selected_index;
+    QString                             last_search_string;
 
     PlaybackQGroupBox                  *deck1_gbox;
     PlaybackQGroupBox                  *deck2_gbox;
@@ -234,9 +263,6 @@ class Gui : public QObject
     Config_dialog                      *config_dialog;
     QString                             window_style;
     QSplitter                          *browser_splitter;
-    QTreeView                          *file_browser;
-    QTreeView                          *folder_browser;
-    QLineEdit                          *file_search;
     QDialog                            *about_dialog;
     QDialog                            *refresh_audio_collection_dialog;
     QDialog                            *error_dialog;
@@ -255,28 +281,9 @@ class Gui : public QObject
     unsigned short int                  nb_decks;
     Sound_driver_access_rules          *sound_card;
     Sound_capture_and_playback_process *capture_and_play;
-    QFileSystemModel                   *folder_system_model;
-    Audio_collection_model             *file_system_model;
-    TreeViewIconProvider               *treeview_icon_provider;
     int                                *dscratch_ids;
     Application_settings               *settings;
     QShortcut                          *shortcut_switch_playback;
-    QShortcut                          *shortcut_collapse_browser;
-    QShortcut                          *shortcut_load_audio_file;
-    QShortcut                          *shortcut_go_to_begin;
-    QShortcut                          *shortcut_get_next_audio_tracks;
-    QShortcut                         **shortcut_set_cue_points;
-    QShortcut                         **shortcut_go_to_cue_points;
-    QShortcut                          *shortcut_load_sample_file_1;
-    QShortcut                          *shortcut_load_sample_file_2;
-    QShortcut                          *shortcut_load_sample_file_3;
-    QShortcut                          *shortcut_load_sample_file_4;
-    QShortcut                          *shortcut_show_next_keys;
-    QShortcut                          *shortcut_fullscreen;
-    QShortcut                          *shortcut_help;
-    QShortcut                          *shortcut_file_search;
-    QShortcut                          *shortcut_file_search_press_enter;
-    QShortcut                          *shortcut_file_search_press_esc;
     QGroupBox                          *help_groupbox;
     QGroupBox                          *file_browser_gbox;
     QPushButton                        *refresh_file_browser;
@@ -308,9 +315,6 @@ class Gui : public QObject
     QLabel                             *help_sample_value;
     QLabel                             *help_browse_value1;
     QLabel                             *help_browse_value2;
-    bool                                search_from_begin;
-    QString                             last_search_string;
-    unsigned int                        file_browser_selected_index;
     bool                                is_window_rendered;
     QFutureWatcher<void>               *watcher_parse_directory;
 
@@ -333,8 +337,6 @@ class Gui : public QObject
 
  private:
     bool create_main_window();
-    void init_keyboard_shortcuts();
-    void clean_keyboard_shortcuts();
     void init_header_buttons();
     void clean_header_buttons();
     void connect_header_buttons();
