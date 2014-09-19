@@ -982,7 +982,7 @@ Gui::create_main_window()
     this->is_window_rendered = false;
     this->window_style       = GUI_STYLE_DEFAULT;
 
-    // Init areas (header buttons, decks, samplers, file browser, bottom help).
+    // Init areas (header buttons, decks, samplers, file browser, bottom help, bottom status bar).
     this->init_header_buttons();
     this->init_decks_area();
     this->init_samplers_area();
@@ -990,62 +990,11 @@ Gui::create_main_window()
     this->init_bottom_help();
     this->init_bottom_status();
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Deck and sampler selection.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Create mouse action to select deck/sampler.
-    QObject::connect(this->deck1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
-    QObject::connect(this->deck2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
-    QObject::connect(this->sampler1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
-    QObject::connect(this->sampler2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
-
-    // Create mouse action when deck/sampler is hovered (mouse entering area).
-    QSignalMapper *deck_enter_signal_mapper = new QSignalMapper(this);
-    deck_enter_signal_mapper->setMapping(this->deck1_gbox, 0);
-    QObject::connect(this->deck1_gbox, SIGNAL(hover()), deck_enter_signal_mapper, SLOT(map()));
-    deck_enter_signal_mapper->setMapping(this->deck2_gbox, 1);
-    QObject::connect(this->deck2_gbox, SIGNAL(hover()), deck_enter_signal_mapper, SLOT(map()));
-    QObject::connect(deck_enter_signal_mapper, SIGNAL(mapped(int)), this, SLOT(hover_playback(int)));
-
-    QSignalMapper *sampler_enter_signal_mapper = new QSignalMapper(this);
-    sampler_enter_signal_mapper->setMapping(this->sampler1_gbox, 0);
-    QObject::connect(this->sampler1_gbox, SIGNAL(hover()), sampler_enter_signal_mapper, SLOT(map()));
-    sampler_enter_signal_mapper->setMapping(this->sampler2_gbox, 1);
-    QObject::connect(this->sampler2_gbox, SIGNAL(hover()), sampler_enter_signal_mapper, SLOT(map()));
-    QObject::connect(sampler_enter_signal_mapper, SIGNAL(mapped(int)), this, SLOT(hover_playback(int)));
-
-    // Create mouse action when deck/sampler is unhovered (mouse leaving area).
-    QSignalMapper *deck_leave_signal_mapper = new QSignalMapper(this);
-    deck_leave_signal_mapper->setMapping(this->deck1_gbox, 0);
-    QObject::connect(this->deck1_gbox, SIGNAL(unhover()), deck_leave_signal_mapper, SLOT(map()));
-    deck_leave_signal_mapper->setMapping(this->deck2_gbox, 1);
-    QObject::connect(this->deck2_gbox, SIGNAL(unhover()), deck_leave_signal_mapper, SLOT(map()));
-    QObject::connect(deck_leave_signal_mapper, SIGNAL(mapped(int)), this, SLOT(unhover_playback(int)));
-
-    QSignalMapper *sampler_leave_signal_mapper = new QSignalMapper(this);
-    sampler_leave_signal_mapper->setMapping(this->sampler1_gbox, 0);
-    QObject::connect(this->sampler1_gbox, SIGNAL(unhover()), sampler_leave_signal_mapper, SLOT(map()));
-    sampler_leave_signal_mapper->setMapping(this->sampler2_gbox, 1);
-    QObject::connect(this->sampler2_gbox, SIGNAL(unhover()), sampler_leave_signal_mapper, SLOT(map()));
-    QObject::connect(sampler_leave_signal_mapper, SIGNAL(mapped(int)), this, SLOT(unhover_playback(int)));
-
-    // Preselect deck and sampler 1.
-    this->deck1_gbox->setProperty("selected", true);
-    this->sampler1_gbox->setProperty("selected", true);
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Make connections.
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Connect keyboard shortcut to switch selection of decks/samplers.
-    this->shortcut_switch_playback         = new QShortcut(this->window);
-    QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
-
+    // Bind buttons/shortcuts to events.
     this->connect_header_buttons();
     this->connect_decks_area();
     this->connect_samplers_area();
+    this->connect_decks_and_samplers_selection();
     this->connect_file_browser_area();
 
     // Open error window.
@@ -1852,6 +1801,54 @@ Gui::connect_samplers_area()
     // State for samplers.
     QObject::connect(this->playback, SIGNAL(sampler_state_changed(int, int, bool)),
                      this,           SLOT(set_sampler_state(int, int, bool)));
+}
+
+void
+Gui::connect_decks_and_samplers_selection()
+{
+    // Create mouse action to select deck/sampler.
+    QObject::connect(this->deck1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
+    QObject::connect(this->deck2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
+    QObject::connect(this->sampler1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
+    QObject::connect(this->sampler2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
+
+    // Create mouse action when deck/sampler is hovered (mouse entering area).
+    QSignalMapper *deck_enter_signal_mapper = new QSignalMapper(this);
+    deck_enter_signal_mapper->setMapping(this->deck1_gbox, 0);
+    QObject::connect(this->deck1_gbox, SIGNAL(hover()), deck_enter_signal_mapper, SLOT(map()));
+    deck_enter_signal_mapper->setMapping(this->deck2_gbox, 1);
+    QObject::connect(this->deck2_gbox, SIGNAL(hover()), deck_enter_signal_mapper, SLOT(map()));
+    QObject::connect(deck_enter_signal_mapper, SIGNAL(mapped(int)), this, SLOT(hover_playback(int)));
+
+    QSignalMapper *sampler_enter_signal_mapper = new QSignalMapper(this);
+    sampler_enter_signal_mapper->setMapping(this->sampler1_gbox, 0);
+    QObject::connect(this->sampler1_gbox, SIGNAL(hover()), sampler_enter_signal_mapper, SLOT(map()));
+    sampler_enter_signal_mapper->setMapping(this->sampler2_gbox, 1);
+    QObject::connect(this->sampler2_gbox, SIGNAL(hover()), sampler_enter_signal_mapper, SLOT(map()));
+    QObject::connect(sampler_enter_signal_mapper, SIGNAL(mapped(int)), this, SLOT(hover_playback(int)));
+
+    // Create mouse action when deck/sampler is unhovered (mouse leaving area).
+    QSignalMapper *deck_leave_signal_mapper = new QSignalMapper(this);
+    deck_leave_signal_mapper->setMapping(this->deck1_gbox, 0);
+    QObject::connect(this->deck1_gbox, SIGNAL(unhover()), deck_leave_signal_mapper, SLOT(map()));
+    deck_leave_signal_mapper->setMapping(this->deck2_gbox, 1);
+    QObject::connect(this->deck2_gbox, SIGNAL(unhover()), deck_leave_signal_mapper, SLOT(map()));
+    QObject::connect(deck_leave_signal_mapper, SIGNAL(mapped(int)), this, SLOT(unhover_playback(int)));
+
+    QSignalMapper *sampler_leave_signal_mapper = new QSignalMapper(this);
+    sampler_leave_signal_mapper->setMapping(this->sampler1_gbox, 0);
+    QObject::connect(this->sampler1_gbox, SIGNAL(unhover()), sampler_leave_signal_mapper, SLOT(map()));
+    sampler_leave_signal_mapper->setMapping(this->sampler2_gbox, 1);
+    QObject::connect(this->sampler2_gbox, SIGNAL(unhover()), sampler_leave_signal_mapper, SLOT(map()));
+    QObject::connect(sampler_leave_signal_mapper, SIGNAL(mapped(int)), this, SLOT(unhover_playback(int)));
+
+    // Preselect deck and sampler 1.
+    this->deck1_gbox->setProperty("selected", true);
+    this->sampler1_gbox->setProperty("selected", true);
+
+    // Connect keyboard shortcut to switch selection of decks/samplers.
+    this->shortcut_switch_playback = new QShortcut(this->window);
+    QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
 }
 
 void

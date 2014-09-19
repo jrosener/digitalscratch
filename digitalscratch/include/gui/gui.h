@@ -356,6 +356,7 @@ class Gui : public QObject
     void init_sampler2_area();
     void clean_samplers_area();
     void connect_samplers_area();
+    void connect_decks_and_samplers_selection();
     void init_file_browser_area();
     void clean_file_browser_area();
     void connect_file_browser_area();
