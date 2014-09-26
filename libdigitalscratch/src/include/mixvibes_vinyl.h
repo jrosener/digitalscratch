@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _MIXVIBES_VINYL_H_
-#define _MIXVIBES_VINYL_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -83,5 +82,3 @@ class Mixvibes_vinyl : public Coded_vinyl
         float get_default_min_amplitude_for_normal_speed();
         float get_default_min_amplitude();
 };
-
-#endif //_MIXVIBES_VINYL_H_

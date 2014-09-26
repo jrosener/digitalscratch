@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef PLAYLIST_H_
-#define PLAYLIST_H_
+#pragma once
 
 #include <QObject>
 #include <QString>
@@ -58,5 +57,3 @@ class Playlist : public QObject
     QStringList get_tracklist();
     void        add_track(const QString &in_filename);
 };
-
-#endif /* PLAYLIST_H_ */

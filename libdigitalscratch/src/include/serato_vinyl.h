@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _SERATO_VINYL_H_
-#define _SERATO_VINYL_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -86,5 +85,3 @@ class Serato_vinyl : public Coded_vinyl
     private:
 
 };
-
-#endif //_SERATO_VINYL_H_

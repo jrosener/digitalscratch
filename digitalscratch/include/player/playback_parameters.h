@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef PLAYBACK_PARAMETERS_H_
-#define PLAYBACK_PARAMETERS_H_
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -78,5 +77,3 @@ class Playback_parameters : public QObject
     void speed_changed(float in_speed);        // Speed.
     void volume_changed(double in_volume);     // Volume.
 };
-
-#endif /* PLAYBACK_PARAMETERS_H_ */

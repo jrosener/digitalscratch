@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef WAVEFORM_H_
-#define WAVEFORM_H_
+#pragma once
 
 #include <QLabel>
 #include "audio_track.h"
@@ -84,5 +83,3 @@ class Waveform : public QLabel
     void slider_position_changed(float in_position);     // Position is between 0.0 and 1.0.
     void cue_slider_position_changed(float in_position); // Position is between 0.0 and 1.0.
 };
-
-#endif /* WAVEFORM_H_ */

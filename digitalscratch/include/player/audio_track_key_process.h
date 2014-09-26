@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef AUDIO_TRACK_KEY_PROCESS_H_
-#define AUDIO_TRACK_KEY_PROCESS_H_
+#pragma once
 
 #include <iostream>
 #include <audio_track.h>
@@ -51,5 +50,3 @@ class Audio_track_key_process
 
     bool run();         // Compute music key of the track and set it to the Audio_track object.
 };
-
-#endif /* AUDIO_TRACK_KEY_PROCESS_H_ */

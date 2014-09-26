@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _DIGITAL_SCRATCH_H_
-#define _DIGITAL_SCRATCH_H_
+#pragma once
 
 #include <string>
 #include "dscratch_parameters.h"
@@ -134,5 +133,3 @@ class Digital_scratch : public Controller
         void  calculate_volume();
         float get_volume();
 };
-
-#endif //_DIGITAL_SCRATCH_H_

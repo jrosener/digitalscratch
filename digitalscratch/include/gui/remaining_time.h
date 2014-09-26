@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef REMAINING_TIME_H_
-#define REMAINING_TIME_H_
+#pragma once
 
 #include <QLabel>
 #include <application_const.h>
@@ -54,5 +53,3 @@ class Remaining_time : QObject
     Remaining_time();
     ~Remaining_time();
 };
-
-#endif /* REMAINING_TIME_H_ */

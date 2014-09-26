@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef PLAYLIST_PERSISTENCE_H_
-#define PLAYLIST_PERSISTENCE_H_
+#pragma once
 
 #include "playlist.h"
 using namespace std;
@@ -48,5 +47,3 @@ class Playlist_persistence : public QObject
     bool read_m3u(QString in_file_name, Playlist *&io_playlist);
     bool read_pls(QString in_file_name, Playlist *&io_playlist);
 };
-
-#endif /* PLAYLIST_PERSISTENCE_H_ */

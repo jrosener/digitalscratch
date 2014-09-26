@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _SPEED_H_
-#define _SPEED_H_
+#pragma once
 
 #include "dscratch_parameters.h"
 #include "playing_parameter.h"
@@ -148,5 +147,3 @@ class Speed : public Playing_parameter
         bool set_max_nb_cycle_before_starting(int nb);
 
 };
-
-#endif //_SPEED_H_

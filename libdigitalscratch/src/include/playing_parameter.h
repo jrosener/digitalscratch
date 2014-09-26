@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _PLAYING_PARAMETER_H_
-#define _PLAYING_PARAMETER_H_
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -85,5 +84,3 @@ class Playing_parameter
          */
         bool set_turntable_name(string turntable_name);
 };
-
-#endif //_PLAYING_PARAMETER_H_

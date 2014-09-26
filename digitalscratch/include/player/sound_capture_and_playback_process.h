@@ -31,8 +31,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SOUND_CAPTURE_AND_PLAYBACK_PROCESS_H_
-#define SOUND_CAPTURE_AND_PLAYBACK_PROCESS_H_
+#pragma once
 
 #include <timecode_analyzis_process.h>
 #include <audio_track_playback_process.h>
@@ -56,5 +55,3 @@ class Sound_capture_and_playback_process
 
     bool run(unsigned short int in_nb_buffer_frames);
 };
-
-#endif /* SOUND_CAPTURE_AND_PLAYBACK_PROCESS_H_ */

@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef AUDIO_COLLECTION_MODEL_H_
-#define AUDIO_COLLECTION_MODEL_H_
+#pragma once
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -157,5 +156,3 @@ class Audio_collection_model : public QAbstractItemModel
     void setup_model_data_from_tracklist(QStringList in_tracklist, Audio_collection_item *in_item);
     void create_header(QString in_path, bool in_show_path);
 };
-
-#endif /* AUDIO_COLLECTION_MODEL_H_ */

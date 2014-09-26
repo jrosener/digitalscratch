@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef DATA_PERSISTENCE_H
-#define DATA_PERSISTENCE_H
+#pragma once
 
 #include <iostream>
 #include <QObject>
@@ -77,5 +76,3 @@ class Data_persistence : public QObject
     bool init_db();
     bool create_db_structure();
 };
-
-#endif // DATA_PERSISTENCE_H

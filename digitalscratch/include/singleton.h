@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#pragma once
 
 #include <QObject>
 
@@ -51,4 +50,3 @@ private:
     Singleton(const Singleton &); // hide copy constructor
     Singleton& operator=(const Singleton &); // hide assign op
 };
-#endif

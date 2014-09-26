@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef UTILS_H_
-#define UTILS_H_
+#pragma once
 
 #include <QString>
 #include <application_const.h>
@@ -76,5 +75,3 @@ class Utils
     // Get current CSS string stylesheet.
     static QString get_current_stylesheet_css();
 };
-
-#endif /* UTILS_H_ */

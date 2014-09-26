@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef GUI_H_
-#define GUI_H_
+#pragma once
 
 #include <QLabel>
 #include <QGroupBox>
@@ -521,5 +520,3 @@ class QSamplerContainerWidget : public QWidget
        void file_dropped_in_sampler(unsigned short int in_deck_index,
                                     unsigned short int in_sampler_index);
 };
-
-#endif /* GUI_H_ */

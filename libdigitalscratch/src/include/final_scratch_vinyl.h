@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _FINAL_SCRATCH_VINYL_H_
-#define _FINAL_SCRATCH_VINYL_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -104,5 +103,3 @@ class Final_scratch_vinyl : public Coded_vinyl
         float get_default_min_amplitude_for_normal_speed();
         float get_default_min_amplitude();
 };
-
-#endif //_FINAL_SCRATCH_VINYL_H_

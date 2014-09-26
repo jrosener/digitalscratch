@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef AUDIO_FILE_DECODING_PROCESS_H_
-#define AUDIO_FILE_DECODING_PROCESS_H_
+#pragma once
 
 #include <iostream>
 #include <QFileInfo>
@@ -63,5 +62,3 @@ class Audio_file_decoding_process
     void resample_track();                    // Change sample rate of the audio track.
     bool decode();                            // Internal audio decoding.
 };
-
-#endif /* AUDIO_FILE_DECODING_PROCESS_H_ */

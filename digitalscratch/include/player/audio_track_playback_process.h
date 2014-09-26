@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef AUDIO_TRACK_PLAYBACK_PROCESS_H_
-#define AUDIO_TRACK_PLAYBACK_PROCESS_H_
+#pragma once
 
 #include <QObject>
 #include <audio_track.h>
@@ -157,5 +156,3 @@ class Audio_track_playback_process : public QObject
     void sampler_remaining_time_changed(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);
     void sampler_state_changed(int in_deck_index, int in_sampler_index, bool in_state);
 };
-
-#endif /* AUDIO_TRACK_PLAYBACK_PROCESS_H_ */

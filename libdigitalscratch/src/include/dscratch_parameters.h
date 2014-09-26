@@ -30,9 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _DSCRATCH_PARAMETERS_
-#define _DSCRATCH_PARAMETERS_
-
+#pragma once
 
 /******************************************************************************/
 /*******************************Timecoded vinyl********************************/
@@ -84,5 +82,3 @@
 //#define TRACE_DIRECTION               10 // vinyl direction
 //#define TRACE_VOLUME                  11 // vinyl sound volume
 //#define TRACE_EXTREME_USED_FOR_DETECTING_SPEED 13 // extremes used for detecting speed
-
-#endif //_DSCRATCH_PARAMETERS_

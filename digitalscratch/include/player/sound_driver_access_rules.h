@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef SOUND_DRIVER_ACCESS_RULES_H_
-#define SOUND_DRIVER_ACCESS_RULES_H_
+#pragma once
 
 #include <iostream>
 #include <QObject>
@@ -74,5 +73,3 @@ class Sound_driver_access_rules : public QObject
  signals:
    void error_msg(QString in_error_message);
 };
-
-#endif /* SOUND_DRIVER_ACCESS_RULES_H_ */

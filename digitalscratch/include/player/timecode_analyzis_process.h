@@ -31,8 +31,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef TIMECODE_ANALYZIS_PROCESS_H_
-#define TIMECODE_ANALYZIS_PROCESS_H_
+#pragma once
 
 #include <iostream>
 #include <playback_parameters.h>
@@ -62,5 +61,3 @@ class Timecode_analyzis_process
 
     int get_dscratch_id(unsigned short int in_index);
 };
-
-#endif /* TIMECODE_ANALYZIS_PROCESS_H_ */

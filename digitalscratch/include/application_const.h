@@ -30,6 +30,8 @@
 /*                                                                            */
 /*============================================================================*/
 
+#pragma once
+
 #define MAX_MINUTES_TRACK   15                // Maximum number of minutes for an audio track
 #define MAX_MINUTES_SAMPLER 1                 // Maximum number of minutes for a sample in the sampler
 

@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _CONTROLLER_H_
-#define _CONTROLLER_H_
+#pragma once
 
 #include <string>
 #include "dscratch_parameters.h"
@@ -148,5 +147,3 @@ class Controller
          */
         bool set_playing_parameters_ready(bool flag);
 };
-
-#endif //_CONTROLLER_H_

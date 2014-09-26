@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef DIGITALSCRATCH_H_
-#define DIGITALSCRATCH_H_
+#pragma once
 
 #ifdef WIN32
     #ifdef DLLIMPORT
@@ -357,4 +356,3 @@ DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(const char *c
 }
 #endif
 
-#endif /* DIGITALSCRATCH_H_ */

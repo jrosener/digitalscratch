@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _CODED_VINYL_H_
-#define _CODED_VINYL_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -215,5 +214,3 @@ class Coded_vinyl
          */
         bool get_reverse_direction();
 };
-
-#endif //_CODED_VINYL_H_

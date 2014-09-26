@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#pragma once
 
 #include <iostream>
 #include <cstdio>
@@ -274,5 +273,3 @@ class Utils
             #endif
         }
 };
-
-#endif //_UTILS_H_

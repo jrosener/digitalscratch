@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef _VOLUME_H_
-#define _VOLUME_H_
+#pragma once
 
 #include "dscratch_parameters.h"
 #include "playing_parameter.h"
@@ -86,5 +85,3 @@ class Volume : public Playing_parameter
          */
         bool set_value(float volume_value);
 };
-
-#endif //_VOLUME_H_

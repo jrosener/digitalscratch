@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef CONFIG_DIALOG_H_
-#define CONFIG_DIALOG_H_
+#pragma once
 
 #include <QDialog>
 #include <QLineEdit>
@@ -158,5 +157,3 @@ class Config_dialog : public QDialog
     void set_min_amplitude_value(int in_value);
     void validate_and_set_shortcut(const QString& in_value);
 };
-
-#endif /* CONFIG_DIALOG_H_ */

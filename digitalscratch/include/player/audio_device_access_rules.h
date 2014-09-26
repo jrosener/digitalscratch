@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef AUDIO_DEVICE_ACCESS_RULES_H_
-#define AUDIO_DEVICE_ACCESS_RULES_H_
+#pragma once
 
 #include <iostream>
 #include <QObject>
@@ -66,5 +65,3 @@ class Audio_device_access_rules : public Sound_driver_access_rules
                             float              **out_buffer_3,
                             float              **out_buffer_4);
 };
-
-#endif /* AUDIO_DEVICE_ACCESS_RULES_H_ */

@@ -30,8 +30,7 @@
 /*                                                                            */
 /*============================================================================*/
 
-#ifndef APPLICATION_SETTINGS_H
-#define APPLICATION_SETTINGS_H
+#pragma once
 
 #include <QObject>
 #include <QSettings>
@@ -257,5 +256,3 @@ class Application_settings : public QObject
  private:
     void init_settings();
 };
-
-#endif // APPLICATION_SETTINGS_H
