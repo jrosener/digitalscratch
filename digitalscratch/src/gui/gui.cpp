@@ -3667,13 +3667,13 @@ Gui::update_deck1_speed_label(float in_speed)
 void
 Gui::speed_up_01pcent()
 {
-    this->params_1->inc_speed(0.001);
+    this->params_1->inc_speed(0.001f);
 }
 
 void
 Gui::speed_up_1pcent()
 {
-    this->params_1->inc_speed(0.01);
+    this->params_1->inc_speed(0.01f);
 }
 
 void
