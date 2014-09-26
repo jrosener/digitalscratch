@@ -1482,33 +1482,65 @@ Gui::connect_decks_area()
                     {
                         update_speed_label(in_speed, 0);
                     });
-    QObject::connect(this->params_2, &Playback_parameters::speed_changed,
-                    [this](float in_speed)
+    if (this->nb_decks > 1)
+    {
+        QObject::connect(this->params_2, &Playback_parameters::speed_changed,
+                        [this](float in_speed)
+                        {
+                            update_speed_label(in_speed, 1);
+                        });
+    }
+
+    // Speed up/down 0.1%.
+    QObject::connect(this->speed_up_on_deck1_button, &SpeedQPushButton::clicked,
+                    [this]()
                     {
-                        update_speed_label(in_speed, 1);
+                        speed_up_down(0.001f, 0);
                     });
-
-    // Speed up 0.1%.
-    QSignalMapper *speed_up_01pcent_signal_mapper = new QSignalMapper(this);
-    speed_up_01pcent_signal_mapper->setMapping(this->speed_up_on_deck1_button, 0);
-    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(clicked()), speed_up_01pcent_signal_mapper, SLOT(map()));
+    QObject::connect(this->speed_up_on_deck2_button, &SpeedQPushButton::clicked,
+                    [this]()
+                    {
+                        speed_up_down(0.001f, 1);
+                    });
     if (this->nb_decks > 1)
     {
-        speed_up_01pcent_signal_mapper->setMapping(this->speed_up_on_deck2_button, 1);
-        QObject::connect(this->speed_up_on_deck2_button, SIGNAL(clicked()), speed_up_01pcent_signal_mapper, SLOT(map()));
+        QObject::connect(this->speed_down_on_deck1_button, &SpeedQPushButton::clicked,
+                        [this]()
+                        {
+                            speed_up_down(-0.001f, 0);
+                        });
+        QObject::connect(this->speed_down_on_deck2_button, &SpeedQPushButton::clicked,
+                        [this]()
+                        {
+                            speed_up_down(-0.001f, 1);
+                        });
     }
-    QObject::connect(speed_up_01pcent_signal_mapper, SIGNAL(mapped(int)), this, SLOT(speed_up_01pcent(int)));
 
-    // Speed up 1%.
-    QSignalMapper *speed_up_1pcent_signal_mapper = new QSignalMapper(this);
-    speed_up_1pcent_signal_mapper->setMapping(this->speed_up_on_deck1_button, 0);
-    QObject::connect(this->speed_up_on_deck1_button, SIGNAL(right_clicked()), speed_up_1pcent_signal_mapper, SLOT(map()));
+
+    // Speed up/down 1%.
+    QObject::connect(this->speed_up_on_deck1_button, &SpeedQPushButton::right_clicked,
+                    [this]()
+                    {
+                        speed_up_down(0.01f, 0);
+                    });
+    QObject::connect(this->speed_up_on_deck2_button, &SpeedQPushButton::right_clicked,
+                    [this]()
+                    {
+                        speed_up_down(0.01f, 1);
+                    });
     if (this->nb_decks > 1)
     {
-        speed_up_1pcent_signal_mapper->setMapping(this->speed_up_on_deck2_button, 1);
-        QObject::connect(this->speed_up_on_deck2_button, SIGNAL(right_clicked()), speed_up_1pcent_signal_mapper, SLOT(map()));
+        QObject::connect(this->speed_down_on_deck1_button, &SpeedQPushButton::right_clicked,
+                        [this]()
+                        {
+                            speed_up_down(-0.01f, 0);
+                        });
+        QObject::connect(this->speed_down_on_deck2_button, &SpeedQPushButton::right_clicked,
+                        [this]()
+                        {
+                            speed_up_down(-0.01f, 1);
+                        });
     }
-    QObject::connect(speed_up_1pcent_signal_mapper, SIGNAL(mapped(int)), this, SLOT(speed_up_1pcent(int)));
 
 
     // Enable track file dropping in deck group boxes.
@@ -3700,28 +3732,15 @@ Gui::update_speed_label(float in_speed, int in_deck_index)
 }
 
 void
-Gui::speed_up_01pcent(int in_deck_index)
+Gui::speed_up_down(float in_speed_inc, int in_deck_index)
 {
     if (in_deck_index == 0)
     {
-        this->params_1->inc_speed(0.001f);
+        this->params_1->inc_speed(in_speed_inc);
     }
     else
     {
-        this->params_2->inc_speed(0.001f);
-    }
-}
-
-void
-Gui::speed_up_1pcent(int in_deck_index)
-{
-    if (in_deck_index == 0)
-    {
-        this->params_1->inc_speed(0.01f);
-    }
-    else
-    {
-        this->params_2->inc_speed(0.01f);
+        this->params_2->inc_speed(in_speed_inc);
     }
 }
 
