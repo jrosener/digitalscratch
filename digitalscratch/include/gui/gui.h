@@ -493,9 +493,9 @@ class Gui : public QObject
     void start_capture_and_playback();
     void stop_capture_and_playback();
     void run_concurrent_read_collection_from_db();
-    void update_deck1_speed_label(float in_speed);
-    void speed_up_01pcent();
-    void speed_up_1pcent();
+    void update_speed_label(float in_speed, int in_deck_index);
+    void speed_up_01pcent(int in_deck_index);
+    void speed_up_1pcent(int in_deck_index);
 };
 
 class QSamplerContainerWidget : public QWidget
