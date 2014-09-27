@@ -193,7 +193,7 @@ else {
 
 #############################
 # Enable multi-threading support for QT
-CONFIG += qt thread
+CONFIG += qt thread c++11
 #############################
 
 ############################
