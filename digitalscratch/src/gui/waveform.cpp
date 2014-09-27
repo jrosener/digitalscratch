@@ -50,6 +50,11 @@ Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
     }
     this->at = in_at;
 
+    // Init.
+    this->area_height = 0;
+    this->area_width  = 0;
+    this->slider_absolute_position = 0;
+
     // Create table of points to display.
     this->points = new QPointF[POINTS_MAX_SIZE];
     this->end_of_waveform = 0;
