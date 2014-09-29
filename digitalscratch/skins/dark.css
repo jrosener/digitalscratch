@@ -194,7 +194,7 @@ QGroupBox
 }
 PlaybackQGroupBox#DeckGBox[selected="true"]
 {
-   background:    qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #595959, stop: 1 #333333);
+   background:    qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #444444, stop: 1 #333333);
 }
 PlaybackQGroupBox#SamplerGBox[selected="true"]
 {
@@ -274,7 +274,8 @@ QLabel#RemainingTimeMsec
 QLabel#KeyValue
 {
    font:   8pt;
-   border: 1px solid #6c6c6c;
+   color:  gray;
+   border: 1px solid gray;
 }
 
 QTabBar::tab
@@ -734,8 +735,8 @@ QPushButton#Timecode_toggle:checked
 
 QLabel#Speed_value
 {
-    border:             1px solid gray;
-    color:               gray;
+    border:              1px solid gray;
+    color:               lightGray;
     font:                9pt;
     padding-left:        3px;
     padding-right:       3px;
@@ -762,7 +763,7 @@ QPushButton#Speed_button:hover
 }
 QPushButton#Speed_button[pressed="true"]
 {
-   color:            white;
+   color:            black;
    background-color: lightGray;
 }
 
@@ -787,12 +788,6 @@ QPushButton#Restart_button:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-restart.png);
 }
-QPushButton#Restart_button:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-restart_white.png);
-}
 
 QPushButton#Cue_set_button0
 {
@@ -815,12 +810,7 @@ QPushButton#Cue_set_button0:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_set_1.png);
 }
-QPushButton#Cue_set_button0:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_set_1_white.png);
-}
+
 QPushButton#Cue_set_button1
 {
    background-color: gray;
@@ -842,12 +832,7 @@ QPushButton#Cue_set_button1:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_set_2.png);
 }
-QPushButton#Cue_set_button1:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_set_2_white.png);
-}
+
 QPushButton#Cue_set_button2
 {
    background-color: gray;
@@ -869,12 +854,7 @@ QPushButton#Cue_set_button2:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_set_3.png);
 }
-QPushButton#Cue_set_button2:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_set_3_white.png);
-}
+
 QPushButton#Cue_set_button3
 {
    background-color: gray;
@@ -895,12 +875,6 @@ QPushButton#Cue_set_button3:pressed
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_set_4.png);
-}
-QPushButton#Cue_set_button3:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_set_4_white.png);
 }
 
 QPushButton#Cue_play_button0
@@ -924,12 +898,7 @@ QPushButton#Cue_play_button0:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_play_1.png);
 }
-QPushButton#Cue_play_button0:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_play_1_white.png);
-}
+
 QPushButton#Cue_play_button1
 {
    background-color: gray;
@@ -951,12 +920,7 @@ QPushButton#Cue_play_button1:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_play_2.png);
 }
-QPushButton#Cue_play_button1:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_play_2_white.png);
-}
+
 QPushButton#Cue_play_button2
 {
    background-color: gray;
@@ -978,12 +942,7 @@ QPushButton#Cue_play_button2:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_play_3.png);
 }
-QPushButton#Cue_play_button2:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_play_3_white.png);
-}
+
 QPushButton#Cue_play_button3
 {
    background-color: gray;
@@ -1005,12 +964,7 @@ QPushButton#Cue_play_button3:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_play_4.png);
 }
-QPushButton#Cue_play_button3:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_play_4_white.png);
-}
+
 QPushButton#Cue_del_button0
 {
    background-color: gray;
@@ -1032,12 +986,7 @@ QPushButton#Cue_del_button0:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_del_1.png);
 }
-QPushButton#Cue_del_button0:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_del_1_white.png);
-}
+
 QPushButton#Cue_del_button1
 {
    background-color: gray;
@@ -1059,12 +1008,7 @@ QPushButton#Cue_del_button1:pressed
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_del_2.png);
 }
-QPushButton#Cue_del_button1:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_del_2_white.png);
-}
+
 QPushButton#Cue_del_button2
 {
    background-color: gray;
@@ -1085,12 +1029,6 @@ QPushButton#Cue_del_button2:pressed
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_del_3.png);
-}
-QPushButton#Cue_del_button2:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_del_3_white.png);
 }
 
 QPushButton#Cue_del_button3
@@ -1113,12 +1051,6 @@ QPushButton#Cue_del_button3:pressed
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-cue_del_4.png);
-}
-QPushButton#Cue_del_button3:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-cue_del_4_white.png);
 }
 
 QLabel#Cue_point_label

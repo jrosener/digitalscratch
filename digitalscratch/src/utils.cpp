@@ -289,6 +289,12 @@ QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
                                               unsigned int in_sample_rate,
                                               bool         in_with_msec)
 {
+    // Return an empty string if the cue point is not set (i.e. is set to sample index 0).
+    if (in_sample_index == 0)
+    {
+        return "__:__:___";
+    }
+
     // Calculate sample index position as min:sec:msec
     unsigned int msec = (unsigned int)(1000.0 * (float)(in_sample_index) / (2.0 * (float)in_sample_rate));
     int          sec  = msec / 1000.0;

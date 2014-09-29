@@ -1165,16 +1165,16 @@ Gui::init_decks_area()
     QVBoxLayout *deck2_layout = new QVBoxLayout();
 
     // Put track name, position and timecode info in decks layout.
-    deck1_layout->addWidget(this->deck1_track_name,            10);
-    deck1_layout->addLayout(this->deck1_remaining_time_layout, 10);
-    deck1_layout->addWidget(this->deck1_waveform,              70);
-    deck1_layout->addLayout(this->deck1_buttons_layout,        10);
+    deck1_layout->addWidget(this->deck1_track_name,            5);
+    deck1_layout->addLayout(this->deck1_remaining_time_layout, 5);
+    deck1_layout->addWidget(this->deck1_waveform,              85);
+    deck1_layout->addLayout(this->deck1_buttons_layout,        5);
     deck1_general_layout->addLayout(deck1_layout,              90);
 
-    deck2_layout->addWidget(this->deck2_track_name,            10);
-    deck2_layout->addLayout(this->deck2_remaining_time_layout, 10);
-    deck2_layout->addWidget(this->deck2_waveform,              70);
-    deck2_layout->addLayout(this->deck2_buttons_layout,        10);
+    deck2_layout->addWidget(this->deck2_track_name,            5);
+    deck2_layout->addLayout(this->deck2_remaining_time_layout, 5);
+    deck2_layout->addWidget(this->deck2_waveform,              85);
+    deck2_layout->addLayout(this->deck2_buttons_layout,        5);
     deck2_general_layout->addLayout(deck2_layout,              90);
 
     // Create deck group boxes.
@@ -1294,7 +1294,7 @@ Gui::init_deck1_area()
         this->cue_del_on_deck1_buttons[i]->setFocusPolicy(Qt::NoFocus);
         this->cue_del_on_deck1_buttons[i]->setCheckable(true);
 
-        this->cue_point_deck1_labels[i] = new QLabel("00:00:000");
+        this->cue_point_deck1_labels[i] = new QLabel("__:__:___");
         this->cue_point_deck1_labels[i]->setObjectName("Cue_point_label");
         this->cue_point_deck1_labels[i]->setAlignment(Qt::AlignCenter);
 
@@ -1408,7 +1408,7 @@ Gui::init_deck2_area()
         this->cue_del_on_deck2_buttons[i]->setFocusPolicy(Qt::NoFocus);
         this->cue_del_on_deck2_buttons[i]->setCheckable(true);
 
-        this->cue_point_deck2_labels[i] = new QLabel("00:00:000");
+        this->cue_point_deck2_labels[i] = new QLabel("__:__:___");
         this->cue_point_deck2_labels[i]->setObjectName("Cue_point_label");
         this->cue_point_deck2_labels[i]->setAlignment(Qt::AlignCenter);
 
@@ -3483,6 +3483,7 @@ Gui::run_audio_file_decoding_process()
         {
             deck_index = 1;
             deck_track_name = this->deck2_track_name;
+            deck_cue_point  = this->cue_point_deck2_labels;
             deck_waveform   = this->deck2_waveform;
             decode_process  = this->dec_2;
         }
@@ -3734,6 +3735,10 @@ Gui::update_speed_label(float in_speed, int in_deck_index)
 void
 Gui::speed_up_down(float in_speed_inc, int in_deck_index)
 {
+    // Select deck.
+    this->highlight_deck_sampler_area(in_deck_index);
+
+    // Increment speed.
     if (in_deck_index == 0)
     {
         this->params_1->inc_speed(in_speed_inc);
@@ -3799,16 +3804,8 @@ Gui::deck1_go_to_begin()
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
-    // Check the button.
-    this->restart_on_deck1_button->setEnabled(false);
-    this->restart_on_deck1_button->setChecked(true);
-
     // Jump.
     this->deck_go_to_begin();
-
-    // Release the button.
-    this->restart_on_deck1_button->setEnabled(true);
-    this->restart_on_deck1_button->setChecked(false);
 
     qDebug() << "Gui::deck1_go_to_begin done.";
 
@@ -3823,16 +3820,8 @@ Gui::deck2_go_to_begin()
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
-    // Check the button.
-    this->restart_on_deck2_button->setEnabled(false);
-    this->restart_on_deck2_button->setChecked(true);
-
     // Jump.
     this->deck_go_to_begin();
-
-    // Release the button.
-    this->restart_on_deck2_button->setEnabled(true);
-    this->restart_on_deck2_button->setChecked(false);
 
     qDebug() << "Gui::deck2_go_to_begin done.";
 
@@ -3872,16 +3861,8 @@ Gui::deck1_set_cue_point(int in_cue_point_number)
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
-    // Check the button.
-    this->cue_set_on_deck1_buttons[in_cue_point_number]->setEnabled(false);
-    this->cue_set_on_deck1_buttons[in_cue_point_number]->setChecked(true);
-
     // Set cue point.
     this->deck_set_cue_point(in_cue_point_number);
-
-    // Release the button.
-    this->cue_set_on_deck1_buttons[in_cue_point_number]->setEnabled(true);
-    this->cue_set_on_deck1_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck1_set_cue_point done.";
 
@@ -3896,16 +3877,8 @@ Gui::deck2_set_cue_point(int in_cue_point_number)
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
-    // Check the button.
-    this->cue_set_on_deck2_buttons[in_cue_point_number]->setEnabled(false);
-    this->cue_set_on_deck2_buttons[in_cue_point_number]->setChecked(true);
-
     // Set cue point.
     this->deck_set_cue_point(in_cue_point_number);
-
-    // Release the button.
-    this->cue_set_on_deck2_buttons[in_cue_point_number]->setEnabled(true);
-    this->cue_set_on_deck2_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck2_set_cue_point done.";
 
@@ -3941,16 +3914,8 @@ Gui::deck1_go_to_cue_point(int in_cue_point_number)
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
-    // Check the button.
-    this->cue_play_on_deck1_buttons[in_cue_point_number]->setEnabled(false);
-    this->cue_play_on_deck1_buttons[in_cue_point_number]->setChecked(true);
-
     // Jump.
     this->deck_go_to_cue_point(in_cue_point_number);
-
-    // Release the button.
-    this->cue_play_on_deck1_buttons[in_cue_point_number]->setEnabled(true);
-    this->cue_play_on_deck1_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck1_go_to_cue_point done.";
 
@@ -3965,16 +3930,8 @@ Gui::deck2_go_to_cue_point(int in_cue_point_number)
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
-    // Check the button.
-    this->cue_play_on_deck2_buttons[in_cue_point_number]->setEnabled(false);
-    this->cue_play_on_deck2_buttons[in_cue_point_number]->setChecked(true);
-
     // Jump.
     this->deck_go_to_cue_point(in_cue_point_number);
-
-    // Release the button.
-    this->cue_play_on_deck2_buttons[in_cue_point_number]->setEnabled(true);
-    this->cue_play_on_deck2_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck2_go_to_cue_point done.";
 
@@ -4014,16 +3971,8 @@ Gui::deck1_del_cue_point(int in_cue_point_number)
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
-    // Check the button.
-    this->cue_del_on_deck1_buttons[in_cue_point_number]->setEnabled(false);
-    this->cue_del_on_deck1_buttons[in_cue_point_number]->setChecked(true);
-
     // Delete point.
     this->deck_del_cue_point(in_cue_point_number);
-
-    // Release the button.
-    this->cue_del_on_deck1_buttons[in_cue_point_number]->setEnabled(true);
-    this->cue_del_on_deck1_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck1_del_cue_point done.";
 
@@ -4038,16 +3987,8 @@ Gui::deck2_del_cue_point(int in_cue_point_number)
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
-    // Check the button.
-    this->cue_del_on_deck2_buttons[in_cue_point_number]->setEnabled(false);
-    this->cue_del_on_deck2_buttons[in_cue_point_number]->setChecked(true);
-
     // Delete point.
     this->deck_del_cue_point(in_cue_point_number);
-
-    // Release the button.
-    this->cue_del_on_deck2_buttons[in_cue_point_number]->setEnabled(true);
-    this->cue_del_on_deck2_buttons[in_cue_point_number]->setChecked(false);
 
     qDebug() << "Gui::deck2_del_cue_point done.";
 
@@ -4430,10 +4371,11 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
 {
     qDebug() << "SpeedQPushButton::mouseReleaseEvent...";
 
-    QPushButton::mouseReleaseEvent(in_mouse_event);
-
+    // Unpress the button.
     this->setProperty("pressed", false);
     this->redraw();
+
+    QPushButton::mouseReleaseEvent(in_mouse_event);
 
     // Forward the right click event.
     if (in_mouse_event->button() == Qt::RightButton)
