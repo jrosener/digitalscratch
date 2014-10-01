@@ -178,6 +178,7 @@ class Gui : public QObject
     Waveform                           *deck1_waveform;
     QHBoxLayout                        *deck1_remaining_time_layout;
     QHBoxLayout                        *deck1_buttons_layout;
+    QPushButton                        *deck1_timecode_manual_button;
     QLabel                             *deck1_speed;
     SpeedQPushButton                   *speed_up_on_deck1_button;
     SpeedQPushButton                   *speed_down_on_deck1_button;
@@ -493,6 +494,7 @@ class Gui : public QObject
     void start_capture_and_playback();
     void stop_capture_and_playback();
     void run_concurrent_read_collection_from_db();
+    void switch_speed_mode(bool in_mode, int in_deck_index);
     void update_speed_label(float in_speed, int in_deck_index);
     void speed_up_down(float in_speed_inc, int in_deck_index);
 };

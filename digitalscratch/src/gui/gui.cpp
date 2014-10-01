@@ -1226,9 +1226,16 @@ Gui::init_deck1_area()
     this->deck1_buttons_layout = new QHBoxLayout();
 
     // Speed management.
+    QVBoxLayout *deck1_timecode_speed_layout = new QVBoxLayout();
+    this->deck1_timecode_manual_button = new QPushButton(tr("TIMECODE"));
+    this->deck1_timecode_manual_button->setToolTip("<p>" + tr("Switch speed mode TIMECODE/MANUAL.") + "</p>");
+    this->deck1_timecode_manual_button->setObjectName("Timecode_toggle");
+    this->deck1_timecode_manual_button->setFocusPolicy(Qt::NoFocus);
+    deck1_timecode_speed_layout->addWidget(this->deck1_timecode_manual_button);
     this->deck1_speed = new QLabel(tr("+000.0%"));
     this->deck1_speed->setObjectName("Speed_value");
-    this->deck1_buttons_layout->addWidget(this->deck1_speed);
+    deck1_timecode_speed_layout->addWidget(this->deck1_speed);
+    this->deck1_buttons_layout->addLayout(deck1_timecode_speed_layout);
     QGridLayout *deck1_speed_layout = new QGridLayout();
     this->speed_up_on_deck1_button = new SpeedQPushButton("+");
     this->speed_up_on_deck1_button->setToolTip("<p>" + tr("+0.1% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
@@ -1441,6 +1448,7 @@ Gui::clean_decks_area()
     delete this->deck1_remaining_time_layout;
     delete this->deck1_buttons_layout;
     delete this->deck1_speed;
+    delete this->deck1_timecode_manual_button;
     delete this->speed_up_on_deck1_button;
     delete this->speed_down_on_deck1_button;
     delete this->accel_up_on_deck1_button;
@@ -1476,6 +1484,13 @@ Gui::clean_decks_area()
 void
 Gui::connect_decks_area()
 {
+    // Toggle timecode/manual mode.
+    QObject::connect(this->deck1_timecode_manual_button, &QPushButton::toggled,
+                    [this](bool in_mode)
+                    {
+                        switch_speed_mode(in_mode, 0);
+                    });
+
     // Display speed for each deck.
     QObject::connect(this->params_1, &Playback_parameters::speed_changed,
                     [this](float in_speed)
@@ -3714,6 +3729,13 @@ Gui::set_sampler_state(int  in_deck_index,
     qDebug() << "Gui::set_sampler_state done.";
 
     return;
+}
+
+void
+Gui::switch_speed_mode(bool in_mode, int in_deck_index)
+{
+    // Mode: false=manual, true=timecode
+    // TODO.
 }
 
 void

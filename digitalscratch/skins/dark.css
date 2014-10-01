@@ -712,6 +712,7 @@ QPushButton#Timecode_toggle
    padding-left:     3px;
    padding-right:    3px;
    height:           12px;
+   font:             7pt;
 }
 QPushButton#Timecode_toggle:hover
 {
