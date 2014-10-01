@@ -716,20 +716,18 @@ QPushButton#Timecode_toggle
 }
 QPushButton#Timecode_toggle:hover
 {
-   background-color: transparent;
    border:           1px solid orange;
-   color:            #f2f2ed;
 }
 QPushButton#Timecode_toggle:pressed
 {
    color:            black;
+   border-style:     inset;
    background-color: lightGray;
 }
 QPushButton#Timecode_toggle:checked
 {
    color:            black;
    background-color: orange;
-   border-style:     inset;
    border-width:     1px;
    border-color:     gray;
 }

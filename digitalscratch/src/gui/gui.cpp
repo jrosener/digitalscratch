@@ -1231,6 +1231,8 @@ Gui::init_deck1_area()
     this->deck1_timecode_manual_button->setToolTip("<p>" + tr("Switch speed mode TIMECODE/MANUAL.") + "</p>");
     this->deck1_timecode_manual_button->setObjectName("Timecode_toggle");
     this->deck1_timecode_manual_button->setFocusPolicy(Qt::NoFocus);
+    this->deck1_timecode_manual_button->setCheckable(true);
+    this->deck1_timecode_manual_button->setChecked(true);
     deck1_timecode_speed_layout->addWidget(this->deck1_timecode_manual_button);
     this->deck1_speed = new QLabel(tr("+000.0%"));
     this->deck1_speed->setObjectName("Speed_value");
@@ -1262,7 +1264,10 @@ Gui::init_deck1_area()
     this->accel_down_on_deck1_button->setFixedSize(15, 15);
     deck1_speed_layout->addWidget(accel_down_on_deck1_button, 1, 2);
     this->deck1_buttons_layout->addLayout(deck1_speed_layout);
-    this->deck1_buttons_layout->addStretch(100);
+    this->deck1_buttons_layout->addStretch(1000);
+
+    // Select speed control mode.
+    this->switch_speed_mode(true, 0);
 
     // Restart button.
     this->restart_on_deck1_button = new QPushButton();
@@ -1376,7 +1381,7 @@ Gui::init_deck2_area()
     this->accel_down_on_deck2_button->setFixedSize(15, 15);
     deck2_speed_layout->addWidget(accel_down_on_deck2_button, 1, 2);
     this->deck2_buttons_layout->addLayout(deck2_speed_layout);
-    this->deck2_buttons_layout->addStretch(100);
+    this->deck2_buttons_layout->addStretch(1000);
 
     // Restart button.
     this->restart_on_deck2_button = new QPushButton();
@@ -3735,7 +3740,22 @@ void
 Gui::switch_speed_mode(bool in_mode, int in_deck_index)
 {
     // Mode: false=manual, true=timecode
-    // TODO.
+    if (in_mode == true)
+    {
+        this->deck1_timecode_manual_button->setText(tr("TIMECODE"));
+        this->speed_up_on_deck1_button->hide();
+        this->speed_down_on_deck1_button->hide();
+        this->accel_up_on_deck1_button->hide();
+        this->accel_down_on_deck1_button->hide();
+    }
+    else
+    {
+        this->deck1_timecode_manual_button->setText(tr("MANUAL"));
+        this->speed_up_on_deck1_button->show();
+        this->speed_down_on_deck1_button->show();
+        this->accel_up_on_deck1_button->show();
+        this->accel_down_on_deck1_button->show();
+    }
 }
 
 void
