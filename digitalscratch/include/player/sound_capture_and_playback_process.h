@@ -33,7 +33,7 @@
 
 #pragma once
 
-#include <timecode_analyzis_process.h>
+#include <timecode_control_process.h>
 #include <audio_track_playback_process.h>
 #include <sound_driver_access_rules.h>
 #include <application_const.h>
@@ -43,12 +43,13 @@ using namespace std;
 class Sound_capture_and_playback_process
 {
  private:
-    Timecode_analyzis_process    *tcode_analyzis;
+    //Manual_control_process       *manual_control;
+    Timecode_control_process     *tcode_control;
     Audio_track_playback_process *playback;
     Sound_driver_access_rules    *sound_card;
 
  public:
-    Sound_capture_and_playback_process(Timecode_analyzis_process    *in_tcode_analyzis,
+    Sound_capture_and_playback_process(Timecode_control_process     *in_tcode_control,
                                        Audio_track_playback_process *in_playback,
                                        Sound_driver_access_rules    *in_sound_card);
     virtual ~Sound_capture_and_playback_process();

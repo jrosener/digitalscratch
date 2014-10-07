@@ -491,8 +491,8 @@ class Gui : public QObject
     void show_next_keys();
     void on_file_browser_header_click(int in_index);
     void on_progress_cancel_button_click();
-    void start_capture_and_playback();
-    void stop_capture_and_playback();
+    void start_control_and_playback();
+    void stop_control_and_playback();
     void run_concurrent_read_collection_from_db();
     void switch_speed_mode(bool in_mode, int in_deck_index);
     void update_speed_label(float in_speed, int in_deck_index);

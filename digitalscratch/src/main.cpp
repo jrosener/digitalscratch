@@ -41,7 +41,7 @@
 #include "sound_driver_access_rules.h"
 #include "jack_access_rules.h"
 #include "playback_parameters.h"
-#include "timecode_analyzis_process.h"
+#include "timecode_control_process.h"
 #include <QThreadPool>
 #include "sound_capture_and_playback_process.h"
 #include <singleton.h>
@@ -134,16 +134,16 @@ int main(int argc, char *argv[])
     Playback_parameters *params_2 = new Playback_parameters();
     Playback_parameters *params[] = { params_1, params_2 };
 
-    // Process which analyze captured timecode data.
-    Timecode_analyzis_process *tcode_analyzis = new Timecode_analyzis_process(params,
-                                                                              settings->get_nb_decks(),
-                                                                              settings->get_vinyl_type(),
-                                                                              settings->get_sample_rate());
+    // A process which analyze captured timecode data.
+    Timecode_control_process *tcode_control = new Timecode_control_process(params,
+                                                                           settings->get_nb_decks(),
+                                                                           settings->get_vinyl_type(),
+                                                                           settings->get_sample_rate());
     int *dscratch_ids;
     dscratch_ids = new int[settings->get_nb_decks()];
     for (unsigned int i = 0; i < settings->get_nb_decks(); i++)
     {
-        dscratch_ids[i] = tcode_analyzis->get_dscratch_id(i);
+        dscratch_ids[i] = tcode_control->get_dscratch_id(i);
     }
 
     // Playback process.
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_analyzis, at_playback, sound_card);
+    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_control, at_playback, sound_card);
     // TODO if not using timecode to get playback params
     //Only_playback_process *playback_external_params = new Playback_process_with_external_parameters(playback, sound_card);
 
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     delete gui;
     delete sound_card;
     delete capture_and_playback;
-    delete tcode_analyzis;
+    delete tcode_control;
     delete at_playback;
     delete params_1;
     delete params_2;

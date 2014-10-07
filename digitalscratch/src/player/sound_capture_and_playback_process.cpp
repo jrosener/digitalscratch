@@ -36,24 +36,24 @@
 #include <sound_capture_and_playback_process.h>
 
 
-Sound_capture_and_playback_process::Sound_capture_and_playback_process(Timecode_analyzis_process    *in_tcode_analyzis,
+Sound_capture_and_playback_process::Sound_capture_and_playback_process(Timecode_control_process     *in_tcode_control,
                                                                        Audio_track_playback_process *in_playback,
                                                                        Sound_driver_access_rules    *in_sound_card)
 {
     qDebug() << "Sound_capture_and_playback_process::Sound_capture_and_playback_process: create object...";
 
-    if (in_tcode_analyzis == NULL ||
-        in_playback       == NULL ||
-        in_sound_card     == NULL)
+    if (in_tcode_control == NULL ||
+        in_playback      == NULL ||
+        in_sound_card    == NULL)
     {
         qFatal("Sound_capture_and_playback_process::Sound_capture_and_playback_process: Null model objects.");
         return;
     }
     else
     {
-        this->tcode_analyzis = in_tcode_analyzis;
-        this->playback       = in_playback;
-        this->sound_card     = in_sound_card;
+        this->tcode_control = in_tcode_control;
+        this->playback      = in_playback;
+        this->sound_card    = in_sound_card;
     }
 
     qDebug() << "Sound_capture_and_playback_process::Sound_capture_and_playback_process: create object done.";
@@ -84,7 +84,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
 
     qDebug() << "Sound_capture_and_playback_process::run...";
 
-    // Get sound card buffers.
+    // Get sound card buffers. // TODO : a ne faire que si mode = timecode
     if(this->sound_card->get_input_buffers(in_nb_buffer_frames,
                                            &input_buffer_1,
                                            &input_buffer_2,
@@ -104,16 +104,18 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
         return false;
     }
 
-    // Analyze captured data.
-    if (this->tcode_analyzis->run(in_nb_buffer_frames,
-                                  input_buffer_1,
-                                  input_buffer_2,
-                                  input_buffer_3,
-                                  input_buffer_4) == false)
+    // Analyze captured data. // TODO : a ne faire que si mode = timecode
+    if (this->tcode_control->run(in_nb_buffer_frames,
+                                 input_buffer_1,
+                                 input_buffer_2,
+                                 input_buffer_3,
+                                 input_buffer_4) == false)
     {
         qWarning() << "Sound_capture_and_playback_process::run: timecode analysis failed.";
         return false;
     }
+
+    // Faire un cas particulier pour mode = manual.
 
     // Play data.
     if (this->playback->run(in_nb_buffer_frames,

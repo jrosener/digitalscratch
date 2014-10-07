@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*------------------------------------------( timecode_analyzis_process.cpp )-*/
+/*-------------------------------------------( timecode_control_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -35,19 +35,19 @@
 #include <QString>
 #include <cmath>
 
-#include "timecode_analyzis_process.h"
+#include "timecode_control_process.h"
 #include <digital_scratch_api.h>
 
-Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_params[],
-                                                     unsigned short int   in_nb_decks,
-                                                     QString              in_vinyl_type,
-                                                     unsigned int         in_sample_rate)
+Timecode_control_process::Timecode_control_process(Playback_parameters *in_params[],
+                                                   unsigned short int   in_nb_decks,
+                                                   QString              in_vinyl_type,
+                                                   unsigned int         in_sample_rate)
 {
-    qDebug() << "Timecode_analyzis_process::Timecode_analyzis_process: create object...";
+    qDebug() << "Timecode_control_process::Timecode_control_process: create object...";
 
     if (in_params == NULL)
     {
-        qCritical() << "Timecode_analyzis_process::Timecode_analyzis_process: playback_parameters is NULL";
+        qCritical() << "Timecode_control_process::Timecode_control_process: playback_parameters is NULL";
     }
     else
     {
@@ -70,18 +70,18 @@ Timecode_analyzis_process::Timecode_analyzis_process(Playback_parameters *in_par
                                       in_sample_rate,
                                       &this->dscratch_ids[i]) != 0)
         {
-            qCritical() << "Timecode_analyzis_process::Timecode_analyzis_process: dscratch_lib: can not create turntable";
+            qCritical() << "Timecode_control_process::Timecode_control_process: dscratch_lib: can not create turntable";
         }
     }
 
-    qDebug() << "Timecode_analyzis_process::Timecode_analyzis_process: create object done.";
+    qDebug() << "Timecode_control_process::Timecode_control_process: create object done.";
 
     return;
 }
 
-Timecode_analyzis_process::~Timecode_analyzis_process()
+Timecode_control_process::~Timecode_control_process()
 {
-    qDebug() << "Timecode_analyzis_process::~Timecode_analyzis_process: delete object...";
+    qDebug() << "Timecode_control_process::~Timecode_control_process: delete object...";
 
     // Delete dscratch turntable.
     for (unsigned short int i = 0; i < this->nb_decks; i++)
@@ -92,19 +92,19 @@ Timecode_analyzis_process::~Timecode_analyzis_process()
     // Delete dscratch ids.
     delete [] this->dscratch_ids;
 
-    qDebug() << "Timecode_analyzis_process::~Timecode_analyzis_process: delete object done.";
+    qDebug() << "Timecode_control_process::~Timecode_control_process: delete object done.";
 
     return;
 }
 
 bool
-Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
+Timecode_control_process::run(unsigned short int  in_nb_samples,
                                float              *in_samples_1,
                                float              *in_samples_2,
                                float              *in_samples_3,
                                float              *in_samples_4)
 {
-    qDebug() << "Timecode_analyzis_process::run...";
+    qDebug() << "Timecode_control_process::run...";
 
     int   j              = 0;
     int   are_new_params = 0;
@@ -120,7 +120,7 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
                                             samples[j+1],
                                             in_nb_samples) != 0)
         {
-            qDebug() << "Timecode_analyzis_process::run: dscratch: cannot analyze captured data.";
+            qDebug() << "Timecode_control_process::run: dscratch: cannot analyze captured data.";
         }
 
         // Update playing parameters.
@@ -128,7 +128,7 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
                                                               &speed,
                                                               &volume)) != 0)
         {
-            qDebug() << "Timecode_analyzis_process::run: dscratch: can not get new playing parameters.";
+            qDebug() << "Timecode_control_process::run: dscratch: can not get new playing parameters.";
         }
         else
         {
@@ -162,15 +162,15 @@ Timecode_analyzis_process::run(unsigned short int  in_nb_samples,
         j = j + 2;
     }
 
-    qDebug() << "Timecode_analyzis_process::run: done.";
+    qDebug() << "Timecode_control_process::run: done.";
 
     return true;
 }
 
 int
-Timecode_analyzis_process::get_dscratch_id(unsigned short int in_index)
+Timecode_control_process::get_dscratch_id(unsigned short int in_index)
 {
-    qDebug() << "Timecode_analyzis_process::get_dscratch_id...";
+    qDebug() << "Timecode_control_process::get_dscratch_id...";
 
     int out_dscratch_id = -1;
 
@@ -179,7 +179,7 @@ Timecode_analyzis_process::get_dscratch_id(unsigned short int in_index)
         out_dscratch_id = this->dscratch_ids[in_index];
     }
 
-    qDebug() << "Timecode_analyzis_process::get_dscratch_id: done.";
+    qDebug() << "Timecode_control_process::get_dscratch_id: done.";
 
     return out_dscratch_id;
 }

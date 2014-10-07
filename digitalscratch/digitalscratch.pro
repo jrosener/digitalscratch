@@ -66,7 +66,7 @@ HEADERS += include/gui/config_dialog.h \
            include/player/sound_driver_access_rules.h \
            include/player/jack_access_rules.h \
            include/player/audio_device_access_rules.h \
-           include/player/timecode_analyzis_process.h \
+           include/player/timecode_control_process.h \
            include/player/playback_parameters.h \
            include/player/sound_capture_and_playback_process.h \
            include/player/data_persistence.h \
@@ -90,7 +90,7 @@ SOURCES += src/main.cpp \
            src/player/sound_driver_access_rules.cpp \
            src/player/jack_access_rules.cpp \
            src/player/audio_device_access_rules.cpp \
-           src/player/timecode_analyzis_process.cpp \
+           src/player/timecode_control_process.cpp \
            src/player/playback_parameters.cpp \
            src/player/sound_capture_and_playback_process.cpp \
            src/player/data_persistence.cpp \

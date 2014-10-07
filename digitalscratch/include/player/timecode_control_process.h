@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------( timecode_analyzis_process.h )-*/
+/*---------------------------------------------( timecode_control_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -39,7 +39,7 @@
 
 using namespace std;
 
-class Timecode_analyzis_process
+class Timecode_control_process
 {
  private:
     unsigned short int    nb_decks;
@@ -47,11 +47,11 @@ class Timecode_analyzis_process
     int                  *dscratch_ids;       // Table of nb_decks dscratch ids.
 
  public:
-    Timecode_analyzis_process(Playback_parameters *in_params[],
-                              unsigned short int   in_nb_decks,
-                              QString              in_vinyl_type,
-                              unsigned int         in_sample_rate);
-    virtual ~Timecode_analyzis_process();
+    Timecode_control_process(Playback_parameters *in_params[],
+                             unsigned short int   in_nb_decks,
+                             QString              in_vinyl_type,
+                             unsigned int         in_sample_rate);
+    virtual ~Timecode_control_process();
 
     bool run(unsigned short int  in_nb_samples,
              float              *in_samples_1,

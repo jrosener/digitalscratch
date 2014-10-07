@@ -254,7 +254,7 @@ Audio_track_playback_process::play_audio_track(unsigned short int   in_deck_inde
         return false;
     }
 
-#if 1
+#if 0
     // Fake implementation (just play track), do not use playback parameters.
     short signed int *sample_pointer = &((this->ats[in_deck_index]->get_samples())[this->current_samples[in_deck_index]]);
     std::copy(sample_pointer, sample_pointer + (in_nb_samples * 2), this->src_int_input_data);

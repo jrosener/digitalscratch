@@ -166,7 +166,7 @@ Gui::Gui(Audio_track                        *in_at_1,
     // Run motion detection if the setting auto_start_motion_detection=ON.
     if (this->settings->get_autostart_motion_detection() == true)
     {
-        this->start_capture_and_playback();
+        this->start_control_and_playback();
     }
 
     // Display audio file collection (takes time, that's why we are first showing the main window).
@@ -293,9 +293,9 @@ Gui::apply_application_settings()
 }
 
 void
-Gui::start_capture_and_playback()
+Gui::start_control_and_playback()
 {
-    qDebug() << "Gui::start_capture_and_playback...";
+    qDebug() << "Gui::start_control_and_playback...";
 
     // Start sound card for capture and playback.
     if ((this->sound_card->is_running() == false) &&
@@ -311,15 +311,15 @@ Gui::start_capture_and_playback()
         this->stop_capture_button->setChecked(false);
     }
 
-    qDebug() << "Gui::start_capture_and_playback done.";
+    qDebug() << "Gui::start_control_and_playback done.";
 
     return;
 }
 
 void
-Gui::stop_capture_and_playback()
+Gui::stop_control_and_playback()
 {
-    qDebug() << "Gui::stop_capture_and_playback...";
+    qDebug() << "Gui::stop_control_and_playback...";
 
     // Stop sound card for capture and playback.
     if ((this->sound_card->is_running() == true) &&
@@ -336,7 +336,7 @@ Gui::stop_capture_and_playback()
         this->start_capture_button->setChecked(false);
     }
 
-    qDebug() << "Gui::stop_capture_and_playback done.";
+    qDebug() << "Gui::stop_control_and_playback done.";
 
     return;
 }
@@ -1131,13 +1131,13 @@ Gui::connect_header_buttons()
     QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
 
     // Stop capture.
-    QObject::connect(this->stop_capture_button, SIGNAL(clicked()), this, SLOT(stop_capture_and_playback()));
+    QObject::connect(this->stop_capture_button, SIGNAL(clicked()), this, SLOT(stop_control_and_playback()));
 
     // Open about window.
     QObject::connect(this->logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
 
     // Start capture.
-    QObject::connect(this->start_capture_button, SIGNAL(clicked()), this, SLOT(start_capture_and_playback()));
+    QObject::connect(this->start_capture_button, SIGNAL(clicked()), this, SLOT(start_control_and_playback()));
 
     // Help button.
     QObject::connect(this->help_button,   SIGNAL(clicked()),   this, SLOT(show_help()));
