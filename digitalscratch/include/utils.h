@@ -35,6 +35,8 @@
 #include <QString>
 #include <application_const.h>
 #include <audio_track.h>
+#include <application_logging.h>
+
 using namespace std;
 
 class Utils

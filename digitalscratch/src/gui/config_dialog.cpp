@@ -804,21 +804,13 @@ Config_dialog::reject()
 
 ShortcutQLabel::ShortcutQLabel(QWidget *parent) : QLabel(parent)
 {
-    qDebug() << "ShortcutQLabel::ShortcutQLabel: create object...";
-
     this->capturing = false;
-
-    qDebug() << "ShortcutQLabel::ShortcutQLabel: create object done.";
 
     return;
 }
 
 ShortcutQLabel::~ShortcutQLabel()
 {
-    qDebug() << "ShortcutQLabel::ShortcutQLabel: delete object...";
-
-    qDebug() << "ShortcutQLabel::ShortcutQLabel: delete object done.";
-
     return;
 }
 
@@ -842,8 +834,6 @@ ShortcutQLabel::start_capture()
     this->grabKeyboard();
     this->grabMouse();
 
-    qDebug() << "ShortcutQLabel::start_capture: capturing keyboard... ";
-
     return;
 }
 
@@ -856,8 +846,6 @@ ShortcutQLabel::cancel_capture()
 
     // Keep previous shortcut.
     this->set_old_text();
-
-    qDebug() << "ShortcutQLabel::cancel_capture: keyboard capture canceled";
 
     return;
 }
@@ -872,8 +860,6 @@ ShortcutQLabel::finish_capture(int in_key)
     // Send an event to main config tab to check if this shortcut is not a duplicate.
     emit this->new_value(QKeySequence(in_key).toString(QKeySequence::NativeText));
 
-    qDebug() << "ShortcutQLabel::cancel_capture: keyboard capture done with " << QKeySequence(in_key).toString(QKeySequence::NativeText);
-
     return;
 }
 
@@ -881,7 +867,7 @@ void
 ShortcutQLabel::mousePressEvent(QMouseEvent *in_mouse_event)
 
 {
-    qDebug() << "ShortcutQLabel::mousePressEvent: x=" << in_mouse_event->x() << "  capturing keyboard... ";
+    Q_UNUSED(in_mouse_event);
 
     if (this->capturing == false)
     {
@@ -926,8 +912,6 @@ ShortcutQLabel::keyPressEvent(QKeyEvent *in_key_event)
                     keyInt += Qt::ALT;
                 if(modifiers & Qt::MetaModifier)
                     keyInt += Qt::META;
-
-                qDebug() << "ShortcutQLabel::keyPressEvent: Keysequence:" << QKeySequence(keyInt).toString(QKeySequence::NativeText);
 
                 // Stop capture and show key sequence.
                 this->finish_capture(keyInt);

@@ -61,6 +61,7 @@
 #include <QtConcurrentRun>
 #include <math.h>
 
+#include "application_logging.h"
 #include "gui.h"
 #include "digital_scratch_api.h"
 #include "audio_collection_model.h"
@@ -103,8 +104,6 @@ Gui::Gui(Audio_track                        *in_at_1,
          Sound_capture_and_playback_process *in_capture_and_playback,
          int                                *in_dscratch_ids)
 {
-    qDebug() << "Gui::Gui: create object...";
-
     // Check input parameters.
     if (in_at_1                 == NULL ||
         in_at_2                 == NULL ||
@@ -119,7 +118,7 @@ Gui::Gui(Audio_track                        *in_at_1,
         in_capture_and_playback == NULL ||
         in_dscratch_ids         == NULL)
     {
-        qFatal("Gui::Gui: Incorrect parameters.");
+        qCCritical(DS_OBJECTLIFE) << "bad input parameters";
         return;
     }
 
@@ -152,14 +151,14 @@ Gui::Gui(Audio_track                        *in_at_1,
     // Create and show the main window.
     if (this->create_main_window() != true)
     {
-        qFatal("Gui::Gui: Creation of main window failed.");
+        qCCritical(DS_OBJECTLIFE) << "creation of main window failed";
         return;
     }
 
     // Apply application settings.
     if (this->apply_application_settings() != true)
     {
-        qFatal("Gui::Gui: Can not apply application settings.");
+        qCCritical(DS_APPSETTINGS) << "can not apply application settings";
         return;
     }
 
@@ -172,15 +171,11 @@ Gui::Gui(Audio_track                        *in_at_1,
     // Display audio file collection (takes time, that's why we are first showing the main window).
     this->display_audio_file_collection();
 
-    qDebug() << "Gui::Gui: create object done.";
-
     return;
 }
 
 Gui::~Gui()
 {
-    qDebug() << "Gui::Gui: delete object...";
-
     // Store size/position of the main window (first go back from fullscreen or maximized mode).
     if (this->window->isFullScreen() == true)
     {
@@ -199,21 +194,17 @@ Gui::~Gui()
     this->clean_bottom_status();
     delete this->window;
 
-    qDebug() << "Gui::Gui: delete object done.";
-
     return;
 }
 
 bool
 Gui::apply_application_settings()
 {
-    qDebug() << "Gui::apply_application_settings...";
-
     // Apply windows style.
     this->window_style = this->settings->get_gui_style();
     if (this->apply_main_window_style() != true)
     {
-        qWarning() << "Gui::apply_application_settings: Cannot set new style to main window";
+        qCWarning(DS_APPSETTINGS) << "cannot set new style to main window";
     }
     this->browser_splitter->restoreState(this->settings->get_browser_splitter_size());
 
@@ -243,23 +234,23 @@ Gui::apply_application_settings()
         if (dscratch_change_vinyl_type(this->dscratch_ids[i],
                                        (char*)this->settings->get_vinyl_type().toStdString().c_str()) != 0)
         {
-            qWarning() << "Gui::apply_application_settings: Cannot set vinyl type";
+            qCWarning(DS_APPSETTINGS) << "cannot set vinyl type";
         }
         if (dscratch_set_rpm(this->dscratch_ids[i], this->settings->get_rpm()) != 0)
         {
-            qWarning() << "Gui::apply_application_settings: Cannot set turntable RPM";
+            qCWarning(DS_APPSETTINGS) << "cannot set turntable RPM";
         }
         if (dscratch_set_input_amplify_coeff(this->dscratch_ids[i], this->settings->get_input_amplify_coeff()) != 0)
         {
-            qWarning() << "Gui::apply_application_settings: Cannot set new input amplify coeff value";
+            qCWarning(DS_APPSETTINGS) << "cannot set new input amplify coeff value";
         }
         if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_ids[i], this->settings->get_min_amplitude_for_normal_speed()) != 0)
         {
-            qWarning() << "Gui::apply_application_settings: Cannot set new min amplitude for normal speed value";
+            qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude for normal speed value";
         }
         if (dscratch_set_min_amplitude(this->dscratch_ids[i], this->settings->get_min_amplitude()) != 0)
         {
-            qWarning() << "Gui::apply_application_settings: Cannot set new min amplitude value";
+            qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude value";
         }
     }
 
@@ -287,21 +278,17 @@ Gui::apply_application_settings()
     // Set shortcut value in help bottom span.
     this->set_help_shortcut_value();
 
-    qDebug() << "Gui::apply_application_settings done.";
-
     return true;
 }
 
 void
 Gui::start_control_and_playback()
 {
-    qDebug() << "Gui::start_control_and_playback...";
-
     // Start sound card for capture and playback.
     if ((this->sound_card->is_running() == false) &&
         (this->sound_card->start((void*)this->capture_and_play) == false))
     {
-        qWarning() << "Main: can not start sound card.";
+        qCWarning(DS_SOUNDCARD) << "can not start sound card";
         this->start_capture_button->setChecked(false);
         this->stop_capture_button->setChecked(true);
     }
@@ -310,8 +297,6 @@ Gui::start_control_and_playback()
         this->start_capture_button->setChecked(true);
         this->stop_capture_button->setChecked(false);
     }
-
-    qDebug() << "Gui::start_control_and_playback done.";
 
     return;
 }
@@ -319,14 +304,12 @@ Gui::start_control_and_playback()
 void
 Gui::stop_control_and_playback()
 {
-    qDebug() << "Gui::stop_control_and_playback...";
-
     // Stop sound card for capture and playback.
     if ((this->sound_card->is_running() == true) &&
         (this->can_stop_capture_and_playback() == true) &&
         (this->sound_card->stop() == false))
     {
-        qWarning() << "Main: can not stop sound card.";
+        qCWarning(DS_SOUNDCARD) << "can not stop sound card";
         this->stop_capture_button->setChecked(false);
         this->start_capture_button->setChecked(true);
     }
@@ -336,16 +319,12 @@ Gui::stop_control_and_playback()
         this->start_capture_button->setChecked(false);
     }
 
-    qDebug() << "Gui::stop_control_and_playback done.";
-
     return;
 }
 
 bool
 Gui::can_stop_capture_and_playback()
 {
-    qDebug() << "Gui::can_stop_capture_and_playback...";
-
     // Show a pop-up asking to confirm to stop capture.
     QMessageBox msg_box;
     msg_box.setWindowTitle("DigitalScratch");
@@ -363,8 +342,6 @@ Gui::can_stop_capture_and_playback()
         msg_box.setWindowIcon(QIcon(ICON));
     }
 
-    qDebug() << "Gui::can_stop_capture_and_playback done";
-
     // Close request confirmed.
     if (msg_box.exec() == QMessageBox::Ok)
     {
@@ -379,8 +356,6 @@ Gui::can_stop_capture_and_playback()
 bool
 Gui::show_config_window()
 {
-    qDebug() << "Gui::show_config_window...";
-
     // Create a configuration dialog.
     if (this->config_dialog != NULL)
     {
@@ -393,7 +368,7 @@ Gui::show_config_window()
     {
         if (this->apply_application_settings() != true)
         {
-            qFatal("Can not apply settings.");
+            qCCritical(DS_APPSETTINGS) << "can not apply settings";
             return false;
         }
     }
@@ -402,16 +377,12 @@ Gui::show_config_window()
     delete this->config_dialog;
     this->config_dialog = NULL;
 
-    qDebug() << "Gui::show_config_window done.";
-
     return true;
 }
 
 void
 Gui::set_fullscreen()
 {
-    qDebug() << "Gui::set_fullscreen...";
-
     if (this->window->isFullScreen() == false)
     {
         this->window->showFullScreen();
@@ -420,15 +391,11 @@ Gui::set_fullscreen()
     {
         this->window->showNormal();
     }
-
-    qDebug() << "Gui::set_fullscreen done.";
 }
 
 void
 Gui::show_help()
 {
-    qDebug() << "Gui::show_help...";
-
     if (this->help_groupbox->isHidden() == true)
     {
         this->help_groupbox->show();
@@ -437,41 +404,27 @@ Gui::show_help()
     {
         this->help_groupbox->hide();
     }
-
-    qDebug() << "Gui::show_help done.";
 }
 
 void
 Gui::set_focus_search_bar()
 {
-    qDebug() << "Gui::set_focus_search_bar...";
-
     this->file_search->setFocus();
     this->file_search->selectAll();
     this->search_from_begin = true;
-
-    qDebug() << "Gui::set_focus_search_bar done.";
 }
 
 void
 Gui::press_enter_in_search_bar()
 {
-    qDebug() << "Gui::press_enter_in_search_bar...";
-
     this->search_from_begin = false;
     this->file_search_string(this->last_search_string);
-
-    qDebug() << "Gui::press_enter_in_search_bar done.";
 }
 
 void
 Gui::press_esc_in_search_bar()
 {
-    qDebug() << "Gui::press_esc_in_search_bar...";
-
     this->file_browser->setFocus();
-
-    qDebug() << "Gui::press_esc_in_search_bar done.";
 }
 
 
@@ -561,12 +514,8 @@ Gui::on_finished_analyze_audio_collection()
 void
 Gui::reject_refresh_audio_collection_dialog()
 {
-    qDebug() << "Gui::reject_refresh_audio_collection_dialog...";
-
     this->refresh_file_browser->setEnabled(true);
     this->refresh_file_browser->setChecked(false);
-
-    qDebug() << "Gui::reject_refresh_audio_collection_dialog done.";
 
     return;
 }
@@ -574,14 +523,10 @@ Gui::reject_refresh_audio_collection_dialog()
 void
 Gui::close_refresh_audio_collection_dialog()
 {
-    qDebug() << "Gui::close_refresh_audio_collection_dialog...";
-
     if (this->refresh_audio_collection_dialog != NULL)
     {
         this->refresh_audio_collection_dialog->done(QDialog::Rejected);
     }
-
-    qDebug() << "Gui::close_refresh_audio_collection_dialog done.";
 
     return;
 }
@@ -589,8 +534,6 @@ Gui::close_refresh_audio_collection_dialog()
 void
 Gui::accept_refresh_audio_collection_dialog_all_files()
 {
-    qDebug() << "Gui::accept_refresh_audio_collection_dialog_all_files...";
-
     // Analyze all files of audio collection.
     this->analyze_audio_collection(true);
 
@@ -599,16 +542,12 @@ Gui::accept_refresh_audio_collection_dialog_all_files()
         this->refresh_audio_collection_dialog->done(QDialog::Accepted);
     }
 
-    qDebug() << "Gui::accept_refresh_audio_collection_dialog_all_files done.";
-
     return;
 }
 
 void
 Gui::accept_refresh_audio_collection_dialog_new_files()
 {
-    qDebug() << "Gui::accept_refresh_audio_collection_dialog_new_files...";
-
     // Analyze all files of audio collection.
     this->analyze_audio_collection(false);
 
@@ -617,16 +556,12 @@ Gui::accept_refresh_audio_collection_dialog_new_files()
         this->refresh_audio_collection_dialog->done(QDialog::Accepted);
     }
 
-    qDebug() << "Gui::accept_refresh_audio_collection_dialog_new_files done.";
-
     return;
 }
 
 bool
 Gui::show_refresh_audio_collection_dialog()
 {
-    qDebug() << "Gui::show_refresh_audio_collection_dialog...";
-
     // Show dialog only if there is no other analyzis process running.
     if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
     {
@@ -700,8 +635,6 @@ Gui::show_refresh_audio_collection_dialog()
         this->file_system_model->stop_concurrent_analyse_audio_collection();
     }
 
-    qDebug() << "Gui::show_refresh_audio_collection_dialog done.";
-
     return true;
 }
 
@@ -751,14 +684,10 @@ Gui::show_samplers()
 void
 Gui::done_about_window()
 {
-    qDebug() << "Gui::done_about_window...";
-
     if (this->about_dialog != NULL)
     {
         this->about_dialog->done(QDialog::Accepted);
     }
-
-    qDebug() << "Gui::done_about_window done.";
 
     return;
 }
@@ -766,8 +695,6 @@ Gui::done_about_window()
 bool
 Gui::show_about_window()
 {
-    qDebug() << "Gui::show_about_window...";
-
     // Create about window.
     if (this->about_dialog != NULL)
     {
@@ -921,22 +848,16 @@ Gui::show_about_window()
     delete this->about_dialog;
     this->about_dialog = NULL;
 
-    qDebug() << "Gui::show_about_window done.";
-
     return true;
 }
 
 void
 Gui::done_error_window()
 {
-    qDebug() << "Gui::done_error_window...";
-
     if (this->error_dialog != NULL)
     {
         this->error_dialog->done(QDialog::Accepted);
     }
-
-    qDebug() << "Gui::done_error_window done.";
 
     return;
 }
@@ -944,8 +865,6 @@ Gui::done_error_window()
 bool
 Gui::show_error_window(QString in_error_message)
 {
-    qDebug() << "Gui::show_error_window...";
-
     // Prepare error window.
     QMessageBox msg_box;
     msg_box.setWindowTitle("DigitalScratch");
@@ -967,16 +886,12 @@ Gui::show_error_window(QString in_error_message)
     // Show error dialog.
     msg_box.exec();
 
-    qDebug() << "Gui::show_error_window done.";
-
     return true;
 }
 
 bool
 Gui::create_main_window()
 {
-    qDebug() << "Gui::create_main_window...";
-
     // Init main window.
     this->window             = new QWidget();
     this->is_window_rendered = false;
@@ -1033,8 +948,6 @@ Gui::create_main_window()
     // Open error window.
     QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
                      this,             SLOT(show_error_window(QString)));
-
-    qDebug() << "Gui::create_main_window done.";
 
     return true;
 }
@@ -2503,8 +2416,6 @@ Gui::set_help_shortcut_value()
 void
 Gui::can_close()
 {
-    qDebug() << "Gui::can_close...";
-
     // Show a pop-up asking to confirm to close.
     QMessageBox msg_box;
     msg_box.setWindowTitle("DigitalScratch");
@@ -2527,15 +2438,11 @@ Gui::can_close()
     {
         this->window->close();
     }
-
-    qDebug() << "Gui::can_close done";
 }
 
 bool
 Gui::apply_main_window_style()
 {
-    qDebug() << "Gui::apply_main_window_style...";
-
     // Apply some GUI settings manually.
     if (this->window_style == QString(GUI_STYLE_NATIVE))
     {
@@ -2664,16 +2571,12 @@ Gui::apply_main_window_style()
     // Change main window skin (using CSS).
     this->window->setStyleSheet(Utils::get_current_stylesheet_css());
 
-    qDebug() << "Gui::apply_main_window_style done.";
-
     return true;
 }
 
 bool
 Gui::set_folder_browser_base_path(QString in_path)
 {
-    qDebug() << "Gui::set_folder_browser_base_path...";
-
     // Change path of the model and set file extension filters.
     this->folder_system_model->setRootPath("");
     QStringList name_filter;
@@ -2690,16 +2593,12 @@ Gui::set_folder_browser_base_path(QString in_path)
     this->folder_browser->setCurrentIndex(this->folder_system_model->index(in_path));
     this->folder_browser->setExpanded(this->folder_system_model->index(in_path), true);
 
-    qDebug() << "Gui::set_folder_browser_base_path done.";
-
     return true;
 }
 
 bool
 Gui::set_file_browser_base_path(QString in_path)
 {
-    qDebug() << "Gui::set_file_browser_base_path...";
-
     if (this->watcher_parse_directory->isRunning() == false)
     {
         // Hide file browser during directory analysis.
@@ -2729,8 +2628,6 @@ Gui::set_file_browser_base_path(QString in_path)
         this->progress_bar->reset();
     }
 
-    qDebug() << "Gui::set_file_browser_base_path done.";
-
     return true;
 }
 
@@ -2750,8 +2647,6 @@ Gui::run_concurrent_read_collection_from_db()
 bool
 Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
 {
-    qDebug() << "Gui::set_file_browser_playlist_tracks...";
-
     if (this->watcher_parse_directory->isRunning() == false)
     {
         // Hide file browser during playlist analysis.
@@ -2788,8 +2683,6 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
         this->file_browser->setVisible(true);
     }
 
-    qDebug() << "Gui::set_file_browser_playlist_tracks done.";
-
     return true;
 }
 
@@ -2809,12 +2702,8 @@ Gui::sync_file_browser_to_audio_collection()
 bool
 Gui::set_file_browser_title(QString in_title)
 {
-    qDebug() << "Gui::set_file_browser_title...";
-
     // Change file browser title (which contains base dir for tracks).
     this->file_browser_gbox->setTitle(tr("File browser") + " [" + in_title + "]");
-
-    qDebug() << "Gui::set_file_browser_title done.";
 
     return true;
 }
@@ -2823,16 +2712,12 @@ void
 Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
                                   unsigned short int in_sampler_index)
 {
-    qDebug() << "Gui::run_sampler_decoding_process...";
-
     // Select deck.
     this->highlight_deck_sampler_area(in_deck_index);
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
     QFileInfo info(item->get_full_path());
-    qDebug() << "Gui::run_sampler_decoding_process: selected item: " << info.absoluteFilePath();
-
     if (info.isFile() == true)
     {
         // Execute decoding.
@@ -2847,7 +2732,7 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
         }
         if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "", "") == false)
         {
-            qWarning() << "Gui::run_sampler_decoding_process: can not decode " << info.absoluteFilePath();
+            qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
         }
         else
         {
@@ -2856,8 +2741,6 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
             this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
         }
     }
-
-    qDebug() << "Gui::run_sampler_decoding_process done.";
 
     return;
 }
@@ -3182,8 +3065,6 @@ void
 Gui::on_sampler_button_play_click(unsigned short int in_deck_index,
                                   unsigned short int in_sampler_index)
 {
-    qDebug() << "Gui::on_sampler_button_play_click...";
-
     // First stop playback (and return to beginning of the song).
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
     this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
@@ -3194,8 +3075,6 @@ Gui::on_sampler_button_play_click(unsigned short int in_deck_index,
 
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);
-
-    qDebug() << "Gui::on_sampler_button_play_click done.";
 
     return;
 }
@@ -3260,16 +3139,12 @@ void
 Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
                                   unsigned short int in_sampler_index)
 {
-    qDebug() << "Gui::on_sampler_button_stop_click...";
-
     // Stop playback (and return to beginning of the song).
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
     this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
 
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);
-
-    qDebug() << "Gui::on_sampler_button_play_click done.";
 
     return;
 }
@@ -3278,16 +3153,12 @@ void
 Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
                                  unsigned short int in_sampler_index)
 {
-    qDebug() << "Gui::on_sampler_button_del_click...";
-
     // Remove track loaded in the sampler.
     this->playback->del_sampler(in_deck_index, in_sampler_index);
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
 
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);
-
-    qDebug() << "Gui::on_sampler_button_del_click done.";
 
     return;
 }
@@ -3360,9 +3231,7 @@ Gui::on_progress_cancel_button_click()
 void
 Gui::on_file_browser_expand(QModelIndex)
 {
-    qDebug() << "Gui::on_file_browser_expand...";
     this->resize_file_browser_columns();
-    qDebug() << "Gui::on_file_browser_expand...";
 }
 
 void
@@ -3378,8 +3247,6 @@ Gui::on_file_browser_header_click(int in_index)
 void
 Gui::on_file_browser_double_click(QModelIndex in_model_index)
 {
-    qDebug() << "Gui::on_file_browser_double_click...";
-
     if (this->watcher_parse_directory->isRunning() == false)
     {
         // Get path (file for a playlist, or just a directory).
@@ -3402,7 +3269,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
                 }
                 else
                 {
-                    qWarning() << "Gui::on_file_browser_double_click: can not open m3u playlist " << qPrintable(path);
+                    qCWarning(DS_FILE) << "can not open m3u playlist " << qPrintable(path);
                 }
             }
             else if (file_info.suffix().compare(QString("pls"), Qt::CaseInsensitive) == 0)
@@ -3415,7 +3282,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
                 }
                 else
                 {
-                    qWarning() << "Gui::on_file_browser_double_click: can not open pls playlist " << qPrintable(path);
+                    qCWarning(DS_FILE) << "can not open pls playlist " << qPrintable(path);
                 }
             }
 
@@ -3429,17 +3296,13 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
             this->set_file_browser_base_path(path);
         }
     }
-
-    qDebug() << "Gui::on_file_browser_double_click...";
 }
 
 void
 Gui::resize_file_browser_columns()
 {
-    qDebug() << "Gui::resize_file_browser_columns...";
     this->file_browser->resizeColumnToContents(COLUMN_KEY);
     this->file_browser->resizeColumnToContents(COLUMN_FILE_NAME);
-    qDebug() << "Gui::resize_file_browser_columns...";
 }
 
 void
@@ -3481,16 +3344,12 @@ Gui::select_and_run_audio_file_decoding_process_deck2()
 void
 Gui::run_audio_file_decoding_process()
 {
-    qDebug() << "Gui::run_audio_file_decoding_process...";
-
     // Force processing events to refresh main window before running decoding.
     QApplication::processEvents();
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
     QFileInfo info(item->get_full_path());
-    qDebug() << "Gui::run_audio_file_decoding_process: selected item: " << info.absoluteFilePath();
-
     if (info.isFile() == true)
     {
         // Get selected deck/sampler.
@@ -3522,7 +3381,7 @@ Gui::run_audio_file_decoding_process()
             // Decode track.
             if (decode_process->run(info.absoluteFilePath(), item->get_file_hash(), item->get_data(COLUMN_KEY).toString()) == false)
             {
-                qWarning() << "Gui::run_audio_file_decoding_process: can not decode " << info.absoluteFilePath();
+                qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
             }
         }
 
@@ -3543,8 +3402,6 @@ Gui::run_audio_file_decoding_process()
         // Update waveform.
         deck_waveform->update();
     }
-
-    qDebug() << "Gui::run_audio_file_decoding_process done.";
 
     return;
 }
@@ -3582,8 +3439,6 @@ Gui::set_deck2_key(const QString &in_key)
 void
 Gui::set_remaining_time(unsigned int in_remaining_time, int in_deck_index)
 {
-    qDebug() << "Gui::set_remaining_time...";
-
     // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
     int remaining_time_by_1000 = in_remaining_time / 1000.0;
     div_t tmp_division;
@@ -3631,8 +3486,6 @@ Gui::set_remaining_time(unsigned int in_remaining_time, int in_deck_index)
         this->deck2_waveform->move_slider(this->playback->get_position(1));
     }
 
-    qDebug() << "Gui::set_remaining_time done.";
-
     return;
 }
 
@@ -3641,8 +3494,6 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
                                 int          in_deck_index,
                                 int          in_sampler_index)
 {
-    qDebug() << "Gui::set_sampler_remaining_time...";
-
     if (in_remaining_time == 0)
     {
         if (in_deck_index == 0)
@@ -3689,8 +3540,6 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
         }
     }
 
-    qDebug() << "Gui::set_sampler_remaining_time done.";
-
     return;
 }
 
@@ -3699,8 +3548,6 @@ Gui::set_sampler_state(int  in_deck_index,
                        int  in_sampler_index,
                        bool in_state)
 {
-    qDebug() << "Gui::set_sampler_state...";
-
     // Change state only if a sample is loaded and playing.
     if ((this->playback->is_sampler_loaded(in_deck_index, in_sampler_index) == true) && (in_state == true))
     {
@@ -3729,9 +3576,6 @@ Gui::set_sampler_state(int  in_deck_index,
             this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
         }
     }
-
-
-    qDebug() << "Gui::set_sampler_state done.";
 
     return;
 }
@@ -3794,12 +3638,8 @@ Gui::speed_up_down(float in_speed_inc, int in_deck_index)
 void
 Gui::deck1_jump_to_position(float in_position)
 {
-    qDebug() << "Gui::deck1_jump_to_position...";
-
     this->playback->jump_to_position(0, in_position);
     this->highlight_deck_sampler_area(0);
-
-    qDebug() << "Gui::deck1_jump_to_position done.";
 
     return;
 }
@@ -3807,12 +3647,8 @@ Gui::deck1_jump_to_position(float in_position)
 void
 Gui::deck2_jump_to_position(float in_position)
 {
-    qDebug() << "Gui::deck2_jump_to_position...";
-
     this->playback->jump_to_position(1, in_position);
     this->highlight_deck_sampler_area(1);
-
-    qDebug() << "Gui::deck2_jump_to_position done.";
 
     return;
 }
@@ -3820,8 +3656,6 @@ Gui::deck2_jump_to_position(float in_position)
 void
 Gui::deck_go_to_begin()
 {
-    qDebug() << "Gui::deck_go_to_begin...";
-
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
         // Deck 2.
@@ -3833,23 +3667,17 @@ Gui::deck_go_to_begin()
         this->playback->jump_to_position(0, 0.0);
     }
 
-    qDebug() << "Gui::deck_go_to_begin done.";
-
     return;
 }
 
 void
 Gui::deck1_go_to_begin()
 {
-    qDebug() << "Gui::deck1_go_to_begin...";
-
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
     // Jump.
     this->deck_go_to_begin();
-
-    qDebug() << "Gui::deck1_go_to_begin done.";
 
     return;
 }
@@ -3857,15 +3685,11 @@ Gui::deck1_go_to_begin()
 void
 Gui::deck2_go_to_begin()
 {
-    qDebug() << "Gui::deck2_go_to_begin...";
-
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
     // Jump.
     this->deck_go_to_begin();
-
-    qDebug() << "Gui::deck2_go_to_begin done.";
 
     return;
 }
@@ -3873,8 +3697,6 @@ Gui::deck2_go_to_begin()
 void
 Gui::deck_set_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck_set_cue_point...";
-
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {       
         // Deck 2.
@@ -3890,23 +3712,17 @@ Gui::deck_set_cue_point(int in_cue_point_number)
         this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(0, in_cue_point_number));
     }
 
-    qDebug() << "Gui::deck_set_cue_point done.";
-
     return;
 }
 
 void
 Gui::deck1_set_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck1_set_cue_point...";
-
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
     // Set cue point.
     this->deck_set_cue_point(in_cue_point_number);
-
-    qDebug() << "Gui::deck1_set_cue_point done.";
 
     return;
 }
@@ -3914,15 +3730,11 @@ Gui::deck1_set_cue_point(int in_cue_point_number)
 void
 Gui::deck2_set_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck2_set_cue_point...";
-
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
     // Set cue point.
     this->deck_set_cue_point(in_cue_point_number);
-
-    qDebug() << "Gui::deck2_set_cue_point done.";
 
     return;
 }
@@ -3930,8 +3742,6 @@ Gui::deck2_set_cue_point(int in_cue_point_number)
 void
 Gui::deck_go_to_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck_go_to_cue_point...";
-
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {        
         // Deck 2.
@@ -3943,23 +3753,17 @@ Gui::deck_go_to_cue_point(int in_cue_point_number)
         this->playback->jump_to_cue_point(0, in_cue_point_number);
     }
 
-    qDebug() << "Gui::deck_go_to_cue_point done.";
-
     return;
 }
 
 void
 Gui::deck1_go_to_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck1_go_to_cue_point...";
-
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
     // Jump.
     this->deck_go_to_cue_point(in_cue_point_number);
-
-    qDebug() << "Gui::deck1_go_to_cue_point done.";
 
     return;
 }
@@ -3967,15 +3771,11 @@ Gui::deck1_go_to_cue_point(int in_cue_point_number)
 void
 Gui::deck2_go_to_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck2_go_to_cue_point...";
-
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
     // Jump.
     this->deck_go_to_cue_point(in_cue_point_number);
-
-    qDebug() << "Gui::deck2_go_to_cue_point done.";
 
     return;
 }
@@ -3983,8 +3783,6 @@ Gui::deck2_go_to_cue_point(int in_cue_point_number)
 void
 Gui::deck_del_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck_del_cue_point...";
-
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
         // Deck 2.
@@ -4000,23 +3798,17 @@ Gui::deck_del_cue_point(int in_cue_point_number)
         this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(0, in_cue_point_number));
     }
 
-    qDebug() << "Gui::deck_del_cue_point done.";
-
     return;
 }
 
 void
 Gui::deck1_del_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck1_del_cue_point...";
-
     // Select deck 1.
     this->highlight_deck_sampler_area(0);
 
     // Delete point.
     this->deck_del_cue_point(in_cue_point_number);
-
-    qDebug() << "Gui::deck1_del_cue_point done.";
 
     return;
 }
@@ -4024,15 +3816,11 @@ Gui::deck1_del_cue_point(int in_cue_point_number)
 void
 Gui::deck2_del_cue_point(int in_cue_point_number)
 {
-    qDebug() << "Gui::deck2_del_cue_point...";
-
     // Select deck 2.
     this->highlight_deck_sampler_area(1);
 
     // Delete point.
     this->deck_del_cue_point(in_cue_point_number);
-
-    qDebug() << "Gui::deck2_del_cue_point done.";
 
     return;
 }
@@ -4040,8 +3828,6 @@ Gui::deck2_del_cue_point(int in_cue_point_number)
 void
 Gui::switch_playback_selection()
 {
-    qDebug() << "Gui::select_deck...";
-
     // Switch deck selection.
     if (this->nb_decks > 1)
     {
@@ -4057,20 +3843,14 @@ Gui::switch_playback_selection()
         }
     }
 
-    qDebug() << "Gui::select_deck done.";
-
     return;
 }
 
 void
 Gui::select_playback_1()
 {
-    qDebug() << "Gui::select_playback_1...";
-
     // Select deck/sample #1
     this->highlight_deck_sampler_area(0);
-
-    qDebug() << "Gui::select_playback_1 done.";
 
     return;
 }
@@ -4078,15 +3858,11 @@ Gui::select_playback_1()
 void
 Gui::select_playback_2()
 {
-    qDebug() << "Gui::select_playback_2...";
-
     if (this->nb_decks > 1)
     {
         // Select deck/sample #2
         this->highlight_deck_sampler_area(1);
     }
-
-    qDebug() << "Gui::select_playback_2 done.";
 
     return;
 }
@@ -4094,8 +3870,6 @@ Gui::select_playback_2()
 void
 Gui::highlight_deck_sampler_area(unsigned short int in_deck_index)
 {
-    qDebug() << "Gui::highlight_deck_sampler_area...";
-
     bool switch_on = false;
     if (in_deck_index == 0)
     {
@@ -4114,19 +3888,13 @@ Gui::highlight_deck_sampler_area(unsigned short int in_deck_index)
     this->sampler1_gbox->redraw();
     this->sampler2_gbox->redraw();
 
-    qDebug() << "Gui::highlight_deck_sampler_area done.";
-
     return;
 }
 
 void
 Gui::hover_playback(int in_deck_index)
 {
-    qDebug() << "Gui::hover_playback...";
-
     this->highlight_border_deck_sampler_area(in_deck_index, true);
-
-    qDebug() << "Gui::hover_playback done.";
 
     return;
 }
@@ -4134,11 +3902,7 @@ Gui::hover_playback(int in_deck_index)
 void
 Gui::unhover_playback(int in_deck_index)
 {
-    qDebug() << "Gui::unhover_playback...";
-
     this->highlight_border_deck_sampler_area(in_deck_index, false);
-
-    qDebug() << "Gui::unhover_playback done.";
 
     return;
 }
@@ -4147,8 +3911,6 @@ void
 Gui::highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                         bool               switch_on)
 {
-    qDebug() << "Gui::highlight_border_deck_sampler_area...";
-
     if (in_deck_index == 0)
     {
         // highlight pair deck+sampler.
@@ -4170,8 +3932,6 @@ Gui::highlight_border_deck_sampler_area(unsigned short int in_deck_index,
         this->deck2_gbox->redraw();
         this->sampler2_gbox->redraw();
     }
-
-    qDebug() << "Gui::highlight_border_deck_sampler_area done.";
 
     return;
 }
@@ -4215,8 +3975,6 @@ Gui::select_and_show_next_keys_deck2()
 void
 Gui::show_next_keys()
 {
-    qDebug() << "Gui::show_next_keys...";
-
     // Get music key of selected deck/sampler.
     QString deck_key = this->at_1->get_music_key();
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
@@ -4244,42 +4002,28 @@ Gui::show_next_keys()
         }
     }
 
-    qDebug() << "Gui::show_next_keys done.";
-
     return;
 }
 
 PlaybackQGroupBox::PlaybackQGroupBox(const QString &title) : QGroupBox(title)
 {
-    qDebug() << "PlaybackQGroupBox::PlaybackQGroupBox: create object...";
-
     // Init.
     this->l_selected = false;
     this->setAcceptDrops(true);
-
-    qDebug() << "PlaybackQGroupBox::PlaybackQGroupBox: create object done.";
 
     return;
 }
 
 PlaybackQGroupBox::~PlaybackQGroupBox()
 {
-    qDebug() << "PlaybackQGroupBox::PlaybackQGroupBox: delete object...";
-
-    qDebug() << "PlaybackQGroupBox::PlaybackQGroupBox: delete object done.";
-
     return;
 }
 
 void
 PlaybackQGroupBox::redraw()
 {
-    qDebug() << "PlaybackQGroupBox::redraw...";
-
     this->style()->unpolish(this);
     this->style()->polish(this);
-
-    qDebug() << "PlaybackQGroupBox::redraw done.";
 
     return;
 }
@@ -4287,12 +4031,8 @@ PlaybackQGroupBox::redraw()
 void
 PlaybackQGroupBox::mousePressEvent(QMouseEvent *in_mouse_event)
 {
-    qDebug() << "PlaybackQGroupBox::mousePressEvent...";
-
-    qDebug() << "PlaybackQGroupBox::pressEvent: x = " << in_mouse_event->x();
+    Q_UNUSED(in_mouse_event);
     emit this->selected();
-
-    qDebug() << "PlaybackQGroupBox::mousePressEvent done.";
 
     return;
 }
@@ -4300,13 +4040,8 @@ PlaybackQGroupBox::mousePressEvent(QMouseEvent *in_mouse_event)
 void
 PlaybackQGroupBox::enterEvent(QEvent *in_event)
 {
-    qDebug() << "PlaybackQGroupBox::enterEvent...";
-
-    qDebug() << "PlaybackQGroupBox::enterEvent: type = " << in_event->type();
+    Q_UNUSED(in_event);
     emit this->hover();
-
-
-    qDebug() << "PlaybackQGroupBox::enterEvent done.";
 
     return;
 }
@@ -4314,12 +4049,8 @@ PlaybackQGroupBox::enterEvent(QEvent *in_event)
 void
 PlaybackQGroupBox::leaveEvent(QEvent *in_event)
 {
-    qDebug() << "PlaybackQGroupBox::leaveEvent...";
-
-    qDebug() << "PlaybackQGroupBox::leaveEvent: type = " << in_event->type();
+    Q_UNUSED(in_event);
     emit this->unhover();
-
-    qDebug() << "PlaybackQGroupBox::leaveEvent done.";
 
     return;
 }
@@ -4359,35 +4090,23 @@ PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
 
 SpeedQPushButton::SpeedQPushButton(const QString &title) : QPushButton(title)
 {
-    qDebug() << "SpeedQPushButton::SpeedQPushButton: create object...";
-
     // Init.
     this->setProperty("right_clicked", false);
     this->setProperty("pressed", false);
-
-    qDebug() << "SpeedQPushButton::SpeedQPushButton: create object done.";
 
     return;
 }
 
 SpeedQPushButton::~SpeedQPushButton()
 {
-    qDebug() << "SpeedQPushButton::SpeedQPushButton: delete object...";
-
-    qDebug() << "SpeedQPushButton::SpeedQPushButton: delete object done.";
-
     return;
 }
 
 void
 SpeedQPushButton::redraw()
 {
-    qDebug() << "SpeedQPushButton::redraw...";
-
     this->style()->unpolish(this);
     this->style()->polish(this);
-
-    qDebug() << "SpeedQPushButton::redraw done.";
 
     return;
 }
@@ -4395,15 +4114,11 @@ SpeedQPushButton::redraw()
 void
 SpeedQPushButton::mousePressEvent(QMouseEvent *in_mouse_event)
 {
-    qDebug() << "SpeedQPushButton::mousePressEvent...";
-
     // Force state "pressed" in style sheet even it is a right click event.
     this->setProperty("pressed", true);
     this->redraw();
 
     QPushButton::mousePressEvent(in_mouse_event);
-
-    qDebug() << "SpeedQPushButton::mousePressEvent done.";
 
     return;
 }
@@ -4411,8 +4126,6 @@ SpeedQPushButton::mousePressEvent(QMouseEvent *in_mouse_event)
 void
 SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
 {
-    qDebug() << "SpeedQPushButton::mouseReleaseEvent...";
-
     // Unpress the button.
     this->setProperty("pressed", false);
     this->redraw();
@@ -4424,8 +4137,6 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
     {
         emit this->right_clicked();
     }
-
-    qDebug() << "SpeedQPushButton::mouseReleaseEvent done.";
 
     return;
 }

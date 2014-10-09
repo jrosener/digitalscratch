@@ -41,12 +41,10 @@
 
 Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
 {
-    qDebug() << "Waveform::Waveform: create object...";
-
     // Get audio track.
     if (in_at == NULL)
     {
-        qFatal("Waveform::Waveform: audio track can not be null");
+        qCCritical(DS_OBJECTLIFE) << "audio track can not be null";
     }
     this->at = in_at;
 
@@ -80,19 +78,13 @@ Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
         this->draw_cue_slider(i);
     }
 
-    qDebug() << "Waveform::Waveform: create object done.";
-
     return;
 }
 
 Waveform::~Waveform()
 {
-    qDebug() << "Waveform::Waveform: delete object...";
-
     // Delete table of points.
     delete [] this->points;
-
-    qDebug() << "Waveform::Waveform: delete object done.";
 
     return;
 }
@@ -100,11 +92,7 @@ Waveform::~Waveform()
 void
 Waveform::reset()
 {
-    qDebug() << "Waveform::reset...";
-
     this->force_regenerate_polyline = true;
-
-    qDebug() << "Waveform::reset done.";
 
     return;
 }
@@ -112,8 +100,6 @@ Waveform::reset()
 void
 Waveform::get_area_size()
 {
-    qDebug() << "Waveform::get_area_size...";
-
     // Get current display area size.
     int  new_height = this->frameSize().height() - 1;
     int  new_width  = this->frameSize().width() - 1;
@@ -126,16 +112,12 @@ Waveform::get_area_size()
         this->force_regenerate_polyline = true;
     }
 
-    qDebug() << "Waveform::get_area_size done.";
-
     return;
 }
 
 bool
 Waveform::generate_polyline()
 {
-    qDebug() << "Waveform::generate_polyline...";
-
     // Get audio track table of samples.
     unsigned int j = 0;
     short signed int *samples        = this->at->get_samples();
@@ -173,26 +155,19 @@ Waveform::generate_polyline()
 
     this->force_regenerate_polyline = false;
 
-    qDebug() << "Waveform::generate_polyline done.";
-
     return true;
 }
 
 void
 Waveform::paintEvent(QPaintEvent *)
 {
-    qDebug() << "Waveform::paintEvent...";
-
     // Get area size.
     this->get_area_size();
 
     // Generate list of points to draw if size of the waveform changed.
     if (this->force_regenerate_polyline == true)
     {
-        if (this->generate_polyline() == false)
-        {
-            qDebug() << "Waveform::paintEvent: can not generate polyline";
-        }
+        this->generate_polyline();
     }
 
     QPainter painter(this);
@@ -220,20 +195,15 @@ Waveform::paintEvent(QPaintEvent *)
         this->move_cue_slider(i, this->cue_sliders_absolute_position[i]);
     }
 
-    qDebug() << "Waveform::paintEvent done.";
-
     return;
 }
 
 bool
 Waveform::jump_slider(int in_x)
 {
-    qDebug() << "Waveform::jump_slider...";
-
     // Check boundaries.
     if (in_x > this->area_width)
     {
-        qDebug() << "Waveform::jump_slider: can not move slider to x =" << in_x;
         return false;
     }
 
@@ -252,21 +222,14 @@ Waveform::jump_slider(int in_x)
         this->slider_absolute_position = (float)in_x / (float)this->area_width;
     }
 
-    qDebug() << "Waveform::jump_slider done.";
-
     return true;
 }
 
 void
 Waveform::mousePressEvent(QMouseEvent *in_mouse_event)
 {
-    qDebug() << "Waveform::mousePressEvent...";
-
     // Move slider to mouse position.
     this->jump_slider(in_mouse_event->x());
-    qDebug() << "Waveform::mousePressEvent: new x = " << in_mouse_event->x();
-
-    qDebug() << "Waveform::mousePressEvent done.";
 
     return;
 }
@@ -274,12 +237,9 @@ Waveform::mousePressEvent(QMouseEvent *in_mouse_event)
 bool
 Waveform::move_slider(float in_position)
 {
-    qDebug() << "Waveform::move_slider...";
-
     // Check position.
     if (in_position > 1.0)
     {
-        qDebug() << "Waveform::move_slider: can not move slider to position =" << in_position;
         return false;
     }
 
@@ -290,20 +250,15 @@ Waveform::move_slider(float in_position)
     this->slider_position_x = in_position * this->area_width;
     this->slider->setGeometry(this->slider_position_x, 0, 2, this->area_height);
 
-    qDebug() << "Waveform::move_slider done.";
-
     return true;
 }
 
 bool
 Waveform::move_cue_slider(unsigned short int in_cue_point_num, float in_position)
 {
-    qDebug() << "Waveform::move_cue_slider...";
-
     // Check position.
     if (in_position > 1.0)
     {
-        qDebug() << "Waveform::move_cue_slider: can not move cue slider to position =" << in_position;
         return false;
     }
 
@@ -313,8 +268,6 @@ Waveform::move_cue_slider(unsigned short int in_cue_point_num, float in_position
     // Move slider to new position.
     this->cue_sliders_position_x[in_cue_point_num] = in_position * this->area_width;
     this->draw_cue_slider(in_cue_point_num);
-
-    qDebug() << "Waveform::move_cue_slider done.";
 
     return true;
 }

@@ -48,22 +48,20 @@ QStringList Utils::audio_file_extensions = QStringList() << "ac3" << "flac" << "
 // Static utils functions.
 QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 {   
-    qDebug() << "Utils::get_file_hash...";
-
     // Init.
     QString hash("");
 
     // Check if path is defined.
     if (in_path == NULL)
     {
-        qWarning() << "Utils::get_file_hash: path is NULL.";
+        qCWarning(DS_FILE) << "path is NULL.";
         return "";
     }
 
     // Check number of kbytes.
     if (in_kbytes == 0)
     {
-        qWarning() << "Utils::get_file_hash: nb bytes to hash is 0.";
+        qCWarning(DS_FILE) << "nb bytes to hash is 0.";
         return "";
     }
 
@@ -71,7 +69,7 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
     QFile file(in_path);
     if (file.exists() == false)
     {
-        qWarning() << "Utils::get_file_hash: file " << in_path << " does not exists.";
+        qCWarning(DS_FILE) << "nb bytes to hash is 0.";
         return "";
     }
 
@@ -87,8 +85,6 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
 
     // Cleanup.
     file.close();
-
-    qDebug() << "Utils::get_file_hash: done.";
 
     return hash;
 }
@@ -126,7 +122,7 @@ QString Utils::get_file_music_key(QString in_path)
     }
     else
     {
-        qWarning() << "Utils::get_file_music_key: cannot get music key for " << in_path;
+        qCWarning(DS_FILE) << "cannot get music key for " << in_path;
     }
 
     // Cleanup.
@@ -234,7 +230,7 @@ void Utils::get_next_music_keys(QString  in_key,
 
             if (index == -1)
             {
-                qWarning() << "Utils::get_next_music_keys: cannot find next key of " << in_key;
+                qCWarning(DS_MUSICKEY) << "cannot find next key of " << in_key;
             }
             else
             {

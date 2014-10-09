@@ -72,11 +72,12 @@ HEADERS += include/gui/config_dialog.h \
            include/player/data_persistence.h \
            include/player/audio_collection_model.h \
            include/player/audio_track_key_process.h \
+           include/player/playlist.h \
+           include/player/playlist_persistence.h \
            include/utils.h \
            include/application_const.h \
            include/singleton.h \
-           include/player/playlist.h \
-           include/player/playlist_persistence.h
+           include/application_logging.h
            
 SOURCES += src/main.cpp \
            src/gui/config_dialog.cpp \
@@ -96,9 +97,10 @@ SOURCES += src/main.cpp \
            src/player/data_persistence.cpp \
            src/player/audio_collection_model.cpp \
            src/player/audio_track_key_process.cpp \
-           src/utils.cpp \
            src/player/playlist.cpp \
-           src/player/playlist_persistence.cpp
+           src/player/playlist_persistence.cpp \
+           src/utils.cpp \
+           src/application_logging.cpp
 
 CONFIG(test) {
     INCLUDEPATH += test
@@ -183,12 +185,12 @@ unix {
 #############################
 # Enable for release and debug mode.
 CONFIG += debug_and_release
-DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
-CONFIG(debug, debug|release) {
-}
-else {
-    DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
-}
+#############################
+
+#############################
+# Enable/disable logging.
+#DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
+DEFINES += QT_NO_DEBUG_OUTPUT
 #############################
 
 #############################

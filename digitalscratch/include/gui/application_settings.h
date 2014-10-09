@@ -39,6 +39,7 @@
 
 using namespace std;
 
+// Application and main window.
 #define APPLICATION_NAME          "digitalscratch"
 
 #define MAIN_WIN_SIZE_CFG         "player/main_win_size"
@@ -62,6 +63,7 @@ using namespace std;
 #define NB_DECKS_CFG              "player/nb_decks"
 #define NB_DECKS_DEFAULT          2
 
+// Sound caracteristics.
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
 #define SAMPLE_RATE_DEFAULT                 44100
 #define AUTO_JACK_CONNECTIONS_CFG           "sound_card/auto_jack_connections"
@@ -73,6 +75,7 @@ using namespace std;
 #define SOUND_CARD_CFG                      "sound_card/sound_card_id"
 #define SOUND_CARD_DEFAULT                  "0"
 
+// Motion detection.
 #define AUTOSTART_MOTION_DETECTION_CFG      "motion_detection/auto_start_motion_detection"
 #define AUTOSTART_MOTION_DETECTION_DEFAULT  0
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
@@ -85,11 +88,13 @@ using namespace std;
 #define MIN_AMPLITUDE_NORMAL_SPEED          "motion_detection/min_amplitude_normal_speed"
 #define MIN_AMPLITUDE                       "motion_detection/min_amplitude"
 
+// Playback parameters.
 #define MAX_SPEED_DIFF_CFG                  "playback_parameters/max_speed_diff"
 #define SLOW_SPEED_ALGO_USAGE_CFG           "playback_parameters/slow_speed_algo_usage"
 #define MAX_NB_SPEED_STABIL_CFG             "playback_parameters/min_nb_speed_for_stability"
 #define NB_CYCLE_CHANGING_DIR_CFG           "playback_parameters/nb_cycle_before_changing_direction"
 
+// Keyboard shortcuts.
 #define KB_SWITCH_PLAYBACK                  "keyboard_shortcuts/kb_switch_playback"
 #define KB_SWITCH_PLAYBACK_DEFAULT          "SPACE"
 #define KB_LOAD_TRACK_ON_DECK               "keyboard_shortcuts/kb_load_track_on_deck"

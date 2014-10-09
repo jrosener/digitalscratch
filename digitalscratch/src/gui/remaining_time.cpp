@@ -35,8 +35,6 @@
 
 Remaining_time::Remaining_time()
 {
-    qDebug() << "Remaining_time::Remaining_time: create object...";
-
     this->minus = new QLabel("-");
     this->min   = new QLabel("00");
     this->sep1  = new QLabel(":");
@@ -51,16 +49,10 @@ Remaining_time::Remaining_time()
     this->sep2->setObjectName("RemainingTime");
     this->msec->setObjectName("RemainingTimeMsec");
 
-    qDebug() << "Remaining_time::Remaining_time: create object done.";
-
     return;
 }
 
 Remaining_time::~Remaining_time()
 {
-    qDebug() << "Remaining_time::Remaining_time: delete object...";
-
-    qDebug() << "Remaining_time::Remaining_time: delete object done.";
-
     return;
 }

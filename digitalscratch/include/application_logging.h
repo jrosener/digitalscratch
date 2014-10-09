@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-------------------------------------------------------------( waveform.h )-*/
+/*--------------------------------------------------( application_logging.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,61 +26,17 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                        Define a waveform                                   */
+/*                             Logging framework                              */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <QLabel>
-#include "audio_track.h"
-#include <application_const.h>
-#include <application_logging.h>
+#include <QLoggingCategory>
 
-#define POINTS_MAX_SIZE (this->at->get_max_nb_samples() / 100) // Number of samples for a track of 15 min (divided by 100).
-
-using namespace std;
-
-class Waveform : public QLabel
-{
-    Q_OBJECT
-
- private:
-    int            area_height;
-    int            area_width;
-    Audio_track   *at;
-    QLabel        *slider;
-    int            slider_position_x;
-    float          slider_absolute_position;
-    QList<QLabel*> cue_sliders;
-    QList<QLabel*> cue_sliders_number;
-    QList<int>     cue_sliders_position_x;
-    QList<float>   cue_sliders_absolute_position;
-    unsigned int   end_of_waveform;
-    bool           force_regenerate_polyline;
-
- public:
-    QPointF *points; // Table of points to display.
-
- public:
-    Waveform(Audio_track *in_at, QWidget *in_parent = 0);
-    ~Waveform();
-
-    void reset();                                                             // Clean list of points and force repaint.
-    bool move_slider(float in_position);                                      // Position is between 0.0 and 1.0.
-    bool move_cue_slider(unsigned short in_cue_point_num, float in_position); // Position is between 0.0 and 1.0.
-
- private:
-    void get_area_size();
-    bool jump_slider(int in_x);
-    bool generate_polyline();
-    void draw_cue_slider(unsigned short in_cue_point_num);
-
- protected:
-    virtual void paintEvent(QPaintEvent *);
-    void mousePressEvent(QMouseEvent *in_mouse_event);
-
- signals:
-    void slider_position_changed(float in_position);     // Position is between 0.0 and 1.0.
-    void cue_slider_position_changed(float in_position); // Position is between 0.0 and 1.0.
-};
+// Declare logging categories.
+Q_DECLARE_LOGGING_CATEGORY(DS_OBJECTLIFE)
+Q_DECLARE_LOGGING_CATEGORY(DS_APPSETTINGS)
+Q_DECLARE_LOGGING_CATEGORY(DS_FILE)
+Q_DECLARE_LOGGING_CATEGORY(DS_MUSICKEY)
+Q_DECLARE_LOGGING_CATEGORY(DS_SOUNDCARD)

@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QTextCodec>
 #include <QProcess>
+#include "application_logging.h"
 #include "gui.h"
 #include "audio_track.h"
 #include "audio_file_decoding_process.h"
@@ -49,6 +50,14 @@
 
 int main(int argc, char *argv[])
 {
+    // Logging settings.
+    qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
+    QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n"
+                                                    "*.warning=true\n"
+                                                    "*.critical=true\n"));
+
+
+    // Number of samplers. FIXME: move to application_const.h ?
     unsigned short int nb_samplers = 4;
 
     // Create application.
