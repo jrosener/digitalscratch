@@ -255,10 +255,10 @@ Audio_file_decoding_process::decode()
     this->decoded_sample_rate = codec_context->sample_rate;
 
     // Show audio format.
-    cout << qPrintable(this->file->fileName()) << ": "
-         << codec_context->sample_rate << "Hz, "
-         << codec_context->channels << "ch, "
-         << av_get_sample_fmt_name(codec_context->sample_fmt) << endl;
+    qCDebug(DS_FILE) << qPrintable(this->file->fileName()) << ":"
+                     << codec_context->sample_rate << "Hz,"
+                     << codec_context->channels << "ch,"
+                     << av_get_sample_fmt_name(codec_context->sample_fmt);
 
     // Create a packet.
     AVPacket packet;

@@ -34,6 +34,8 @@
 #include <QApplication>
 #include <QTextCodec>
 #include <QProcess>
+#include <QThreadPool>
+
 #include "application_logging.h"
 #include "gui.h"
 #include "audio_track.h"
@@ -43,16 +45,16 @@
 #include "jack_access_rules.h"
 #include "playback_parameters.h"
 #include "timecode_control_process.h"
-#include <QThreadPool>
 #include "sound_capture_and_playback_process.h"
-#include <singleton.h>
-#include <application_const.h>
+#include "singleton.h"
+#include "application_const.h"
 
 int main(int argc, char *argv[])
 {
     // Logging settings.
     qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
     QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
+                                                    ds.file.debug=true\n \
                                                     *.warning=true\n \
                                                     *.critical=true\n"));
 

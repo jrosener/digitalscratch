@@ -188,12 +188,6 @@ CONFIG += debug_and_release
 #############################
 
 #############################
-# Enable/disable logging.
-#DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
-DEFINES += QT_NO_DEBUG_OUTPUT
-#############################
-
-#############################
 # Enable multi-threading support for QT
 CONFIG += qt thread c++11
 #############################

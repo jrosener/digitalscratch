@@ -61,7 +61,6 @@ Playback_parameters::set_speed(float in_speed)
     {
         this->speed = in_speed;
         emit speed_changed(this->speed);
-        //cout << in_speed << endl;
     }
 
     return true;
