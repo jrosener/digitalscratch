@@ -36,9 +36,9 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QString>
-#include <audio_track.h>
-#include <application_const.h>
-#include <application_logging.h>
+
+#include "audio_track.h"
+#include "application_const.h"
 
 using namespace std;
 

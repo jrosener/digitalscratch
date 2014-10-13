@@ -38,7 +38,6 @@
 #include <sound_driver_access_rules.h>
 #include <application_const.h>
 #include <QAudioDeviceInfo>
-#include <application_logging.h>
 
 using namespace std;
 

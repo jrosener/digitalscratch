@@ -41,6 +41,7 @@
 #include <QFutureWatcher>
 #include <QPixmap>
 #include <QList>
+
 #include "playlist.h"
 
 using namespace std;

@@ -35,8 +35,9 @@
 #include "sound_capture_and_playback_process.h"
 #include "sound_driver_access_rules.h"
 #include "audio_device_access_rules.h"
-#include <singleton.h>
-#include <application_settings.h>
+#include "singleton.h"
+#include "application_settings.h"
+#include "application_logging.h"
 
 Audio_device_access_rules::Audio_device_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
 {
@@ -101,7 +102,7 @@ Audio_device_access_rules::stop()
     // TODO
 //    if ((this->running == true) && (jack_client_close(this->stream) != 0))
 //    {
-//        qWarning() << "Audio_device_access_rules::stop: can not close audio capture/playback.";
+//        qCWarning(DS_SOUNDCARD) << "can not close audio capture/playback.";
 //        return false;
 //    }
 //    else

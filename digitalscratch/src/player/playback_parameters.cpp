@@ -36,31 +36,20 @@
 
 Playback_parameters::Playback_parameters()
 {
-    qDebug() << "Playback_parameters::Playback_parameters: create object...";
-
     this->reset();
-
-    qDebug() << "Playback_parameters::Playback_parameters: create object done";
 
     return;
 }
 
 Playback_parameters::~Playback_parameters()
 {
-    qDebug() << "Playback_parameters::~Playback_parameters: delete object...";
-    qDebug() << "Playback_parameters::~Playback_parameters: delete object done.";
-
     return;
 }
 
 bool
 Playback_parameters::reset()
 {
-    qDebug() << "Playback_parameters::reset...";
-
     this->speed = 0.0;
-
-    qDebug() << "Playback_parameters::reset done.";
 
     return true;
 }
@@ -68,8 +57,6 @@ Playback_parameters::reset()
 bool
 Playback_parameters::set_speed(float in_speed)
 {
-    qDebug() << "Playback_parameters::set_speed...";
-
     if (in_speed != this->speed)
     {
         this->speed = in_speed;
@@ -77,31 +64,22 @@ Playback_parameters::set_speed(float in_speed)
         //cout << in_speed << endl;
     }
 
-    qDebug() << "Playback_parameters::set_speed done.";
-
     return true;
 }
 
 float
 Playback_parameters::get_speed()
 {
-    qDebug() << "Playback_parameters::get_speed...";
-    qDebug() << "Playback_parameters::get_speed done.";
-
     return this->speed;
 }
 
 bool
 Playback_parameters::inc_speed(float in_speed)
 {
-    qDebug() << "Playback_parameters::inc_speed...";
-
     if (in_speed != 0.0)
     {
         this->set_speed(this->speed + in_speed);
     }
-
-    qDebug() << "Playback_parameters::inc_speed done.";
 
     return true;
 }
@@ -109,11 +87,7 @@ Playback_parameters::inc_speed(float in_speed)
 bool
 Playback_parameters::set_new_speed(bool in_new)
 {
-    qDebug() << "Playback_parameters::set_new_speed...";
-
     this->new_speed = in_new;
-
-    qDebug() << "Playback_parameters::set_new_speed done.";
 
     return true;
 }
@@ -121,24 +95,17 @@ Playback_parameters::set_new_speed(bool in_new)
 bool
 Playback_parameters::is_new_speed()
 {
-    qDebug() << "Playback_parameters::is_new_speed...";
-    qDebug() << "Playback_parameters::is_new_speed done.";
-
     return this->new_speed;
 }
 
 bool
 Playback_parameters::set_volume(float in_volume)
 {
-    qDebug() << "Playback_parameters::set_volume...";
-
     if (in_volume != this->volume)
     {
         this->volume = in_volume;
         emit volume_changed((double)(floorf((this->volume * 100.0) * 10.0) / 10.0));
     }
-
-    qDebug() << "Playback_parameters::set_volume done.";
 
     return true;
 }
@@ -146,20 +113,13 @@ Playback_parameters::set_volume(float in_volume)
 float
 Playback_parameters::get_volume()
 {
-    qDebug() << "Playback_parameters::get_volume...";
-    qDebug() << "Playback_parameters::get_volume done.";
-
     return this->volume;
 }
 
 bool
 Playback_parameters::set_new_volume(bool in_new)
 {
-    qDebug() << "Playback_parameters::set_new_volume...";
-
     this->new_volume = in_new;
-
-    qDebug() << "Playback_parameters::set_new_volume done.";
 
     return true;
 }
@@ -167,17 +127,12 @@ Playback_parameters::set_new_volume(bool in_new)
 bool
 Playback_parameters::is_new_volume()
 {
-    qDebug() << "Playback_parameters::is_new_volume...";
-    qDebug() << "Playback_parameters::is_new_volume done.";
-
     return this->new_volume;
 }
 
 bool
 Playback_parameters::set_new_data(bool in_new_data)
 {
-    qDebug() << "Playback_parameters::new_data...";
-
     this->new_data = in_new_data;
 
     if (in_new_data == false)
@@ -186,16 +141,11 @@ Playback_parameters::set_new_data(bool in_new_data)
         this->new_volume = false;
     }
 
-    qDebug() << "Playback_parameters::new_data done.";
-
     return true;
 }
 
 bool
 Playback_parameters::get_new_data()
 {
-    qDebug() << "Playback_parameters::get_new_data...";
-    qDebug() << "Playback_parameters::get_new_data done.";
-
     return this->new_data;
 }

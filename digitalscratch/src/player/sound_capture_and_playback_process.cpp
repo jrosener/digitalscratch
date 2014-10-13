@@ -33,20 +33,19 @@
 
 #include <QtDebug>
 
-#include <sound_capture_and_playback_process.h>
+#include "sound_capture_and_playback_process.h"
+#include "application_logging.h"
 
 
 Sound_capture_and_playback_process::Sound_capture_and_playback_process(Timecode_control_process     *in_tcode_control,
                                                                        Audio_track_playback_process *in_playback,
                                                                        Sound_driver_access_rules    *in_sound_card)
 {
-    qDebug() << "Sound_capture_and_playback_process::Sound_capture_and_playback_process: create object...";
-
     if (in_tcode_control == NULL ||
         in_playback      == NULL ||
         in_sound_card    == NULL)
     {
-        qFatal("Sound_capture_and_playback_process::Sound_capture_and_playback_process: Null model objects.");
+        qCWarning(DS_PLAYBACK) << "bad input parameters";
         return;
     }
     else
@@ -56,16 +55,11 @@ Sound_capture_and_playback_process::Sound_capture_and_playback_process(Timecode_
         this->sound_card    = in_sound_card;
     }
 
-    qDebug() << "Sound_capture_and_playback_process::Sound_capture_and_playback_process: create object done.";
-
     return;
 }
 
 Sound_capture_and_playback_process::~Sound_capture_and_playback_process()
 {
-    qDebug() << "Sound_capture_and_playback_process::~Sound_capture_and_playback_process: delete object...";
-    qDebug() << "Sound_capture_and_playback_process::~Sound_capture_and_playback_process: delete object done.";
-
     return;
 }
 
@@ -82,8 +76,6 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
     float *output_buffer_3  = NULL;
     float *output_buffer_4  = NULL;
 
-    qDebug() << "Sound_capture_and_playback_process::run...";
-
     // Get sound card buffers. // TODO : a ne faire que si mode = timecode
     if(this->sound_card->get_input_buffers(in_nb_buffer_frames,
                                            &input_buffer_1,
@@ -91,7 +83,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                                            &input_buffer_3,
                                            &input_buffer_4) == false)
     {
-        qWarning() << "Sound_capture_and_playback_process::run: can not get input buffers.";
+        qCWarning(DS_SOUNDCARD) << "can not get input buffers";
         return false;
     }
     if(this->sound_card->get_output_buffers(in_nb_buffer_frames,
@@ -100,7 +92,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                                             &output_buffer_3,
                                             &output_buffer_4) == false)
     {
-        qWarning() << "Sound_capture_and_playback_process::run: can not get output buffers.";
+        qCWarning(DS_SOUNDCARD) << "can not get output buffers";
         return false;
     }
 
@@ -111,7 +103,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                                  input_buffer_3,
                                  input_buffer_4) == false)
     {
-        qWarning() << "Sound_capture_and_playback_process::run: timecode analysis failed.";
+        qCWarning(DS_PLAYBACK) << "timecode analysis failed";
         return false;
     }
 
@@ -124,11 +116,9 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                             output_buffer_3,
                             output_buffer_4) == false)
     {
-        qWarning() << "Sound_capture_and_playback_process::run: playback process failed.";
+        qCWarning(DS_PLAYBACK) << "playback process failed";
         return false;
     }
-
-    qDebug() << "Sound_capture_and_playback_process::run done.";
 
     return true;
 }

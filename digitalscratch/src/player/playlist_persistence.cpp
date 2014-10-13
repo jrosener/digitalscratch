@@ -39,31 +39,23 @@
 #include <QTextCodec>
 #include <QUrl>
 #include <QDesktopServices>
+
 #include "playlist_persistence.h"
+#include "application_logging.h"
 
 Playlist_persistence::Playlist_persistence()
 {
-    qDebug() << "Playlist_persistence::Playlist_persistence: create object...";
-
-    qDebug() << "Playlist_persistence::Playlist_persistence: create object done";
-
     return;
 }
 
 
 Playlist_persistence::~Playlist_persistence()
 {
-    qDebug() << "Playlist_persistence::~Playlist_persistence: delete object...";
-
-    qDebug() << "Playlist_persistence::~Playlist_persistence: delete object done.";
-
     return;
 }
 
 bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist)
 {
-    qDebug() << "Playlist_persistence::read_m3u...";
-
     // Check parameters.
     if (io_playlist == NULL)
     {
@@ -126,15 +118,11 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
     }
     file.close();
 
-    qDebug() << "Playlist_persistence::read_m3u done.";
-
     return true;
 }
 
 bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist)
 {
-    qDebug() << "Playlist_persistence::read_pls...";
-
     // Check parameters.
     if (io_playlist == NULL)
     {
@@ -198,8 +186,6 @@ bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist
         QDir::setCurrent(old_path);
     }
     file.close();
-
-    qDebug() << "Playlist_persistence::read_pls done.";
 
     return true;
 }

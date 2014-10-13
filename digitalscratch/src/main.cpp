@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
 {
     // Logging settings.
     qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
-    QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n"
-                                                    "*.warning=true\n"
-                                                    "*.critical=true\n"));
+    QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
+                                                    *.warning=true\n \
+                                                    *.critical=true\n"));
 
 
     // Number of samplers. FIXME: move to application_const.h ?

@@ -48,13 +48,11 @@ Audio_track_playback_process::Audio_track_playback_process(Audio_track          
                                                            unsigned short int    in_nb_decks,
                                                            unsigned short int    in_nb_samplers)
 {
-    qDebug() << "Audio_track_playback_process::Audio_track_playback_process: create object...";
-
     if (in_ats         == NULL ||
         in_at_samplers == NULL ||
         in_params      == NULL)
     {
-        qFatal("Audio_track_playback_process::Audio_track_playback_process: Null domain object.");
+        qCWarning(DS_PLAYBACK) << "parameter is null";
         return;
     }
     else
@@ -98,7 +96,7 @@ Audio_track_playback_process::Audio_track_playback_process(Audio_track          
         int error;
         if ((this->src_state[i] = src_new(SRC_LINEAR, 2, &error)) == NULL)
         {
-            qWarning() << "Audio_track_playback_process::Audio_track_playback_process: src_new() failed : " << src_strerror(error);
+            qCWarning(DS_PLAYBACK) << "src_new() failed : " << src_strerror(error);
             return;
         }
         this->src_data[i] = new SRC_DATA;
@@ -107,15 +105,11 @@ Audio_track_playback_process::Audio_track_playback_process(Audio_track          
         this->reset(i);
     }
 
-    qDebug() << "Audio_track_playback_process::Audio_track_playback_process: create object done.";
-
     return;
 }
 
 Audio_track_playback_process::~Audio_track_playback_process()
 {
-    qDebug() << "Audio_track_playback_process::~Audio_track_playback_process: delete object...";
-
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
         delete [] this->cue_points[i];
@@ -140,16 +134,12 @@ Audio_track_playback_process::~Audio_track_playback_process()
     delete [] this->src_data;
     delete [] this->src_state;
 
-    qDebug() << "Audio_track_playback_process::~Audio_track_playback_process: delete object done.";
-
     return;
 }
 
 bool
 Audio_track_playback_process::reset(unsigned short int in_deck_index)
 {
-    qDebug() << "Audio_track_playback_process::reset...";
-
     this->current_samples[in_deck_index] = 0;
     this->remaining_times[in_deck_index] = 0;
     this->stopped[in_deck_index]         = false;
@@ -164,19 +154,13 @@ Audio_track_playback_process::reset(unsigned short int in_deck_index)
         src_reset(this->src_state[in_deck_index]);
     }
 
-    qDebug() << "Audio_track_playback_process::reset done.";
-
     return true;
 }
 
 bool
 Audio_track_playback_process::stop(unsigned short int in_deck_index)
 {
-    qDebug() << "Audio_track_playback_process::stop...";
-
     this->stopped[in_deck_index] = true;
-
-    qDebug() << "Audio_track_playback_process::stop done.";
 
     return true;
 }
@@ -185,12 +169,8 @@ bool
 Audio_track_playback_process::reset_sampler(unsigned short int in_index,
                                             unsigned short int in_sampler_index)
 {
-    qDebug() << "Audio_track_playback_process::reset_sampler...";
-
     this->sampler_current_samples[in_sampler_index + (this->nb_samplers * in_index)] = 0;
     this->sampler_remaining_times[in_sampler_index + (this->nb_samplers * in_index)] = 0;
-
-    qDebug() << "Audio_track_playback_process::reset_sampler done.";
 
     return true;
 }
@@ -199,14 +179,10 @@ void
 Audio_track_playback_process::del_sampler(unsigned short int in_deck_index,
                                           unsigned short int in_sampler_index)
 {
-    qDebug() << "Audio_track_playback_process::del_sampler...";
-
     this->reset_sampler(in_deck_index, in_sampler_index);
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
     emit sampler_remaining_time_changed(0, in_deck_index, in_sampler_index);
     this->at_samplers[in_deck_index][in_sampler_index]->reset();
-
-    qDebug() << "Audio_track_playback_process::del_sampler done.";
 
     return;
 }
@@ -216,8 +192,6 @@ Audio_track_playback_process::play_empty(unsigned short int   in_deck_index,
                                          unsigned short int   in_nb_samples,
                                          float              **out_samples)
 {
-    qDebug() << "Audio_track_playback_process::play_empty...";
-
     // For each output samples (only for the selected deck), play silence.
     int index = in_deck_index * 2;
     for (int i = 0; i < in_nb_samples; i++)
@@ -229,8 +203,6 @@ Audio_track_playback_process::play_empty(unsigned short int   in_deck_index,
     // Play samplers.
     this->play_sampler(in_deck_index, in_nb_samples, out_samples);
 
-    qDebug() << "Audio_track_playback_process::play_empty done.";
-
     return true;
 }
 
@@ -239,13 +211,11 @@ Audio_track_playback_process::play_audio_track(unsigned short int   in_deck_inde
                                                unsigned short int   in_nb_samples,
                                                float              **out_samples)
 {
-    qDebug() << "Audio_track_playback_process::play_audio_track...";
-
     // Prevent sample table overflow if going forward.
     if ((this->params[in_deck_index]->get_speed() >= 0.0) &&
        ((this->current_samples[in_deck_index] + 1) > (this->ats[in_deck_index]->get_end_of_samples() - in_nb_samples)))
     {
-        qWarning() << "Audio_track_playback_process::play_audio_track: audio track sample table overflow";
+        qCWarning(DS_PLAYBACK) << "audio track sample table overflow";
         this->play_empty(in_deck_index, in_nb_samples, out_samples);
 
         // Update remaining time to 0.
@@ -271,13 +241,12 @@ Audio_track_playback_process::play_audio_track(unsigned short int   in_deck_inde
 #else
     if (this->play_data_with_playback_parameters(in_deck_index, in_nb_samples, out_samples) == false)
     {
-        qWarning() << "Audio_track_playback_process::play_audio_track: can not prepare data using playback parameters";
+        qCWarning(DS_PLAYBACK) << "can not prepare data using playback parameters";
         this->play_empty(in_deck_index, in_nb_samples, out_samples);
         return false;
     }
 
 #endif
-    qDebug() << "Audio_track_playback_process::play_audio_track done.";
 
     return true;
 }
@@ -286,9 +255,6 @@ bool
 Audio_track_playback_process::get_sampler_state(unsigned short int in_deck_index,
                                                 unsigned short int in_sampler_index)
 {
-    qDebug() << "Audio_track_playback_process::get_sampler_state...";
-    qDebug() << "Audio_track_playback_process::get_sampler_state done.";
-
     return this->sampler_current_states[in_sampler_index + (in_deck_index * this->nb_samplers)];
 }
 
@@ -297,8 +263,6 @@ Audio_track_playback_process::set_sampler_state(unsigned short int in_deck_index
                                                 unsigned short int in_sampler_index,
                                                 bool               in_state)
 {
-    qDebug() << "Audio_track_playback_process::set_sampler_state...";
-
     this->sampler_current_states[in_sampler_index + (in_deck_index * this->nb_samplers)] = in_state;
 
     // In case of stopping, go back to the beginning of the sample.
@@ -307,8 +271,6 @@ Audio_track_playback_process::set_sampler_state(unsigned short int in_deck_index
         this->sampler_current_samples[in_sampler_index + (in_deck_index * this->nb_samplers)] = 0;
     }
 
-    qDebug() << "Audio_track_playback_process::set_sampler_state done.";
-
     return true;
 }
 
@@ -316,8 +278,6 @@ bool
 Audio_track_playback_process::is_sampler_loaded(unsigned short int in_deck_index,
                                                 unsigned short int in_sampler_index)
 {
-    qDebug() << "Audio_track_playback_process::is_sampler_loaded...";
-
     bool result = false;
 
     if (this->at_samplers[in_deck_index][in_sampler_index]->get_end_of_samples() == 0)
@@ -329,8 +289,6 @@ Audio_track_playback_process::is_sampler_loaded(unsigned short int in_deck_index
         result = true;
     }
 
-    qDebug() << "Audio_track_playback_process::is_sampler_loaded done.";
-
     return result;
 }
 
@@ -339,8 +297,6 @@ Audio_track_playback_process::play_sampler(unsigned short int   in_deck_index,
                                            unsigned short int   in_nb_samples,
                                            float              **out_samples)
 {
-    qDebug() << "Audio_track_playback_process::play_sampler...";
-
     short signed int *sample_pointer = NULL;
     float sample = 0.0;
     int   index  = 0;
@@ -382,16 +338,12 @@ Audio_track_playback_process::play_sampler(unsigned short int   in_deck_index,
         }
     }
 
-    qDebug() << "Audio_track_playback_process::play_sampler done.";
-
     return true;
 }
 
 bool
 Audio_track_playback_process::update_remaining_time(unsigned short int in_deck_index)
 {
-    qDebug() << "Audio_track_playback_process::update_remaining_time...";
-
     // Check if we have to update remaining time.
     if (this->need_update_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
     {
@@ -419,8 +371,6 @@ Audio_track_playback_process::update_remaining_time(unsigned short int in_deck_i
         this->need_update_remaining_time++;
     }
 
-    qDebug() << "Audio_track_playback_process::update_remaining_time done.";
-
     return true;
 }
 
@@ -428,8 +378,6 @@ bool
 Audio_track_playback_process::update_sampler_remaining_time(unsigned short int in_deck_index,
                                                             unsigned short int in_sampler_index)
 {
-    qDebug() << "Audio_track_playback_process::update_sampler_remaining_time...";
-
     // Calculate remaining time in msec.
     this->sampler_remaining_times[in_sampler_index + (in_deck_index * this->nb_samplers)] = (unsigned int)(1000.0 * ((float)(this->at_samplers[in_deck_index][in_sampler_index]->get_end_of_samples()
                                                                                             - this->sampler_current_samples[in_sampler_index + (in_deck_index * this->nb_samplers)]) + 1.0)
@@ -440,8 +388,6 @@ Audio_track_playback_process::update_sampler_remaining_time(unsigned short int i
 
     // Send remaining time.
     emit sampler_remaining_time_changed(this->sampler_remaining_times[in_sampler_index + (in_deck_index * this->nb_samplers)], in_deck_index, in_sampler_index);
-
-    qDebug() << "Audio_track_playback_process::update_sampler_remaining_time done.";
 
     return true;
 }
@@ -454,8 +400,6 @@ Audio_track_playback_process::run(unsigned short int  in_nb_samples,
                                   float              *out_samples_4)
 {
     float *samples[4] = { out_samples_1, out_samples_2, out_samples_3, out_samples_4 };
-
-    qDebug() << "Audio_track_playback_process::run...";
 
     // Iterate over decks and play track data.
     for (unsigned short int i = 0; i < this->nb_decks; i++)
@@ -487,7 +431,7 @@ Audio_track_playback_process::run(unsigned short int  in_nb_samples,
             // If track is loaded, play it.
             if (this->play_audio_track(i, in_nb_samples, samples) == false)
             {
-                qWarning() << "Audio_track_playback_process::play_audio_track: waiting for file decoding process.";
+                qCWarning(DS_PLAYBACK) << "waiting for file decoding process";
             }
             else
             {
@@ -497,8 +441,6 @@ Audio_track_playback_process::run(unsigned short int  in_nb_samples,
         }
     }
 
-    qDebug() << "Audio_track_playback_process::run: done.";
-
     return true;
 }
 
@@ -507,8 +449,6 @@ Audio_track_playback_process::play_data_with_playback_parameters(unsigned short 
                                                                  unsigned short int   in_nb_samples,
                                                                  float              **out_samples)
 {
-    qDebug() << "Audio_track_playback_process::play_data_with_playback_parameters...";
-
     float speed = this->params[in_deck_index]->get_speed();
 
     // If speed is null, play empty sound.
@@ -553,7 +493,7 @@ Audio_track_playback_process::play_data_with_playback_parameters(unsigned short 
     if ((nb_input_data * 2) > SOUND_STRETCH_MAX_BUFFER)
     {
         this->play_empty(in_deck_index, in_nb_samples, out_samples);
-        qWarning() << "Audio_track_playback_process::play_data_with_playback_parameters: too many data to stretch";
+        qCWarning(DS_PLAYBACK) << "too many data to stretch";
         return false;
     }
 
@@ -583,7 +523,7 @@ Audio_track_playback_process::play_data_with_playback_parameters(unsigned short 
     this->src_data[in_deck_index]->src_ratio         = fabs(1.0 / speed);
     if ((err = src_process(this->src_state[in_deck_index], this->src_data[in_deck_index])) != 0)
     {
-        qWarning() << "Audio_track_playback_process::play_data_with_playback_parameters: libsamplerate fails: " << src_strerror(err);
+        qCWarning(DS_PLAYBACK) << "libsamplerate fails: " << src_strerror(err);
     }
 
     // Change current pointer on sample to play
@@ -613,7 +553,6 @@ Audio_track_playback_process::play_data_with_playback_parameters(unsigned short 
     // Play samplers.
     this->play_sampler(in_deck_index, in_nb_samples, out_samples);
 
-    qDebug() << "Audio_track_playback_process::play_data_with_playback_parameters: done.";
     return true;
 }
 
@@ -622,8 +561,6 @@ Audio_track_playback_process::change_volume(unsigned short int  in_deck_index,
                                             float              *in_buffer,
                                             unsigned short int  in_size)
 {
-    qDebug() << "Audio_track_playback_process::change_volume...";
-
     // Get current volume.
     float volume = this->params[in_deck_index]->get_volume();
 
@@ -637,8 +574,6 @@ Audio_track_playback_process::change_volume(unsigned short int  in_deck_index,
         }
     }
 
-    qDebug() << "Audio_track_playback_process::change_volume done.";
-
     return true;
 }
 
@@ -646,8 +581,6 @@ bool
 Audio_track_playback_process::jump_to_position(unsigned short int in_deck_index,
                                                float              in_position)
 {
-    qDebug() << "Audio_track_playback_process::jump_to_position " << in_position;
-
     // Calculate position to jump (0.0 < in_position < 1.0).
     unsigned int new_pos = (unsigned int)((float)in_position * (float)this->ats[in_deck_index]->get_max_nb_samples());
     if (new_pos % 2 != 0)
@@ -658,32 +591,26 @@ Audio_track_playback_process::jump_to_position(unsigned short int in_deck_index,
     // We jump.
     this->current_samples[in_deck_index] = new_pos;
 
-    qDebug() << "Audio_track_playback_process::jump_to_position done.";
-
     return true;
 }
 
 float
 Audio_track_playback_process::get_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number)
 {
-    qDebug() << "Audio_track_playback_process::get_cue_point";
-    qDebug() << "Audio_track_playback_process::get_cue_point done.";
-
     return this->sample_index_to_float(in_deck_index, this->cue_points[in_deck_index][in_cue_point_number]);
 }
 
 bool
 Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number)
 {
-    qDebug() << "Audio_track_playback_process::read_cue_point";
-
     // Get cue point from DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     unsigned int position = 0;
-    data_persist->get_cue_point(this->ats[in_deck_index], in_cue_point_number, position);
-    this->cue_points[in_deck_index][in_cue_point_number] = this->msec_to_sample_index(in_deck_index, position);
-
-    qDebug() << "Audio_track_playback_process::read_cue_point done.";
+    if (this->ats[in_deck_index]->get_hash() != "")
+    {
+        data_persist->get_cue_point(this->ats[in_deck_index], in_cue_point_number, position);
+        this->cue_points[in_deck_index][in_cue_point_number] = this->msec_to_sample_index(in_deck_index, position);
+    }
 
     return true;
 }
@@ -705,12 +632,8 @@ Audio_track_playback_process::store_cue_point(unsigned short int in_deck_index, 
 bool
 Audio_track_playback_process::jump_to_cue_point(unsigned short int in_deck_index, unsigned short int in_cue_point_number)
 {
-    qDebug() << "Audio_track_playback_process::jump_to_cue_point";
-
     // Jump
     this->current_samples[in_deck_index] = this->cue_points[in_deck_index][in_cue_point_number];
-
-    qDebug() << "Audio_track_playback_process::jump_to_cue_point done.";
 
     return true;
 }
@@ -729,9 +652,6 @@ Audio_track_playback_process::delete_cue_point(unsigned short int in_deck_index,
 float
 Audio_track_playback_process::get_position(unsigned short int in_deck_index)
 {
-    qDebug() << "Audio_track_playback_process::get_position...";
-    qDebug() << "Audio_track_playback_process::get_position done.";
-
     return this->sample_index_to_float(in_deck_index, this->current_samples[in_deck_index]);
 }
 

@@ -32,7 +32,9 @@
 
 #include <QtDebug>
 #include <algorithm>
-#include <samplerate.h>
+
+#include "samplerate.h"
+#include "application_logging.h"
 
 #ifdef WIN32
 extern "C"
@@ -58,7 +60,7 @@ Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, boo
 {
     if (in_at == NULL)
     {
-        qCritical() << "Audio_file_decoding_process::Audio_file_decoding_process: audio track is NULL";
+        qCCritical(DS_FILE) << "audio track is NULL";
     }
     else
     {

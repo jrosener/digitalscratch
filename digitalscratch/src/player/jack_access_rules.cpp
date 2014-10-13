@@ -41,39 +41,26 @@
 // Pass-through function.
 int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
                                   void                          *in_data)
-{
-    qDebug() << "Jack_access_rules::capture_and_playback_callback...";
-
-    // Call process for consuming captured data and preparing playback ones.
+{    // Call process for consuming captured data and preparing playback ones.
     Sound_capture_and_playback_process *capture_and_playback = static_cast<Sound_capture_and_playback_process*>(in_data);
 
     if (capture_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
     {
-        qWarning() << "capture_and_playback_callback: can not run capture and playback process";
+        qCWarning(DS_SOUNDCARD) << "can not run capture and playback process";
     }
-
-    qDebug() << "Jack_access_rules::capture_and_playback_callback done.";
 
     return 0;
 }
 
 Jack_access_rules::Jack_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
 {
-    qDebug() << "Jack_access_rules::Jack_access_rules: create object...";
-
-    qDebug() << "Jack_access_rules::Jack_access_rules: create object done.";
-
     return;
 }
 
 Jack_access_rules::~Jack_access_rules()
 {
-    qDebug() << "Jack_access_rules::~Jack_access_rules: delete object...";
-
     // Stop capture+playback.
     this->stop();
-
-    qDebug() << "Jack_access_rules::~Jack_access_rules: delete object done.";
 
     return;
 }
@@ -81,8 +68,6 @@ Jack_access_rules::~Jack_access_rules()
 bool
 Jack_access_rules::start(void *in_callback_param)
 {
-    qDebug() << "Jack_access_rules::start...";
-
     const char     **ports       = NULL;
     const char      *client_name = CLIENT_NAME;
     const char      *server_name = NULL;
@@ -98,22 +83,13 @@ Jack_access_rules::start(void *in_callback_param)
     this->stream = jack_client_open(client_name, options, &status, server_name);
     if (this->stream == NULL)
     {
-        qWarning() << "Jack_access_rules::start: jack_client_open() failed.";
+        qCWarning(DS_SOUNDCARD) << "jack_client_open() failed.";
         if (status & JackServerFailed)
         {
-            qWarning() << "Jack_access_rules::start: Unable to connect to JACK server.";
+            qCWarning(DS_SOUNDCARD) << "unable to connect to JACK server.";
         }
         emit error_msg(QString("Can not connect to JACK server, please configure/start Jack server properly."));
         return false;
-    }
-    if (status & JackServerStarted)
-    {
-        qDebug() << "Jack_access_rules::start: JACK server started.";
-    }
-    if (status & JackNameNotUnique)
-    {
-        client_name = jack_get_client_name(this->stream);
-        qDebug() << "Jack_access_rules::start: unique name " << client_name << " assigned";
     }
 
     // Tell the JACK server to call "in_callback" whenever there is work to be done.
@@ -121,10 +97,9 @@ Jack_access_rules::start(void *in_callback_param)
 
     // Display the current sample rate.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
-    qDebug() << "Jack_access_rules::start: engine sample rate = " << jack_get_sample_rate(this->stream);
     if (jack_get_sample_rate(this->stream) != settings->get_sample_rate())
     {
-        qWarning() << "Jack_access_rules::start: DigitalScratch is configured to support sample rate of " << qPrintable(settings->get_sample_rate());
+        qCWarning(DS_SOUNDCARD) << "DigitalScratch is configured to support sample rate of " << qPrintable(settings->get_sample_rate());
         emit error_msg(QString("DigitalScratch is configured to support a sample rate of " + QString::number(settings->get_sample_rate()) + "Hz, you can change it in the settings dialog."));
         return false;
     }
@@ -142,7 +117,7 @@ Jack_access_rules::start(void *in_callback_param)
                                                      0);
             if (this->input_port[i] == NULL)
             {
-                qWarning() << "Jack_access_rules::start: no more JACK input ports available";
+                qCWarning(DS_SOUNDCARD) << "no more JACK input ports available";
                 emit error_msg(QString("No more Jack input ports available, please configure/start Jack server properly."));
                 return false;
             }
@@ -160,7 +135,7 @@ Jack_access_rules::start(void *in_callback_param)
                                                  0);
         if (this->output_port[i] == NULL)
         {
-            qWarning() << "Jack_access_rules::start: no more JACK output ports available";
+            qCWarning(DS_SOUNDCARD) << "no more JACK output ports available";
             emit error_msg(QString("No more Jack output ports available, please configure/start Jack server properly."));
             return false;
         }
@@ -170,7 +145,7 @@ Jack_access_rules::start(void *in_callback_param)
     // will start running now.
     if (jack_activate(this->stream))
     {
-        qWarning() << "Jack_access_rules::start: cannot activate client";
+        qCWarning(DS_SOUNDCARD) << "cannot activate client";
         emit error_msg(QString("Can not activate Jack client, please configure/start Jack server properly."));
         return false;
     }
@@ -186,7 +161,7 @@ Jack_access_rules::start(void *in_callback_param)
         ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsOutput);
         if (ports == NULL)
         {
-            qWarning() << "Jack_access_rules::start: no physical capture ports";
+            qCWarning(DS_SOUNDCARD) << "no physical capture ports";
             emit error_msg(QString("No Jack physical capture ports available, please configure/start Jack server properly."));
             return false;
         }
@@ -194,7 +169,7 @@ Jack_access_rules::start(void *in_callback_param)
         {
             if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
             {
-                qWarning() << "Jack_access_rules::start: cannot connect input ports";
+                qCWarning(DS_SOUNDCARD) << "cannot connect input ports";
                 emit error_msg(QString("Can not connect Jack input ports, please configure/start Jack server properly."));
                 return false;
             }
@@ -206,7 +181,7 @@ Jack_access_rules::start(void *in_callback_param)
             ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
             if (ports == NULL)
             {
-                qWarning() << "Jack_access_rules::start: no physical playback ports";
+                qCWarning(DS_SOUNDCARD) << "no physical playback ports";
                 emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
                 return false;
             }
@@ -214,7 +189,7 @@ Jack_access_rules::start(void *in_callback_param)
             {
                 if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
                 {
-                    qWarning() << "Jack_access_rules::start: cannot connect output ports";
+                    qCWarning(DS_SOUNDCARD) << "cannot connect output ports";
                     emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
                     return false;
                 }
@@ -222,8 +197,6 @@ Jack_access_rules::start(void *in_callback_param)
             jack_free(ports);
         }
     }
-
-    qDebug() << "Jack_access_rules::start: done.";
 
     // Everything is OK, keep callback parameters.
     this->callback_param = in_callback_param;
@@ -235,19 +208,15 @@ Jack_access_rules::start(void *in_callback_param)
 bool
 Jack_access_rules::restart()
 {
-    qDebug() << "Jack_access_rules::restart...";
-
     if (this->start(this->callback_param) == false)
     {
         this->running = false;
-        qWarning() << "Jack_access_rules::restart: can not restart jack client.";
+        qCWarning(DS_SOUNDCARD) << "can not restart jack client.";
     }
     else
     {
         this->running = true;
     }
-
-    qDebug() << "Jack_access_rules::restart done.";
 
     return true;
 }
@@ -255,20 +224,16 @@ Jack_access_rules::restart()
 bool
 Jack_access_rules::stop()
 {
-    qDebug() << "Jack_access_rules::stop...";
-
     // Stop the stream.
     if ((this->running == true) && (jack_client_close(this->stream) != 0))
     {
-        qWarning() << "Jack_access_rules::stop: can not close Jack client.";
+        qCWarning(DS_SOUNDCARD) << "can not close Jack client.";
         return false;
     }
     else
     {
         this->running = false;
     }
-
-    qDebug() << "Jack_access_rules::stop: done.";
 
     return true;
 }
@@ -281,8 +246,6 @@ Jack_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_frames,
                                      float              **out_buffer_4)
 {
     bool result;
-
-    qDebug() << "Jack_access_rules::get_input_buffers...";
 
     if (this->do_capture == true)
     {
@@ -302,8 +265,6 @@ Jack_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_frames,
         result = false;
     }
 
-    qDebug() << "Jack_access_rules::get_input_buffers: done.";
-
     return result;
 }
 
@@ -314,8 +275,6 @@ Jack_access_rules::get_output_buffers(unsigned short int   in_nb_buffer_frames,
                                       float              **out_buffer_3,
                                       float              **out_buffer_4)
 {
-    qDebug() << "Jack_access_rules::get_input_buffers...";
-
     // Get buffers from jack ports.
     *out_buffer_1 = (float *)jack_port_get_buffer(this->output_port[0], in_nb_buffer_frames);
     *out_buffer_2 = (float *)jack_port_get_buffer(this->output_port[1], in_nb_buffer_frames);
@@ -324,8 +283,6 @@ Jack_access_rules::get_output_buffers(unsigned short int   in_nb_buffer_frames,
         *out_buffer_3 = (float *)jack_port_get_buffer(this->output_port[2], in_nb_buffer_frames);
         *out_buffer_4 = (float *)jack_port_get_buffer(this->output_port[3], in_nb_buffer_frames);
     }
-
-    qDebug() << "Jack_access_rules::get_input_buffers: done.";
 
     return true;
 }

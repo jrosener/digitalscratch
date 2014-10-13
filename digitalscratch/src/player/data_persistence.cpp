@@ -47,19 +47,13 @@
 
 Data_persistence::Data_persistence()
 {
-    qDebug() << "Data_persistence::Data_persistence: create object...";
-
     this->is_initialized = this->init_db();
-
-    qDebug() << "Data_persistence::Data_persistence: create object done";
 
     return;
 }
 
 Data_persistence::~Data_persistence()
 {
-    qDebug() << "Audio_track::~Audio_track: delete object...";
-
     this->mutex.lock();
     if (this->db.isValid() == true)
     {
@@ -67,15 +61,11 @@ Data_persistence::~Data_persistence()
     }
     this->mutex.unlock();
 
-    qDebug() << "Audio_track::~Audio_track: delete object done.";
-
     return;
 }
 
 bool Data_persistence::init_db()
 {
-    qDebug() << "Data_persistence::init_db...";
-
     // Create DB.
     this->mutex.lock();
     this->db = QSqlDatabase::addDatabase("QSQLITE");
@@ -93,7 +83,7 @@ bool Data_persistence::init_db()
     // Open DB.
     if (this->db.open() == false)
     {
-        qWarning() << "Data_persistence::init_db: " << this->db.lastError().text();
+        qCWarning(DS_DB) << "cannot open DB:" << this->db.lastError().text();
         return false;
     }
     else
@@ -115,21 +105,17 @@ bool Data_persistence::init_db()
     // Create DB structure if needed.
     if (this->create_db_structure() == false)
     {
-        qWarning() << "Data_persistence::init_db: creating base DB structure failed";
+        qCWarning(DS_DB) << "creating base DB structure failed";
         return false;
     }
 
     this->mutex.unlock();
-
-    qDebug() << "Data_persistence::init_db done.";
 
     return true;
 }
 
 bool Data_persistence::create_db_structure()
 {
-    qDebug() << "Data_persistence::create_db_structure...";
-
     // Init.
     bool result = true;
 
@@ -162,11 +148,9 @@ bool Data_persistence::create_db_structure()
     else
     {
         // Db not open.
-        qWarning() << "Can not create DB structure: db not open";
+        qCWarning(DS_DB) << "can not create DB structure: db not open";
         result = false;
     }
-
-    qDebug() << "Data_persistence::create_db_structure done.";
 
     return result;
 }
@@ -191,8 +175,6 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
     // Init result.
     bool result = true;
 
-    qDebug() << "Data_persistence::store_audio_track...";
-
     // Check input parameter.
     if ((in_at == NULL) ||
        (in_at->get_hash().size() == 0))
@@ -211,7 +193,7 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
         QSqlQuery query = this->db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
-            qWarning() << "SELECT track failed: " << query.lastError().text();
+            qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
             result = false;
         }
         else if (query.next() == true) // Check if there is a record.
@@ -234,7 +216,7 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
 
                 if (query.lastError().isValid())
                 {
-                    qWarning() << "UPDATE track failed: " << query.lastError().text();
+                    qCWarning(DS_DB) << "UPDATE track failed: " << query.lastError().text();
                     result = false;
                 }
             }
@@ -253,7 +235,7 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
 
             if (query.lastError().isValid())
             {
-                qWarning() << "INSERT track failed: " << query.lastError().text();
+                qCWarning(DS_DB) << "INSERT track failed: " << query.lastError().text();
                 result = false;
             }
         }
@@ -264,11 +246,9 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
     else
     {
         // Db not open.
-        qWarning() << "Can not store audio track: db not open";
+        qCWarning(DS_DB) << "can not store audio track: db not open";
         result = false;
     }
-
-    qDebug() << "Data_persistence::store_audio_track done.";
 
     return result;
 }
@@ -278,13 +258,11 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
     // Init result.
     bool result = true;
 
-    qDebug() << "Data_persistence::get_audio_track...";
-
     // Check input parameter.
     if ((io_at == NULL) ||
         (io_at->get_hash().size() == 0))
     {
-        qWarning() << "Can not get audio track: hash not specified.";
+        qCWarning(DS_DB) << "can not get audio track: hash not specified.";
         result = false;
     }
 
@@ -298,7 +276,7 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
         QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + io_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
-            qWarning() << "SELECT track failed: " << query.lastError().text();
+            qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
             result = false;
         }
         else if (query.next() == true) // Check if there is a record.
@@ -318,8 +296,6 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
         this->mutex.unlock();
     }
 
-    qDebug() << "Data_persistence::get_audio_track done.";
-
     return result;
 }
 
@@ -327,8 +303,6 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
 {
     // Init result.
     bool result = true;
-
-    qDebug() << "Data_persistence::store_cue_point...";
 
     // Check input parameter.
     if ((in_at == NULL) ||
@@ -357,7 +331,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
             QSqlQuery query_at = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
             if (query_at.lastError().isValid())
             {
-                qWarning() << "SELECT track failed: " << query_at.lastError().text();
+                qCWarning(DS_DB) << "SELECT track failed: " << query_at.lastError().text();
                 result = false;
             }
             else if (query_at.next() == true) // Check if there is a record.
@@ -367,7 +341,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
                           "SELECT id_cuepoint, position FROM CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
                 if (query_cuepoint.lastError().isValid())
                 {
-                    qWarning() << "SELECT cue_point failed: " << query_cuepoint.lastError().text();
+                    qCWarning(DS_DB) << "SELECT cue_point failed: " << query_cuepoint.lastError().text();
                     result = false;
                 }
                 else if (query_cuepoint.next() == true) // Check if there is a record.
@@ -383,7 +357,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
 
                         if (query_cuepoint.lastError().isValid())
                         {
-                            qWarning() << "UPDATE cue point failed: " << query_cuepoint.lastError().text();
+                            qCWarning(DS_DB) << "UPDATE cue point failed: " << query_cuepoint.lastError().text();
                             result = false;
                         }
                     }
@@ -400,7 +374,7 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
 
                     if (query_cuepoint.lastError().isValid())
                     {
-                        qWarning() << "INSERT cue point failed: " << query_cuepoint.lastError().text();
+                        qCWarning(DS_DB) << "INSERT cue point failed: " << query_cuepoint.lastError().text();
                         result = false;
                     }
                 }
@@ -413,11 +387,9 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     else
     {
         // Db not open.
-        qWarning() << "Can not store cue point: db not open";
+        qCWarning(DS_DB) << "can not store cue point: db not open";
         result = false;
     }
-
-    qDebug() << "Data_persistence::store_cue_point done.";
 
     return result;
 }
@@ -427,14 +399,12 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
     // Init result.
     bool result = true;
 
-    qDebug() << "Data_persistence::get_cue_point...";
-
     // Check input parameter.
     if ((in_at == NULL) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS))
     {
-        qWarning() << "Can not get cue point: wrong params.";
+        qCWarning(DS_DB) << "can not get cue point: wrong params.";
         result = false;
     }
 
@@ -448,7 +418,7 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
         QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
-            qWarning() << "SELECT track failed: " << query.lastError().text();
+            qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
             result = false;
         }
         else if (query.next() == true) // Check if there is a record.
@@ -458,7 +428,7 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
                         "SELECT position FROM CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
             if (query_cue_point.lastError().isValid())
             {
-                qWarning() << "SELECT cue point failed: " << query_cue_point.lastError().text();
+                qCWarning(DS_DB) << "SELECT cue point failed: " << query_cue_point.lastError().text();
                 result = false;
             }
             else if (query_cue_point.next() == true) // Check if there is a record.
@@ -482,8 +452,6 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
         this->mutex.unlock();
     }
 
-    qDebug() << "Data_persistence::get_cue_point done.";
-
     return result;
 }
 
@@ -492,14 +460,12 @@ bool Data_persistence::delete_cue_point(Audio_track *in_at, unsigned int in_numb
     // Init result.
     bool result = true;
 
-    qDebug() << "Data_persistence::delete_cue_point...";
-
     // Check input parameter.
     if ((in_at == NULL) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS))
     {
-        qWarning() << "Can not delete cue point: wrong params.";
+        qCWarning(DS_DB) << "can not delete cue point: wrong params.";
         result = false;
     }
 
@@ -514,7 +480,7 @@ bool Data_persistence::delete_cue_point(Audio_track *in_at, unsigned int in_numb
         if (query.lastError().isValid())
         {
             // Can not select audio track in DB.
-            qWarning() << "SELECT track failed: " << query.lastError().text();
+            qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
             result = false;
         }
         else if (query.next() == true) // Check if there is a record.
@@ -525,7 +491,7 @@ bool Data_persistence::delete_cue_point(Audio_track *in_at, unsigned int in_numb
             if (query_cue_point.lastError().isValid())
             {
                 // Can not delete cue point.
-                qWarning() << "DELETE cue point failed: " << query_cue_point.lastError().text();
+                qCWarning(DS_DB) << "DELETE cue point failed: " << query_cue_point.lastError().text();
                 result = false;
             }
         }
@@ -538,8 +504,6 @@ bool Data_persistence::delete_cue_point(Audio_track *in_at, unsigned int in_numb
         // Release the DB connection.
         this->mutex.unlock();
     }
-
-    qDebug() << "Data_persistence::delete_cue_point done.";
 
     return result;
 }

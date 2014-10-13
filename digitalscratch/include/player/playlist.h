@@ -35,7 +35,9 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <application_const.h>
+
+#include "application_const.h"
+
 using namespace std;
 
 class Playlist : public QObject

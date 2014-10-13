@@ -33,7 +33,8 @@
 #pragma once
 
 #include <QLabel>
-#include <application_const.h>
+
+#include "application_const.h"
 
 using namespace std;
 

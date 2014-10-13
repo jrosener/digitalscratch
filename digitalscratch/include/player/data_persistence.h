@@ -35,8 +35,9 @@
 #include <iostream>
 #include <QObject>
 #include <QSqlDatabase>
-#include <audio_track.h>
 #include <QMutex>
+
+#include "audio_track.h"
 
 using namespace std;
 

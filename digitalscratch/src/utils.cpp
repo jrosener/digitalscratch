@@ -36,11 +36,13 @@
 #include <QtDebug>
 #include <QFile>
 #include <QStringList>
-#include <audio_track.h>
-#include <audio_file_decoding_process.h>
-#include <audio_track_key_process.h>
-#include <application_settings.h>
-#include <singleton.h>
+
+#include "audio_track.h"
+#include "audio_file_decoding_process.h"
+#include "audio_track_key_process.h"
+#include "application_settings.h"
+#include "singleton.h"
+#include "application_logging.h"
 
 // Global static data.
 QStringList Utils::audio_file_extensions = QStringList() << "ac3" << "flac" << "m4a" << "mp2" << "mp3" << "ogg" << "wav" << "wma";

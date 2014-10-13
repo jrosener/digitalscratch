@@ -37,13 +37,9 @@
 
 Playlist::Playlist(const QString &in_basepath, const QString &in_name)
 {
-    qDebug() << "Playlist::Playlist: create object...";
-
     this->basepath = in_basepath;
     this->name     = in_name;
     this->tracklist.clear();
-
-    qDebug() << "Playlist::Playlist: create object done";
 
     return;
 }
@@ -51,10 +47,6 @@ Playlist::Playlist(const QString &in_basepath, const QString &in_name)
 
 Playlist::~Playlist()
 {
-    qDebug() << "Playlist::~Playlist: delete object...";
-
-    qDebug() << "Playlist::~Playlist: delete object done.";
-
     return;
 }
 

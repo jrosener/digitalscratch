@@ -35,9 +35,11 @@
 #include <iostream>
 #include <QObject>
 #include <QString>
-#include <sound_driver_access_rules.h>
+
+#include "sound_driver_access_rules.h"
 #include "jack/jack.h"
-#include <application_const.h>
+#include "application_const.h"
+
 typedef jack_client_t *     AUDIO_STREAM_TYPE;
 typedef JackProcessCallback AUDIO_CALLBACK_TYPE;
 typedef jack_nframes_t      AUDIO_CALLBACK_NB_FRAMES_TYPE;

@@ -41,8 +41,9 @@
 #include <QWidget>
 #include <QLabel>
 #include <QSlider>
+
 #include "application_settings.h"
-#include <application_const.h>
+#include "application_const.h"
 
 #define ICON ":/pixmaps/digitalscratch-icon.png"
 

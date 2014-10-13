@@ -36,7 +36,8 @@
 #include <iostream>
 #include <QObject>
 #include <QString>
-#include <application_const.h>
+
+#include "application_const.h"
 
 using namespace std;
 

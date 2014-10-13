@@ -33,6 +33,7 @@
 #pragma once
 
 #include "playlist.h"
+
 using namespace std;
 
 class Playlist_persistence : public QObject

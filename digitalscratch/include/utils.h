@@ -33,9 +33,9 @@
 #pragma once
 
 #include <QString>
-#include <application_const.h>
-#include <audio_track.h>
-#include <application_logging.h>
+
+#include "application_const.h"
+#include "audio_track.h"
 
 using namespace std;
 

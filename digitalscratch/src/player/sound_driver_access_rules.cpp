@@ -31,17 +31,16 @@
 /*============================================================================*/
 
 #include <QtDebug>
+
 #include "sound_driver_access_rules.h"
-#include <singleton.h>
-#include <application_settings.h>
+#include "singleton.h"
+#include "application_logging.h"
 
 Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_channels)
 {
-    qDebug() << "Sound_driver_access_rules::Sound_driver_access_rules: create object...";
-
     if ((in_nb_channels == 0) || (in_nb_channels > 4))
     {
-        qFatal("Sound_driver_access_rules::Sound_driver_access_rules: DigitalScratch can only handle 2 decks maximum.");
+        qCWarning(DS_SOUNDCARD) << "DigitalScratch can only handle 2 decks maximum.";
         return;
     }
 
@@ -50,17 +49,11 @@ Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_ch
     this->do_capture = true;
     this->running = false;
 
-    qDebug() << "Sound_driver_access_rules::Sound_driver_access_rules: create object done.";
-
     return;
 }
 
 Sound_driver_access_rules::~Sound_driver_access_rules()
 {
-    qDebug() << "Sound_driver_access_rules::~Sound_driver_access_rules: delete object...";
-
-    qDebug() << "Sound_driver_access_rules::~Sound_driver_access_rules: delete object done.";
-
     return;
 }
 

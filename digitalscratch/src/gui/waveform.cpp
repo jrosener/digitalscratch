@@ -38,6 +38,7 @@
 #include <math.h>
 
 #include "waveform.h"
+#include "application_logging.h"
 
 Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
 {

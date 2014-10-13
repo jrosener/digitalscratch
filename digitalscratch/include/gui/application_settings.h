@@ -34,8 +34,9 @@
 
 #include <QObject>
 #include <QSettings>
-#include <audio_device_access_rules.h>
-#include <application_const.h>
+
+#include "audio_device_access_rules.h"
+#include "application_const.h"
 
 using namespace std;
 

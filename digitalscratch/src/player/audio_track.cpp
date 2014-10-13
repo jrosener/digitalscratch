@@ -107,7 +107,7 @@ Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
     {
         if (in_end_of_samples > this->get_max_nb_samples())
         {
-            qCWarning(DS_AUDIOTRACK) << "in_end_of_samples too big";
+            qCWarning(DS_PLAYBACK) << "in_end_of_samples too big";
             return false;
         }
         else
