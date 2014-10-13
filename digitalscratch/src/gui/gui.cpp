@@ -3583,6 +3583,8 @@ Gui::set_sampler_state(int  in_deck_index,
 void
 Gui::switch_speed_mode(bool in_mode, int in_deck_index)
 {
+    Q_UNUSED(in_deck_index); // FIXME: modify method to handle 2 decks.
+
     // Mode: false=manual, true=timecode
     if (in_mode == true)
     {

@@ -36,5 +36,7 @@
 Q_LOGGING_CATEGORY(DS_OBJECTLIFE,  "ds.objectlife")
 Q_LOGGING_CATEGORY(DS_APPSETTINGS, "ds.appsettings")
 Q_LOGGING_CATEGORY(DS_FILE,        "ds.file")
+Q_LOGGING_CATEGORY(DS_AUDIOTRACK,  "ds.audiotrack")
 Q_LOGGING_CATEGORY(DS_MUSICKEY,    "ds.musickey")
 Q_LOGGING_CATEGORY(DS_SOUNDCARD,   "ds.soundcard")
+Q_LOGGING_CATEGORY(DS_DB,          "ds.db")

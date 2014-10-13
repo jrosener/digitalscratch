@@ -36,6 +36,7 @@
 #include <QObject>
 #include <QString>
 #include <application_const.h>
+#include <application_logging.h>
 using namespace std;
 
 class Audio_track : public QObject

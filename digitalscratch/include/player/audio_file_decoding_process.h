@@ -38,6 +38,7 @@
 #include <QString>
 #include <audio_track.h>
 #include <application_const.h>
+#include <application_logging.h>
 
 using namespace std;
 

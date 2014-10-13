@@ -205,7 +205,7 @@ void Audio_collection_item::store_to_db()
     at->set_music_key(this->get_data(COLUMN_KEY).toString());
     if (data_persist->store_audio_track(at) == false)
     {
-        qWarning() << "Audio_collection_item::store_collection_to_db: can not store " << this->get_full_path() << " to DB";
+        qCWarning(DS_DB) << "can not store" << this->get_full_path() << "to DB";
     }
 
     // Cleanup.
@@ -808,7 +808,7 @@ void Audio_collection_model::commit_db_change()
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     if (data_persist->commit_transaction() == false)
     {
-        qWarning() << "Audio_collection_model::commit_db_change: can not commit DB transaction";
+        qCWarning(DS_DB) << "can not commit DB transaction";
     }
 }
 

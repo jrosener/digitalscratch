@@ -38,36 +38,26 @@
 
 Audio_track_key_process::Audio_track_key_process(Audio_track *in_at)
 {
-    qDebug() << "Audio_track_key_process::Audio_track_key_process: create object...";
-
     if (in_at == NULL)
     {
-        qCritical() << "Audio_track_key_process::Audio_track_key_process: audio track is NULL";
+        qCWarning(DS_MUSICKEY) << "audio track is NULL";
     }
     else
     {
         this->at = in_at;
     }
 
-    qDebug() << "Audio_track_key_process::Audio_track_key_process: create object done.";
-
     return;
 }
 
 Audio_track_key_process::~Audio_track_key_process()
 {
-    qDebug() << "Audio_track_key_process::~Audio_track_key_process: delete object...";
-
-    qDebug() << "Audio_track_key_process::~Audio_track_key_process: delete object done.";
-
     return;
 }
 
 bool
 Audio_track_key_process::run()
 {
-    qDebug() << "Audio_track_key_process::run...";
-
     // Check if there are decoded audio data in audio track.
     if (this->at->get_end_of_samples() == 0)
     {
@@ -89,11 +79,9 @@ Audio_track_key_process::run()
     }
     else
     {
-        qWarning() << "Audio_track_key_process::run: no music key found";
+        qCWarning(DS_MUSICKEY) << "no music key found" << this->at->get_path();
         return false;
     }
-
-    qDebug() << "Audio_track_key_process::run: done.";
 
     return true;
 }

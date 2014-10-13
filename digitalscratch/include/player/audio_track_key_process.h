@@ -36,6 +36,7 @@
 #include <audio_track.h>
 #include <application_const.h>
 #include <keyfinder_api.h>
+#include <application_logging.h>
 
 using namespace std;
 

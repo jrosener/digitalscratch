@@ -41,23 +41,17 @@
 
 Audio_track::Audio_track(unsigned int in_sample_rate)
 {
-    qDebug() << "Audio_track::Audio_trac: create object...";
-
     // Do not store audio samples.
     this->sample_rate = in_sample_rate;
     this->max_nb_samples = 0;
     this->samples = NULL;
     this->reset();
 
-    qDebug() << "Audio_track::Audio_track: create object done";
-
     return;
 }
 
 Audio_track::Audio_track(short unsigned int in_max_minutes, unsigned int in_sample_rate)
 {
-    qDebug() << "Audio_track::Audio_trac(in_max_minutes): create object...";
-
     // Create table of sample base of number of minutes.
     this->sample_rate = in_sample_rate;
     this->max_nb_samples = in_max_minutes * 2 * 60 * this->sample_rate;
@@ -65,18 +59,12 @@ Audio_track::Audio_track(short unsigned int in_max_minutes, unsigned int in_samp
     this->samples = new short signed int[this->max_nb_samples + this->get_security_nb_samples()];
     this->reset();
 
-    qDebug() << "Audio_track::Audio_track(in_max_minutes): create object done";
-
     return;
 }
 
 Audio_track::~Audio_track()
 {
-    qDebug() << "Audio_track::~Audio_track: delete object...";
-
     delete [] this->samples;
-
-    qDebug() << "Audio_track::~Audio_track: delete object done.";
 
     return;
 }
@@ -84,8 +72,6 @@ Audio_track::~Audio_track()
 void
 Audio_track::reset()
 {
-    qDebug() << "Audio_track::reset...";
-
     this->set_name("");
     this->end_of_samples = 0;
     this->length         = 0;
@@ -99,39 +85,29 @@ Audio_track::reset()
         std::fill(this->samples, this->samples + this->max_nb_samples + this->get_security_nb_samples(), 0);
     }
 
-    qDebug() << "Audio_track::reset done.";
-
     return;
 }
 
 short signed int*
 Audio_track::get_samples()
 {
-    qDebug() << "Audio_track::get_samples...";
-    qDebug() << "Audio_track::get_samples done.";
-
     return this->samples;
 }
 
 unsigned int
 Audio_track::get_end_of_samples()
 {
-//    qDebug() << "Audio_track::get_end_of_samples...";
-//    qDebug() << "Audio_track::get_end_of_samples done.";
-
     return this->end_of_samples;
 }
 
 bool
 Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
 {
-    qDebug() << "Audio_track::set_end_of_samples...";
-
     if (this->samples != NULL)
     {
         if (in_end_of_samples > this->get_max_nb_samples())
         {
-            qCritical() << "Audio_track::set_end_of_samples: in_end_of_samples too big.";
+            qCWarning(DS_AUDIOTRACK) << "in_end_of_samples too big";
             return false;
         }
         else
@@ -148,8 +124,6 @@ Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
         return false;
     }
 
-    qDebug() << "Audio_track::set_end_of_samples done.";
-
     return true;
 }
 
@@ -162,53 +136,36 @@ Audio_track::get_max_nb_samples()
 unsigned int
 Audio_track::get_sample_rate()
 {
-    qDebug() << "Audio_track::get_sample_rate...";
-    qDebug() << "Audio_track::get_sample_rate done.";
-
     return this->sample_rate;
 }
 
 unsigned int
 Audio_track::get_security_nb_samples()
 {
-    qDebug() << "Audio_track::get_security_nb_samples...";
-    qDebug() << "Audio_track::get_security_nb_samples done.";
-
     return 2 * 10 * this->sample_rate; // Number of samples added at the end of *samples for decoding purpose.
 }
 
 unsigned int
 Audio_track::get_length()
 {
-    qDebug() << "Audio_track::get_length...";
-    qDebug() << "Audio_track::get_length done.";
-
     return this->length;
 }
 
 QString
 Audio_track::get_length_str()
 {
-    qDebug() << "Audio_track::get_length_str...";
-    qDebug() << "Audio_track::get_length_str done.";
-
     return Utils::get_str_time_from_sample_index(this->end_of_samples, this->sample_rate, false);
 }
 
 QString
 Audio_track::get_name()
 {
-    qDebug() << "Audio_track::get_name...";
-    qDebug() << "Audio_track::get_name done.";
-
     return this->name;
 }
 
 bool
 Audio_track::set_name(QString in_name)
 {
-    qDebug() << "Audio_track::set_name...";
-
     if (in_name != this->name)
     {
         this->name = in_name;
@@ -222,31 +179,22 @@ Audio_track::set_name(QString in_name)
         }
     }
 
-    qDebug() << "Audio_track::set_name done.";
-
     return true;
 }
 
 QString
 Audio_track::get_path()
 {
-    qDebug() << "Audio_track::get_path...";
-    qDebug() << "Audio_track::get_path done.";
-
     return this->path;
 }
 
 bool
 Audio_track::set_fullpath(QString in_fullpath)
 {
-    qDebug() << "Audio_track::set_path...";
-
     // Store path and filename
     QFileInfo path_info(in_fullpath);
     this->path     = path_info.absolutePath();
     this->filename = path_info.fileName();
-
-    qDebug() << "Audio_track::set_path done.";
 
     return true;
 }
@@ -254,9 +202,6 @@ Audio_track::set_fullpath(QString in_fullpath)
 QString
 Audio_track::get_filename()
 {
-    qDebug() << "Audio_track::get_filename...";
-    qDebug() << "Audio_track::get_filename done.";
-
     return this->filename;
 }
 
@@ -264,20 +209,13 @@ Audio_track::get_filename()
 QString
 Audio_track::get_hash()
 {
-    qDebug() << "Audio_track::get_hash...";
-    qDebug() << "Audio_track::get_hash done.";
-
     return this->hash;
 }
 
 bool
 Audio_track::set_hash(QString in_hash)
 {
-    qDebug() << "Audio_track::set_hash...";
-
     this->hash = in_hash;
-
-    qDebug() << "Audio_track::set_hash done.";
 
     return true;
 }
@@ -285,21 +223,14 @@ Audio_track::set_hash(QString in_hash)
 QString
 Audio_track::get_music_key()
 {
-    qDebug() << "Audio_track::get_music_key...";
-    qDebug() << "Audio_track::get_music_key done.";
-
     return this->music_key;
 }
 
 bool
 Audio_track::set_music_key(QString in_key)
 {
-    qDebug() << "Audio_track::set_music_key...";
-
     this->music_key = in_key;
     emit key_changed(this->music_key);
-
-    qDebug() << "Audio_track::set_music_key done.";
 
     return true;
 }
@@ -307,20 +238,13 @@ Audio_track::set_music_key(QString in_key)
 QString
 Audio_track::get_music_key_tag()
 {
-    qDebug() << "Audio_track::get_music_key_tag...";
-    qDebug() << "Audio_track::get_music_key_tag done.";
-
     return this->music_key_tag;
 }
 
 bool
 Audio_track::set_music_key_tag(QString in_key_tag)
 {
-    qDebug() << "Audio_track::set_music_key_tag...";
-
     this->music_key_tag = in_key_tag;
-
-    qDebug() << "Audio_track::set_music_key_tag done.";
 
     return true;
 }

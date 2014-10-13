@@ -56,8 +56,6 @@ extern "C"
 
 Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample)
 {
-    qDebug() << "Audio_file_decoding_process::Audio_file_decoding_process: create object...";
-
     if (in_at == NULL)
     {
         qCritical() << "Audio_file_decoding_process::Audio_file_decoding_process: audio track is NULL";
@@ -75,20 +73,15 @@ Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, boo
 
     this->file = NULL;
 
-    qDebug() << "Audio_file_decoding_process::Audio_file_decoding_process: create object done.";
-
     return;
 }
 
 Audio_file_decoding_process::~Audio_file_decoding_process()
 {
-    qDebug() << "Audio_file_decoding_process::~Audio_file_decoding_process: delete object...";
-
     if (this->file != NULL)
     {
         delete this->file;
     }
-    qDebug() << "Audio_file_decoding_process::~Audio_file_decoding_process: delete object done.";
 
     return;
 }
@@ -104,12 +97,10 @@ Audio_file_decoding_process::run(const QString &in_path,
                                  const QString &in_file_hash,
                                  const QString &in_music_key)
 {
-    qDebug() << "Audio_file_decoding_process::run...";
-
     // Check if path is defined.
     if (in_path == NULL)
     {
-        qWarning() << "Audio_file_decoding_process::run: path is NULL.";
+        qCWarning(DS_FILE) << "file path is NULL";
         return false;
     }
 
@@ -121,7 +112,7 @@ Audio_file_decoding_process::run(const QString &in_path,
     this->file = new QFile(in_path);
     if (this->file->exists() == false)
     {
-        qWarning() << "Audio_file_decoding_process::run: file does not exists.";
+        qCWarning(DS_FILE) << "file" << in_path << "does not exists";
         return false;
     }
 
@@ -129,7 +120,7 @@ Audio_file_decoding_process::run(const QString &in_path,
     this->at->reset();
     if (this->decode() == false)
     {
-        qWarning() << "Audio_file_decoding_process::run: can not decode audio file.";
+        qCWarning(DS_FILE) << "can not decode" << in_path;
         return false;
     }
 
@@ -146,16 +137,12 @@ Audio_file_decoding_process::run(const QString &in_path,
     // Set file hash.
     this->at->set_hash(in_file_hash);
 
-    qDebug() << "Audio_file_decoding_process::run: done.";
-
     return true;
 }
 
 void
 Audio_file_decoding_process::resample_track()
 {
-    qDebug() << "Audio_file_decoding_process::resample_track...";
-
     if ((this->do_resample == true) && (at->get_sample_rate() != this->decoded_sample_rate))
     {
         // Copy decoded samples in a temp buffer.
@@ -184,16 +171,12 @@ Audio_file_decoding_process::resample_track()
         delete [] out_samples;
     }
 
-    qDebug() << "Audio_file_decoding_process::resample_track: done.";
-
     return;
 }
 
 bool
 Audio_file_decoding_process::decode()
 {
-    qDebug() << "Audio_file_decoding_process::decode...";
-
     // Get file name to decode.
     QByteArray        filename_array = this->file->fileName().toUtf8();
     char             *filename       = (char*)filename_array.constData();
@@ -217,7 +200,7 @@ Audio_file_decoding_process::decode()
     if (avformat_open_input(&format_context, filename, NULL, NULL) != 0)
     {
         av_free(frame);
-        qWarning() << "Audio_file_decoding_process::decode: Error opening the file.";
+        qCWarning(DS_FILE) << "error opening file" << qPrintable(filename);
         return false;
     }
 
@@ -226,7 +209,7 @@ Audio_file_decoding_process::decode()
     {
         av_free(frame);
         avformat_close_input(&format_context);
-        qWarning() << "Audio_file_decoding_process::decode: Error finding the stream info.";
+        qCWarning(DS_FILE) << "error finding the stream info" << qPrintable(filename);
         return false;
     }
 
@@ -244,7 +227,7 @@ Audio_file_decoding_process::decode()
     {
         av_free(frame);
         avformat_close_input(&format_context);
-        qWarning() << "Audio_file_decoding_process::decode: Could not find any audio stream in the file.";
+        qCWarning(DS_FILE) << "could not find any audio stream in the file" << qPrintable(filename);
         return false;
     }
 
@@ -255,14 +238,14 @@ Audio_file_decoding_process::decode()
     {
         av_free(frame);
         avformat_close_input(&format_context);
-        qWarning() << "Audio_file_decoding_process::decode: Couldn't find a proper decoder.";
+        qCWarning(DS_FILE) << "couldn't find a proper decoder" << qPrintable(filename);
         return false;
     }
     else if (avcodec_open2(codec_context, codec_context->codec, NULL) != 0)
     {
         av_free(frame);
         avformat_close_input(&format_context);
-        qWarning() << "Audio_file_decoding_process::decode: Couldn't open the context with the decoder.";
+        qCWarning(DS_FILE) << "couldn't open the context with the decoder" << qPrintable(filename);
         return false;
     }
 
@@ -337,7 +320,7 @@ Audio_file_decoding_process::decode()
                 else // Non recognized byte format.
                 {
                     decoding_done = true;
-                    qWarning() << "Audio_file_decoding_process::decode: Audio byte format not supported.";
+                    qCWarning(DS_FILE) << "audio byte format not supported" << qPrintable(filename);
                 }
             }
         }
@@ -366,9 +349,6 @@ Audio_file_decoding_process::decode()
     // Maybe the sample rate used by the sound card to play the file is not the same as
     // the one of the audio file, so convert it if necessary.
     this->resample_track();
-
-    qDebug() << "Audio_file_decoding_process::mp3_decode: " << this->at->get_end_of_samples()
-             << " samples decoded.";
 
     return true;
 }

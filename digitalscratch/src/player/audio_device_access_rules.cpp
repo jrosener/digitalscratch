@@ -40,29 +40,19 @@
 
 Audio_device_access_rules::Audio_device_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
 {
-    qDebug() << "Audio_device_access_rules::Audio_device_access_rules: create object...";
-
-    qDebug() << "Audio_device_access_rules::Audio_device_access_rules: create object done.";
-
     return;
 }
 
 Audio_device_access_rules::~Audio_device_access_rules()
 {
-    qDebug() << "Audio_device_access_rules::~Audio_device_access_rules: delete object...";
-
     // Stop capture+playback.
     this->stop();
-
-    qDebug() << "Audio_device_access_rules::~Audio_device_access_rules: delete object done.";
 
     return;
 }
 
 QList<QString> *Audio_device_access_rules::get_device_list()
 {
-    qDebug() << "Audio_device_access_rules::get_device_list...";
-
     // Get list of available devices.
     QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
 
@@ -73,23 +63,17 @@ QList<QString> *Audio_device_access_rules::get_device_list()
         device_names->append(devices.at(i).deviceName());
     }
 
-    qDebug() << "Audio_device_access_rules::get_device_list: done.";
-
     return device_names;
 }
 
 bool
 Audio_device_access_rules::start(void *in_callback_param)
 {
-    qDebug() << "Audio_device_access_rules::start...";
-
     // TODO
 
     // Everything is OK, keep callback parameters.
     this->callback_param = in_callback_param;
     this->running        = true;
-
-    qDebug() << "Audio_device_access_rules::start: done.";
 
     return true;
 }
@@ -97,19 +81,15 @@ Audio_device_access_rules::start(void *in_callback_param)
 bool
 Audio_device_access_rules::restart()
 {
-    qDebug() << "Audio_device_access_rules::restart...";
-
     if (this->start(this->callback_param) == false)
     {
         this->running = false;
-        qWarning() << "Audio_device_access_rules::restart: can not restart audio capture/playback.";
+        qCWarning(DS_SOUNDCARD) << "can not restart audio capture/playback";
     }
     else
     {
         this->running = true;
     }
-
-    qDebug() << "Audio_device_access_rules::restart done.";
 
     return true;
 }
@@ -117,8 +97,6 @@ Audio_device_access_rules::restart()
 bool
 Audio_device_access_rules::stop()
 {
-    qDebug() << "Audio_device_access_rules::stop...";
-
     // Stop the stream.
     // TODO
 //    if ((this->running == true) && (jack_client_close(this->stream) != 0))
@@ -130,8 +108,6 @@ Audio_device_access_rules::stop()
 //    {
 //        this->running = false;
 //    }
-
-    qDebug() << "Audio_device_access_rules::stop: done.";
 
     return true;
 }
@@ -145,9 +121,13 @@ Audio_device_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_f
 {
     bool result;
 
-    qDebug() << "Audio_device_access_rules::get_input_buffers...";
-
     // TODO
+    Q_UNUSED(in_nb_buffer_frames);
+    Q_UNUSED(out_buffer_1);
+    Q_UNUSED(out_buffer_2);
+    Q_UNUSED(out_buffer_3);
+    Q_UNUSED(out_buffer_4);
+
     if (this->do_capture == true)
     {
         result = true;
@@ -156,8 +136,6 @@ Audio_device_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_f
     {
         result = false;
     }
-
-    qDebug() << "Audio_device_access_rules::get_input_buffers: done.";
 
     return result;
 }
@@ -169,11 +147,12 @@ Audio_device_access_rules::get_output_buffers(unsigned short int   in_nb_buffer_
                                               float              **out_buffer_3,
                                               float              **out_buffer_4)
 {
-    qDebug() << "Audio_device_access_rules::get_input_buffers...";
-
     // TODO
-
-    qDebug() << "Audio_device_access_rules::get_input_buffers: done.";
+    Q_UNUSED(in_nb_buffer_frames);
+    Q_UNUSED(out_buffer_1);
+    Q_UNUSED(out_buffer_2);
+    Q_UNUSED(out_buffer_3);
+    Q_UNUSED(out_buffer_4);
 
     return true;
 }
