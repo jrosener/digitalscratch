@@ -14,4 +14,5 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCaseCreate();
+    void testCaseRun();
 };

@@ -13,6 +13,12 @@ int main(int argc, char** argv)
    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 #endif
 
+   // Logging settings.
+   qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
+   QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
+                                                   *.warning=false\n \
+                                                   *.critical=false\n"));
+
    int status = 0;
    {
       Audio_track_Test tc;

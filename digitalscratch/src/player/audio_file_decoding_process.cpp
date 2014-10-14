@@ -307,12 +307,32 @@ Audio_file_decoding_process::decode()
                     channel_0 = new short signed int [frame->nb_samples];
                     short signed int *channel_1;
                     channel_1 = new short signed int [frame->nb_samples];
-                    memcpy(channel_0, frame->data[0], data_size);
-                    memcpy(channel_1, frame->data[1], data_size);
+                    if (frame->data[0] != NULL)
+                    {
+                        memcpy(channel_0, frame->data[0], data_size);
+                    }
+                    if (frame->data[1] != NULL)
+                    {
+                        memcpy(channel_1, frame->data[1], data_size);
+                    }
                     for (int i = 0; i < frame->nb_samples; i++)
                     {
-                        output_samples[i*2]   = channel_0[i];
-                        output_samples[i*2+1] = channel_1[i];
+                        if (frame->data[0] != NULL)
+                        {
+                            output_samples[i*2]   = channel_0[i];
+                        }
+                        else
+                        {
+                            output_samples[i*2]   = 0;
+                        }
+                        if (frame->data[1] != NULL)
+                        {
+                            output_samples[i*2+1] = channel_1[i];
+                        }
+                        else
+                        {
+                            output_samples[i*2+1] = 0;
+                        }
                     }
                     delete [] channel_0;
                     delete [] channel_1;
