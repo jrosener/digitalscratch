@@ -248,6 +248,16 @@ win32 {
     for(FILE, DLLS_PLATFORMS){
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${FILE}) $$quote($${DESTDIR_PLATFORM_WIN}) $$escape_expand(\\n\\t)
     }
+
+    # Copy test data into .exe directory
+    CONFIG(test) {
+        SRC_TESTDATA_DIR = test/data
+        SRC_TESTDATA_DIR ~= s,/,\\,g
+        DEST_TESTDATA_DIR = $${DESTDIR_WIN}/data
+        DEST_TESTDATA_DIR ~= s,/,\\,g
+        QMAKE_POST_LINK += if not exist $$quote($${DEST_TESTDATA_DIR}) $${QMAKE_MKDIR} $$quote($${DEST_TESTDATA_DIR}) $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${SRC_TESTDATA_DIR}) $$quote($${DEST_TESTDATA_DIR}) $$escape_expand(\\n\\t)
+    }
 }
 ############################
 
