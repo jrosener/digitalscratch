@@ -4,7 +4,7 @@ before_install:
   - sudo apt-add-repository --yes ppa:julien-rosener/digitalscratch
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
-  - sudo apt-get install -qq qt5-qmake qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+  - sudo apt-get install -qq qt5-qmake qtmultimedia5-dev qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
   - sudo apt-get install -qq build-essential libkeyfinder-dev libjack-jackd2-dev libsamplerate0-dev libavformat-dev libavcodec-dev libavutil-dev
 script:
   - cd libdigitalscratch && qmake -qt=qt5 && make && sudo make install
