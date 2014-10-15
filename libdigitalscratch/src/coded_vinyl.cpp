@@ -60,6 +60,7 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
     this->last_zero_cross_list_size          = 0;
     this->validating_turntable_started       = false;
     this->validating_changing_direction      = false;
+    this->min_amplitude_for_normal_speed     = 0;
 
     this->set_reverse_direction(false);
 
