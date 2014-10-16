@@ -4,7 +4,7 @@ before_install:
   - sudo apt-add-repository --yes ppa:julien-rosener/digitalscratch
   - sudo add-apt-repository --yes ppa:beineri/opt-qt532
   - sudo apt-get update -qq
-  - sudo apt-get install -qq qt53-meta
+  - sudo apt-get install -qq qt53base
   - sudo apt-get install -qq build-essential libkeyfinder-dev libjack-jackd2-dev libsamplerate0-dev libavformat-dev libavcodec-dev libavutil-dev
 script:
   - source /opt/qt53/bin/qt53-env.sh
