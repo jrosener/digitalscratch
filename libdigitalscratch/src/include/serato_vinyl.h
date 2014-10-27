@@ -38,12 +38,6 @@
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"
 
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_SERVINYL "[Serato_vinyl:" + Utils::to_string(__LINE__) + "]\t\t"
-#else
-    #define TRACE_PREFIX_SERVINYL "[Serato_vinyl]\t\t"
-#endif
-
 /**
  * Serato vinyl sinusoidal frequency (Hz) (@33 rpm)
  */

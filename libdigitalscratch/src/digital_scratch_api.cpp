@@ -37,10 +37,10 @@
 
 using namespace std;
 
-#include "include/digital_scratch_api.h"
-#include "include/dscratch_parameters.h"
-#include "include/digital_scratch.h"
-#include "include/utils.h"
+#include "log.h"
+#include "digital_scratch_api.h"
+#include "dscratch_parameters.h"
+#include "digital_scratch.h"
 
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
@@ -80,9 +80,7 @@ bool l_get_coded_vinyl(int           turntable_id,
 
     if (dscratch == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot get Digital_scratch object.");
-
+        qCCritical(DSLIB_API) << "Cannot get Digital_scratch object.";
         return false;
     }
 
@@ -90,9 +88,7 @@ bool l_get_coded_vinyl(int           turntable_id,
     *vinyl = dscratch->get_coded_vinyl();
     if (*vinyl == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot get Coded_vinyl object.");
-
+        qCCritical(DSLIB_API) << "Cannot get Coded_vinyl object.";
         return false;
     }
 
@@ -107,31 +103,26 @@ int dscratch_create_turntable(const char   *name,
                               int          *turntable_id)
 {
     // Error if no name is provided.
-    if (name == NULL || Utils::to_string(name) == "")
+    if (name == NULL || QString::fromUtf8(name) == "")
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "No turntable name provided.");
-
+        qCCritical(DSLIB_API) << "No turntable name provided.";
         return 1;
     }
 
     // Error if no name is provided.
-    if (coded_vinyl_type == NULL || Utils::to_string(coded_vinyl_type) == "")
+    if (coded_vinyl_type == NULL || QString::fromUtf8(coded_vinyl_type) == "")
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "No coded vinyl type provided.");
-
+        qCCritical(DSLIB_API) << "No coded vinyl type provided.";
         return 1;
     }
 
     // Create Digital_scratch object.
-    Digital_scratch *dscratch = new Digital_scratch(Utils::to_string(name),
-                                                    Utils::to_string(coded_vinyl_type),
+    Digital_scratch *dscratch = new Digital_scratch(QString::fromUtf8(name).toStdString(),
+                                                    QString::fromUtf8(coded_vinyl_type).toStdString(),
                                                     sample_rate);
     if (dscratch == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Digital_scratch object not created.");
+        qCCritical(DSLIB_API) << "Digital_scratch object not created.";
         return 1;
     }
 
@@ -171,20 +162,14 @@ int dscratch_delete_turntable(int turntable_id)
 {
     if (turntable_id > ((int)tab_turntable.size() - 1))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot remove turntable at index "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "Cannot remove turntable at index" << QString(turntable_id);
         return 1;
     }
 
     // Delete Digital_scratch object from table of turntables.
     if (tab_turntable[turntable_id] == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "No turntable at index "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "No turntable at index" << QString(turntable_id);
         return 1;
     }
     delete tab_turntable[turntable_id];
@@ -218,8 +203,7 @@ int dscratch_analyze_recorded_datas(int     turntable_id,
     if (tab_turntable[turntable_id]->analyze_recording_data(g_input_samples_1,
                                                             g_input_samples_2) == false)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot analyze recorded datas.");
+        qCCritical(DSLIB_API) << "Cannot analyze recorded datas.";
         return 1;
     }
 
@@ -264,8 +248,7 @@ int dscratch_analyze_recorded_datas_interleaved(int    turntable_id,
     if (tab_turntable[turntable_id]->analyze_recording_data(g_input_samples_1,
                                                             g_input_samples_2) == false)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot analyze interleaved recorded datas.");
+        qCCritical(DSLIB_API) << "Cannot analyze interleaved recorded datas.";
         return 1;
     }
 
@@ -287,47 +270,6 @@ int dscratch_get_playing_parameters(int    turntable_id,
     return 0;
 }
 
-void dscratch_print_trace_used()
-{
-    string error_trace_modules = "";
-
-    #ifdef TRACE_ERROR
-        error_trace_modules += "TRACE_ERROR ";
-    #endif
-    #ifdef TRACE_THREAD
-        error_trace_modules += "TRACE_THREAD ";
-    #endif
-    #ifdef TRACE_OBJECT_LIFE
-        error_trace_modules += "TRACE_OBJECT_LIFE ";
-    #endif
-    #ifdef TRACE_OBJECT_ATTRIBUTS_CHANGE
-        error_trace_modules += "TRACE_OBJECT_ATTRIBUTS_CHANGE ";
-    #endif
-    #ifdef TRACE_MISC
-        error_trace_modules += "TRACE_MISC ";
-    #endif
-    #ifdef TRACE_CAPTURE
-        error_trace_modules += "TRACE_CAPTURE ";
-    #endif
-    #ifdef TRACE_CAPTURE_SAMPLE
-        error_trace_modules += "TRACE_CAPTURE_SAMPLE ";
-    #endif
-    #ifdef TRACE_ANALYZE_VINYL
-        error_trace_modules += "TRACE_ANALYZE_VINYL ";
-    #endif
-    #ifdef TRACE_ANALYZE_SWAVE
-        error_trace_modules += "TRACE_ANALYZE_SWAVE ";
-    #endif
-    #ifdef TRACE_ANALYZE_EXTREME
-        error_trace_modules += "TRACE_ANALYZE_EXTREME ";
-    #endif
-    #ifdef TRACE_EXTREME_USED_FOR_DETECTING_SPEED
-        error_trace_modules += "TRACE_EXTREME_USED_FOR_DETECTING_SPEED ";
-    #endif
-
-    Utils::trace_misc(TRACE_PREFIX_DIGITALSCRATCHAPI, "Tracing level : " + error_trace_modules);
-}
-
 int dscratch_display_turntable(int turntable_id)
 {
     char *turntable_name = NULL;
@@ -336,20 +278,14 @@ int dscratch_display_turntable(int turntable_id)
     // Check turntable id.
     if (turntable_id > ((int)tab_turntable.size() - 1))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot access this turntable "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(turntable_id);
         return 1;
     }
 
     // Check if turntable exists.
     if (tab_turntable[turntable_id] == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "No turntable at index "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "No turntable at index" << QString(turntable_id);
         return 1;
     }
 
@@ -406,28 +342,21 @@ int dscratch_get_turntable_name(int    turntable_id,
     // Check turntable_name.
     if (turntable_name == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot get turntable name.");
+        qCCritical(DSLIB_API) << "Cannot get turntable name.";
         return 1;
     }
 
     // Check turntable id.
     if (turntable_id > ((int)tab_turntable.size() - 1))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot access this turntable "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(turntable_id);
         return 1;
     }
 
     // Check if turntable exists.
     if (tab_turntable[turntable_id] == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "No turntable at index "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "No turntable at index " << QString(turntable_id);
         return 1;
     }
 
@@ -463,28 +392,21 @@ int dscratch_get_vinyl_type(int    turntable_id,
     // Check vinyl name.
     if (vinyl_type == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot get vinyl type.");
+        qCCritical(DSLIB_API) << "Cannot get vinyl type.";
         return 1;
     }
 
     // Check turntable id.
     if (turntable_id > ((int)tab_turntable.size() - 1))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot access this turntable "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(turntable_id);
         return 1;
     }
 
     // Check if turntable exists.
     if (tab_turntable[turntable_id] == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "No turntable at index "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "No turntable at index" << QString(turntable_id);
         return 1;
     }
 
@@ -539,17 +461,13 @@ int dscratch_get_vinyl_type(int    turntable_id,
         }
         else
         {
-            Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Unknown timecoded vinyl type");
-
+            qCCritical(DSLIB_API) << "Unknown timecoded vinyl type";
             return 1;
         }
     }
     else
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot access to coded vinyl.");
-
+        qCCritical(DSLIB_API) << "Cannot access to coded vinyl.";
         return 1;
     }
 
@@ -573,18 +491,14 @@ DLLIMPORT int dscratch_change_vinyl_type(int   turntable_id,
     // Check vinyl name.
     if (vinyl_type == NULL)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot get vinyl type.");
+        qCCritical(DSLIB_API) << "Cannot get vinyl type.";
         return 1;
     }
 
     // Check turntable id.
     if (turntable_id > ((int)tab_turntable.size() - 1))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                           "Cannot access this turntable "
-                           + Utils::to_string(turntable_id));
-
+        qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(turntable_id);
         return 1;
     }
 
@@ -596,7 +510,7 @@ DLLIMPORT int dscratch_change_vinyl_type(int   turntable_id,
     }
     if (strcmp(current_vinyl_type, vinyl_type) != 0)
     {
-        if (tab_turntable[turntable_id]->change_coded_vinyl(Utils::to_string(vinyl_type)) == false)
+        if (tab_turntable[turntable_id]->change_coded_vinyl(QString::fromUtf8(vinyl_type).toStdString()) == false)
         {
             return 1;
         }
@@ -622,8 +536,7 @@ DLLIMPORT int dscratch_set_input_amplify_coeff(int turntable_id,
     // Set input_amplify_coeff parameter to Coded_vinyl.
     if (vinyl->set_input_amplify_coeff(coeff) == false)
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot set input_amplify_coeff.");
+        qCCritical(DSLIB_API) << "Cannot set input_amplify_coeff.";
         return 1;
     }
 
@@ -656,8 +569,7 @@ DLLIMPORT int dscratch_set_rpm(int turntable_id,
     if (((rpm != RPM_33) && (rpm != RPM_45)) ||
        (vinyl->set_rpm(rpm) == false))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCHAPI,
-                            "Cannot set RPM.");
+        qCCritical(DSLIB_API) << "Cannot set RPM.";
         return 1;
     }
 

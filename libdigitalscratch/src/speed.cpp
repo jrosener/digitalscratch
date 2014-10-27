@@ -36,14 +36,12 @@
 
 using namespace std;
 
-#include "include/dscratch_parameters.h"
-#include "include/speed.h"
-#include "include/utils.h"
+#include "log.h"
+#include "dscratch_parameters.h"
+#include "speed.h"
 
 Speed::Speed(string turntable_name) : Playing_parameter(turntable_name)
 {
-    Utils::trace_object_life(TRACE_PREFIX_SPEED, "+ Creating Speed object...");
-
     // Internal stuff.
     this->nb_no_new_speed_found     = 0;
     this->value                     = 0.0;
@@ -52,15 +50,10 @@ Speed::Speed(string turntable_name) : Playing_parameter(turntable_name)
     // Default values used for speed calculation.
     this->set_max_nb_no_new_speed_found(DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND);
     this->set_max_nb_cycle_before_starting(DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING);
-
-    Utils::trace_object_life(TRACE_PREFIX_SPEED, "+ Speed object created");
 }
 
 Speed::~Speed()
 {
-    Utils::trace_object_life(TRACE_PREFIX_SPEED, "- Deleting Speed object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_SPEED, "- Speed object deleted");
 }
 
 float Speed::get_value()
@@ -77,29 +70,20 @@ bool Speed::set_value(float speed_value)
     //
     if (speed_value == NO_NEW_SPEED_FOUND) // No new speed found.
     {
-        /*if (this->nb_no_new_speed_found <= this->max_nb_no_new_speed_found)
-        {
-            this->nb_no_new_speed_found++;
-        }
-        */
         this->nb_no_new_speed_found++;
 
         // No new speed for 3 times (for example), speed = 0.
         if (this->nb_no_new_speed_found > this->max_nb_no_new_speed_found)
         {
-            Utils::trace_speed(TRACE_PREFIX_SPEED,
-                "No new speed found for " \
-                + Utils::to_string(this->max_nb_no_new_speed_found) \
-                + " times, speed = 0");
-
+            qCDebug(DSLIB_SPEED) << "No new speed found for"
+                                 << QString(this->max_nb_no_new_speed_found)
+                                 << "times, speed = 0";
             this->value = 0.0;
             this->nb_no_new_speed_found = 0;
         }
         else
         {
-            Utils::trace_speed(TRACE_PREFIX_SPEED,
-                "No new speed found, don't change speed");
-
+            qCDebug(DSLIB_SPEED) << "No new speed found, don't change speed.";
             this->value = NO_NEW_SPEED_FOUND;
         }
     }
@@ -113,13 +97,11 @@ bool Speed::set_value(float speed_value)
         #ifdef TRACE_OBJECT_ATTRIBUTS_CHANGE
             if (this->value == NO_NEW_SPEED_FOUND)
             {
-                Utils::trace_object_attributs_change(TRACE_PREFIX_SPEED,
-                    "Changing speed value to NO_NEW_SPEED_FOUND");
+                qCDebug(DSLIB_SPEED) << "Changing speed value to NO_NEW_SPEED_FOUND";
             }
             else
             {
-                Utils::trace_object_attributs_change(TRACE_PREFIX_SPEED,
-                    "Changing speed value to " + Utils::to_string(this->value));
+                qCDebug(DSLIB_SPEED) << "Changing speed value to " << QString(this->value);
             }
         #endif
     }
@@ -136,8 +118,7 @@ bool Speed::set_max_nb_no_new_speed_found(int nb)
 {
     if (nb <= 0)
     {
-        Utils::trace_error(TRACE_PREFIX_SPEED,
-                "max_nb_no_new_speed_found must be > 0.");
+        qCCritical(DSLIB_SPEED) << "max_nb_no_new_speed_found must be > 0.";
         return false;
     }
 
@@ -155,8 +136,7 @@ bool Speed::set_max_nb_cycle_before_starting(int nb)
 {
     if (nb <= 0)
     {
-        Utils::trace_error(TRACE_PREFIX_SPEED,
-                "max_nb_cycle_before_starting must be > 0.");
+        qCCritical(DSLIB_SPEED) << "max_nb_cycle_before_starting must be > 0.";
         return false;
     }
 

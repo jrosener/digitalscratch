@@ -38,30 +38,19 @@
 
 using namespace std;
 
-#include "include/dscratch_parameters.h"
-#include "include/utils.h"
-#include "include/coded_vinyl.h"
-#include "include/serato_vinyl.h"
+#include "log.h"
+#include "dscratch_parameters.h"
+#include "coded_vinyl.h"
+#include "serato_vinyl.h"
 
 Serato_vinyl::Serato_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
-    Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
-                             "+ Creating Serato_vinyl object...");
-
     this->min_amplitude_for_normal_speed = DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
     this->min_amplitude                  = DEFAULT_SERATO_MIN_AMPLITUDE;
-
-    Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
-                             "+ Serato_vinyl object created");
 }
 
 Serato_vinyl::~Serato_vinyl()
 {
-    Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
-                             "- Deleting Serato_vinyl object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_SERVINYL,
-                             "- Serato_vinyl object deleted");
 }
 
 int Serato_vinyl::get_sinusoidal_frequency()

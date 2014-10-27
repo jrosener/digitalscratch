@@ -40,15 +40,12 @@
 
 using namespace std;
 
-#include "include/dscratch_parameters.h"
-#include "include/utils.h"
-#include "include/coded_vinyl.h"
+#include "log.h"
+#include "dscratch_parameters.h"
+#include "coded_vinyl.h"
 
 Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
 {
-    Utils::trace_object_life(TRACE_PREFIX_CODED_VINYL,
-                             "+ Creating Coded_vinyl object...");
-
     this->rpm                                = RPM_33;
     this->sample_rate                        = sample_rate;
     this->input_amplify_coeff                = DEFAULT_INPUT_AMPLIFY_COEFF;
@@ -63,17 +60,10 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
     this->min_amplitude_for_normal_speed     = 0;
 
     this->set_reverse_direction(false);
-
-    Utils::trace_object_life(TRACE_PREFIX_CODED_VINYL,
-                             "+ Coded_vinyl object created");
 }
 
 Coded_vinyl::~Coded_vinyl()
 {
-    Utils::trace_object_life(TRACE_PREFIX_CODED_VINYL, "- Deleting Coded_vinyl object...");
-
-
-    Utils::trace_object_life(TRACE_PREFIX_CODED_VINYL, "- Coded_vinyl object deleted");
 }
 
 void Coded_vinyl::calculate_sin_wave_area_size()
@@ -84,7 +74,7 @@ void Coded_vinyl::calculate_sin_wave_area_size()
 void Coded_vinyl::add_sound_data(vector<float> &input_samples_1,
                                  vector<float> &input_samples_2)
 {
-    Utils::trace_analyze_vinyl(TRACE_PREFIX_CODED_VINYL, "Adding timecode data to internal buffers...");
+    qCDebug(DSLIB_ANALYZEVINYL) << "Adding timecode data to internal buffers...";
 
     // Add samples at the end of previous not-used samples.
     copy(input_samples_1.begin(), input_samples_1.end(), back_inserter(this->samples_channel_1));
@@ -93,7 +83,7 @@ void Coded_vinyl::add_sound_data(vector<float> &input_samples_1,
 
 float Coded_vinyl::get_speed()
 {
-    Utils::trace_analyze_vinyl(TRACE_PREFIX_CODED_VINYL, "Searching new speed...");
+    qCDebug(DSLIB_ANALYZEVINYL) << "Searching new speed...";
 
     // First calculate the basic size of a sin wave.
     this->calculate_sin_wave_area_size();
@@ -250,7 +240,7 @@ void Coded_vinyl::smoothly_change_speed(float &speed)
 
 void Coded_vinyl::fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples)
 {
-    Utils::trace_analyze_vinyl(TRACE_PREFIX_CODED_VINYL, "Fill list of zero crossing...");
+    qCDebug(DSLIB_ANALYZEVINYL) << "Fill list of zero crossing...";
 
     // Create the zero crossing line.
     vector<float> zero_crossing_line(samples.size(), 0.0f);
@@ -644,7 +634,7 @@ float Coded_vinyl::get_signal_amplitude(vector<float> &samples)
 
 float Coded_vinyl::get_volume()
 {
-    Utils::trace_analyze_vinyl(TRACE_PREFIX_CODED_VINYL, "Searching new volume...");
+    qCDebug(DSLIB_ANALYZEVINYL) << "Searching new volume...";
 
     if (fabs(this->current_speed) < SPEED_FOR_VOLUME_CUT)
     {
@@ -672,8 +662,7 @@ bool Coded_vinyl::set_sample_rate(int sample_rate)
 {
     if (sample_rate <= 0)
     {
-        Utils::trace_error(TRACE_PREFIX_CODED_VINYL,
-                           "sample_rate cannot be <= 0");
+        qCCritical(DSLIB_ANALYZEVINYL) << "sample_rate cannot be <= 0";
 
         return false;
     }
@@ -692,7 +681,7 @@ bool Coded_vinyl::set_input_amplify_coeff(int coeff)
 {
     if (coeff <= 0)
     {
-        Utils::trace_error(TRACE_PREFIX_CODED_VINYL, "coeff cannot be <= 0");
+        qCCritical(DSLIB_ANALYZEVINYL) << "input amplify coeff cannot be <= 0";
 
         return false;
     }

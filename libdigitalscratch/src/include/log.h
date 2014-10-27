@@ -4,7 +4,7 @@
 /*                           Digital Scratch System                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------------------( utils.cpp )-*/
+/*------------------------------------------------------------------( log.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,35 +26,16 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*               Utils class : a collection of methods-tools                  */
+/*                             Logging framework                              */
 /*                                                                            */
 /*============================================================================*/
 
-#include <iostream>
-#include <cstdio>
-#include <string>
-#include <sstream>
-#include <cmath>
+#pragma once
 
-using namespace std;
+#include <QLoggingCategory>
 
-#include "include/dscratch_parameters.h"
-#include "include/utils.h"
-
-Utils::Utils()
-{
-}
-
-Utils::~Utils()
-{
-}
-
-void Utils::trace(string trace_msg, char trace_level)
-{
-    cout << "!!!!!!!!!! ERROR : trace(" << trace_msg << ", " << trace_level << ") function is deprecated !" << endl;
-}
-
-float Utils::abs(float nb)
-{
-    return fabs(nb);
-}
+// Declare logging categories.
+Q_DECLARE_LOGGING_CATEGORY(DSLIB_ANALYZEVINYL)
+Q_DECLARE_LOGGING_CATEGORY(DSLIB_CONTROLLER)
+Q_DECLARE_LOGGING_CATEGORY(DSLIB_API)
+Q_DECLARE_LOGGING_CATEGORY(DSLIB_SPEED)

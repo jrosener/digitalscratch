@@ -6,6 +6,13 @@
 
 int main(int argc, char** argv)
 {
+
+   // Logging settings.
+   qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
+   QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
+                                                    *.warning=false\n \
+                                                    *.critical=false\n"));
+
    int status = 0;
    {
       DigitalScratchApi_Test tc;

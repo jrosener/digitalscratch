@@ -34,15 +34,10 @@
 
 #include <string>
 #include <vector>
+
 #include "dscratch_parameters.h"
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"
-
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_FSVINYL "[Final_scratch_v:" + Utils::to_string(__LINE__) + "]\t\t"
-#else
-    #define TRACE_PREFIX_FSVINYL "[Final_scratch_v]\t\t"
-#endif
 
 /**
  * Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@33 rpm)

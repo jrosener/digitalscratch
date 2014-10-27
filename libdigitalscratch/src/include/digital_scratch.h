@@ -33,23 +33,13 @@
 #pragma once
 
 #include <string>
+
 #include "dscratch_parameters.h"
 #include "controller.h"
 #include "coded_vinyl.h"
 #include "final_scratch_vinyl.h"
 #include "serato_vinyl.h"
 #include "mixvibes_vinyl.h"
-
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_DIGITALSCRATCH "[Digital_scratch:" \
-                                         + Utils::to_string(__LINE__) \
-                                         + "]\t\t" + this->get_name() \
-                                         + " : "
-#else
-    #define TRACE_PREFIX_DIGITALSCRATCH "[Digital_scratch]\t\t" \
-                                        + this->get_name() \
-                                        + " : "
-#endif
 
 // Speed states
 #define UNSTABLE_SPEED 0

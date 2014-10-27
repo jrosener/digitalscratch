@@ -38,12 +38,6 @@
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"
 
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_MVVINYL "[Mixvibes_v:" + Utils::to_string(__LINE__) + "]\t\t"
-#else
-    #define TRACE_PREFIX_MVVINYL "[Mixvibes_v]\t\t"
-#endif
-
 /**
  * Mixvibes vinyl sinusoidal frequency (Hz) (@33 rpm)
  */

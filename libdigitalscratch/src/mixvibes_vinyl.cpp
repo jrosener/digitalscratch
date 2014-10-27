@@ -38,30 +38,19 @@
 
 using namespace std;
 
-#include "include/dscratch_parameters.h"
-#include "include/utils.h"
-#include "include/coded_vinyl.h"
-#include "include/mixvibes_vinyl.h"
+#include "log.h"
+#include "dscratch_parameters.h"
+#include "coded_vinyl.h"
+#include "mixvibes_vinyl.h"
 
 Mixvibes_vinyl::Mixvibes_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
-    Utils::trace_object_life(TRACE_PREFIX_MVVINYL,
-                             "+ Creating Mixvibes_vinyl object...");
-
     // Reverse direction detection.
     this->set_reverse_direction(true);
-
-    Utils::trace_object_life(TRACE_PREFIX_MVVINYL,
-                             "+ Mixvibes_vinyl object created");
 }
 
 Mixvibes_vinyl::~Mixvibes_vinyl()
 {
-    Utils::trace_object_life(TRACE_PREFIX_MVVINYL,
-                             "- Deleting Mixvibes_vinyl object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_MVVINYL,
-                             "- Mixvibes_vinyl object deleted");
 }
 
 int Mixvibes_vinyl::get_sinusoidal_frequency()

@@ -13,8 +13,6 @@ unix {
     CURRENT_DATE = $$system(date +%Y%m%d)
     VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
 }
-
-# Add version as a compilation DEFINE.
 DEFINES += VERSION=$${VERSION}
 
 ##############################

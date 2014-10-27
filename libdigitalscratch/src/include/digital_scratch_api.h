@@ -46,13 +46,6 @@ extern "C" {
 #endif
 
 /******************************************************************************/
-/******************** Internal stuff for trace system *************************/
-
-#define TRACE_PREFIX_DIGITALSCRATCHAPI "[Digital_scratch_api:" \
-                                       + Utils::to_string(__LINE__) + "]\t"
-
-
-/******************************************************************************/
 /**************************** Error codes *************************************/
 
 /**< This is the speed value in case of no new value is found. */
@@ -194,11 +187,6 @@ DLLIMPORT int dscratch_analyze_recorded_datas_interleaved(int    turntable_id,
 DLLIMPORT int dscratch_get_playing_parameters(int    turntable_id,
                                               float *speed,
                                               float *volume);
-
-/**
- * Print which trace type are used to monitor DigitalScratch.
- */
-DLLIMPORT void dscratch_print_trace_used();
 
 /**
  * Get number of turntable registered in DigitalScratch.

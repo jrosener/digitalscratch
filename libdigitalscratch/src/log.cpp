@@ -4,7 +4,7 @@
 /*                           Digital Scratch System                           */
 /*                                                                            */
 /*                                                                            */
-/*----------------------------------------------------( playing_parameter.h )-*/
+/*----------------------------------------------------------------( log.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2014                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,55 +26,14 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*           Playing_parameter class : define a playing parameter             */
+/*                             Logging framework                              */
 /*                                                                            */
 /*============================================================================*/
 
-#pragma once
+#include <log.h>
 
-#include <iostream>
-#include <string>
-#include "dscratch_parameters.h"
-
-/**
- * Define a Playing_parameter class.\n
- * It is a generic class (abstract) for all type of audio playing parameters
- * @author Julien Rosener
- */
-class Playing_parameter
-{
-    /* Attributes */
-    private:
-        /**
-         * The turntable name name corresponding to this playing parameter.
-         */
-        string turntable_name;
-
-
-    /* Constructor / Destructor */
-    public:
-        /**
-         * Constructor.
-         */
-        Playing_parameter(string turntable_name);
-
-        /**
-         * Destructor.
-         */
-        virtual ~Playing_parameter();
-
-    /* Methods */
-    public:
-        /**
-         * Get turntable name.
-         * @return turntable name.
-         */
-        string get_turntable_name();
-
-        /**
-         * Set turntable name.
-         * @param turntable_name is the new turntable name (can not be empty).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_turntable_name(string turntable_name);
-};
+// Map logging categories to real name.
+Q_LOGGING_CATEGORY(DSLIB_ANALYZEVINYL,  "dslib.analyzevinyl")
+Q_LOGGING_CATEGORY(DSLIB_CONTROLLER,    "dslib.controller")
+Q_LOGGING_CATEGORY(DSLIB_API,           "dslib.api")
+Q_LOGGING_CATEGORY(DSLIB_SPEED,         "dslib.speed")

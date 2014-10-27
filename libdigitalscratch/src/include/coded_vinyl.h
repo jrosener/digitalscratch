@@ -34,14 +34,9 @@
 
 #include <string>
 #include <vector>
+
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
-
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_CODED_VINYL "[Coded_vinyl:" + Utils::to_string(__LINE__) + "]\t\t"
-#else
-    #define TRACE_PREFIX_CODED_VINYL "[Coded_vinyl]\t\t\t"
-#endif
 
 #define MAX_SIN_WAV_AREA_FACTOR      100
 #define SPEED_FOR_VOLUME_CUT         0.90

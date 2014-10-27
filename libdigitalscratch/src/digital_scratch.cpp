@@ -37,25 +37,18 @@
 
 using namespace std;
 
-#include "include/dscratch_parameters.h"
-#include "include/utils.h"
-#include "include/digital_scratch_api.h"
-#include "include/digital_scratch.h"
+#include "log.h"
+#include "dscratch_parameters.h"
+#include "digital_scratch_api.h"
+#include "digital_scratch.h"
 
 Digital_scratch::Digital_scratch(string       controller_name,
                                  string       coded_vinyl_type,
                                  unsigned int sample_rate) : Controller(controller_name)
 {
-    Utils::trace_object_life(TRACE_PREFIX_DIGITALSCRATCH,
-                             "+ Creating Digital_scratch object...");
-
     // Init.
     this->sample_rate = sample_rate;
     this->init(coded_vinyl_type);
-
-
-    Utils::trace_object_life(TRACE_PREFIX_DIGITALSCRATCH,
-                             "+ Digital_scratch object created");
 }
 
 bool Digital_scratch::init(string coded_vinyl_type)
@@ -78,7 +71,7 @@ bool Digital_scratch::init(string coded_vinyl_type)
     }
     else
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCH, "Cannot create Digital_scratch object using NULL vinyl.");
+        qCCritical(DSLIB_CONTROLLER) << "Cannot create Digital_scratch object with NULL vinyl.";
         return false;
     }
 
@@ -87,14 +80,8 @@ bool Digital_scratch::init(string coded_vinyl_type)
 
 Digital_scratch::~Digital_scratch()
 {
-    Utils::trace_object_life(TRACE_PREFIX_DIGITALSCRATCH,
-                             "- Deleting Digital_scratch object...");
-
     // Cleanup.
     this->clean();
-
-    Utils::trace_object_life(TRACE_PREFIX_DIGITALSCRATCH,
-                             "- Digital_scratch object deleted");
 }
 
 void Digital_scratch::clean()
@@ -111,9 +98,8 @@ bool Digital_scratch::analyze_recording_data(vector<float> &input_samples_1,
     if ((input_samples_1.size() == 0)
        || (input_samples_1.size() != input_samples_2.size()))
     {
-        Utils::trace_error(TRACE_PREFIX_DIGITALSCRATCH,
-                    "Wrong input samples table sizes");
-                return false;
+        qCCritical(DSLIB_CONTROLLER) << "Wrong input samples table sizes";
+        return false;
     }
 
     // The goal of this method is to analyze input datas, calculate playing

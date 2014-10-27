@@ -38,27 +38,17 @@
 
 using namespace std;
 
-#include "include/dscratch_parameters.h"
-#include "include/utils.h"
-#include "include/coded_vinyl.h"
-#include "include/final_scratch_vinyl.h"
+#include "log.h"
+#include "dscratch_parameters.h"
+#include "coded_vinyl.h"
+#include "final_scratch_vinyl.h"
 
 Final_scratch_vinyl::Final_scratch_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
-    Utils::trace_object_life(TRACE_PREFIX_FSVINYL,
-                             "+ Creating Final_scratch_vinyl object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_FSVINYL,
-                             "+ Final_scratch_vinyl object created");
 }
 
 Final_scratch_vinyl::~Final_scratch_vinyl()
 {
-    Utils::trace_object_life(TRACE_PREFIX_FSVINYL,
-                             "- Deleting Final_scratch_vinyl object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_FSVINYL,
-                             "- Final_scratch_vinyl object deleted");
 }
 
 int Final_scratch_vinyl::get_sinusoidal_frequency()

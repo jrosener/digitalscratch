@@ -33,16 +33,10 @@
 #pragma once
 
 #include <string>
+
 #include "dscratch_parameters.h"
 #include "speed.h"
 #include "volume.h"
-
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_CONTROLLER "[Controller:" \
-                + Utils::to_string(__LINE__) + "]\t\t\t" + this->get_name() + " : "
-#else
-    #define TRACE_PREFIX_CONTROLLER "[Controller]\t\t\t" + this->get_name() + " : "
-#endif
 
 /**
  * Define a Controller class.\n

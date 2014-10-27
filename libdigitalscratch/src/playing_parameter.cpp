@@ -36,26 +36,16 @@
 
 using namespace std;
 
-#include "include/playing_parameter.h"
-#include "include/utils.h"
+#include "log.h"
+#include "playing_parameter.h"
 
 Playing_parameter::Playing_parameter(string turntable_name)
 {
-    Utils::trace_object_life(TRACE_PREFIX_PLAYINGPARAMETER, "+ Creating Playing_parameter object...");
-
-    if (this->set_turntable_name(turntable_name) == false)
-    {
-        Utils::trace_error(TRACE_PREFIX_PLAYINGPARAMETER, "Can not set turntable name");
-    }
-
-    Utils::trace_object_life(TRACE_PREFIX_PLAYINGPARAMETER, "+ Playing_parameter object created");
+    this->set_turntable_name(turntable_name);
 }
 
 Playing_parameter::~Playing_parameter()
 {
-    Utils::trace_object_life(TRACE_PREFIX_PLAYINGPARAMETER, "- Deleting Playing_parameter object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_PLAYINGPARAMETER, "- Playing_parameter object deleted");
 }
 
 string Playing_parameter::get_turntable_name()
@@ -68,6 +58,7 @@ bool Playing_parameter::set_turntable_name(string turntable_name)
     // Turntable name can not be empty.
     if (turntable_name == "")
     {
+        qCCritical(DSLIB_CONTROLLER) << "Can not set turntable name";
         return false;
     }
 

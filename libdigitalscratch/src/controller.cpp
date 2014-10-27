@@ -36,38 +36,21 @@
 
 using namespace std;
 
-#include "include/controller.h"
-#include "include/utils.h"
+#include "log.h"
+#include "controller.h"
 
 Controller::Controller(string name)
 {
-    if (this->set_name(name) == false)
-    {
-        Utils::trace_error(TRACE_PREFIX_CONTROLLER,
-                           "Warning, Controller name is empty.");
-    }
-
-    Utils::trace_object_life(TRACE_PREFIX_CONTROLLER,
-                             "+ Creating Controller object...");
-
+    this->set_name(name);
     this->speed    = new Speed(this->name);
     this->volume   = new Volume(this->name);
     this->set_playing_parameters_ready(false);
-
-    Utils::trace_object_life(TRACE_PREFIX_CONTROLLER,
-                             "+ Controller object created");
 }
 
 Controller::~Controller()
 {
-    Utils::trace_object_life(TRACE_PREFIX_CONTROLLER,
-                             "- Deleting Controller object...");
-
     delete this->speed;
     delete this->volume;
-
-    Utils::trace_object_life(TRACE_PREFIX_CONTROLLER,
-                             "- Controller object deleted");
 }
 
 string Controller::get_name()
@@ -79,14 +62,12 @@ bool Controller::set_name(string name)
 {
     if (name == "")
     {
-        Utils::trace_error(TRACE_PREFIX_CONTROLLER,
-                           "Controller name empty.");
+        qCCritical(DSLIB_CONTROLLER) << "Controller name empty.";
         return false;
     }
 
     this->name = name;
-    Utils::trace_object_attributs_change(TRACE_PREFIX_CONTROLLER,
-                                         "New name = " + this->name);
+    qCDebug(DSLIB_CONTROLLER) << "New name=" << QString(this->name.c_str());
 
     return true;
 }

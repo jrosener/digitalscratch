@@ -4,22 +4,21 @@
 #
 #-------------------------------------------------
 
-unix {
-    CURRENT_DATE = $$system(date +%Y%m%d)
-}
-
 # Release version number.
-VERSION = 1.5.0
+#VERSION = 1.5.0
 
 # Snapshot version number.
-#win32 {
-#    VERSION = 1.6.0b
-#}
-#unix {
-#    VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
-#}
+win32 {
+    VERSION = 1.6.0b
+}
+unix {
+    CURRENT_DATE = $$system(date +%Y%m%d)
+    VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
+}
 DEFINES += VERSION=$${VERSION}
-CONFIG += qt
+
+CONFIG += qt c++11
+INCLUDEPATH += src/include
 
 CONFIG(test) {
     QT       += testlib
@@ -45,7 +44,6 @@ else {
 
 SOURCES += \ 
     src/volume.cpp \
-    src/utils.cpp \
     src/speed.cpp \
     src/serato_vinyl.cpp \
     src/playing_parameter.cpp \
@@ -54,11 +52,11 @@ SOURCES += \
     src/digital_scratch.cpp \
     src/controller.cpp \
     src/coded_vinyl.cpp \
-    src/mixvibes_vinyl.cpp
+    src/mixvibes_vinyl.cpp \
+    src/log.cpp
 
 HEADERS += \ 
     src/include/volume.h \
-    src/include/utils.h \
     src/include/speed.h \
     src/include/serato_vinyl.h \
     src/include/playing_parameter.h \
@@ -68,10 +66,11 @@ HEADERS += \
     src/include/digital_scratch.h \
     src/include/controller.h \
     src/include/coded_vinyl.h \
-    src/include/mixvibes_vinyl.h
+    src/include/mixvibes_vinyl.h \
+    src/include/log.h
 
 CONFIG(test) {
-    INCLUDEPATH += test src/include
+    INCLUDEPATH += test
 
     SOURCES += test/main_test.cpp \
                test/test_utils.cpp \

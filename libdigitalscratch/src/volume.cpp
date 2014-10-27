@@ -34,23 +34,16 @@
 #include <string>
 using namespace std;
 
-#include "include/volume.h"
-#include "include/utils.h"
+#include "log.h"
+#include "volume.h"
 
 Volume::Volume(string turntable_name) : Playing_parameter(turntable_name)
 {
-    Utils::trace_object_life(TRACE_PREFIX_VOLUME, "+ Creating Volume object...");
-
     this->value = 0.0;
-
-    Utils::trace_object_life(TRACE_PREFIX_VOLUME, "+ Volume object created");
 }
 
 Volume::~Volume()
 {
-    Utils::trace_object_life(TRACE_PREFIX_VOLUME, "- Deleting Volume object...");
-
-    Utils::trace_object_life(TRACE_PREFIX_VOLUME, "- Volume object deleted");
 }
 
 float Volume::get_value()
