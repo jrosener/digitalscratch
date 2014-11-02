@@ -336,20 +336,20 @@ Application_settings::set_gui_style(QString in_gui_style)
     this->settings->setValue(GUI_STYLE_CFG, in_gui_style);
 }
 
-unsigned int
+short signed int
 Application_settings::get_nb_decks()
 {
-    return this->settings->value(NB_DECKS_CFG).toUInt();
+    return this->settings->value(NB_DECKS_CFG).toInt();
 }
 
-unsigned int
+signed short int
 Application_settings::get_nb_decks_default()
 {
     return NB_DECKS_DEFAULT;
 }
 
 void
-Application_settings::set_nb_decks(unsigned int in_nb_decks)
+Application_settings::set_nb_decks(signed short in_nb_decks)
 {
     this->settings->setValue(NB_DECKS_CFG, in_nb_decks);
 }

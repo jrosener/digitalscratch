@@ -33,6 +33,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include "audio_track.h"
 #include "playback_parameters.h"
@@ -51,9 +52,9 @@ class Audio_track_playback_process : public QObject
     Q_OBJECT
 
  private:
-    Audio_track          **ats;                     // Table of nb_decks audio track.
-    Audio_track         ***at_samplers;             // Table of nb_decks samplers.
-    Playback_parameters  **params;                  // Table of nb_decks playback parameters.
+    QList<QSharedPointer<Audio_track>> ats;                     // Table of nb_decks audio track.
+    QList<QList<QSharedPointer<Audio_track>>> at_samplers;             // Table of nb_decks samplers.
+    QList<QSharedPointer<Playback_parameters>> params;                  // Table of nb_decks playback parameters.
     unsigned int          *current_samples;         // Table of nb_decks playback current_sample.
     unsigned int         **cue_points;              // Table of nb_decks playback cue points.
     unsigned int          *remaining_times;         // Table of nb_decks remaining time (in msec).
@@ -72,9 +73,9 @@ class Audio_track_playback_process : public QObject
     short signed int       src_int_output_data[SOUND_STRETCH_MAX_BUFFER];
 
  public:
-    Audio_track_playback_process(Audio_track          *in_ats[],
-                                 Audio_track         **in_at_samplers[],
-                                 Playback_parameters  *in_params[],
+    Audio_track_playback_process(QList<QSharedPointer<Audio_track>> &in_ats,
+                                 QList<QList<QSharedPointer<Audio_track>>> &in_at_samplers,
+                                 QList<QSharedPointer<Playback_parameters>> &in_params,
                                  unsigned short int    in_nb_decks,
                                  unsigned short int    in_nb_samplers);
 

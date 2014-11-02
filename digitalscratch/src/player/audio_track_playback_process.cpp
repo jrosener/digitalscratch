@@ -42,29 +42,19 @@
 
 #define SPEED_MIN_TO_GO_DOWN 0.2
 
-Audio_track_playback_process::Audio_track_playback_process(Audio_track          *in_ats[],
-                                                           Audio_track         **in_at_samplers[],
-                                                           Playback_parameters  *in_params[],
+Audio_track_playback_process::Audio_track_playback_process(QList<QSharedPointer<Audio_track>> &in_ats,
+                                                           QList<QList<QSharedPointer<Audio_track>>> &in_at_samplers,
+                                                           QList<QSharedPointer<Playback_parameters>> &in_params,
                                                            unsigned short int    in_nb_decks,
                                                            unsigned short int    in_nb_samplers)
 {
-    if (in_ats         == NULL ||
-        in_at_samplers == NULL ||
-        in_params      == NULL)
-    {
-        qCWarning(DS_PLAYBACK) << "parameter is null";
-        return;
-    }
-    else
-    {
-        this->ats         = in_ats;
-        this->at_samplers = in_at_samplers;
-        this->params      = in_params;
-        this->nb_decks    = in_nb_decks;
-        this->nb_samplers = in_nb_samplers;
-        this->src_state   = NULL;
-        this->src_data    = NULL;
-    }
+    this->ats         = in_ats;
+    this->at_samplers = in_at_samplers;
+    this->params      = in_params;
+    this->nb_decks    = in_nb_decks;
+    this->nb_samplers = in_nb_samplers;
+    this->src_state   = NULL;
+    this->src_data    = NULL;
 
     this->cue_points = new unsigned int* [in_nb_decks];
     for (unsigned short int i = 0; i < in_nb_decks; i++)
@@ -608,7 +598,7 @@ Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index, u
     unsigned int position = 0;
     if (this->ats[in_deck_index]->get_hash() != "")
     {
-        data_persist->get_cue_point(this->ats[in_deck_index], in_cue_point_number, position);
+        data_persist->get_cue_point(this->ats[in_deck_index].data(), in_cue_point_number, position);
         this->cue_points[in_deck_index][in_cue_point_number] = this->msec_to_sample_index(in_deck_index, position);
     }
 
@@ -624,7 +614,7 @@ Audio_track_playback_process::store_cue_point(unsigned short int in_deck_index, 
     // Store it also to DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
 
-    return data_persist->store_cue_point(this->ats[in_deck_index],
+    return data_persist->store_cue_point(this->ats[in_deck_index].data(),
                                          in_cue_point_number,
                                          this->sample_index_to_msec(in_deck_index, this->cue_points[in_deck_index][in_cue_point_number]));
 }
@@ -646,7 +636,7 @@ Audio_track_playback_process::delete_cue_point(unsigned short int in_deck_index,
 
     // Delete cue point from database.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    return data_persist->delete_cue_point(this->ats[in_deck_index], in_cue_point_number);
+    return data_persist->delete_cue_point(this->ats[in_deck_index].data(), in_cue_point_number);
 }
 
 float

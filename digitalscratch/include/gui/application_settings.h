@@ -198,9 +198,9 @@ class Application_settings : public QObject
     QString         get_gui_style_default();
     QList<QString>* get_available_gui_styles();
 
-    void                 set_nb_decks(unsigned int in_nb_decks);
-    unsigned int         get_nb_decks();
-    unsigned int         get_nb_decks_default();
+    void                 set_nb_decks(signed short int in_nb_decks);
+    signed short int     get_nb_decks();
+    signed short int     get_nb_decks_default();
     QList<unsigned int>* get_available_nb_decks();
 
     void                 set_sample_rate(unsigned int in_sample_rate);

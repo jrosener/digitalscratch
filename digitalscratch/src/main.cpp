@@ -85,80 +85,56 @@ int main(int argc, char *argv[])
         process->start(settings->get_extern_prog());
     }
 
-    // Tracks.
-    Audio_track *at_1 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
-    Audio_track *at_2 = NULL;
-    if (settings->get_nb_decks() > 1) at_2 = new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate());
-    else              at_2 = new Audio_track(settings->get_sample_rate());
-    Audio_track *ats[] = { at_1, at_2 };
-
-    // Samplers.
-    Audio_track *at_1_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-    Audio_track *at_1_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-    Audio_track *at_1_sampler_3  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-    Audio_track *at_1_sampler_4  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-    Audio_track *at_1_samplers[] = { at_1_sampler_1, at_1_sampler_2, at_1_sampler_3, at_1_sampler_4 };
-
-    Audio_track *at_2_sampler_1  = NULL;
-    Audio_track *at_2_sampler_2  = NULL;
-    Audio_track *at_2_sampler_3  = NULL;
-    Audio_track *at_2_sampler_4  = NULL;
-    if (settings->get_nb_decks() > 1)
+    // Create tracks, sampler, decoder process,... for each deck.
+    QList<QSharedPointer<Audio_track>>                        ats;
+    QList<QSharedPointer<Audio_file_decoding_process>>        dec_procs;
+    QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
+    QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
+    QList<QSharedPointer<Playback_parameters>>                play_params;
+    for (auto i = 1; i <= settings->get_nb_decks(); i++)
     {
-        at_2_sampler_1  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-        at_2_sampler_2  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-        at_2_sampler_3  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
-        at_2_sampler_4  = new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate());
+        // Track for a deck.
+        QSharedPointer<Audio_track>                 at(new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate()));
+        QSharedPointer<Audio_file_decoding_process> dec_proc(new Audio_file_decoding_process(at.data()));
+        ats << at;
+        dec_procs << dec_proc;
+
+        // Playback parameters.
+        QSharedPointer<Playback_parameters> play_param(new Playback_parameters);
+        play_params << play_param;
+
+        // Set of samplers for a deck.
+        QList<QSharedPointer<Audio_track>>                 at_sampler;
+        QList<QSharedPointer<Audio_file_decoding_process>> dec_sampler_proc;
+        for (auto j = 1; j <= nb_samplers; j++)
+        {
+            QSharedPointer<Audio_track>                 at_s(new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate()));
+            QSharedPointer<Audio_file_decoding_process> dec_s_proc(new Audio_file_decoding_process(at_s.data()));
+            at_sampler << at_s;
+            dec_sampler_proc << dec_s_proc;
+        }
+        at_samplers << at_sampler;
+        dec_sampler_procs << dec_sampler_proc;
     }
-    else
-    {
-        at_2_sampler_1  = new Audio_track(settings->get_sample_rate());
-        at_2_sampler_2  = new Audio_track(settings->get_sample_rate());
-        at_2_sampler_3  = new Audio_track(settings->get_sample_rate());
-        at_2_sampler_4  = new Audio_track(settings->get_sample_rate());
-    }
-    Audio_track *at_2_samplers[] = { at_2_sampler_1, at_2_sampler_2, at_2_sampler_3, at_2_sampler_4 };
 
-    Audio_track **at_samplers[] = { at_1_samplers, at_2_samplers };
-
-    // Decoding processes.
-    Audio_file_decoding_process *dec_1  = new Audio_file_decoding_process(at_1);
-    Audio_file_decoding_process *dec_2  = new Audio_file_decoding_process(at_2);
-
-    // Decoding processes for samplers.
-    Audio_file_decoding_process *dec_1_sampler_1  = new Audio_file_decoding_process(at_1_sampler_1);
-    Audio_file_decoding_process *dec_1_sampler_2  = new Audio_file_decoding_process(at_1_sampler_2);
-    Audio_file_decoding_process *dec_1_sampler_3  = new Audio_file_decoding_process(at_1_sampler_3);
-    Audio_file_decoding_process *dec_1_sampler_4  = new Audio_file_decoding_process(at_1_sampler_4);
-    Audio_file_decoding_process *dec_1_samplers[] = { dec_1_sampler_1, dec_1_sampler_2, dec_1_sampler_3, dec_1_sampler_4 };
-
-    Audio_file_decoding_process *dec_2_sampler_1  = new Audio_file_decoding_process(at_2_sampler_1);
-    Audio_file_decoding_process *dec_2_sampler_2  = new Audio_file_decoding_process(at_2_sampler_2);
-    Audio_file_decoding_process *dec_2_sampler_3  = new Audio_file_decoding_process(at_2_sampler_3);
-    Audio_file_decoding_process *dec_2_sampler_4  = new Audio_file_decoding_process(at_2_sampler_4);
-    Audio_file_decoding_process *dec_2_samplers[] = { dec_2_sampler_1, dec_2_sampler_2, dec_2_sampler_3, dec_2_sampler_4 };
-
-    Audio_file_decoding_process **dec_samplers[] = { dec_1_samplers, dec_2_samplers };
-
-    // Playback parameters.
-    Playback_parameters *params_1 = new Playback_parameters();
-    Playback_parameters *params_2 = new Playback_parameters();
-    Playback_parameters *params[] = { params_1, params_2 };
-
-    // A process which analyze captured timecode data.
-    Timecode_control_process *tcode_control = new Timecode_control_process(params,
+    // Process which analyze captured timecode data.
+    Timecode_control_process *tcode_control = new Timecode_control_process(play_params,
                                                                            settings->get_nb_decks(),
                                                                            settings->get_vinyl_type(),
                                                                            settings->get_sample_rate());
     int *dscratch_ids;
     dscratch_ids = new int[settings->get_nb_decks()];
-    for (unsigned int i = 0; i < settings->get_nb_decks(); i++)
+    for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
         dscratch_ids[i] = tcode_control->get_dscratch_id(i);
     }
 
     // Playback process.
-    Audio_track_playback_process *at_playback = new Audio_track_playback_process(ats, at_samplers, params, settings->get_nb_decks(), nb_samplers);
+    Audio_track_playback_process *at_playback = new Audio_track_playback_process(ats,
+                                                                                 at_samplers,
+                                                                                 play_params,
+                                                                                 settings->get_nb_decks(),
+                                                                                 nb_samplers);
 
     // Access sound card.
     // TODO add settings to check if we want to use the timecode to get playback params or not (so no capture).
@@ -166,16 +142,18 @@ int main(int argc, char *argv[])
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_control, at_playback, sound_card);
+    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_control,
+                                                                                                      at_playback,
+                                                                                                      sound_card);
     // TODO if not using timecode to get playback params
     //Only_playback_process *playback_external_params = new Playback_process_with_external_parameters(playback, sound_card);
 
     // Create GUI.
-    Gui *gui = new Gui(at_1, at_2,
-                       at_samplers, 4,
-                       dec_1, dec_2,
-                       dec_samplers,
-                       params_1, params_2,
+    Gui *gui = new Gui(ats,
+                       at_samplers,
+                       dec_procs,
+                       dec_sampler_procs,
+                       play_params,
                        at_playback,
                        settings->get_nb_decks(),
                        sound_card,
@@ -194,29 +172,7 @@ int main(int argc, char *argv[])
     delete capture_and_playback;
     delete tcode_control;
     delete at_playback;
-    delete params_1;
-    delete params_2;
-    delete dec_1;
-    delete dec_2;
-    delete at_1;
-    delete at_2;
     delete[] dscratch_ids;
-    delete dec_1_sampler_1;
-    delete dec_1_sampler_2;
-    delete dec_1_sampler_3;
-    delete dec_1_sampler_4;
-    delete dec_2_sampler_1;
-    delete dec_2_sampler_2;
-    delete dec_2_sampler_3;
-    delete dec_2_sampler_4;
-    delete at_1_sampler_1;
-    delete at_1_sampler_2;
-    delete at_1_sampler_3;
-    delete at_1_sampler_4;
-    delete at_2_sampler_1;
-    delete at_2_sampler_2;
-    delete at_2_sampler_3;
-    delete at_2_sampler_4;
 
     return 0;
 }

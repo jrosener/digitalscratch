@@ -89,31 +89,19 @@ extern "C"
 }
 #endif
 
-Gui::Gui(Audio_track                        *in_at_1,
-         Audio_track                        *in_at_2,
-         Audio_track                      ***in_at_samplers,
-         unsigned short int                  in_nb_samplers,
-         Audio_file_decoding_process        *in_dec_1,
-         Audio_file_decoding_process        *in_dec_2,
-         Audio_file_decoding_process      ***in_dec_samplers,
-         Playback_parameters                *in_params_1,
-         Playback_parameters                *in_params_2,
-         Audio_track_playback_process       *in_playback,
-         unsigned short int                  in_nb_decks,
-         Sound_driver_access_rules          *in_sound_card,
-         Sound_capture_and_playback_process *in_capture_and_playback,
-         int                                *in_dscratch_ids)
+Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
+         QList<QList<QSharedPointer<Audio_track>>>                 &in_at_samplers,
+         QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
+         QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
+         QList<QSharedPointer<Playback_parameters>>                &in_params,
+         Audio_track_playback_process                              *in_playback,
+         unsigned short int                                         in_nb_decks,
+         Sound_driver_access_rules                                 *in_sound_card,
+         Sound_capture_and_playback_process                        *in_capture_and_playback,
+         int                                                       *in_dscratch_ids)
 {
     // Check input parameters.
-    if (in_at_1                 == NULL ||
-        in_at_2                 == NULL ||
-        in_at_samplers          == NULL ||
-        in_dec_1                == NULL ||
-        in_dec_2                == NULL ||
-        in_dec_samplers         == NULL ||
-        in_params_1             == NULL ||
-        in_params_2             == NULL ||
-        in_playback             == NULL ||
+    if (in_playback             == NULL ||
         in_sound_card           == NULL ||
         in_capture_and_playback == NULL ||
         in_dscratch_ids         == NULL)
@@ -123,17 +111,17 @@ Gui::Gui(Audio_track                        *in_at_1,
     }
 
     // Get decks/tracks and sound capture/playback engine.
-    this->at_1                    = in_at_1;
-    this->at_2                    = in_at_2;
+    this->at_1                    = in_ats[0].data();
+    this->at_2                    = in_ats[1].data();
     this->at_1_samplers           = in_at_samplers[0];
     this->at_2_samplers           = in_at_samplers[1];
-    this->nb_samplers             = in_nb_samplers;
-    this->dec_1                   = in_dec_1;
-    this->dec_2                   = in_dec_2;
+    this->nb_samplers             = in_at_samplers[0].count();
+    this->dec_1                   = in_decs[0].data();
+    this->dec_2                   = in_decs[1].data();
     this->dec_1_samplers          = in_dec_samplers[0];
     this->dec_2_samplers          = in_dec_samplers[1];
-    this->params_1                = in_params_1;
-    this->params_2                = in_params_2;
+    this->params_1                = in_params[0].data();
+    this->params_2                = in_params[1].data();
     this->playback                = in_playback;
     this->nb_decks                = in_nb_decks;
     this->sound_card              = in_sound_card;
@@ -1737,22 +1725,22 @@ Gui::connect_samplers_area()
     QObject::connect(this->show_hide_samplers_button, SIGNAL(clicked()), this, SLOT(show_hide_samplers()));
 
     // Name of samplers.
-    QObject::connect(this->at_1_samplers[0], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_1_samplers[0].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_1_text(const QString&)));
-    QObject::connect(this->at_1_samplers[1], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_1_samplers[1].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_2_text(const QString&)));
-    QObject::connect(this->at_1_samplers[2], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_1_samplers[2].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_3_text(const QString&)));
-    QObject::connect(this->at_1_samplers[3], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_1_samplers[3].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_4_text(const QString&)));
 
-    QObject::connect(this->at_2_samplers[0], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_2_samplers[0].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_1_text(const QString&)));
-    QObject::connect(this->at_2_samplers[1], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_2_samplers[1].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_2_text(const QString&)));
-    QObject::connect(this->at_2_samplers[2], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_2_samplers[2].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_3_text(const QString&)));
-    QObject::connect(this->at_2_samplers[3], SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_2_samplers[3].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_4_text(const QString&)));
 
     // Start stop samplers.
@@ -2721,7 +2709,7 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
     if (info.isFile() == true)
     {
         // Execute decoding.
-        Audio_file_decoding_process **samplers = NULL;
+        QList<QSharedPointer<Audio_file_decoding_process>> samplers;
         if (in_deck_index == 0)
         {
             samplers = this->dec_1_samplers;

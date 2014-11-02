@@ -45,6 +45,7 @@
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QSharedPointer>
 
 #include "config_dialog.h"
 #include "audio_track.h"
@@ -307,38 +308,34 @@ class Gui : public QObject
     QDialog                            *error_dialog;
 
     // Main processing elements.
-    Audio_track                        *at_1;
-    Audio_track                        *at_2;
-    Audio_track                       **at_1_samplers;
-    Audio_track                       **at_2_samplers;
-    unsigned short int                  nb_samplers;
-    Audio_file_decoding_process        *dec_1;
-    Audio_file_decoding_process        *dec_2;
-    Audio_file_decoding_process       **dec_1_samplers;
-    Audio_file_decoding_process       **dec_2_samplers;
-    Playback_parameters                *params_1;
-    Playback_parameters                *params_2;
-    Audio_track_playback_process       *playback;
-    Sound_driver_access_rules          *sound_card;
-    Sound_capture_and_playback_process *capture_and_play;
-    int                                *dscratch_ids;
-    Application_settings               *settings;
+    Audio_track                                        *at_1;
+    Audio_track                                        *at_2;
+    QList<QSharedPointer<Audio_track>>                  at_1_samplers;
+    QList<QSharedPointer<Audio_track>>                  at_2_samplers;
+    unsigned short int                                  nb_samplers;
+    Audio_file_decoding_process                        *dec_1;
+    Audio_file_decoding_process                        *dec_2;
+    QList<QSharedPointer<Audio_file_decoding_process>>  dec_1_samplers;
+    QList<QSharedPointer<Audio_file_decoding_process>>  dec_2_samplers;
+    Playback_parameters                                *params_1;
+    Playback_parameters                                *params_2;
+    Audio_track_playback_process                       *playback;
+    Sound_driver_access_rules                          *sound_card;
+    Sound_capture_and_playback_process                 *capture_and_play;
+    int                                                *dscratch_ids;
+    Application_settings                               *settings;
 
  public:
-    Gui(Audio_track                        *in_at_1,
-        Audio_track                        *in_at_2,
-        Audio_track                      ***in_at_samplers,
-        unsigned short int                  in_nb_samplers,
-        Audio_file_decoding_process        *in_dec_1,
-        Audio_file_decoding_process        *in_dec_2,
-        Audio_file_decoding_process      ***in_dec_samplers,
-        Playback_parameters                *in_params_1,
-        Playback_parameters                *in_params_2,
-        Audio_track_playback_process       *in_playback,
-        unsigned short int                  in_nb_decks,
-        Sound_driver_access_rules          *in_sound_card,
-        Sound_capture_and_playback_process *in_capture_and_playback,
-        int                                *in_dscratch_ids);
+    Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
+        QList<QList<QSharedPointer<Audio_track>>>                 &in_at_samplers,
+        QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
+        QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
+        QList<QSharedPointer<Playback_parameters>>                &in_params,
+        Audio_track_playback_process                              *in_playback,
+        unsigned short int                                         in_nb_decks,
+        Sound_driver_access_rules                                 *in_sound_card,
+        Sound_capture_and_playback_process                        *in_capture_and_playback,
+        int                                                       *in_dscratch_ids);
     virtual ~Gui();
 
  private:

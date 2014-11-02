@@ -39,21 +39,12 @@
 #include "digital_scratch_api.h"
 #include "application_logging.h"
 
-Timecode_control_process::Timecode_control_process(Playback_parameters *in_params[],
+Timecode_control_process::Timecode_control_process(QList<QSharedPointer<Playback_parameters>> &in_params,
                                                    unsigned short int   in_nb_decks,
                                                    QString              in_vinyl_type,
                                                    unsigned int         in_sample_rate)
 {
-    if (in_params == NULL)
-    {
-        qCCritical(DS_PLAYBACK) << "playback_parameters is NULL";
-
-    }
-    else
-    {
-        this->params = in_params;
-    }
-
+    this->params = in_params;
     this->nb_decks = in_nb_decks;
     this->dscratch_ids = new int[in_nb_decks];
 
@@ -93,10 +84,10 @@ Timecode_control_process::~Timecode_control_process()
 
 bool
 Timecode_control_process::run(unsigned short int  in_nb_samples,
-                               float              *in_samples_1,
-                               float              *in_samples_2,
-                               float              *in_samples_3,
-                               float              *in_samples_4)
+                              float              *in_samples_1,
+                              float              *in_samples_2,
+                              float              *in_samples_3,
+                              float              *in_samples_4)
 {
     int   j              = 0;
     int   are_new_params = 0;

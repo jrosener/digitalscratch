@@ -34,6 +34,7 @@
 #pragma once
 
 #include <iostream>
+#include <QSharedPointer>
 
 #include "playback_parameters.h"
 #include "application_const.h"
@@ -43,12 +44,12 @@ using namespace std;
 class Timecode_control_process
 {
  private:
-    unsigned short int    nb_decks;
-    Playback_parameters **params;             // Table of nb_decks playback parameters.
-    int                  *dscratch_ids;       // Table of nb_decks dscratch ids.
+    unsigned short int                          nb_decks;
+    QList<QSharedPointer<Playback_parameters>>  params;             // Table of nb_decks playback parameters.
+    int                                        *dscratch_ids;       // Table of nb_decks dscratch ids.
 
  public:
-    Timecode_control_process(Playback_parameters *in_params[],
+    Timecode_control_process(QList<QSharedPointer<Playback_parameters>> &in_params,
                              unsigned short int   in_nb_decks,
                              QString              in_vinyl_type,
                              unsigned int         in_sample_rate);
