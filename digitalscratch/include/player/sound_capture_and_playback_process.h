@@ -44,14 +44,14 @@ class Sound_capture_and_playback_process
 {
  private:
     //Manual_control_process       *manual_control;
-    Timecode_control_process     *tcode_control;
-    Audio_track_playback_process *playback;
-    Sound_driver_access_rules    *sound_card;
+    QSharedPointer<Timecode_control_process>     tcode_control;
+    QSharedPointer<Audio_track_playback_process> playback;
+    QSharedPointer<Sound_driver_access_rules>    sound_card;
 
  public:
-    Sound_capture_and_playback_process(Timecode_control_process     *in_tcode_control,
-                                       Audio_track_playback_process *in_playback,
-                                       Sound_driver_access_rules    *in_sound_card);
+    Sound_capture_and_playback_process(QSharedPointer<Timecode_control_process>     &in_tcode_control,
+                                       QSharedPointer<Audio_track_playback_process> &in_playback,
+                                       QSharedPointer<Sound_driver_access_rules>    &in_sound_card);
     virtual ~Sound_capture_and_playback_process();
 
     bool run(unsigned short int in_nb_buffer_frames);

@@ -81,8 +81,13 @@ int main(int argc, char *argv[])
     // Execute user's defined program at startup.
     if (settings->get_extern_prog() != "")
     {
-        QProcess *process = new QProcess();
-        process->start(settings->get_extern_prog());
+        QProcess process;
+        process.start(settings->get_extern_prog());
+        if (process.waitForFinished() == false)
+        {
+            qCCritical(DS_APPSETTINGS) << "Running" << settings->get_extern_prog() << "failed.";
+            return -1;
+        }
     }
 
     // Create tracks, sampler, decoder process,... for each deck.
@@ -118,10 +123,10 @@ int main(int argc, char *argv[])
     }
 
     // Process which analyze captured timecode data.
-    Timecode_control_process *tcode_control = new Timecode_control_process(play_params,
-                                                                           settings->get_nb_decks(),
-                                                                           settings->get_vinyl_type(),
-                                                                           settings->get_sample_rate());
+    QSharedPointer<Timecode_control_process> tcode_control(new Timecode_control_process(play_params,
+                                                                                        settings->get_nb_decks(),
+                                                                                        settings->get_vinyl_type(),
+                                                                                        settings->get_sample_rate()));
     int *dscratch_ids;
     dscratch_ids = new int[settings->get_nb_decks()];
     for (auto i = 0; i < settings->get_nb_decks(); i++)
@@ -130,35 +135,36 @@ int main(int argc, char *argv[])
     }
 
     // Playback process.
-    Audio_track_playback_process *at_playback = new Audio_track_playback_process(ats,
-                                                                                 at_samplers,
-                                                                                 play_params,
-                                                                                 settings->get_nb_decks(),
-                                                                                 nb_samplers);
+    QSharedPointer<Audio_track_playback_process> at_playback(new Audio_track_playback_process(ats,
+                                                                                              at_samplers,
+                                                                                              play_params,
+                                                                                              settings->get_nb_decks(),
+                                                                                              nb_samplers));
 
     // Access sound card.
     // TODO add settings to check if we want to use the timecode to get playback params or not (so no capture).
-    Sound_driver_access_rules *sound_card = new Jack_access_rules(settings->get_nb_decks() * 2);
+    QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    Sound_capture_and_playback_process *capture_and_playback = new Sound_capture_and_playback_process(tcode_control,
-                                                                                                      at_playback,
-                                                                                                      sound_card);
+    QSharedPointer<Sound_capture_and_playback_process> capture_and_playback(new Sound_capture_and_playback_process(tcode_control,
+                                                                                                                   at_playback,
+                                                                                                                   sound_card));
     // TODO if not using timecode to get playback params
     //Only_playback_process *playback_external_params = new Playback_process_with_external_parameters(playback, sound_card);
 
     // Create GUI.
-    Gui *gui = new Gui(ats,
-                       at_samplers,
-                       dec_procs,
-                       dec_sampler_procs,
-                       play_params,
-                       at_playback,
-                       settings->get_nb_decks(),
-                       sound_card,
-                       capture_and_playback,
-                       dscratch_ids);
+    QSharedPointer<Gui> gui(new Gui(ats,
+                                    at_samplers,
+                                    dec_procs,
+                                    dec_sampler_procs,
+                                    play_params,
+                                    at_playback,
+                                    settings->get_nb_decks(),
+                                    sound_card,
+                                    capture_and_playback,
+                                    dscratch_ids));
+    Q_UNUSED(gui);
 
     // Forward the quit call.
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
@@ -167,11 +173,6 @@ int main(int argc, char *argv[])
     app.exec();
 
     // Cleanup.
-    delete gui;
-    delete sound_card;
-    delete capture_and_playback;
-    delete tcode_control;
-    delete at_playback;
     delete[] dscratch_ids;
 
     return 0;

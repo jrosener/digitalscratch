@@ -37,13 +37,13 @@
 #include "application_logging.h"
 
 
-Sound_capture_and_playback_process::Sound_capture_and_playback_process(Timecode_control_process     *in_tcode_control,
-                                                                       Audio_track_playback_process *in_playback,
-                                                                       Sound_driver_access_rules    *in_sound_card)
+Sound_capture_and_playback_process::Sound_capture_and_playback_process(QSharedPointer<Timecode_control_process>     &in_tcode_control,
+                                                                       QSharedPointer<Audio_track_playback_process> &in_playback,
+                                                                       QSharedPointer<Sound_driver_access_rules>    &in_sound_card)
 {
-    if (in_tcode_control == NULL ||
-        in_playback      == NULL ||
-        in_sound_card    == NULL)
+    if (in_tcode_control.data() == NULL ||
+        in_playback.data()      == NULL ||
+        in_sound_card.data()    == NULL)
     {
         qCWarning(DS_PLAYBACK) << "bad input parameters";
         return;

@@ -42,8 +42,8 @@
 
 #define SPEED_MIN_TO_GO_DOWN 0.2
 
-Audio_track_playback_process::Audio_track_playback_process(QList<QSharedPointer<Audio_track>> &in_ats,
-                                                           QList<QList<QSharedPointer<Audio_track>>> &in_at_samplers,
+Audio_track_playback_process::Audio_track_playback_process(QList<QSharedPointer<Audio_track>>         &in_ats,
+                                                           QList<QList<QSharedPointer<Audio_track>>>  &in_at_samplers,
                                                            QList<QSharedPointer<Playback_parameters>> &in_params,
                                                            unsigned short int    in_nb_decks,
                                                            unsigned short int    in_nb_samplers)

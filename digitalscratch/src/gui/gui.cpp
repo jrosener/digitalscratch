@@ -94,17 +94,17 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
          QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
          QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
          QList<QSharedPointer<Playback_parameters>>                &in_params,
-         Audio_track_playback_process                              *in_playback,
+         QSharedPointer<Audio_track_playback_process>              &in_playback,
          unsigned short int                                         in_nb_decks,
-         Sound_driver_access_rules                                 *in_sound_card,
-         Sound_capture_and_playback_process                        *in_capture_and_playback,
+         QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
+         QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
          int                                                       *in_dscratch_ids)
 {
     // Check input parameters.
-    if (in_playback             == NULL ||
-        in_sound_card           == NULL ||
-        in_capture_and_playback == NULL ||
-        in_dscratch_ids         == NULL)
+    if (in_playback.data()             == NULL ||
+        in_sound_card.data()           == NULL ||
+        in_capture_and_playback.data() == NULL ||
+        in_dscratch_ids                == NULL)
     {
         qCCritical(DS_OBJECTLIFE) << "bad input parameters";
         return;
@@ -274,7 +274,7 @@ Gui::start_control_and_playback()
 {
     // Start sound card for capture and playback.
     if ((this->sound_card->is_running() == false) &&
-        (this->sound_card->start((void*)this->capture_and_play) == false))
+        (this->sound_card->start((void*)this->capture_and_play.data()) == false))
     {
         qCWarning(DS_SOUNDCARD) << "can not start sound card";
         this->start_capture_button->setChecked(false);
@@ -934,8 +934,8 @@ Gui::create_main_window()
     this->window->resize(this->settings->get_main_window_size());
 
     // Open error window.
-    QObject::connect(this->sound_card, SIGNAL(error_msg(QString)),
-                     this,             SLOT(show_error_window(QString)));
+    QObject::connect(this->sound_card.data(), SIGNAL(error_msg(QString)),
+                     this,                    SLOT(show_error_window(QString)));
 
     return true;
 }
@@ -1469,8 +1469,8 @@ Gui::connect_decks_area()
     QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
 
     // Remaining time for each deck.
-    QObject::connect(this->playback, SIGNAL(remaining_time_changed(unsigned int, int)),
-                     this,           SLOT(set_remaining_time(unsigned int, int)));
+    QObject::connect(this->playback.data(), SIGNAL(remaining_time_changed(unsigned int, int)),
+                     this,                  SLOT(set_remaining_time(unsigned int, int)));
 
     // Name of the track for each deck.
     QObject::connect(this->at_1,             SIGNAL(name_changed(QString)),
@@ -1775,12 +1775,12 @@ Gui::connect_samplers_area()
     QObject::connect(sampler2_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_del_click()));
 
     // Remaining time for samplers.
-    QObject::connect(this->playback, SIGNAL(sampler_remaining_time_changed(unsigned int, int, int)),
-                     this,           SLOT(set_sampler_remaining_time(unsigned int, int, int)));
+    QObject::connect(this->playback.data(), SIGNAL(sampler_remaining_time_changed(unsigned int, int, int)),
+                     this,                  SLOT(set_sampler_remaining_time(unsigned int, int, int)));
 
     // State for samplers.
-    QObject::connect(this->playback, SIGNAL(sampler_state_changed(int, int, bool)),
-                     this,           SLOT(set_sampler_state(int, int, bool)));
+    QObject::connect(this->playback.data(), SIGNAL(sampler_state_changed(int, int, bool)),
+                     this,                  SLOT(set_sampler_state(int, int, bool)));
 }
 
 void

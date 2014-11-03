@@ -319,9 +319,9 @@ class Gui : public QObject
     QList<QSharedPointer<Audio_file_decoding_process>>  dec_2_samplers;
     Playback_parameters                                *params_1;
     Playback_parameters                                *params_2;
-    Audio_track_playback_process                       *playback;
-    Sound_driver_access_rules                          *sound_card;
-    Sound_capture_and_playback_process                 *capture_and_play;
+    QSharedPointer<Audio_track_playback_process>        playback;
+    QSharedPointer<Sound_driver_access_rules>           sound_card;
+    QSharedPointer<Sound_capture_and_playback_process>  capture_and_play;
     int                                                *dscratch_ids;
     Application_settings                               *settings;
 
@@ -331,10 +331,10 @@ class Gui : public QObject
         QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
         QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
         QList<QSharedPointer<Playback_parameters>>                &in_params,
-        Audio_track_playback_process                              *in_playback,
+        QSharedPointer<Audio_track_playback_process>              &in_playback,
         unsigned short int                                         in_nb_decks,
-        Sound_driver_access_rules                                 *in_sound_card,
-        Sound_capture_and_playback_process                        *in_capture_and_playback,
+        QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
+        QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
         int                                                       *in_dscratch_ids);
     virtual ~Gui();
 
