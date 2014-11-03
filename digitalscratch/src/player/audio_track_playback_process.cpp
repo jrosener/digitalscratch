@@ -598,7 +598,7 @@ Audio_track_playback_process::read_cue_point(unsigned short int in_deck_index, u
     unsigned int position = 0;
     if (this->ats[in_deck_index]->get_hash() != "")
     {
-        data_persist->get_cue_point(this->ats[in_deck_index].data(), in_cue_point_number, position);
+        data_persist->get_cue_point(this->ats[in_deck_index], in_cue_point_number, position);
         this->cue_points[in_deck_index][in_cue_point_number] = this->msec_to_sample_index(in_deck_index, position);
     }
 
@@ -614,7 +614,7 @@ Audio_track_playback_process::store_cue_point(unsigned short int in_deck_index, 
     // Store it also to DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
 
-    return data_persist->store_cue_point(this->ats[in_deck_index].data(),
+    return data_persist->store_cue_point(this->ats[in_deck_index],
                                          in_cue_point_number,
                                          this->sample_index_to_msec(in_deck_index, this->cue_points[in_deck_index][in_cue_point_number]));
 }
@@ -636,7 +636,7 @@ Audio_track_playback_process::delete_cue_point(unsigned short int in_deck_index,
 
     // Delete cue point from database.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    return data_persist->delete_cue_point(this->ats[in_deck_index].data(), in_cue_point_number);
+    return data_persist->delete_cue_point(this->ats[in_deck_index], in_cue_point_number);
 }
 
 float

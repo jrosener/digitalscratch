@@ -52,25 +52,25 @@ class Audio_track_playback_process : public QObject
     Q_OBJECT
 
  private:
-    QList<QSharedPointer<Audio_track>>         ats;                     // Table of nb_decks audio track.
-    QList<QList<QSharedPointer<Audio_track>>>  at_samplers;             // Table of nb_decks samplers.
-    QList<QSharedPointer<Playback_parameters>> params;                  // Table of nb_decks playback parameters.
-    unsigned int          *current_samples;         // Table of nb_decks playback current_sample.
-    unsigned int         **cue_points;              // Table of nb_decks playback cue points.
-    unsigned int          *remaining_times;         // Table of nb_decks remaining time (in msec).
-    unsigned int          *sampler_current_samples; // Table of (nb_decks * nb_samplers) playback current_sample.
-    unsigned int          *sampler_remaining_times; // Table of (nb_decks * nb_samplers) remaining time (in msec).
-    bool                  *sampler_current_states;  // Table of (nb_decks * nb_samplers) states of sampler (true=play).
-    unsigned short int     need_update_remaining_time;
-    bool                  *stopped;                 // Table of state (stopped = true) of audio track playback.
-    unsigned short int     nb_decks;
-    unsigned short int     nb_samplers;
-    SRC_STATE            **src_state;       // Libsamplerate internal state.
-    SRC_DATA             **src_data;        // Libsamplerate internal structure.
-    short signed int       src_int_input_data[SOUND_STRETCH_MAX_BUFFER];
-    float                  src_float_input_data[SOUND_STRETCH_MAX_BUFFER];
-    float                  src_float_output_data[SOUND_STRETCH_MAX_BUFFER];
-    short signed int       src_int_output_data[SOUND_STRETCH_MAX_BUFFER];
+    QList<QSharedPointer<Audio_track>>           ats;                     // Table of nb_decks audio track.
+    QList<QList<QSharedPointer<Audio_track>>>    at_samplers;             // Table of nb_decks samplers.
+    QList<QSharedPointer<Playback_parameters>>   params;                  // Table of nb_decks playback parameters.
+    unsigned int                                *current_samples;         // Table of nb_decks playback current_sample.
+    unsigned int                               **cue_points;              // Table of nb_decks playback cue points.
+    unsigned int                                *remaining_times;         // Table of nb_decks remaining time (in msec).
+    unsigned int                                *sampler_current_samples; // Table of (nb_decks * nb_samplers) playback current_sample.
+    unsigned int                                *sampler_remaining_times; // Table of (nb_decks * nb_samplers) remaining time (in msec).
+    bool                                        *sampler_current_states;  // Table of (nb_decks * nb_samplers) states of sampler (true=play).
+    unsigned short int                           need_update_remaining_time;
+    bool                                        *stopped;                 // Table of state (stopped = true) of audio track playback.
+    unsigned short int                           nb_decks;
+    unsigned short int                           nb_samplers;
+    SRC_STATE                                  **src_state;               // Libsamplerate internal state.
+    SRC_DATA                                   **src_data;                // Libsamplerate internal structure.
+    short signed int                             src_int_input_data[SOUND_STRETCH_MAX_BUFFER];
+    float                                        src_float_input_data[SOUND_STRETCH_MAX_BUFFER];
+    float                                        src_float_output_data[SOUND_STRETCH_MAX_BUFFER];
+    short signed int                             src_int_output_data[SOUND_STRETCH_MAX_BUFFER];
 
  public:
     Audio_track_playback_process(QList<QSharedPointer<Audio_track>>         &in_ats,

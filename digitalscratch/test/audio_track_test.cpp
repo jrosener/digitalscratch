@@ -40,14 +40,14 @@ void Audio_track_Test::testCaseCreate()
 void Audio_track_Test::testCaseFillSamples()
 {
     // Create a track.
-    Audio_track *at = new Audio_track(15, 44100);
+    QSharedPointer<Audio_track> at(new Audio_track(15, 44100));
 
     // Create a track decoder and decode compressed audio data to the audio track object.
-    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at, false);
+    Audio_file_decoding_process decoder(at, false);
 
     // Check decoded track content 1.
     at->reset();
-    QVERIFY2(decoder->run(QString(DATA_DIR) + QString(DATA_TRACK_1), "", "") == true, "decode audio track 1");
+    QVERIFY2(decoder.run(QString(DATA_DIR) + QString(DATA_TRACK_1), "", "") == true, "decode audio track 1");
     QVERIFY2(at->get_name()               == DATA_TRACK_1, "track 1 name");
     #ifdef WIN32
         QVERIFY2(at->get_length()         == 21656,        "track 1 length"); // WTF ? not the same result on Win and Linux...
@@ -59,7 +59,7 @@ void Audio_track_Test::testCaseFillSamples()
 
     // Check decoded track content 2.
     at->reset();
-    QVERIFY2(decoder->run(QString(DATA_DIR) + QString(DATA_TRACK_2), "", "") == true, "decode audio track 2");
+    QVERIFY2(decoder.run(QString(DATA_DIR) + QString(DATA_TRACK_2), "", "") == true, "decode audio track 2");
     QVERIFY2(at->get_name()           == DATA_TRACK_2, "track 2 name");
 #ifdef WIN32
     QVERIFY2(at->get_length()         == 24138,        "track 2 length");
@@ -71,7 +71,7 @@ void Audio_track_Test::testCaseFillSamples()
 
     // Check decoded track content 3.
     at->reset();
-    QVERIFY2(decoder->run(QString(DATA_DIR) + QString(DATA_TRACK_3), "", "") == true, "decode audio track 3");
+    QVERIFY2(decoder.run(QString(DATA_DIR) + QString(DATA_TRACK_3), "", "") == true, "decode audio track 3");
     QVERIFY2(at->get_name()           == DATA_TRACK_3, "track 3 name");
 #ifdef WIN32
     QVERIFY2(at->get_length()         == 9091,         "track 3 length");
@@ -80,10 +80,6 @@ void Audio_track_Test::testCaseFillSamples()
     QVERIFY2(at->get_length()         == 9116,         "track 3 length");
     QVERIFY2(at->get_end_of_samples() == 804096,       "track 3 end of sample");
 #endif
-
-    // Cleanup.
-    delete decoder;
-    delete at;
 }
 
 void Audio_track_Test::testCaseSetPath()

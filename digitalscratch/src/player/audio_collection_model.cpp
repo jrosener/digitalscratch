@@ -153,7 +153,7 @@ void Audio_collection_item::read_from_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track      *at           = new Audio_track(44100); // could be hardcoded, not used for this purpose.
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
 
     // Get the hash of audio file.
     at->reset();
@@ -165,9 +165,6 @@ void Audio_collection_item::read_from_db()
         // File found in DB, put data back to item.
         this->set_data(COLUMN_KEY, at->get_music_key());
     }
-
-    // Cleanup.
-    delete at;
 }
 
 void Audio_collection_item::compute_and_store_to_db()
@@ -196,7 +193,7 @@ void Audio_collection_item::store_to_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track      *at           = new Audio_track(44100); // Could be hardcoded, not used for this purpose
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
 
     // Get a hash, set audio data to an Audio_track and persist it.
     at->reset();
@@ -207,9 +204,6 @@ void Audio_collection_item::store_to_db()
     {
         qCWarning(DS_DB) << "can not store" << this->get_full_path() << "to DB";
     }
-
-    // Cleanup.
-    delete at;
 }
 
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)

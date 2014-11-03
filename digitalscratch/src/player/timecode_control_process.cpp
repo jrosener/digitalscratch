@@ -40,9 +40,9 @@
 #include "application_logging.h"
 
 Timecode_control_process::Timecode_control_process(QList<QSharedPointer<Playback_parameters>> &in_params,
-                                                   unsigned short int   in_nb_decks,
-                                                   QString              in_vinyl_type,
-                                                   unsigned int         in_sample_rate)
+                                                   unsigned short int                          in_nb_decks,
+                                                   QString                                     in_vinyl_type,
+                                                   unsigned int                                in_sample_rate)
 {
     this->params = in_params;
     this->nb_decks = in_nb_decks;

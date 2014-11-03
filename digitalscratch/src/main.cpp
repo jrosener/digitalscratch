@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     {
         // Track for a deck.
         QSharedPointer<Audio_track>                 at(new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate()));
-        QSharedPointer<Audio_file_decoding_process> dec_proc(new Audio_file_decoding_process(at.data()));
+        QSharedPointer<Audio_file_decoding_process> dec_proc(new Audio_file_decoding_process(at));
         ats << at;
         dec_procs << dec_proc;
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
         for (auto j = 1; j <= nb_samplers; j++)
         {
             QSharedPointer<Audio_track>                 at_s(new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate()));
-            QSharedPointer<Audio_file_decoding_process> dec_s_proc(new Audio_file_decoding_process(at_s.data()));
+            QSharedPointer<Audio_file_decoding_process> dec_s_proc(new Audio_file_decoding_process(at_s));
             at_sampler << at_s;
             dec_sampler_proc << dec_s_proc;
         }

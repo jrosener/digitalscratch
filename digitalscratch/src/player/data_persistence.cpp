@@ -170,13 +170,13 @@ bool Data_persistence::rollback_transaction()
     return this->db.rollback();
 }
 
-bool Data_persistence::store_audio_track(Audio_track *in_at)
+bool Data_persistence::store_audio_track(QSharedPointer<Audio_track> &in_at)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at == NULL) ||
+    if ((in_at.data() == NULL) ||
        (in_at->get_hash().size() == 0))
     {
         result = false;
@@ -253,13 +253,13 @@ bool Data_persistence::store_audio_track(Audio_track *in_at)
     return result;
 }
 
-bool Data_persistence::get_audio_track(Audio_track *io_at)
+bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((io_at == NULL) ||
+    if ((io_at.data() == NULL) ||
         (io_at->get_hash().size() == 0))
     {
         qCWarning(DS_DB) << "can not get audio track: hash not specified.";
@@ -299,13 +299,15 @@ bool Data_persistence::get_audio_track(Audio_track *io_at)
     return result;
 }
 
-bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int in_position_msec)
+bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
+                                       unsigned int                 in_number,
+                                       unsigned int                 in_position_msec)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at == NULL) ||
+    if ((in_at.data() == NULL) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS) ||
         (in_position_msec > in_at->get_length()))
@@ -394,13 +396,15 @@ bool Data_persistence::store_cue_point(Audio_track *in_at, unsigned int in_numbe
     return result;
 }
 
-bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number, unsigned int &out_position_msec)
+bool Data_persistence::get_cue_point(QSharedPointer<Audio_track> &in_at,
+                                     unsigned int                 in_number,
+                                     unsigned int                &out_position_msec)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at == NULL) ||
+    if ((in_at.data() == NULL) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS))
     {
@@ -455,13 +459,14 @@ bool Data_persistence::get_cue_point(Audio_track *in_at, unsigned int in_number,
     return result;
 }
 
-bool Data_persistence::delete_cue_point(Audio_track *in_at, unsigned int in_number)
+bool Data_persistence::delete_cue_point(QSharedPointer<Audio_track> &in_at,
+                                        unsigned int                 in_number)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at == NULL) ||
+    if ((in_at.data() == NULL) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS))
     {

@@ -36,6 +36,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QString>
+#include <QSharedPointer>
 
 #include "audio_track.h"
 #include "application_const.h"
@@ -45,13 +46,14 @@ using namespace std;
 class Audio_file_decoding_process
 {
  private:
-    Audio_track *at;
-    QFile       *file;
-    bool         do_resample;
-    unsigned int decoded_sample_rate;
+    QSharedPointer<Audio_track>  at;
+    QFile                       *file;
+    bool                         do_resample;
+    unsigned int                 decoded_sample_rate;
 
  public:
-    Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample = true);
+    Audio_file_decoding_process(QSharedPointer<Audio_track> &in_at,
+                                bool                         in_do_resample = true);
     virtual ~Audio_file_decoding_process();
 
     void clear();

@@ -36,6 +36,8 @@
 #include <QtDebug>
 #include <QFile>
 #include <QStringList>
+#include <QScopedPointer>
+#include <QSharedPointer>
 
 #include "audio_track.h"
 #include "audio_file_decoding_process.h"
@@ -112,12 +114,12 @@ QString Utils::get_file_music_key(QString in_path)
     QString result = "";
 
     // Decode the audio track.
-    Audio_track *at = new Audio_track(10, 44100); // Force 44100 to calculate music key.
-    Audio_file_decoding_process *dec = new Audio_file_decoding_process(at, false);
+    QSharedPointer<Audio_track>                 at(new Audio_track(10, 44100)); // Force 44100 to calculate music key.
+    QScopedPointer<Audio_file_decoding_process> dec(new Audio_file_decoding_process(at, false));
     dec->run(in_path, "", "");
 
     // Compute the music key.
-    Audio_track_key_process *key_proc = new Audio_track_key_process(at);
+    QScopedPointer<Audio_track_key_process> key_proc(new Audio_track_key_process(at));
     if (key_proc->run() == true)
     {
         result = at->get_music_key();
@@ -126,11 +128,6 @@ QString Utils::get_file_music_key(QString in_path)
     {
         qCWarning(DS_FILE) << "cannot get music key for " << in_path;
     }
-
-    // Cleanup.
-    delete dec;
-    delete at;
-    delete key_proc;
     
     // Return result.
     return result;

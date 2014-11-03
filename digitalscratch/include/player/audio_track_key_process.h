@@ -33,6 +33,8 @@
 #pragma once
 
 #include <iostream>
+#include <QSharedPointer>
+
 #include <audio_track.h>
 #include <application_const.h>
 #include <keyfinder_api.h>
@@ -43,10 +45,10 @@ using namespace std;
 class Audio_track_key_process
 {
  private:
-    Audio_track *at;
+    QSharedPointer<Audio_track> at;
 
  public:
-    Audio_track_key_process(Audio_track *in_at);
+    Audio_track_key_process(QSharedPointer<Audio_track> &in_at);
     virtual ~Audio_track_key_process();
 
     bool run();         // Compute music key of the track and set it to the Audio_track object.

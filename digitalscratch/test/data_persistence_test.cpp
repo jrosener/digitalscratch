@@ -43,7 +43,7 @@ void Data_persistence_Test::cleanupTestCase()
 
 void Data_persistence_Test::testCaseStoreAudioTrack()
 {
-    Audio_track *at = new Audio_track(44100);
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
 
     // Store track.
@@ -63,16 +63,13 @@ void Data_persistence_Test::testCaseStoreAudioTrack()
     // Modify last track.
     at->set_music_key("A21");
     QVERIFY2(data_persist->store_audio_track(at) == true, "change key and store");
-
-    // Cleanup.
-    delete at;
 }
 
 void Data_persistence_Test::testCaseGetAudioTrack()
 {
     // Insert a test audio track.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track *at  = new Audio_track(44100);
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
     at->set_fullpath(fullpath);
     at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
@@ -80,7 +77,7 @@ void Data_persistence_Test::testCaseGetAudioTrack()
     QVERIFY2(data_persist->store_audio_track(at) == true, "audio track store");
 
     // Get this audio track.
-    Audio_track *at_from_db = new Audio_track(44100);
+    QSharedPointer<Audio_track> at_from_db(new Audio_track(44100));
     at_from_db->set_hash(at->get_hash());
     QVERIFY2(data_persist->get_audio_track(at_from_db) == true,  "get audio track");
     QVERIFY2(at_from_db->get_path()      == at->get_path(),      "path from DB");
@@ -94,10 +91,6 @@ void Data_persistence_Test::testCaseGetAudioTrack()
     QVERIFY2(at_from_db->get_path()      == "", "no path from DB");
     QVERIFY2(at_from_db->get_filename()  == "", "no filename from DB");
     QVERIFY2(at_from_db->get_music_key() == "", "no key from DB");
-
-    // Cleanup.
-    delete at;
-    delete at_from_db;
 }
 
 void Data_persistence_Test::testCaseStoreAndGetATCharge()
@@ -109,8 +102,8 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
 
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    Audio_track      *at_to_store  = new Audio_track(44100);
-    Audio_track      *at_from_db   = new Audio_track(44100);
+    QSharedPointer<Audio_track> at_to_store(new Audio_track(44100));
+    QSharedPointer<Audio_track> at_from_db(new Audio_track(44100));
 
     // Iterate recursively over files in directory.
     QDir dir(MUSIC_PATH);
@@ -154,10 +147,6 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
           }
         }
     }
-
-    // Cleanup.
-    delete at_to_store;
-    delete at_from_db;
 }
 
 void Data_persistence_Test::testCaseStoreAndGetCuePoint()
@@ -166,14 +155,14 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
 
     // Precondition: store a track (if not already there).
-    Audio_track *at = new Audio_track(15, 44100);
-    Audio_file_decoding_process *decoder = new Audio_file_decoding_process(at, false);
+    QSharedPointer<Audio_track> at(new Audio_track(15, 44100));
+    Audio_file_decoding_process decoder(at, false);
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
-    decoder->run(fullpath, Utils::get_file_hash(fullpath, FILE_HASH_SIZE), "A1");
+    decoder.run(fullpath, Utils::get_file_hash(fullpath, FILE_HASH_SIZE), "A1");
     QVERIFY2(data_persist->store_audio_track(at) == true, "store audio track");
 
     // Store cue point: wrong params.
-    Audio_track *at_wrong = new Audio_track(15, 44100);
+    QSharedPointer<Audio_track> at_wrong(new Audio_track(15, 44100));
     QVERIFY2(data_persist->store_cue_point(at_wrong, 0, 1234)  == false, "wrong audio track");
     QVERIFY2(data_persist->store_cue_point(at,       MAX_NB_CUE_POINTS , 1234) == false, "too high cue point number");
     QVERIFY2(data_persist->store_cue_point(at,       0, at->get_length() + 1)     == false, "bad cue point position");
@@ -203,10 +192,4 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     // Delete cue point.
     QVERIFY2(data_persist->delete_cue_point(at, 1)        == true,  "delete updated cue point 2");
     QVERIFY2(data_persist->get_cue_point(at, 1, position) == false, "get cue point 2");
-
-
-    // Cleanup.
-    delete at;
-    delete at_wrong;
-    delete decoder;
 }

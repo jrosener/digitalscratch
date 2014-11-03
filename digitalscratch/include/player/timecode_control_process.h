@@ -50,9 +50,9 @@ class Timecode_control_process
 
  public:
     Timecode_control_process(QList<QSharedPointer<Playback_parameters>> &in_params,
-                             unsigned short int   in_nb_decks,
-                             QString              in_vinyl_type,
-                             unsigned int         in_sample_rate);
+                             unsigned short int                          in_nb_decks,
+                             QString                                     in_vinyl_type,
+                             unsigned int                                in_sample_rate);
     virtual ~Timecode_control_process();
 
     bool run(unsigned short int  in_nb_samples,

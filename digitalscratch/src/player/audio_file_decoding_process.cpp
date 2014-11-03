@@ -56,9 +56,10 @@ extern "C"
 
 #include "audio_file_decoding_process.h"
 
-Audio_file_decoding_process::Audio_file_decoding_process(Audio_track *in_at, bool in_do_resample)
+Audio_file_decoding_process::Audio_file_decoding_process(QSharedPointer<Audio_track> &in_at,
+                                                         bool                         in_do_resample)
 {
-    if (in_at == NULL)
+    if (in_at.data() == NULL)
     {
         qCCritical(DS_FILE) << "audio track is NULL";
     }
