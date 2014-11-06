@@ -46,10 +46,10 @@ using namespace std;
 class Audio_file_decoding_process
 {
  private:
-    QSharedPointer<Audio_track>  at;
-    QFile                       *file;
-    bool                         do_resample;
-    unsigned int                 decoded_sample_rate;
+    QSharedPointer<Audio_track> at;
+    QFile                       file;
+    bool                        do_resample;
+    unsigned int                decoded_sample_rate;
 
  public:
     Audio_file_decoding_process(QSharedPointer<Audio_track> &in_at,

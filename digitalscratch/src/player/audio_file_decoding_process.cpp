@@ -74,18 +74,11 @@ Audio_file_decoding_process::Audio_file_decoding_process(QSharedPointer<Audio_tr
         av_log_set_level(AV_LOG_QUIET);
     }
 
-    this->file = NULL;
-
     return;
 }
 
 Audio_file_decoding_process::~Audio_file_decoding_process()
 {
-    if (this->file != NULL)
-    {
-        delete this->file;
-    }
-
     return;
 }
 
@@ -108,12 +101,8 @@ Audio_file_decoding_process::run(const QString &in_path,
     }
 
     // Check if file exists.
-    if (this->file != NULL)
-    {
-        delete this->file;
-    }
-    this->file = new QFile(in_path);
-    if (this->file->exists() == false)
+    this->file.setFileName(in_path);
+    if (this->file.exists() == false)
     {
         qCWarning(DS_FILE) << "file" << in_path << "does not exists";
         return false;
@@ -128,7 +117,7 @@ Audio_file_decoding_process::run(const QString &in_path,
     }
 
     // Set name of the track which is for the moment the name of the file.
-    QFileInfo file_info = QFileInfo(*this->file);
+    QFileInfo file_info = QFileInfo(this->file);
     this->at->set_name(file_info.fileName());
 
     // Set file path.
@@ -181,7 +170,7 @@ bool
 Audio_file_decoding_process::decode()
 {
     // Get file name to decode.
-    QByteArray        filename_array = this->file->fileName().toUtf8();
+    QByteArray        filename_array = this->file.fileName().toUtf8();
     char             *filename       = (char*)filename_array.constData();
 
     // Get output table of decoded samples.
@@ -256,7 +245,7 @@ Audio_file_decoding_process::decode()
     this->decoded_sample_rate = codec_context->sample_rate;
 
     // Show audio format.
-    qCDebug(DS_FILE) << qPrintable(this->file->fileName()) << ":"
+    qCDebug(DS_FILE) << qPrintable(this->file.fileName()) << ":"
                      << codec_context->sample_rate << "Hz,"
                      << codec_context->channels << "ch,"
                      << av_get_sample_fmt_name(codec_context->sample_fmt);

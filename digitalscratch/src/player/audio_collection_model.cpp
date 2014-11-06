@@ -214,9 +214,9 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
     this->root_path = "";
 
     // Init thread tools.
-    this->concurrent_future        = new QFuture<void>;
-    this->concurrent_watcher_read  = new QFutureWatcher<void>;
-    this->concurrent_watcher_store = new QFutureWatcher<void>;
+    this->concurrent_future = QSharedPointer<QFuture<void>>(new QFuture<void>);
+    this->concurrent_watcher_read  = QSharedPointer<QFutureWatcher<void>>(new QFutureWatcher<void>);
+    this->concurrent_watcher_store = QSharedPointer<QFutureWatcher<void>>(new QFutureWatcher<void>);
 }
 
 Audio_collection_model::~Audio_collection_model()
@@ -237,10 +237,6 @@ Audio_collection_model::~Audio_collection_model()
         this->concurrent_watcher_read->cancel();
         this->concurrent_watcher_read->waitForFinished();
     }
-
-    delete this->concurrent_future;
-    delete this->concurrent_watcher_read;
-    delete this->concurrent_watcher_store;
 }
 
 void Audio_collection_model::set_icons(QPixmap in_audio_file_icon,

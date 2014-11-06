@@ -37,10 +37,8 @@
 #include <QSize>
 #include <QPoint>
 
-Application_settings::Application_settings()
+Application_settings::Application_settings() : settings(APPLICATION_NAME)
 {
-    this->settings = new QSettings(APPLICATION_NAME);
-
     this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
     this->available_vinyl_types << FINAL_SCRATCH_VINYL << SERATO_VINYL << MIXVIBES_VINYL;
     this->available_rpms << RPM_33 << RPM_45;
@@ -56,7 +54,6 @@ Application_settings::Application_settings()
 
 Application_settings::~Application_settings()
 {
-    delete this->settings;
 }
 
 void
@@ -65,136 +62,136 @@ Application_settings::init_settings()
     //
     // General application parameters.
     //
-    if (this->settings->contains(MAIN_WIN_SIZE_CFG) == false) {
-        this->settings->setValue(MAIN_WIN_SIZE_CFG, this->get_main_window_size_default());
+    if (this->settings.contains(MAIN_WIN_SIZE_CFG) == false) {
+        this->settings.setValue(MAIN_WIN_SIZE_CFG, this->get_main_window_size_default());
     }
-    if (this->settings->contains(MAIN_WIN_POS_CFG) == false) {
-        this->settings->setValue(MAIN_WIN_POS_CFG, this->get_main_window_position_default());
+    if (this->settings.contains(MAIN_WIN_POS_CFG) == false) {
+        this->settings.setValue(MAIN_WIN_POS_CFG, this->get_main_window_position_default());
     }
-    if (this->settings->contains(BASE_DIR_PATH_CFG) == false) {
-        this->settings->setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
+    if (this->settings.contains(BASE_DIR_PATH_CFG) == false) {
+        this->settings.setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
     }
-    if (this->settings->contains(EXTERN_PROG_CFG) == false) {
-        this->settings->setValue(EXTERN_PROG_CFG, this->get_extern_prog_default());
+    if (this->settings.contains(EXTERN_PROG_CFG) == false) {
+        this->settings.setValue(EXTERN_PROG_CFG, this->get_extern_prog_default());
     }
-    if (this->settings->contains(GUI_STYLE_CFG) == false) {
-        this->settings->setValue(GUI_STYLE_CFG, this->get_gui_style_default());
+    if (this->settings.contains(GUI_STYLE_CFG) == false) {
+        this->settings.setValue(GUI_STYLE_CFG, this->get_gui_style_default());
     }
-    if (this->settings->contains(SAMPLERS_VISIBLE_CFG) == false) {
-        this->settings->setValue(SAMPLERS_VISIBLE_CFG, this->get_samplers_visible_default());
+    if (this->settings.contains(SAMPLERS_VISIBLE_CFG) == false) {
+        this->settings.setValue(SAMPLERS_VISIBLE_CFG, this->get_samplers_visible_default());
     }
-    if (this->settings->contains(NB_DECKS_CFG) == false) {
-        this->settings->setValue(NB_DECKS_CFG, this->get_nb_decks_default());
+    if (this->settings.contains(NB_DECKS_CFG) == false) {
+        this->settings.setValue(NB_DECKS_CFG, this->get_nb_decks_default());
     }
 
     //
     // Sound card settings.
     //
-    if (this->settings->contains(SAMPLE_RATE_CFG) == false) {
-        this->settings->setValue(SAMPLE_RATE_CFG, this->get_sample_rate_default());
+    if (this->settings.contains(SAMPLE_RATE_CFG) == false) {
+        this->settings.setValue(SAMPLE_RATE_CFG, this->get_sample_rate_default());
     }
-    if (this->settings->contains(AUTO_JACK_CONNECTIONS_CFG) == false) {
-        this->settings->setValue(AUTO_JACK_CONNECTIONS_CFG, this->get_auto_jack_connections_default());
+    if (this->settings.contains(AUTO_JACK_CONNECTIONS_CFG) == false) {
+        this->settings.setValue(AUTO_JACK_CONNECTIONS_CFG, this->get_auto_jack_connections_default());
     }
-    if (this->settings->contains(SOUND_DRIVER_CFG) == false) {
-        this->settings->setValue(SOUND_DRIVER_CFG, this->get_sound_driver_default());
+    if (this->settings.contains(SOUND_DRIVER_CFG) == false) {
+        this->settings.setValue(SOUND_DRIVER_CFG, this->get_sound_driver_default());
     }
 
     //
     // Timecode signal detection parameters.
     //
-    if (this->settings->contains(AUTOSTART_MOTION_DETECTION_CFG) == false) {
-        this->settings->setValue(AUTOSTART_MOTION_DETECTION_CFG, this->get_autostart_motion_detection_default());
+    if (this->settings.contains(AUTOSTART_MOTION_DETECTION_CFG) == false) {
+        this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, this->get_autostart_motion_detection_default());
     }
-    if (this->settings->contains(VINYL_TYPE_CFG) == false) {
-        this->settings->setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
+    if (this->settings.contains(VINYL_TYPE_CFG) == false) {
+        this->settings.setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
     }
-    if (this->settings->contains(INPUT_AMPLIFY_COEFF) == false) {
-        this->settings->setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
+    if (this->settings.contains(INPUT_AMPLIFY_COEFF) == false) {
+        this->settings.setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
     }
-    if (this->settings->contains(MIN_AMPLITUDE_NORMAL_SPEED) == false) {
-        this->settings->setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->settings->value(VINYL_TYPE_CFG).toString())));
+    if (this->settings.contains(MIN_AMPLITUDE_NORMAL_SPEED) == false) {
+        this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->settings.value(VINYL_TYPE_CFG).toString())));
     }
-    if (this->settings->contains(MIN_AMPLITUDE) == false) {
-        this->settings->setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->settings->value(VINYL_TYPE_CFG).toString())));
+    if (this->settings.contains(MIN_AMPLITUDE) == false) {
+        this->settings.setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->settings.value(VINYL_TYPE_CFG).toString())));
     }
 
     //
     // Keyboard shortcuts.
     //
-    if (this->settings->contains(KB_SWITCH_PLAYBACK) == false) {
-        this->settings->setValue(KB_SWITCH_PLAYBACK, KB_SWITCH_PLAYBACK_DEFAULT);
+    if (this->settings.contains(KB_SWITCH_PLAYBACK) == false) {
+        this->settings.setValue(KB_SWITCH_PLAYBACK, KB_SWITCH_PLAYBACK_DEFAULT);
     }
-    if (this->settings->contains(KB_LOAD_TRACK_ON_DECK) == false) {
-        this->settings->setValue(KB_LOAD_TRACK_ON_DECK, KB_LOAD_TRACK_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_LOAD_TRACK_ON_DECK) == false) {
+        this->settings.setValue(KB_LOAD_TRACK_ON_DECK, KB_LOAD_TRACK_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_PLAY_BEGIN_TRACK_ON_DECK) == false) {
-        this->settings->setValue(KB_PLAY_BEGIN_TRACK_ON_DECK, KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_PLAY_BEGIN_TRACK_ON_DECK) == false) {
+        this->settings.setValue(KB_PLAY_BEGIN_TRACK_ON_DECK, KB_PLAY_BEGIN_TRACK_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_SET_CUE_POINT1_ON_DECK) == false) {
-        this->settings->setValue(KB_SET_CUE_POINT1_ON_DECK, KB_SET_CUE_POINT1_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_SET_CUE_POINT1_ON_DECK) == false) {
+        this->settings.setValue(KB_SET_CUE_POINT1_ON_DECK, KB_SET_CUE_POINT1_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_PLAY_CUE_POINT1_ON_DECK) == false) {
-        this->settings->setValue(KB_PLAY_CUE_POINT1_ON_DECK, KB_PLAY_CUE_POINT1_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_PLAY_CUE_POINT1_ON_DECK) == false) {
+        this->settings.setValue(KB_PLAY_CUE_POINT1_ON_DECK, KB_PLAY_CUE_POINT1_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_SET_CUE_POINT2_ON_DECK) == false) {
-        this->settings->setValue(KB_SET_CUE_POINT2_ON_DECK, KB_SET_CUE_POINT2_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_SET_CUE_POINT2_ON_DECK) == false) {
+        this->settings.setValue(KB_SET_CUE_POINT2_ON_DECK, KB_SET_CUE_POINT2_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_PLAY_CUE_POINT2_ON_DECK) == false) {
-        this->settings->setValue(KB_PLAY_CUE_POINT2_ON_DECK, KB_PLAY_CUE_POINT2_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_PLAY_CUE_POINT2_ON_DECK) == false) {
+        this->settings.setValue(KB_PLAY_CUE_POINT2_ON_DECK, KB_PLAY_CUE_POINT2_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_SET_CUE_POINT3_ON_DECK) == false) {
-        this->settings->setValue(KB_SET_CUE_POINT3_ON_DECK, KB_SET_CUE_POINT3_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_SET_CUE_POINT3_ON_DECK) == false) {
+        this->settings.setValue(KB_SET_CUE_POINT3_ON_DECK, KB_SET_CUE_POINT3_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_PLAY_CUE_POINT3_ON_DECK) == false) {
-        this->settings->setValue(KB_PLAY_CUE_POINT3_ON_DECK, KB_PLAY_CUE_POINT3_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_PLAY_CUE_POINT3_ON_DECK) == false) {
+        this->settings.setValue(KB_PLAY_CUE_POINT3_ON_DECK, KB_PLAY_CUE_POINT3_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_SET_CUE_POINT4_ON_DECK) == false) {
-        this->settings->setValue(KB_SET_CUE_POINT4_ON_DECK, KB_SET_CUE_POINT4_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_SET_CUE_POINT4_ON_DECK) == false) {
+        this->settings.setValue(KB_SET_CUE_POINT4_ON_DECK, KB_SET_CUE_POINT4_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_PLAY_CUE_POINT4_ON_DECK) == false) {
-        this->settings->setValue(KB_PLAY_CUE_POINT4_ON_DECK, KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT);
+    if (this->settings.contains(KB_PLAY_CUE_POINT4_ON_DECK) == false) {
+        this->settings.setValue(KB_PLAY_CUE_POINT4_ON_DECK, KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT);
     }
-    if (this->settings->contains(KB_COLLAPSE_BROWSER) == false) {
-        this->settings->setValue(KB_COLLAPSE_BROWSER, KB_COLLAPSE_BROWSER_DEFAULT);
+    if (this->settings.contains(KB_COLLAPSE_BROWSER) == false) {
+        this->settings.setValue(KB_COLLAPSE_BROWSER, KB_COLLAPSE_BROWSER_DEFAULT);
     }
-    if (this->settings->contains(KB_LOAD_TRACK_ON_SAMPLER1) == false) {
-        this->settings->setValue(KB_LOAD_TRACK_ON_SAMPLER1, KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
+    if (this->settings.contains(KB_LOAD_TRACK_ON_SAMPLER1) == false) {
+        this->settings.setValue(KB_LOAD_TRACK_ON_SAMPLER1, KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
     }
-    if (this->settings->contains(KB_LOAD_TRACK_ON_SAMPLER2) == false) {
-        this->settings->setValue(KB_LOAD_TRACK_ON_SAMPLER2, KB_LOAD_TRACK_ON_SAMPLER2_DEFAULT);
+    if (this->settings.contains(KB_LOAD_TRACK_ON_SAMPLER2) == false) {
+        this->settings.setValue(KB_LOAD_TRACK_ON_SAMPLER2, KB_LOAD_TRACK_ON_SAMPLER2_DEFAULT);
     }
-    if (this->settings->contains(KB_LOAD_TRACK_ON_SAMPLER3) == false) {
-        this->settings->setValue(KB_LOAD_TRACK_ON_SAMPLER3, KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT);
+    if (this->settings.contains(KB_LOAD_TRACK_ON_SAMPLER3) == false) {
+        this->settings.setValue(KB_LOAD_TRACK_ON_SAMPLER3, KB_LOAD_TRACK_ON_SAMPLER3_DEFAULT);
     }
-    if (this->settings->contains(KB_LOAD_TRACK_ON_SAMPLER4) == false) {
-        this->settings->setValue(KB_LOAD_TRACK_ON_SAMPLER4, KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
+    if (this->settings.contains(KB_LOAD_TRACK_ON_SAMPLER4) == false) {
+        this->settings.setValue(KB_LOAD_TRACK_ON_SAMPLER4, KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
     }
-    if (this->settings->contains(KB_SHOW_NEXT_KEYS) == false) {
-        this->settings->setValue(KB_SHOW_NEXT_KEYS, KB_SHOW_NEXT_KEYS_DEFAULT);
+    if (this->settings.contains(KB_SHOW_NEXT_KEYS) == false) {
+        this->settings.setValue(KB_SHOW_NEXT_KEYS, KB_SHOW_NEXT_KEYS_DEFAULT);
     }
-    if (this->settings->contains(KB_FULLSCREEN) == false) {
-        this->settings->setValue(KB_FULLSCREEN, KB_FULLSCREEN_DEFAULT);
+    if (this->settings.contains(KB_FULLSCREEN) == false) {
+        this->settings.setValue(KB_FULLSCREEN, KB_FULLSCREEN_DEFAULT);
     }
-    if (this->settings->contains(KB_HELP) == false) {
-        this->settings->setValue(KB_HELP, KB_HELP_DEFAULT);
+    if (this->settings.contains(KB_HELP) == false) {
+        this->settings.setValue(KB_HELP, KB_HELP_DEFAULT);
     }
-    if (this->settings->contains(KB_FILE_SEARCH) == false) {
-        this->settings->setValue(KB_FILE_SEARCH, KB_FILE_SEARCH_DEFAULT);
+    if (this->settings.contains(KB_FILE_SEARCH) == false) {
+        this->settings.setValue(KB_FILE_SEARCH, KB_FILE_SEARCH_DEFAULT);
     }
 }
 
 void
 Application_settings::set_main_window_size(QSize in_size)
 {
-    this->settings->setValue(MAIN_WIN_SIZE_CFG,
+    this->settings.setValue(MAIN_WIN_SIZE_CFG,
                              QString::number(in_size.width()) + "x" + QString::number(in_size.height()));
 }
 
 QSize
 Application_settings::get_main_window_size()
 {
-    QString size(this->settings->value(MAIN_WIN_SIZE_CFG).toString());
+    QString size(this->settings.value(MAIN_WIN_SIZE_CFG).toString());
 
     if (size.length() < 3)
     {
@@ -216,14 +213,14 @@ Application_settings::get_main_window_size_default()
 void
 Application_settings::set_main_window_position(QPoint in_pos)
 {
-    this->settings->setValue(MAIN_WIN_POS_CFG,
+    this->settings.setValue(MAIN_WIN_POS_CFG,
                              QString::number(in_pos.x()) + "," + QString::number(in_pos.y()));
 }
 
 QPoint
 Application_settings::get_main_window_position()
 {
-    QString pos(this->settings->value(MAIN_WIN_POS_CFG).toString());
+    QString pos(this->settings.value(MAIN_WIN_POS_CFG).toString());
 
     if (pos.length() < 3)
     {
@@ -246,13 +243,13 @@ Application_settings::get_main_window_position_default()
 void
 Application_settings::set_tracks_base_dir_path(QString in_tracks_base_dir_path)
 {
-    this->settings->setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
+    this->settings.setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
 }
 
 QString
 Application_settings::get_tracks_base_dir_path()
 {
-    return this->settings->value(BASE_DIR_PATH_CFG).toString();
+    return this->settings.value(BASE_DIR_PATH_CFG).toString();
 }
 
 QString
@@ -264,25 +261,25 @@ Application_settings::get_tracks_base_dir_path_default()
 void
 Application_settings::set_browser_splitter_size(QByteArray in_state)
 {
-    this->settings->setValue(BROWSER_SPLITTER_SIZE_CFG, in_state);
+    this->settings.setValue(BROWSER_SPLITTER_SIZE_CFG, in_state);
 }
 
 QByteArray
 Application_settings::get_browser_splitter_size()
 {
-    return this->settings->value(BROWSER_SPLITTER_SIZE_CFG).toByteArray();
+    return this->settings.value(BROWSER_SPLITTER_SIZE_CFG).toByteArray();
 }
 
 void
 Application_settings::set_extern_prog(QString in_extern_prog_path)
 {
-    this->settings->setValue(EXTERN_PROG_CFG, in_extern_prog_path);
+    this->settings.setValue(EXTERN_PROG_CFG, in_extern_prog_path);
 }
 
 QString
 Application_settings::get_extern_prog()
 {
-    return this->settings->value(EXTERN_PROG_CFG).toString();
+    return this->settings.value(EXTERN_PROG_CFG).toString();
 }
 
 QString
@@ -300,7 +297,7 @@ Application_settings::get_available_gui_styles()
 QString
 Application_settings::get_gui_style()
 {
-    return this->settings->value(GUI_STYLE_CFG).toString();
+    return this->settings.value(GUI_STYLE_CFG).toString();
 }
 
 QString
@@ -312,13 +309,13 @@ Application_settings::get_gui_style_default()
 void
 Application_settings::set_gui_style(QString in_gui_style)
 {
-    this->settings->setValue(GUI_STYLE_CFG, in_gui_style);
+    this->settings.setValue(GUI_STYLE_CFG, in_gui_style);
 }
 
 short signed int
 Application_settings::get_nb_decks()
 {
-    return this->settings->value(NB_DECKS_CFG).toInt();
+    return this->settings.value(NB_DECKS_CFG).toInt();
 }
 
 signed short int
@@ -330,7 +327,7 @@ Application_settings::get_nb_decks_default()
 void
 Application_settings::set_nb_decks(signed short in_nb_decks)
 {
-    this->settings->setValue(NB_DECKS_CFG, in_nb_decks);
+    this->settings.setValue(NB_DECKS_CFG, in_nb_decks);
 }
 
 QList<unsigned int>
@@ -347,7 +344,7 @@ Application_settings::get_available_nb_decks()
 int
 Application_settings::get_input_amplify_coeff()
 {
-    return this->settings->value(INPUT_AMPLIFY_COEFF).toInt();
+    return this->settings.value(INPUT_AMPLIFY_COEFF).toInt();
 }
 
 int
@@ -363,14 +360,14 @@ Application_settings::set_input_amplify_coeff(int in_coeff)
     value.setNum(in_coeff);
     if (in_coeff > 0 && in_coeff < 1000) // Range: ]0,1000[
     {
-        this->settings->setValue(INPUT_AMPLIFY_COEFF, value);
+        this->settings.setValue(INPUT_AMPLIFY_COEFF, value);
     }
 }
 
 float
 Application_settings::get_min_amplitude_for_normal_speed()
 {
-    return this->settings->value(MIN_AMPLITUDE_NORMAL_SPEED).toFloat();
+    return this->settings.value(MIN_AMPLITUDE_NORMAL_SPEED).toFloat();
 }
 
 float
@@ -392,14 +389,14 @@ Application_settings::set_min_amplitude_for_normal_speed(float in_amplitude)
     value.setNum(in_amplitude);
     if (in_amplitude > 0.0 && in_amplitude < 1.0) // Range: ]0,1[
     {
-        this->settings->setValue(MIN_AMPLITUDE_NORMAL_SPEED, value);
+        this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, value);
     }
 }
 
 float
 Application_settings::get_min_amplitude()
 {
-    return this->settings->value(MIN_AMPLITUDE).toFloat();
+    return this->settings.value(MIN_AMPLITUDE).toFloat();
 }
 
 float
@@ -421,20 +418,20 @@ Application_settings::set_min_amplitude(float in_amplitude)
     value.setNum(in_amplitude);
     if (in_amplitude > 0.0 && in_amplitude < 1.0) // Range: ]0,1[
     {
-        this->settings->setValue(MIN_AMPLITUDE, value);
+        this->settings.setValue(MIN_AMPLITUDE, value);
     }
 }
 
 void
 Application_settings::set_samplers_visible(bool is_visible)
 {
-    this->settings->setValue(SAMPLERS_VISIBLE_CFG, is_visible);
+    this->settings.setValue(SAMPLERS_VISIBLE_CFG, is_visible);
 }
 
 bool
 Application_settings::get_samplers_visible()
 {
-    return this->settings->value(SAMPLERS_VISIBLE_CFG).toBool();
+    return this->settings.value(SAMPLERS_VISIBLE_CFG).toBool();
 }
 
 bool
@@ -451,20 +448,20 @@ Application_settings::set_keyboard_shortcut(QString in_kb_shortcut_path, QString
 {
     if (in_value.isEmpty() == false)
     {
-        this->settings->setValue(in_kb_shortcut_path, in_value);
+        this->settings.setValue(in_kb_shortcut_path, in_value);
     }
 }
 
 QString
 Application_settings::get_keyboard_shortcut(QString in_kb_shortcut_path)
 {
-    return this->settings->value(in_kb_shortcut_path).toString();
+    return this->settings.value(in_kb_shortcut_path).toString();
 }
 
 unsigned int
 Application_settings::get_sample_rate()
 {
-    return this->settings->value(SAMPLE_RATE_CFG).toUInt();
+    return this->settings.value(SAMPLE_RATE_CFG).toUInt();
 }
 
 unsigned int
@@ -476,13 +473,13 @@ Application_settings::get_sample_rate_default()
 void
 Application_settings::set_sample_rate(unsigned int in_sample_rate)
 {
-    this->settings->setValue(SAMPLE_RATE_CFG, in_sample_rate);
+    this->settings.setValue(SAMPLE_RATE_CFG, in_sample_rate);
 }
 
 bool
 Application_settings::get_auto_jack_connections()
 {
-    return this->settings->value(AUTO_JACK_CONNECTIONS_CFG).toBool();
+    return this->settings.value(AUTO_JACK_CONNECTIONS_CFG).toBool();
 }
 
 bool
@@ -494,19 +491,19 @@ Application_settings::get_auto_jack_connections_default()
 void
 Application_settings::set_auto_jack_connections(bool in_autoconnect)
 {
-    this->settings->setValue(AUTO_JACK_CONNECTIONS_CFG, in_autoconnect);
+    this->settings.setValue(AUTO_JACK_CONNECTIONS_CFG, in_autoconnect);
 }
 
 void
 Application_settings::set_sound_driver(QString in_driver)
 {
-    this->settings->setValue(SOUND_DRIVER_CFG, in_driver);
+    this->settings.setValue(SOUND_DRIVER_CFG, in_driver);
 }
 
 QString
 Application_settings::get_sound_driver()
 {
-    return this->settings->value(SOUND_DRIVER_CFG).toString();
+    return this->settings.value(SOUND_DRIVER_CFG).toString();
 }
 
 QString
@@ -518,13 +515,13 @@ Application_settings::get_sound_driver_default()
 void
 Application_settings::set_internal_sound_card(QString in_card)
 {
-    this->settings->setValue(SOUND_CARD_CFG, in_card);
+    this->settings.setValue(SOUND_CARD_CFG, in_card);
 }
 
 QString
 Application_settings::get_internal_sound_card()
 {
-    return this->settings->value(SOUND_CARD_CFG).toString();
+    return this->settings.value(SOUND_CARD_CFG).toString();
 }
 
 QString
@@ -542,7 +539,7 @@ Application_settings::get_available_internal_sound_cards()
 bool
 Application_settings::get_autostart_motion_detection()
 {
-    return this->settings->value(AUTOSTART_MOTION_DETECTION_CFG).toBool();
+    return this->settings.value(AUTOSTART_MOTION_DETECTION_CFG).toBool();
 }
 
 bool
@@ -554,13 +551,13 @@ Application_settings::get_autostart_motion_detection_default()
 void
 Application_settings::set_autostart_motion_detection(bool in_autostart)
 {
-    this->settings->setValue(AUTOSTART_MOTION_DETECTION_CFG, in_autostart);
+    this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, in_autostart);
 }
 
 QString
 Application_settings::get_vinyl_type()
 {
-    return this->settings->value(VINYL_TYPE_CFG).toString();
+    return this->settings.value(VINYL_TYPE_CFG).toString();
 }
 
 QString
@@ -572,7 +569,7 @@ Application_settings::get_vinyl_type_default()
 void
 Application_settings::set_vinyl_type(QString in_vinyl_type)
 {
-    this->settings->setValue(VINYL_TYPE_CFG, in_vinyl_type);
+    this->settings.setValue(VINYL_TYPE_CFG, in_vinyl_type);
 }
 
 QList<QString>
@@ -588,14 +585,14 @@ Application_settings::set_rpm(unsigned short int in_rpm)
     value.setNum(in_rpm);
     if (in_rpm == 33 || in_rpm == 45) // Range: 33 or 45.
     {
-        this->settings->setValue(RPM_CFG, value);
+        this->settings.setValue(RPM_CFG, value);
     }
 }
 
 unsigned short int
 Application_settings::get_rpm()
 {
-    if (this->settings->value(RPM_CFG).toInt() == 45)
+    if (this->settings.value(RPM_CFG).toInt() == 45)
         return 45;
     else
         return 33;

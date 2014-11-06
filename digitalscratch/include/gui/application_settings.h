@@ -160,7 +160,7 @@ class Application_settings : public QObject
     Q_OBJECT
 
  private:
-    QSettings                 *settings;
+    QSettings                  settings;
     QList<QString>             available_gui_styles;
     QList<QString>             available_vinyl_types;
     QList<unsigned short int>  available_rpms;

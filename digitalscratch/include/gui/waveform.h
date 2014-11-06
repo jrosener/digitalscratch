@@ -58,9 +58,7 @@ class Waveform : public QLabel
     QList<float>                 cue_sliders_absolute_position;
     unsigned int                 end_of_waveform;
     bool                         force_regenerate_polyline;
-
- public:
-    QPointF *points; // Table of points to display.
+    QPointF                     *points; // Table of points to display.
 
  public:
     Waveform(QSharedPointer<Audio_track> &in_at, QWidget *in_parent = 0);

@@ -41,6 +41,7 @@
 #include <QFutureWatcher>
 #include <QPixmap>
 #include <QList>
+#include <QSharedPointer>
 
 #include "playlist.h"
 
@@ -103,12 +104,12 @@ class Audio_collection_model : public QAbstractItemModel
     Q_OBJECT
 
  public:
-    QFutureWatcher<void>  *concurrent_watcher_read;
-    QFutureWatcher<void>  *concurrent_watcher_store;
+    QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_read;
+    QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_store;
 
  private:
     Audio_collection_item         *rootItem;
-    QFuture<void>                 *concurrent_future;
+    QSharedPointer<QFuture<void>>  concurrent_future;
     QPixmap                        audio_file_icon;
     QPixmap                        directory_icon;
     QList<Audio_collection_item*>  audio_item_list;

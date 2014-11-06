@@ -2104,8 +2104,8 @@ Gui::connect_file_browser_area()
     }
 
     // Connect thread states for audio collection read and write to DB.
-    QObject::connect(this->file_system_model->concurrent_watcher_read,  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_read.data(),  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
 
     // Add context menu for file browser (load track and samples).
     QAction *load_on_deck_1_action = new QAction(tr("Load on deck 1"), this);
@@ -2185,16 +2185,16 @@ Gui::connect_file_browser_area()
     QObject::connect(this->shortcut_file_search_press_esc, SIGNAL(activated()), this, SLOT(press_esc_in_search_bar()));
 
     // Progress for file analyzis and storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressRangeChanged(int,int)),
-                     this->progress_bar,                                SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_store, SIGNAL(progressValueChanged(int)),
-                     this,                                              SLOT(update_refresh_progress_value(int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), SIGNAL(progressRangeChanged(int,int)),
+                     this->progress_bar,                                       SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), SIGNAL(progressValueChanged(int)),
+                     this,                                                     SLOT(update_refresh_progress_value(int)));
 
     // Progress for reading file data from storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressRangeChanged(int,int)),
-                     this->progress_bar,                               SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_read, SIGNAL(progressValueChanged(int)),
-                     this,                                             SLOT(update_refresh_progress_value(int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), SIGNAL(progressRangeChanged(int,int)),
+                     this->progress_bar,                                      SLOT(setRange(int,int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), SIGNAL(progressValueChanged(int)),
+                     this,                                                    SLOT(update_refresh_progress_value(int)));
 
     // Parse directory thread.
     this->watcher_parse_directory = new QFutureWatcher<void>;
