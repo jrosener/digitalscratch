@@ -58,24 +58,24 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->base_dir_path    = new QLineEdit(this);
     this->extern_prog      = new QLineEdit(this);
     this->gui_style_select = new QComboBox(this);
-    QList<QString> *available_gui_styles = this->settings->get_available_gui_styles();
-    for (int i = 0; i < available_gui_styles->size(); i++)
+    QList<QString> available_gui_styles = this->settings->get_available_gui_styles();
+    for (int i = 0; i < available_gui_styles.size(); i++)
     {
-        this->gui_style_select->addItem(available_gui_styles->at(i));
+        this->gui_style_select->addItem(available_gui_styles.at(i));
     }
     this->nb_decks_select = new QComboBox(this);
-    QList<unsigned int> *available_nb_decks = this->settings->get_available_nb_decks();
-    for (int i = 0; i < available_nb_decks->size(); i++)
+    QList<unsigned int> available_nb_decks = this->settings->get_available_nb_decks();
+    for (int i = 0; i < available_nb_decks.size(); i++)
     {
-        this->nb_decks_select->addItem(QString::number(available_nb_decks->at(i)));
+        this->nb_decks_select->addItem(QString::number(available_nb_decks.at(i)));
     }
 
     // Init sound card parameters widgets.
     this->sample_rate_select = new QComboBox(this);
-    QList<unsigned int> *available_sample_rates = this->settings->get_available_sample_rates();
-    for (int i = 0; i < available_sample_rates->size(); i++)
+    QList<unsigned int> available_sample_rates = this->settings->get_available_sample_rates();
+    for (int i = 0; i < available_sample_rates.size(); i++)
     {
-        this->sample_rate_select->addItem(QString::number(available_sample_rates->at(i)));
+        this->sample_rate_select->addItem(QString::number(available_sample_rates.at(i)));
     }
     this->device_jack_check = new QCheckBox(this);
     this->device_jack_check->setTristate(false);
@@ -84,10 +84,10 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->device_internal_check = new QCheckBox(this);
     this->device_internal_check->setTristate(false);
     this->device_internal_select = new QComboBox(this);
-    QList<QString> *available_sound_cards = this->settings->get_available_internal_sound_cards();
-    for (int i = 0; i < available_sound_cards->size(); i++)
+    QList<QString> available_sound_cards = this->settings->get_available_internal_sound_cards();
+    for (int i = 0; i < available_sound_cards.size(); i++)
     {
-        this->device_internal_select->addItem(available_sound_cards->at(i));
+        this->device_internal_select->addItem(available_sound_cards.at(i));
     }
 
     // Init motion detection parameters widgets.
@@ -98,16 +98,16 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->min_amplitude                            = new QSlider(Qt::Horizontal, this);
     this->min_amplitude_value                      = new QLabel(this);
     this->vinyl_type_select                        = new QComboBox(this);
-    QList<QString> *available_vinyl_types          = this->settings->get_available_vinyl_types();
-    for (int i = 0; i < available_vinyl_types->size(); i++)
+    QList<QString> available_vinyl_types           = this->settings->get_available_vinyl_types();
+    for (int i = 0; i < available_vinyl_types.size(); i++)
     {
-        this->vinyl_type_select->addItem(available_vinyl_types->at(i));
+        this->vinyl_type_select->addItem(available_vinyl_types.at(i));
     }
     this->rpm_select                               = new QComboBox(this);
-    QList<unsigned short int> *available_rpms      = this->settings->get_available_rpms();
-    for (int i = 0; i < available_rpms->size(); i++)
+    QList<unsigned short int> available_rpms       = this->settings->get_available_rpms();
+    for (int i = 0; i < available_rpms.size(); i++)
     {
-        this->rpm_select->addItem(QString::number(available_rpms->at(i)));
+        this->rpm_select->addItem(QString::number(available_rpms.at(i)));
     }
     this->autostart_detection_check = new QCheckBox(this);
     this->autostart_detection_check->setTristate(false);

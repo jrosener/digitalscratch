@@ -52,16 +52,16 @@ Audio_device_access_rules::~Audio_device_access_rules()
     return;
 }
 
-QList<QString> *Audio_device_access_rules::get_device_list()
+QList<QString> Audio_device_access_rules::get_device_list()
 {
     // Get list of available devices.
     QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
 
-    // Fill a lis with device names (shoud be unique).
-    QList<QString> *device_names = new QList<QString>();
+    // Fill a list with device names (should be unique).
+    QList<QString> device_names;
     for(int i = 0; i < devices.size(); ++i)
     {
-        device_names->append(devices.at(i).deviceName());
+        device_names.append(devices.at(i).deviceName());
     }
 
     return device_names;

@@ -50,7 +50,7 @@ class Audio_device_access_rules : public Sound_driver_access_rules
     virtual ~Audio_device_access_rules();
 
  public:
-    static QList<QString> *get_device_list();
+    static QList<QString> get_device_list();
     bool start(void *in_callback_param);
     bool restart();
     bool stop();

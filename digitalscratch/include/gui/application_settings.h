@@ -161,12 +161,12 @@ class Application_settings : public QObject
 
  private:
     QSettings                 *settings;
-    QList<QString>            *available_gui_styles;
-    QList<QString>            *available_vinyl_types;
-    QList<unsigned short int> *available_rpms;
-    QList<unsigned int>       *available_sample_rates;
-    QList<unsigned int>       *available_nb_decks;
-    QList<QString>            *available_sound_cards;
+    QList<QString>             available_gui_styles;
+    QList<QString>             available_vinyl_types;
+    QList<unsigned short int>  available_rpms;
+    QList<unsigned int>        available_sample_rates;
+    QList<unsigned int>        available_nb_decks;
+    QList<QString>             available_sound_cards;
     bool                       audio_collection_full_refresh;
 
  public:
@@ -196,17 +196,17 @@ class Application_settings : public QObject
     void            set_gui_style(QString in_gui_style);
     QString         get_gui_style();
     QString         get_gui_style_default();
-    QList<QString>* get_available_gui_styles();
+    QList<QString>  get_available_gui_styles();
 
     void                 set_nb_decks(signed short int in_nb_decks);
     signed short int     get_nb_decks();
     signed short int     get_nb_decks_default();
-    QList<unsigned int>* get_available_nb_decks();
+    QList<unsigned int>  get_available_nb_decks();
 
     void                 set_sample_rate(unsigned int in_sample_rate);
     unsigned int         get_sample_rate();
     unsigned int         get_sample_rate_default();
-    QList<unsigned int>* get_available_sample_rates();
+    QList<unsigned int>  get_available_sample_rates();
 
     void            set_sound_driver(QString in_driver);
     QString         get_sound_driver();
@@ -214,7 +214,7 @@ class Application_settings : public QObject
     void            set_internal_sound_card(QString in_card);
     QString         get_internal_sound_card();
     QString         get_internal_sound_card_default();
-    QList<QString> *get_available_internal_sound_cards();
+    QList<QString>  get_available_internal_sound_cards();
 
     void            set_auto_jack_connections(bool in_autoconnect);
     bool            get_auto_jack_connections();
@@ -227,12 +227,12 @@ class Application_settings : public QObject
     void            set_vinyl_type(QString in_vinyl_type);
     QString         get_vinyl_type();
     QString         get_vinyl_type_default();
-    QList<QString>* get_available_vinyl_types();
+    QList<QString>  get_available_vinyl_types();
 
     void                   set_rpm(unsigned short int in_rpm);
     unsigned short int     get_rpm();
     unsigned short int     get_rpm_default();
-    QList<unsigned short> *get_available_rpms();
+    QList<unsigned short>  get_available_rpms();
 
     void  set_input_amplify_coeff(int in_coeff);
     int   get_input_amplify_coeff();

@@ -41,27 +41,11 @@ Application_settings::Application_settings()
 {
     this->settings = new QSettings(APPLICATION_NAME);
 
-    this->available_gui_styles = new QList<QString>();
-    this->available_gui_styles->append(GUI_STYLE_NATIVE);
-    this->available_gui_styles->append(GUI_STYLE_DARK);
-
-    this->available_vinyl_types = new QList<QString>();
-    this->available_vinyl_types->append(FINAL_SCRATCH_VINYL);
-    this->available_vinyl_types->append(SERATO_VINYL);
-    this->available_vinyl_types->append(MIXVIBES_VINYL);
-
-    this->available_rpms = new QList<unsigned short int>();
-    this->available_rpms->append(RPM_33);
-    this->available_rpms->append(RPM_45);
-
-    this->available_nb_decks = new QList<unsigned int>();
-    this->available_nb_decks->append(1);
-    this->available_nb_decks->append(2);
-
-    this->available_sample_rates = new QList<unsigned int>();
-    this->available_sample_rates->append(44100);
-    this->available_sample_rates->append(48000);
-    this->available_sample_rates->append(96000);
+    this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
+    this->available_vinyl_types << FINAL_SCRATCH_VINYL << SERATO_VINYL << MIXVIBES_VINYL;
+    this->available_rpms << RPM_33 << RPM_45;
+    this->available_nb_decks << 1 << 2;
+    this->available_sample_rates << 44100 << 48000 << 96000;
 
     this->available_sound_cards = Audio_device_access_rules::get_device_list();
 
@@ -73,11 +57,6 @@ Application_settings::Application_settings()
 Application_settings::~Application_settings()
 {
     delete this->settings;
-    delete this->available_gui_styles;
-    delete this->available_vinyl_types;
-    delete this->available_rpms;
-    delete this->available_sample_rates;
-    delete this->available_sound_cards;
 }
 
 void
@@ -312,7 +291,7 @@ Application_settings::get_extern_prog_default()
     return "";
 }
 
-QList<QString>*
+QList<QString>
 Application_settings::get_available_gui_styles()
 {
     return this->available_gui_styles;
@@ -354,7 +333,7 @@ Application_settings::set_nb_decks(signed short in_nb_decks)
     this->settings->setValue(NB_DECKS_CFG, in_nb_decks);
 }
 
-QList<unsigned int>*
+QList<unsigned int>
 Application_settings::get_available_nb_decks()
 {
     return this->available_nb_decks;
@@ -554,7 +533,7 @@ Application_settings::get_internal_sound_card_default()
     return SOUND_CARD_DEFAULT;
 }
 
-QList<QString>*
+QList<QString>
 Application_settings::get_available_internal_sound_cards()
 {
     return this->available_sound_cards;
@@ -596,7 +575,7 @@ Application_settings::set_vinyl_type(QString in_vinyl_type)
     this->settings->setValue(VINYL_TYPE_CFG, in_vinyl_type);
 }
 
-QList<QString>*
+QList<QString>
 Application_settings::get_available_vinyl_types()
 {
     return this->available_vinyl_types;
@@ -628,13 +607,13 @@ Application_settings::get_rpm_default()
     return dscratch_get_default_rpm();
 }
 
-QList<unsigned short int>*
+QList<unsigned short int>
 Application_settings::get_available_rpms()
 {
     return this->available_rpms;
 }
 
-QList<unsigned int>*
+QList<unsigned int>
 Application_settings::get_available_sample_rates()
 {
     return this->available_sample_rates;
