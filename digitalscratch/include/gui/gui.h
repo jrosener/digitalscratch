@@ -308,22 +308,17 @@ class Gui : public QObject
     QDialog                            *error_dialog;
 
     // Main processing elements.
-    Audio_track                                        *at_1;
-    Audio_track                                        *at_2;
-    QList<QSharedPointer<Audio_track>>                  at_1_samplers;
-    QList<QSharedPointer<Audio_track>>                  at_2_samplers;
-    unsigned short int                                  nb_samplers;
-    Audio_file_decoding_process                        *dec_1;
-    Audio_file_decoding_process                        *dec_2;
-    QList<QSharedPointer<Audio_file_decoding_process>>  dec_1_samplers;
-    QList<QSharedPointer<Audio_file_decoding_process>>  dec_2_samplers;
-    Playback_parameters                                *params_1;
-    Playback_parameters                                *params_2;
-    QSharedPointer<Audio_track_playback_process>        playback;
-    QSharedPointer<Sound_driver_access_rules>           sound_card;
-    QSharedPointer<Sound_capture_and_playback_process>  capture_and_play;
-    int                                                *dscratch_ids;
-    Application_settings                               *settings;
+    QList<QSharedPointer<Audio_track>>                         ats;
+    QList<QList<QSharedPointer<Audio_track>>>                  at_samplers;
+    unsigned short int                                         nb_samplers;
+    QList<QSharedPointer<Audio_file_decoding_process>>         decs;
+    QList<QList<QSharedPointer<Audio_file_decoding_process>>>  dec_samplers;
+    QList<QSharedPointer<Playback_parameters>>                 params;
+    QSharedPointer<Audio_track_playback_process>               playback;
+    QSharedPointer<Sound_driver_access_rules>                  sound_card;
+    QSharedPointer<Sound_capture_and_playback_process>         capture_and_play;
+    int                                                       *dscratch_ids;
+    Application_settings                                      *settings;
 
  public:
     Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,

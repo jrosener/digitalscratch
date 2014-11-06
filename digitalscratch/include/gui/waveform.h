@@ -46,24 +46,24 @@ class Waveform : public QLabel
     Q_OBJECT
 
  private:
-    int            area_height;
-    int            area_width;
-    Audio_track   *at;
-    QLabel        *slider;
-    int            slider_position_x;
-    float          slider_absolute_position;
-    QList<QLabel*> cue_sliders;
-    QList<QLabel*> cue_sliders_number;
-    QList<int>     cue_sliders_position_x;
-    QList<float>   cue_sliders_absolute_position;
-    unsigned int   end_of_waveform;
-    bool           force_regenerate_polyline;
+    int                          area_height;
+    int                          area_width;
+    QSharedPointer<Audio_track>  at;
+    QLabel                      *slider;
+    int                          slider_position_x;
+    float                        slider_absolute_position;
+    QList<QLabel*>               cue_sliders;
+    QList<QLabel*>               cue_sliders_number;
+    QList<int>                   cue_sliders_position_x;
+    QList<float>                 cue_sliders_absolute_position;
+    unsigned int                 end_of_waveform;
+    bool                         force_regenerate_polyline;
 
  public:
     QPointF *points; // Table of points to display.
 
  public:
-    Waveform(Audio_track *in_at, QWidget *in_parent = 0);
+    Waveform(QSharedPointer<Audio_track> &in_at, QWidget *in_parent = 0);
     ~Waveform();
 
     void reset();                                                             // Clean list of points and force repaint.

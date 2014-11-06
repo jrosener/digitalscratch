@@ -40,10 +40,10 @@
 #include "waveform.h"
 #include "application_logging.h"
 
-Waveform::Waveform(Audio_track *in_at, QWidget *in_parent) : QLabel(in_parent)
+Waveform::Waveform(QSharedPointer<Audio_track> &in_at, QWidget *in_parent) : QLabel(in_parent)
 {
     // Get audio track.
-    if (in_at == NULL)
+    if (in_at.data() == NULL)
     {
         qCCritical(DS_OBJECTLIFE) << "audio track can not be null";
     }

@@ -111,17 +111,16 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     }
 
     // Get decks/tracks and sound capture/playback engine.
-    this->at_1                    = in_ats[0].data();
-    this->at_2                    = in_ats[1].data();
-    this->at_1_samplers           = in_at_samplers[0];
-    this->at_2_samplers           = in_at_samplers[1];
-    this->nb_samplers             = in_at_samplers[0].count();
-    this->dec_1                   = in_decs[0].data();
-    this->dec_2                   = in_decs[1].data();
-    this->dec_1_samplers          = in_dec_samplers[0];
-    this->dec_2_samplers          = in_dec_samplers[1];
-    this->params_1                = in_params[0].data();
-    this->params_2                = in_params[1].data();
+    this->ats                     = in_ats;
+    this->at_samplers             = in_at_samplers;
+    this->nb_samplers             = 0;
+    if (in_at_samplers.count() >= 1)
+    {
+        this->nb_samplers         = in_at_samplers[0].count();
+    }
+    this->decs                    = in_decs;
+    this->dec_samplers            = in_dec_samplers;
+    this->params                  = in_params;
     this->playback                = in_playback;
     this->nb_decks                = in_nb_decks;
     this->sound_card              = in_sound_card;
@@ -1105,7 +1104,7 @@ Gui::init_deck1_area()
     // Create track name, key and waveform.
     this->deck1_track_name = new QLabel(tr("T r a c k  # 1"));
     this->deck1_key        = new QLabel();
-    this->deck1_waveform   = new Waveform(this->at_1, this->window);
+    this->deck1_waveform   = new Waveform(this->ats[0], this->window);
     this->deck1_track_name->setObjectName("TrackName");
     this->deck1_key->setObjectName("KeyValue");
     this->set_deck1_key("");
@@ -1231,7 +1230,7 @@ Gui::init_deck2_area()
     // Create track name, key and waveform.
     this->deck2_track_name = new QLabel(tr("T r a c k  # 2"));
     this->deck2_key        = new QLabel();
-    this->deck2_waveform   = new Waveform(this->at_2, this->window);
+    this->deck2_waveform   = new Waveform(this->ats[1], this->window);
     this->deck2_track_name->setObjectName("TrackName");
     this->deck2_key->setObjectName("KeyValue");
     this->set_deck2_key("");
@@ -1398,14 +1397,14 @@ Gui::connect_decks_area()
                     });
 
     // Display speed for each deck.
-    QObject::connect(this->params_1, &Playback_parameters::speed_changed,
+    QObject::connect(this->params[0].data(), &Playback_parameters::speed_changed,
                     [this](float in_speed)
                     {
                         update_speed_label(in_speed, 0);
                     });
     if (this->nb_decks > 1)
     {
-        QObject::connect(this->params_2, &Playback_parameters::speed_changed,
+        QObject::connect(this->params[1].data(), &Playback_parameters::speed_changed,
                         [this](float in_speed)
                         {
                             update_speed_label(in_speed, 1);
@@ -1473,16 +1472,16 @@ Gui::connect_decks_area()
                      this,                  SLOT(set_remaining_time(unsigned int, int)));
 
     // Name of the track for each deck.
-    QObject::connect(this->at_1,             SIGNAL(name_changed(QString)),
+    QObject::connect(this->ats[0].data(),    SIGNAL(name_changed(QString)),
                      this->deck1_track_name, SLOT(setText(const QString&)));
-    QObject::connect(this->at_2,             SIGNAL(name_changed(QString)),
+    QObject::connect(this->ats[1].data(),    SIGNAL(name_changed(QString)),
                      this->deck2_track_name, SLOT(setText(const QString&)));
 
     // Music key of the track for each deck.
-    QObject::connect(this->at_1, SIGNAL(key_changed(QString)),
-                     this,       SLOT(set_deck1_key(const QString&)));
-    QObject::connect(this->at_2, SIGNAL(key_changed(QString)),
-                     this,       SLOT(set_deck2_key(const QString&)));
+    QObject::connect(this->ats[0].data(), SIGNAL(key_changed(QString)),
+                     this,                SLOT(set_deck1_key(const QString&)));
+    QObject::connect(this->ats[1].data(), SIGNAL(key_changed(QString)),
+                     this,                SLOT(set_deck2_key(const QString&)));
 
     // Move in track when slider is moved on waveform.
     QObject::connect(this->deck1_waveform, SIGNAL(slider_position_changed(float)),
@@ -1725,22 +1724,22 @@ Gui::connect_samplers_area()
     QObject::connect(this->show_hide_samplers_button, SIGNAL(clicked()), this, SLOT(show_hide_samplers()));
 
     // Name of samplers.
-    QObject::connect(this->at_1_samplers[0].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[0][0].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_1_text(const QString&)));
-    QObject::connect(this->at_1_samplers[1].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[0][1].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_2_text(const QString&)));
-    QObject::connect(this->at_1_samplers[2].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[0][2].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_3_text(const QString&)));
-    QObject::connect(this->at_1_samplers[3].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[0][3].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_1_4_text(const QString&)));
 
-    QObject::connect(this->at_2_samplers[0].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[1][0].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_1_text(const QString&)));
-    QObject::connect(this->at_2_samplers[1].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[1][1].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_2_text(const QString&)));
-    QObject::connect(this->at_2_samplers[2].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[1][2].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_3_text(const QString&)));
-    QObject::connect(this->at_2_samplers[3].data(), SIGNAL(name_changed(QString)),
+    QObject::connect(this->at_samplers[1][3].data(), SIGNAL(name_changed(QString)),
                      this,                   SLOT(set_sampler_2_4_text(const QString&)));
 
     // Start stop samplers.
@@ -2712,11 +2711,11 @@ Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
         QList<QSharedPointer<Audio_file_decoding_process>> samplers;
         if (in_deck_index == 0)
         {
-            samplers = this->dec_1_samplers;
+            samplers = this->dec_samplers[0];
         }
         else
         {
-            samplers = this->dec_2_samplers;
+            samplers = this->dec_samplers[1];
         }
         if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "", "") == false)
         {
@@ -3345,14 +3344,14 @@ Gui::run_audio_file_decoding_process()
         QLabel    *deck_track_name = this->deck1_track_name;
         QLabel   **deck_cue_point  = this->cue_point_deck1_labels;
         Waveform  *deck_waveform   = this->deck1_waveform;
-        Audio_file_decoding_process *decode_process = this->dec_1;
+        QSharedPointer<Audio_file_decoding_process> decode_process = this->decs[0];
         if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
         {
             deck_index = 1;
             deck_track_name = this->deck2_track_name;
             deck_cue_point  = this->cue_point_deck2_labels;
             deck_waveform   = this->deck2_waveform;
-            decode_process  = this->dec_2;
+            decode_process  = this->decs[1];
         }
 
         // Execute decoding if not trying to open the existing track.
@@ -3617,11 +3616,11 @@ Gui::speed_up_down(float in_speed_inc, int in_deck_index)
     // Increment speed.
     if (in_deck_index == 0)
     {
-        this->params_1->inc_speed(in_speed_inc);
+        this->params[0]->inc_speed(in_speed_inc);
     }
     else
     {
-        this->params_2->inc_speed(in_speed_inc);
+        this->params[1]->inc_speed(in_speed_inc);
     }
 }
 
@@ -3966,10 +3965,10 @@ void
 Gui::show_next_keys()
 {
     // Get music key of selected deck/sampler.
-    QString deck_key = this->at_1->get_music_key();
+    QString deck_key = this->ats[0]->get_music_key();
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
-        deck_key = this->at_2->get_music_key();
+        deck_key = this->ats[1]->get_music_key();
     }
 
     // Get next and prev keys and iterate over the full audio collection for highlighting.

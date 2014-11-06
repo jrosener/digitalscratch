@@ -163,9 +163,9 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
 
     // Store cue point: wrong params.
     QSharedPointer<Audio_track> at_wrong(new Audio_track(15, 44100));
-    QVERIFY2(data_persist->store_cue_point(at_wrong, 0, 1234)  == false, "wrong audio track");
+    QVERIFY2(data_persist->store_cue_point(at_wrong, 0, 1234)                  == false, "wrong audio track");
     QVERIFY2(data_persist->store_cue_point(at,       MAX_NB_CUE_POINTS , 1234) == false, "too high cue point number");
-    QVERIFY2(data_persist->store_cue_point(at,       0, at->get_length() + 1)     == false, "bad cue point position");
+    QVERIFY2(data_persist->store_cue_point(at,       0, at->get_length() + 1)  == false, "bad cue point position");
 
     // Store a cue point for this track.
     QVERIFY2(data_persist->store_cue_point(at, 0, 1234)  == true,  "store cue point 1");
