@@ -406,7 +406,7 @@ int Config_dialog::get_amplify_coeff_slider()
 void
 Config_dialog::set_amplify_coeff_value(int)
 {
-    this->amplify_coeff_value->setText((new QString)->setNum(this->get_amplify_coeff_slider()));
+    this->amplify_coeff_value->setText(QString::number(this->get_amplify_coeff_slider()));
 }
 
 void Config_dialog::set_min_amplitude_for_normal_speed_slider(float in_value)
@@ -422,7 +422,7 @@ float Config_dialog::get_min_amplitude_for_normal_speed_slider()
 void
 Config_dialog::set_min_amplitude_for_normal_speed_value(int)
 {
-    this->min_amplitude_for_normal_speed_value->setText((new QString)->setNum(this->get_min_amplitude_for_normal_speed_slider()));
+    this->min_amplitude_for_normal_speed_value->setText(QString::number(this->get_min_amplitude_for_normal_speed_slider()));
 }
 
 void Config_dialog::set_min_amplitude_slider(float in_value)
@@ -438,7 +438,7 @@ float Config_dialog::get_min_amplitude_slider()
 void
 Config_dialog::set_min_amplitude_value(int)
 {
-    this->min_amplitude_value->setText((new QString)->setNum(this->get_min_amplitude_slider()));
+    this->min_amplitude_value->setText(QString::number(this->get_min_amplitude_slider()));
 }
 
 QWidget *Config_dialog::init_tab_shortcuts()
