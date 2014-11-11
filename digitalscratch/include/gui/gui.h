@@ -365,12 +365,6 @@ class Gui : public QObject
     bool set_file_browser_title(QString in_title);
     bool restart_sound_card(short unsigned int in_nb_channels);
     bool apply_application_settings();
-    void on_sampler_button_play_click(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
-    void on_sampler_button_stop_click(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
-    void on_sampler_button_del_click(unsigned short int in_deck_index,
-                                     unsigned short int in_sampler_index);
     void highlight_deck_sampler_area(unsigned short int in_deck_index);
     void highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                             bool               switch_on);
@@ -416,38 +410,14 @@ class Gui : public QObject
     void run_sample_2_decoding_process();
     void run_sample_3_decoding_process();
     void run_sample_4_decoding_process();
-    void set_sampler_1_1_text(QString in_text);
-    void set_sampler_1_2_text(QString in_text);
-    void set_sampler_1_3_text(QString in_text);
-    void set_sampler_1_4_text(QString in_text);
-    void set_sampler_2_1_text(QString in_text);
-    void set_sampler_2_2_text(QString in_text);
-    void set_sampler_2_3_text(QString in_text);
-    void set_sampler_2_4_text(QString in_text);
-    void on_sampler_button_1_1_play_click();
-    void on_sampler_button_1_2_play_click();
-    void on_sampler_button_1_3_play_click();
-    void on_sampler_button_1_4_play_click();
-    void on_sampler_button_2_1_play_click();
-    void on_sampler_button_2_2_play_click();
-    void on_sampler_button_2_3_play_click();
-    void on_sampler_button_2_4_play_click();
-    void on_sampler_button_1_1_stop_click();
-    void on_sampler_button_1_2_stop_click();
-    void on_sampler_button_1_3_stop_click();
-    void on_sampler_button_1_4_stop_click();
-    void on_sampler_button_2_1_stop_click();
-    void on_sampler_button_2_2_stop_click();
-    void on_sampler_button_2_3_stop_click();
-    void on_sampler_button_2_4_stop_click();
-    void on_sampler_button_1_1_del_click();
-    void on_sampler_button_1_2_del_click();
-    void on_sampler_button_1_3_del_click();
-    void on_sampler_button_1_4_del_click();
-    void on_sampler_button_2_1_del_click();
-    void on_sampler_button_2_2_del_click();
-    void on_sampler_button_2_3_del_click();
-    void on_sampler_button_2_4_del_click();
+    void set_sampler_1_text(QString in_text, unsigned short int in_sampler_index);
+    void set_sampler_2_text(QString in_text, unsigned short int in_sampler_index);
+    void on_sampler_button_play_click(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
+    void on_sampler_button_stop_click(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
+    void on_sampler_button_del_click(unsigned short int in_deck_index,
+                                     unsigned short int in_sampler_index);
     void set_deck1_key(const QString& in_key);
     void set_deck2_key(const QString& in_key);
     void set_remaining_time(unsigned int in_remaining_time, int in_deck_index);

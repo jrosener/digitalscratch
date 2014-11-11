@@ -580,21 +580,22 @@ Gui::show_refresh_audio_collection_dialog()
         QCommandLinkButton *choice_all_files_button = new QCommandLinkButton(tr("All files."),
                                                                              tr("Analyze full audio collection") + " (" + QString::number(this->file_system_model->get_nb_items()) + " " + tr("elements") + ")",
                                                                              this->refresh_audio_collection_dialog);
-        QObject::connect(choice_all_files_button, SIGNAL(clicked()),
-                         this, SLOT(accept_refresh_audio_collection_dialog_all_files()));
-
+        QObject::connect(choice_all_files_button, &QCommandLinkButton::clicked,
+                         [this](){this->accept_refresh_audio_collection_dialog_all_files();});
 
         // Choice 2: => New files.
         QCommandLinkButton *choice_new_files_button = new QCommandLinkButton(tr("New files."),
                                                                              tr("Analyze only files with missing data") + " (" + QString::number(this->file_system_model->get_nb_new_items()) + " " + tr("elements") + ")",
                                                                              this->refresh_audio_collection_dialog);
-        QObject::connect(choice_new_files_button, SIGNAL(clicked()),
-                         this, SLOT(accept_refresh_audio_collection_dialog_new_files()));
+        QObject::connect(choice_new_files_button, &QCommandLinkButton::clicked,
+                         [this](){this->accept_refresh_audio_collection_dialog_new_files();});
 
         // Close/cancel button.
         QDialogButtonBox *cancel_button = new QDialogButtonBox(QDialogButtonBox::Cancel);
-        QObject::connect(cancel_button, SIGNAL(rejected()), this, SLOT(close_refresh_audio_collection_dialog()));
-        QObject::connect(this->refresh_audio_collection_dialog, SIGNAL(rejected()), this, SLOT(reject_refresh_audio_collection_dialog()));
+        QObject::connect(cancel_button, &QDialogButtonBox::rejected,
+                         [this](){this->close_refresh_audio_collection_dialog();});
+        QObject::connect(refresh_audio_collection_dialog, &QDialog::rejected,
+                         [this](){this->reject_refresh_audio_collection_dialog();});
 
         // Full dialog layout.
         QVBoxLayout *layout = new QVBoxLayout(this->refresh_audio_collection_dialog);
@@ -799,7 +800,8 @@ Gui::show_about_window()
 
     // Close button.
     QDialogButtonBox *button = new QDialogButtonBox(QDialogButtonBox::Close);
-    QObject::connect(button, SIGNAL(rejected()), this, SLOT(done_about_window()));
+    QObject::connect(button, &QDialogButtonBox::rejected,
+                     [this](){this->done_about_window();});
 
     // Full window layout.
     QVBoxLayout *layout = new QVBoxLayout;
@@ -933,9 +935,8 @@ Gui::create_main_window()
     this->window->resize(this->settings->get_main_window_size());
 
     // Open error window.
-    QObject::connect(this->sound_card.data(), SIGNAL(error_msg(QString)),
-                     this,                    SLOT(show_error_window(QString)));
-
+    QObject::connect(this->sound_card.data(), &Sound_driver_access_rules::error_msg,
+                     [this](QString in_error_message){this->show_error_window(in_error_message);});
     return true;
 }
 
@@ -1023,29 +1024,29 @@ void
 Gui::connect_header_buttons()
 {   
     // Open configuration window.
-    QObject::connect(this->config_button, SIGNAL(clicked()), this, SLOT(show_config_window()));
+    QObject::connect(this->config_button, &QPushButton::clicked, [this](){this->show_config_window();});
 
     // Set full screen.
-    QObject::connect(this->fullscreen_button,   SIGNAL(clicked()),   this, SLOT(set_fullscreen()));
+    QObject::connect(this->fullscreen_button, &QPushButton::clicked, [this](){this->set_fullscreen();});
     this->shortcut_fullscreen = new QShortcut(this->window);
-    QObject::connect(this->shortcut_fullscreen, SIGNAL(activated()), this, SLOT(set_fullscreen()));
+    QObject::connect(this->shortcut_fullscreen, &QShortcut::activated, [this](){this->set_fullscreen();});
 
     // Stop capture.
-    QObject::connect(this->stop_capture_button, SIGNAL(clicked()), this, SLOT(stop_control_and_playback()));
+    QObject::connect(this->stop_capture_button, &QPushButton::clicked, [this](){this->stop_control_and_playback();});
 
     // Open about window.
-    QObject::connect(this->logo, SIGNAL(clicked()), this, SLOT(show_about_window()));
+    QObject::connect(this->logo, &QPushButton::clicked, [this](){show_about_window();});
 
     // Start capture.
-    QObject::connect(this->start_capture_button, SIGNAL(clicked()), this, SLOT(start_control_and_playback()));
+    QObject::connect(this->start_capture_button, &QPushButton::clicked, [this](){this->start_control_and_playback();});
 
     // Help button.
-    QObject::connect(this->help_button,   SIGNAL(clicked()),   this, SLOT(show_help()));
+    QObject::connect(this->help_button, &QPushButton::clicked, [this](){this->show_help();});
     this->shortcut_help = new QShortcut(this->window);
-    QObject::connect(this->shortcut_help, SIGNAL(activated()), this, SLOT(show_help()));
+    QObject::connect(this->shortcut_help, &QShortcut::activated, [this](){this->show_help();});
 
     // Quit application.
-    QObject::connect(this->quit_button, SIGNAL(clicked()), this, SLOT(can_close()));
+    QObject::connect(this->quit_button, &QPushButton::clicked, [this](){this->can_close();});
 }
 
 void
@@ -1393,21 +1394,16 @@ Gui::connect_decks_area()
     QObject::connect(this->deck1_timecode_manual_button, &QPushButton::toggled,
                     [this](bool in_mode)
                     {
-                        switch_speed_mode(in_mode, 0);
+                        this->switch_speed_mode(in_mode, 0);
                     });
 
     // Display speed for each deck.
-    QObject::connect(this->params[0].data(), &Playback_parameters::speed_changed,
-                    [this](float in_speed)
-                    {
-                        update_speed_label(in_speed, 0);
-                    });
-    if (this->nb_decks > 1)
+    for(int i = 0; i < this->nb_decks; i++)
     {
-        QObject::connect(this->params[1].data(), &Playback_parameters::speed_changed,
-                        [this](float in_speed)
+        QObject::connect(this->params[i].data(), &Playback_parameters::speed_changed,
+                        [this, i](float in_speed)
                         {
-                            update_speed_label(in_speed, 1);
+                            this->update_speed_label(in_speed, i);
                         });
     }
 
@@ -1415,19 +1411,19 @@ Gui::connect_decks_area()
     QObject::connect(this->speed_up_on_deck1_button, &SpeedQPushButton::clicked,
                     [this]()
                     {
-                        speed_up_down(0.001f, 0);
+                        this->speed_up_down(0.001f, 0);
                     });
-    QObject::connect(this->speed_up_on_deck2_button, &SpeedQPushButton::clicked,
+    QObject::connect(this->speed_down_on_deck1_button, &SpeedQPushButton::clicked,
                     [this]()
                     {
-                        speed_up_down(0.001f, 1);
+                        speed_up_down(-0.001f, 0);
                     });
     if (this->nb_decks > 1)
     {
-        QObject::connect(this->speed_down_on_deck1_button, &SpeedQPushButton::clicked,
+        QObject::connect(this->speed_up_on_deck2_button, &SpeedQPushButton::clicked,
                         [this]()
                         {
-                            speed_up_down(-0.001f, 0);
+                            this->speed_up_down(0.001f, 1);
                         });
         QObject::connect(this->speed_down_on_deck2_button, &SpeedQPushButton::clicked,
                         [this]()
@@ -1443,17 +1439,17 @@ Gui::connect_decks_area()
                     {
                         speed_up_down(0.01f, 0);
                     });
-    QObject::connect(this->speed_up_on_deck2_button, &SpeedQPushButton::right_clicked,
+    QObject::connect(this->speed_down_on_deck1_button, &SpeedQPushButton::right_clicked,
                     [this]()
                     {
-                        speed_up_down(0.01f, 1);
+                        speed_up_down(-0.01f, 0);
                     });
     if (this->nb_decks > 1)
     {
-        QObject::connect(this->speed_down_on_deck1_button, &SpeedQPushButton::right_clicked,
+        QObject::connect(this->speed_up_on_deck2_button, &SpeedQPushButton::right_clicked,
                         [this]()
                         {
-                            speed_up_down(-0.01f, 0);
+                            speed_up_down(0.01f, 1);
                         });
         QObject::connect(this->speed_down_on_deck2_button, &SpeedQPushButton::right_clicked,
                         [this]()
@@ -1464,83 +1460,69 @@ Gui::connect_decks_area()
 
 
     // Enable track file dropping in deck group boxes.
-    QObject::connect(this->deck1_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
-    QObject::connect(this->deck2_gbox, SIGNAL(file_dropped()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+    QObject::connect(this->deck1_gbox, &PlaybackQGroupBox::file_dropped, [this](){this->select_and_run_audio_file_decoding_process_deck1();});
+    QObject::connect(this->deck2_gbox, &PlaybackQGroupBox::file_dropped, [this](){this->select_and_run_audio_file_decoding_process_deck2();});
 
     // Remaining time for each deck.
-    QObject::connect(this->playback.data(), SIGNAL(remaining_time_changed(unsigned int, int)),
-                     this,                  SLOT(set_remaining_time(unsigned int, int)));
+    QObject::connect(this->playback.data(), &Audio_track_playback_process::remaining_time_changed,
+                     [this](unsigned int remaining_time, int deck_index)
+                     {
+                        this->set_remaining_time(remaining_time, deck_index);
+                     });
 
     // Name of the track for each deck.
-    QObject::connect(this->ats[0].data(),    SIGNAL(name_changed(QString)),
-                     this->deck1_track_name, SLOT(setText(const QString&)));
-    QObject::connect(this->ats[1].data(),    SIGNAL(name_changed(QString)),
-                     this->deck2_track_name, SLOT(setText(const QString&)));
+    QObject::connect(this->ats[0].data(), &Audio_track::name_changed, [this](QString name){this->deck1_track_name->setText(name);});
+    QObject::connect(this->ats[1].data(), &Audio_track::name_changed, [this](QString name){this->deck2_track_name->setText(name);});
 
     // Music key of the track for each deck.
-    QObject::connect(this->ats[0].data(), SIGNAL(key_changed(QString)),
-                     this,                SLOT(set_deck1_key(const QString&)));
-    QObject::connect(this->ats[1].data(), SIGNAL(key_changed(QString)),
-                     this,                SLOT(set_deck2_key(const QString&)));
+    QObject::connect(this->ats[0].data(), &Audio_track::key_changed, [this](QString key){this->set_deck1_key(key);});
+    QObject::connect(this->ats[1].data(), &Audio_track::key_changed, [this](QString key){this->set_deck2_key(key);});
 
     // Move in track when slider is moved on waveform.
-    QObject::connect(this->deck1_waveform, SIGNAL(slider_position_changed(float)),
-                     this,                 SLOT(deck1_jump_to_position(float)));
-    QObject::connect(this->deck2_waveform, SIGNAL(slider_position_changed(float)),
-                     this,                 SLOT(deck2_jump_to_position(float)));
+    QObject::connect(this->deck1_waveform, &Waveform::slider_position_changed, [this](float position){this->deck1_jump_to_position(position);});
+    QObject::connect(this->deck2_waveform, &Waveform::slider_position_changed, [this](float position){this->deck2_jump_to_position(position);});
 
     // Keyboard shortcut to go back to the beginning of the track.
     this->shortcut_go_to_begin = new QShortcut(this->window);
-    QObject::connect(this->shortcut_go_to_begin,    SIGNAL(activated()), this, SLOT(deck_go_to_begin()));
-    QObject::connect(this->restart_on_deck1_button, SIGNAL(clicked()),   this, SLOT(deck1_go_to_begin()));
-    QObject::connect(this->restart_on_deck2_button, SIGNAL(clicked()),   this, SLOT(deck2_go_to_begin()));
+    QObject::connect(this->shortcut_go_to_begin,    &QShortcut::activated, [this](){this->deck_go_to_begin();});
+    QObject::connect(this->restart_on_deck1_button, &QPushButton::clicked, [this](){this->deck1_go_to_begin();});
+    QObject::connect(this->restart_on_deck2_button, &QPushButton::clicked, [this](){this->deck2_go_to_begin();});
 
     // Keyboard shortcut and buttons to set and play cue points.
-    QSignalMapper *set_cue_point_shortcut_signal_mapper      = new QSignalMapper(this);
-    QSignalMapper *play_cue_point_shortcut_signal_mapper     = new QSignalMapper(this);
-    QSignalMapper *set_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
-    QSignalMapper *play_cue_point_button_signal_mapper_deck1 = new QSignalMapper(this);
-    QSignalMapper *del_cue_point_button_signal_mapper_deck1  = new QSignalMapper(this);
     this->shortcut_set_cue_points   = new QShortcut* [MAX_NB_CUE_POINTS];
     this->shortcut_go_to_cue_points = new QShortcut* [MAX_NB_CUE_POINTS];
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
-        this->shortcut_set_cue_points[i]   = new QShortcut(this->window);
-        this->shortcut_go_to_cue_points[i] = new QShortcut(this->window);
-        set_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_set_cue_points[i], i);
-        play_cue_point_shortcut_signal_mapper->setMapping(this->shortcut_go_to_cue_points[i], i);
-        set_cue_point_button_signal_mapper_deck1->setMapping(this->cue_set_on_deck1_buttons[i], i);
-        play_cue_point_button_signal_mapper_deck1->setMapping(this->cue_play_on_deck1_buttons[i], i);
-        del_cue_point_button_signal_mapper_deck1->setMapping(this->cue_del_on_deck1_buttons[i], i);
-        QObject::connect(this->shortcut_set_cue_points[i],   SIGNAL(activated()), set_cue_point_shortcut_signal_mapper,      SLOT(map()));
-        QObject::connect(this->shortcut_go_to_cue_points[i], SIGNAL(activated()), play_cue_point_shortcut_signal_mapper,     SLOT(map()));
-        QObject::connect(this->cue_set_on_deck1_buttons[i],  SIGNAL(clicked()),   set_cue_point_button_signal_mapper_deck1,  SLOT(map()));
-        QObject::connect(this->cue_play_on_deck1_buttons[i], SIGNAL(clicked()),   play_cue_point_button_signal_mapper_deck1, SLOT(map()));
-        QObject::connect(this->cue_del_on_deck1_buttons[i],  SIGNAL(clicked()),   del_cue_point_button_signal_mapper_deck1,  SLOT(map()));
-    }
-    QObject::connect(set_cue_point_shortcut_signal_mapper,      SIGNAL(mapped(int)), this, SLOT(deck_set_cue_point(int)));
-    QObject::connect(play_cue_point_shortcut_signal_mapper,     SIGNAL(mapped(int)), this, SLOT(deck_go_to_cue_point(int)));
-    QObject::connect(set_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_set_cue_point(int)));
-    QObject::connect(play_cue_point_button_signal_mapper_deck1, SIGNAL(mapped(int)), this, SLOT(deck1_go_to_cue_point(int)));
-    QObject::connect(del_cue_point_button_signal_mapper_deck1,  SIGNAL(mapped(int)), this, SLOT(deck1_del_cue_point(int)));
+        // Shortcut: set cue point.
+        this->shortcut_set_cue_points[i] = new QShortcut(this->window);
+        QObject::connect(this->shortcut_set_cue_points[i],   &QShortcut::activated, [this, i](){this->deck_set_cue_point(i);});
 
+        // Shortcut: go to cue point.
+        this->shortcut_go_to_cue_points[i] = new QShortcut(this->window);
+        QObject::connect(this->shortcut_go_to_cue_points[i], &QShortcut::activated, [this, i](){this->deck_go_to_cue_point(i);});
+
+        // Button: set cue point.
+        QObject::connect(this->cue_set_on_deck1_buttons[i], &QPushButton::clicked, [this, i](){this->deck1_set_cue_point(i);});
+
+        // Button: go to cue point.
+        QObject::connect(this->cue_play_on_deck1_buttons[i], &QPushButton::clicked, [this, i](){this->deck1_go_to_cue_point(i);});
+
+        // Button: del cue point.
+        QObject::connect(this->cue_del_on_deck1_buttons[i], &QPushButton::clicked, [this, i](){this->deck1_del_cue_point(i);});
+    }
     if (this->nb_decks > 1)
     {
-        QSignalMapper *set_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
-        QSignalMapper *play_cue_point_button_signal_mapper_deck2 = new QSignalMapper(this);
-        QSignalMapper *del_cue_point_button_signal_mapper_deck2  = new QSignalMapper(this);
         for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
         {
-            set_cue_point_button_signal_mapper_deck2->setMapping(this->cue_set_on_deck2_buttons[i], i);
-            play_cue_point_button_signal_mapper_deck2->setMapping(this->cue_play_on_deck2_buttons[i], i);
-            del_cue_point_button_signal_mapper_deck2->setMapping(this->cue_del_on_deck2_buttons[i], i);
-            QObject::connect(this->cue_set_on_deck2_buttons[i],  SIGNAL(clicked()), set_cue_point_button_signal_mapper_deck2,  SLOT(map()));
-            QObject::connect(this->cue_play_on_deck2_buttons[i], SIGNAL(clicked()), play_cue_point_button_signal_mapper_deck2, SLOT(map()));
-            QObject::connect(this->cue_del_on_deck2_buttons[i],  SIGNAL(clicked()), del_cue_point_button_signal_mapper_deck2, SLOT(map()));
+            // Button: set cue point.
+            QObject::connect(this->cue_set_on_deck2_buttons[i], &QPushButton::clicked, [this, i](){this->deck2_set_cue_point(i);});
+
+            // Button: go to cue point.
+            QObject::connect(this->cue_play_on_deck2_buttons[i], &QPushButton::clicked, [this, i](){this->deck2_go_to_cue_point(i);});
+
+            // Button: del cue point.
+            QObject::connect(this->cue_del_on_deck2_buttons[i], &QPushButton::clicked, [this, i](){this->deck2_del_cue_point(i);});
         }
-        QObject::connect(set_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_set_cue_point(int)));
-        QObject::connect(play_cue_point_button_signal_mapper_deck2, SIGNAL(mapped(int)), this, SLOT(deck2_go_to_cue_point(int)));
-        QObject::connect(del_cue_point_button_signal_mapper_deck2,  SIGNAL(mapped(int)), this, SLOT(deck2_del_cue_point(int)));
     }
 }
 
@@ -1721,65 +1703,58 @@ void
 Gui::connect_samplers_area()
 {
     // Show/hide samplers.
-    QObject::connect(this->show_hide_samplers_button, SIGNAL(clicked()), this, SLOT(show_hide_samplers()));
+    QObject::connect(this->show_hide_samplers_button, &QPushButton::clicked, [this](){this->show_hide_samplers();});
 
     // Name of samplers.
-    QObject::connect(this->at_samplers[0][0].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_1_text(const QString&)));
-    QObject::connect(this->at_samplers[0][1].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_2_text(const QString&)));
-    QObject::connect(this->at_samplers[0][2].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_3_text(const QString&)));
-    QObject::connect(this->at_samplers[0][3].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_1_4_text(const QString&)));
-
-    QObject::connect(this->at_samplers[1][0].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_1_text(const QString&)));
-    QObject::connect(this->at_samplers[1][1].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_2_text(const QString&)));
-    QObject::connect(this->at_samplers[1][2].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_3_text(const QString&)));
-    QObject::connect(this->at_samplers[1][3].data(), SIGNAL(name_changed(QString)),
-                     this,                   SLOT(set_sampler_2_4_text(const QString&)));
+    for (unsigned short int i = 0; i < this->nb_samplers; i++)
+    {
+        QObject::connect(this->at_samplers[0][i].data(), &Audio_track::name_changed,
+                        [this, i](QString text)
+                        {
+                            this->set_sampler_1_text(text, i);
+                        });
+        QObject::connect(this->at_samplers[1][i].data(), &Audio_track::name_changed,
+                        [this, i](QString text)
+                        {
+                            this->set_sampler_2_text(text, i);
+                        });
+    }
 
     // Start stop samplers.
-    QObject::connect(sampler1_buttons_play[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_play_click()));
-    QObject::connect(sampler1_buttons_play[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_play_click()));
-    QObject::connect(sampler1_buttons_play[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_play_click()));
-    QObject::connect(sampler1_buttons_play[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_play_click()));
+    for (unsigned short int i = 0; i < this->nb_samplers; i++)
+    {
+        // Button: play sampler.
+        QObject::connect(this->sampler1_buttons_play[i], &QPushButton::clicked,
+                [this, i](){this->on_sampler_button_play_click(0, i);});
+        QObject::connect(this->sampler2_buttons_play[i], &QPushButton::clicked,
+                [this, i](){this->on_sampler_button_play_click(1, i);});
 
-    QObject::connect(sampler2_buttons_play[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_play_click()));
-    QObject::connect(sampler2_buttons_play[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_play_click()));
-    QObject::connect(sampler2_buttons_play[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_play_click()));
-    QObject::connect(sampler2_buttons_play[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_play_click()));
+        // Button: stop sampler.
+        QObject::connect(this->sampler1_buttons_stop[i], &QPushButton::clicked,
+                [this, i](){this->on_sampler_button_stop_click(0, i);});
+        QObject::connect(this->sampler2_buttons_stop[i], &QPushButton::clicked,
+                [this, i](){this->on_sampler_button_stop_click(1, i);});
 
-    QObject::connect(sampler1_buttons_stop[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_stop_click()));
-    QObject::connect(sampler1_buttons_stop[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_stop_click()));
-    QObject::connect(sampler1_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_stop_click()));
-    QObject::connect(sampler1_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_stop_click()));
-
-    QObject::connect(sampler2_buttons_stop[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_stop_click()));
-    QObject::connect(sampler2_buttons_stop[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_stop_click()));
-    QObject::connect(sampler2_buttons_stop[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_stop_click()));
-    QObject::connect(sampler2_buttons_stop[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_stop_click()));
-
-    QObject::connect(sampler1_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_1_del_click()));
-    QObject::connect(sampler1_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_2_del_click()));
-    QObject::connect(sampler1_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_3_del_click()));
-    QObject::connect(sampler1_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_1_4_del_click()));
-
-    QObject::connect(sampler2_buttons_del[0], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_1_del_click()));
-    QObject::connect(sampler2_buttons_del[1], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_2_del_click()));
-    QObject::connect(sampler2_buttons_del[2], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_3_del_click()));
-    QObject::connect(sampler2_buttons_del[3], SIGNAL(clicked()), this, SLOT(on_sampler_button_2_4_del_click()));
+        // Button: del sampler.
+        QObject::connect(this->sampler1_buttons_del[i], &QPushButton::clicked,
+                [this, i](){this->on_sampler_button_del_click(0, i);});
+        QObject::connect(this->sampler2_buttons_del[i], &QPushButton::clicked,
+                [this, i](){this->on_sampler_button_del_click(1, i);});
+    }
 
     // Remaining time for samplers.
-    QObject::connect(this->playback.data(), SIGNAL(sampler_remaining_time_changed(unsigned int, int, int)),
-                     this,                  SLOT(set_sampler_remaining_time(unsigned int, int, int)));
+    QObject::connect(this->playback.data(), &Audio_track_playback_process::sampler_remaining_time_changed,
+                    [this](unsigned int remaining_time, int deck_index, int sampler_index)
+                    {
+                        this->set_sampler_remaining_time(remaining_time, deck_index, sampler_index);
+                    });
 
     // State for samplers.
-    QObject::connect(this->playback.data(), SIGNAL(sampler_state_changed(int, int, bool)),
-                     this,                  SLOT(set_sampler_state(int, int, bool)));
+    QObject::connect(this->playback.data(), &Audio_track_playback_process::sampler_state_changed,
+                    [this](int deck_index, int sampler_index, bool state)
+                    {
+                        this->set_sampler_state(deck_index, sampler_index, state);
+                    });
 }
 
 void
@@ -2937,114 +2912,16 @@ Gui::run_sample_4_decoding_process()
 }
 
 void
-Gui::set_sampler_1_1_text(QString in_text)
+Gui::set_sampler_1_text(QString in_text, unsigned short int in_sampler_index)
 {
-    this->sampler1_trackname[0]->setText(in_text);
+    this->sampler1_trackname[in_sampler_index]->setText(in_text);
     return;
 }
 
 void
-Gui::set_sampler_1_2_text(QString in_text)
+Gui::set_sampler_2_text(QString in_text, unsigned short int in_sampler_index)
 {
-    this->sampler1_trackname[1]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_1_3_text(QString in_text)
-{
-    this->sampler1_trackname[2]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_1_4_text(QString in_text)
-{
-    this->sampler1_trackname[3]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_2_1_text(QString in_text)
-{
-    this->sampler2_trackname[0]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_2_2_text(QString in_text)
-{
-    this->sampler2_trackname[1]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_2_3_text(QString in_text)
-{
-    this->sampler2_trackname[2]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_2_4_text(QString in_text)
-{
-    this->sampler2_trackname[3]->setText(in_text);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_1_play_click()
-{
-    this->on_sampler_button_play_click(0, 0);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_2_play_click()
-{
-    this->on_sampler_button_play_click(0, 1);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_3_play_click()
-{
-    this->on_sampler_button_play_click(0, 2);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_4_play_click()
-{
-    this->on_sampler_button_play_click(0, 3);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_1_play_click()
-{
-    this->on_sampler_button_play_click(1, 0);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_2_play_click()
-{
-    this->on_sampler_button_play_click(1, 1);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_3_play_click()
-{
-    this->on_sampler_button_play_click(1, 2);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_4_play_click()
-{
-    this->on_sampler_button_play_click(1, 3);
+    this->sampler2_trackname[in_sampler_index]->setText(in_text);
     return;
 }
 
@@ -3063,62 +2940,6 @@ Gui::on_sampler_button_play_click(unsigned short int in_deck_index,
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);
 
-    return;
-}
-
-void
-Gui::on_sampler_button_1_1_stop_click()
-{
-    this->on_sampler_button_stop_click(0, 0);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_2_stop_click()
-{
-    this->on_sampler_button_stop_click(0, 1);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_3_stop_click()
-{
-    this->on_sampler_button_stop_click(0, 2);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_4_stop_click()
-{
-    this->on_sampler_button_stop_click(0, 3);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_1_stop_click()
-{
-    this->on_sampler_button_stop_click(1, 0);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_2_stop_click()
-{
-    this->on_sampler_button_stop_click(1, 1);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_3_stop_click()
-{
-    this->on_sampler_button_stop_click(1, 2);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_4_stop_click()
-{
-    this->on_sampler_button_stop_click(1, 3);
     return;
 }
 
@@ -3149,63 +2970,6 @@ Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
 
     return;
 }
-
-void
-Gui::on_sampler_button_1_1_del_click()
-{
-    this->on_sampler_button_del_click(0, 0);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_2_del_click()
-{
-    this->on_sampler_button_del_click(0, 1);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_3_del_click()
-{
-    this->on_sampler_button_del_click(0, 2);
-    return;
-}
-
-void
-Gui::on_sampler_button_1_4_del_click()
-{
-    this->on_sampler_button_del_click(0, 3);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_1_del_click()
-{
-    this->on_sampler_button_del_click(1, 0);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_2_del_click()
-{
-    this->on_sampler_button_del_click(1, 1);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_3_del_click()
-{
-    this->on_sampler_button_del_click(1, 2);
-    return;
-}
-
-void
-Gui::on_sampler_button_2_4_del_click()
-{
-    this->on_sampler_button_del_click(1, 3);
-    return;
-}
-
 
 void
 Gui::on_progress_cancel_button_click()
