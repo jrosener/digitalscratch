@@ -1761,40 +1761,22 @@ void
 Gui::connect_decks_and_samplers_selection()
 {
     // Create mouse action to select deck/sampler.
-    QObject::connect(this->deck1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
-    QObject::connect(this->deck2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
-    QObject::connect(this->sampler1_gbox, SIGNAL(selected()), this, SLOT(select_playback_1()));
-    QObject::connect(this->sampler2_gbox, SIGNAL(selected()), this, SLOT(select_playback_2()));
+    QObject::connect(this->deck1_gbox, &PlaybackQGroupBox::selected, [this](){this->select_playback_1();});
+    QObject::connect(this->deck2_gbox, &PlaybackQGroupBox::selected, [this](){this->select_playback_2();});
+    QObject::connect(this->sampler1_gbox, &PlaybackQGroupBox::selected, [this](){this->select_playback_1();});
+    QObject::connect(this->sampler2_gbox, &PlaybackQGroupBox::selected, [this](){this->select_playback_2();});
 
     // Create mouse action when deck/sampler is hovered (mouse entering area).
-    QSignalMapper *deck_enter_signal_mapper = new QSignalMapper(this);
-    deck_enter_signal_mapper->setMapping(this->deck1_gbox, 0);
-    QObject::connect(this->deck1_gbox, SIGNAL(hover()), deck_enter_signal_mapper, SLOT(map()));
-    deck_enter_signal_mapper->setMapping(this->deck2_gbox, 1);
-    QObject::connect(this->deck2_gbox, SIGNAL(hover()), deck_enter_signal_mapper, SLOT(map()));
-    QObject::connect(deck_enter_signal_mapper, SIGNAL(mapped(int)), this, SLOT(hover_playback(int)));
-
-    QSignalMapper *sampler_enter_signal_mapper = new QSignalMapper(this);
-    sampler_enter_signal_mapper->setMapping(this->sampler1_gbox, 0);
-    QObject::connect(this->sampler1_gbox, SIGNAL(hover()), sampler_enter_signal_mapper, SLOT(map()));
-    sampler_enter_signal_mapper->setMapping(this->sampler2_gbox, 1);
-    QObject::connect(this->sampler2_gbox, SIGNAL(hover()), sampler_enter_signal_mapper, SLOT(map()));
-    QObject::connect(sampler_enter_signal_mapper, SIGNAL(mapped(int)), this, SLOT(hover_playback(int)));
+    QObject::connect(this->deck1_gbox, &PlaybackQGroupBox::hover, [this](){this->hover_playback(0);});
+    QObject::connect(this->deck2_gbox, &PlaybackQGroupBox::hover, [this](){this->hover_playback(1);});
+    QObject::connect(this->sampler1_gbox, &PlaybackQGroupBox::hover, [this](){this->hover_playback(0);});
+    QObject::connect(this->sampler2_gbox, &PlaybackQGroupBox::hover, [this](){this->hover_playback(1);});
 
     // Create mouse action when deck/sampler is unhovered (mouse leaving area).
-    QSignalMapper *deck_leave_signal_mapper = new QSignalMapper(this);
-    deck_leave_signal_mapper->setMapping(this->deck1_gbox, 0);
-    QObject::connect(this->deck1_gbox, SIGNAL(unhover()), deck_leave_signal_mapper, SLOT(map()));
-    deck_leave_signal_mapper->setMapping(this->deck2_gbox, 1);
-    QObject::connect(this->deck2_gbox, SIGNAL(unhover()), deck_leave_signal_mapper, SLOT(map()));
-    QObject::connect(deck_leave_signal_mapper, SIGNAL(mapped(int)), this, SLOT(unhover_playback(int)));
-
-    QSignalMapper *sampler_leave_signal_mapper = new QSignalMapper(this);
-    sampler_leave_signal_mapper->setMapping(this->sampler1_gbox, 0);
-    QObject::connect(this->sampler1_gbox, SIGNAL(unhover()), sampler_leave_signal_mapper, SLOT(map()));
-    sampler_leave_signal_mapper->setMapping(this->sampler2_gbox, 1);
-    QObject::connect(this->sampler2_gbox, SIGNAL(unhover()), sampler_leave_signal_mapper, SLOT(map()));
-    QObject::connect(sampler_leave_signal_mapper, SIGNAL(mapped(int)), this, SLOT(unhover_playback(int)));
+    QObject::connect(this->deck1_gbox, &PlaybackQGroupBox::unhover, [this](){this->unhover_playback(0);});
+    QObject::connect(this->deck2_gbox, &PlaybackQGroupBox::unhover, [this](){this->unhover_playback(1);});
+    QObject::connect(this->sampler1_gbox, &PlaybackQGroupBox::unhover, [this](){this->unhover_playback(0);});
+    QObject::connect(this->sampler2_gbox, &PlaybackQGroupBox::unhover, [this](){this->unhover_playback(1);});
 
     // Preselect deck and sampler 1.
     this->deck1_gbox->setProperty("selected", true);
@@ -1802,7 +1784,7 @@ Gui::connect_decks_and_samplers_selection()
 
     // Connect keyboard shortcut to switch selection of decks/samplers.
     this->shortcut_switch_playback = new QShortcut(this->window);
-    QObject::connect(this->shortcut_switch_playback, SIGNAL(activated()), this, SLOT(switch_playback_selection()));
+    QObject::connect(this->shortcut_switch_playback, &QShortcut::activated, [this](){this->switch_playback_selection();});
 }
 
 void
@@ -2023,64 +2005,64 @@ void
 Gui::connect_file_browser_area()
 {
     // Refresh track browser.
-    QObject::connect(this->refresh_file_browser, SIGNAL(clicked()), this, SLOT(show_refresh_audio_collection_dialog()));
+    QObject::connect(this->refresh_file_browser, &QPushButton::clicked, [this](){this->show_refresh_audio_collection_dialog();});
 
     // Load track on deck.
-    QObject::connect(this->load_track_on_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck1()));
+    QObject::connect(this->load_track_on_deck1_button, &QPushButton::clicked, [this](){this->select_and_run_audio_file_decoding_process_deck1();});
     if (this->nb_decks > 1)
-        QObject::connect(this->load_track_on_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_run_audio_file_decoding_process_deck2()));
+        QObject::connect(this->load_track_on_deck2_button, &QPushButton::clicked, [this](){this->select_and_run_audio_file_decoding_process_deck2();});
 
     // Show next tracks (based on music key).
-    QObject::connect(this->show_next_key_from_deck1_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck1()));
+    QObject::connect(this->show_next_key_from_deck1_button, &QPushButton::clicked, [this](){this->select_and_show_next_keys_deck1();});
     if (this->nb_decks > 1)
-        QObject::connect(this->show_next_key_from_deck2_button, SIGNAL(clicked()), this, SLOT(select_and_show_next_keys_deck2()));
+        QObject::connect(this->show_next_key_from_deck2_button, &QPushButton::clicked, [this](){this->select_and_show_next_keys_deck2();});
 
     // Open folder or playlist from file browser on double click.
-    QObject::connect(this->folder_browser, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_file_browser_double_click(QModelIndex)));
+    QObject::connect(this->folder_browser, &QTreeView::doubleClicked, [this](const QModelIndex &index){this->on_file_browser_double_click(index);});
 
     // Resize column with file name when expanding/collapsing a directory.
-    QObject::connect(this->file_browser, SIGNAL(expanded(QModelIndex)),  this, SLOT(on_file_browser_expand(QModelIndex)));
-    QObject::connect(this->file_browser, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_file_browser_expand(QModelIndex)));
+    QObject::connect(this->file_browser, &QTreeView::expanded,  [this](const QModelIndex &index){this->on_file_browser_expand(index);});
+    QObject::connect(this->file_browser, &QTreeView::collapsed, [this](const QModelIndex &index){this->on_file_browser_expand(index);});
 
     // Connect the keyboard shortcut that collapse tree.
     this->shortcut_collapse_browser = new QShortcut(this->file_browser);
-    QObject::connect(this->shortcut_collapse_browser, SIGNAL(activated()), this->file_browser, SLOT(collapseAll()));
+    QObject::connect(this->shortcut_collapse_browser, &QShortcut::activated, [this](){this->file_browser->collapseAll();});
 
     // Connect the keyboard shortcut to start decoding process on selected file.
     this->shortcut_load_audio_file = new QShortcut(this->file_browser);
-    QObject::connect(this->shortcut_load_audio_file, SIGNAL(activated()), this, SLOT(run_audio_file_decoding_process()));
+    QObject::connect(this->shortcut_load_audio_file, &QShortcut::activated, [this](){this->run_audio_file_decoding_process();});
 
     // Sort track browser when clicking on header.
-    QObject::connect(this->file_browser->header(), SIGNAL(sectionClicked(int)), this, SLOT(on_file_browser_header_click(int)));
+    QObject::connect(this->file_browser->header(), &QHeaderView::sectionClicked, [this](int logicalIndex){this->on_file_browser_header_click(logicalIndex);});
 
     // Connect the keyboard shortcut to show next audio file according to current music key.
     this->shortcut_show_next_keys = new QShortcut(this->file_browser);
-    QObject::connect(this->shortcut_show_next_keys, SIGNAL(activated()), this, SLOT(show_next_keys()));
+    QObject::connect(this->shortcut_show_next_keys, &QShortcut::activated, [this](){this->show_next_keys();});
 
     // Load track in sampler.
     this->shortcut_load_sample_file_1 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_2 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_3 = new QShortcut(this->file_browser);
     this->shortcut_load_sample_file_4 = new QShortcut(this->file_browser);
-    QObject::connect(this->shortcut_load_sample_file_1, SIGNAL(activated()), this, SLOT(run_sample_1_decoding_process()));
-    QObject::connect(this->shortcut_load_sample_file_2, SIGNAL(activated()), this, SLOT(run_sample_2_decoding_process()));
-    QObject::connect(this->shortcut_load_sample_file_3, SIGNAL(activated()), this, SLOT(run_sample_3_decoding_process()));
-    QObject::connect(this->shortcut_load_sample_file_4, SIGNAL(activated()), this, SLOT(run_sample_4_decoding_process()));
-    QObject::connect(this->load_sample1_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck1()));
-    QObject::connect(this->load_sample1_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck1()));
-    QObject::connect(this->load_sample1_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck1()));
-    QObject::connect(this->load_sample1_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck1()));
+    QObject::connect(this->shortcut_load_sample_file_1, &QShortcut::activated, [this](){this->run_sampler_decoding_process(0);});
+    QObject::connect(this->shortcut_load_sample_file_2, &QShortcut::activated, [this](){this->run_sampler_decoding_process(1);});
+    QObject::connect(this->shortcut_load_sample_file_3, &QShortcut::activated, [this](){this->run_sampler_decoding_process(2);});
+    QObject::connect(this->shortcut_load_sample_file_4, &QShortcut::activated, [this](){this->run_sampler_decoding_process(3);});
+    QObject::connect(this->load_sample1_1_button, &QPushButton::clicked, [this](){this->select_and_run_sample1_decoding_process_deck1();});
+    QObject::connect(this->load_sample1_2_button, &QPushButton::clicked, [this](){this->select_and_run_sample2_decoding_process_deck1();});
+    QObject::connect(this->load_sample1_3_button, &QPushButton::clicked, [this](){this->select_and_run_sample3_decoding_process_deck1();});
+    QObject::connect(this->load_sample1_4_button, &QPushButton::clicked, [this](){this->select_and_run_sample4_decoding_process_deck1();});
     if (this->nb_decks > 1)
     {
-        QObject::connect(this->load_sample2_1_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample1_decoding_process_deck2()));
-        QObject::connect(this->load_sample2_2_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample2_decoding_process_deck2()));
-        QObject::connect(this->load_sample2_3_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample3_decoding_process_deck2()));
-        QObject::connect(this->load_sample2_4_button, SIGNAL(clicked()), this, SLOT(select_and_run_sample4_decoding_process_deck2()));
+        QObject::connect(this->load_sample2_1_button, &QPushButton::clicked, [this](){this->select_and_run_sample1_decoding_process_deck2();});
+        QObject::connect(this->load_sample2_2_button, &QPushButton::clicked, [this](){this->select_and_run_sample2_decoding_process_deck2();});
+        QObject::connect(this->load_sample2_3_button, &QPushButton::clicked, [this](){this->select_and_run_sample3_decoding_process_deck2();});
+        QObject::connect(this->load_sample2_4_button, &QPushButton::clicked, [this](){this->select_and_run_sample4_decoding_process_deck2();});
     }
 
     // Connect thread states for audio collection read and write to DB.
-    QObject::connect(this->file_system_model->concurrent_watcher_read.data(),  SIGNAL(finished()), this, SLOT(sync_file_browser_to_audio_collection()));
-    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), SIGNAL(finished()), this, SLOT(on_finished_analyze_audio_collection()));
+    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), &QFutureWatcher<void>::finished, [this](){this->sync_file_browser_to_audio_collection();});
+    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), &QFutureWatcher<void>::finished, [this](){this->on_finished_analyze_audio_collection();});
 
     // Add context menu for file browser (load track and samples).
     QAction *load_on_deck_1_action = new QAction(tr("Load on deck 1"), this);
@@ -2153,23 +2135,24 @@ Gui::connect_file_browser_area()
     this->shortcut_file_search             = new QShortcut(this->window);
     this->shortcut_file_search_press_enter = new QShortcut(this->file_search);
     this->shortcut_file_search_press_esc   = new QShortcut(this->file_search);
-    QObject::connect(this->shortcut_file_search, SIGNAL(activated()), this, SLOT(set_focus_search_bar()));
-    QObject::connect(this->file_search, SIGNAL(textChanged(QString)), this, SLOT(file_search_string(QString)));
-    QObject::connect(this->shortcut_file_search_press_enter, SIGNAL(activated()), this, SLOT(press_enter_in_search_bar()));
-    QObject::connect(this->file_search, SIGNAL(returnPressed()), this, SLOT(press_enter_in_search_bar()));
-    QObject::connect(this->shortcut_file_search_press_esc, SIGNAL(activated()), this, SLOT(press_esc_in_search_bar()));
+
+    QObject::connect(this->shortcut_file_search, &QShortcut::activated, [this](){this->set_focus_search_bar();});
+    QObject::connect(this->file_search, &QLineEdit::textChanged, [this](const QString &text){this->file_search_string(text);});
+    QObject::connect(this->shortcut_file_search_press_enter, &QShortcut::activated, [this](){this->press_enter_in_search_bar();});
+    QObject::connect(this->file_search, &QLineEdit::returnPressed, [this](){this->press_enter_in_search_bar();});
+    QObject::connect(this->shortcut_file_search_press_esc, &QShortcut::activated, [this](){this->press_esc_in_search_bar();});
 
     // Progress for file analyzis and storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), SIGNAL(progressRangeChanged(int,int)),
-                     this->progress_bar,                                       SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), SIGNAL(progressValueChanged(int)),
-                     this,                                                     SLOT(update_refresh_progress_value(int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), &QFutureWatcher<void>::progressRangeChanged,
+                     [this](int minimum, int maximum){this->progress_bar->setRange(minimum, maximum);});
+    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), &QFutureWatcher<void>::progressValueChanged,
+                     [this](int progressValue){this->update_refresh_progress_value(progressValue);});
 
     // Progress for reading file data from storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), SIGNAL(progressRangeChanged(int,int)),
-                     this->progress_bar,                                      SLOT(setRange(int,int)));
-    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), SIGNAL(progressValueChanged(int)),
-                     this,                                                    SLOT(update_refresh_progress_value(int)));
+    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), &QFutureWatcher<void>::progressRangeChanged,
+                     [this](int minimum, int maximum){this->progress_bar->setRange(minimum, maximum);});
+    QObject::connect(this->file_system_model->concurrent_watcher_read.data(), &QFutureWatcher<void>::progressValueChanged,
+                     [this](int progressValue){this->update_refresh_progress_value(progressValue);});
 
     // Parse directory thread.
     this->watcher_parse_directory = new QFutureWatcher<void>;
@@ -2312,7 +2295,7 @@ Gui::init_bottom_status()
     this->progress_cancel_button->setFixedSize(16, 16);
     this->progress_cancel_button->setFocusPolicy(Qt::NoFocus);
     this->progress_cancel_button->setToolTip(tr("Cancel execution"));
-    QObject::connect(this->progress_cancel_button, SIGNAL(clicked()), this, SLOT(on_progress_cancel_button_click()));
+    QObject::connect(this->progress_cancel_button, &QPushButton::clicked, [this](){this->on_progress_cancel_button_click();});
 
     // Create label.
     this->progress_label = new QLabel(this->progress_groupbox);
@@ -2671,8 +2654,32 @@ Gui::set_file_browser_title(QString in_title)
 }
 
 void
-Gui::run_sampler_decoding_process(unsigned short int in_deck_index,
-                                  unsigned short int in_sampler_index)
+Gui::run_sampler_decoding_process(unsigned short int in_sampler_index)
+{
+    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
+    {
+        this->run_sampler_decoding_process_on_deck(1, in_sampler_index);
+    }
+    else
+    {
+        this->run_sampler_decoding_process_on_deck(0, in_sampler_index);
+    }
+
+    return;
+}
+
+void
+Gui::run_sampler_decoding_process(unsigned short int in_deck_index, unsigned short int in_sampler_index)
+{
+    this->highlight_deck_sampler_area(in_deck_index);
+    this->run_sampler_decoding_process(in_sampler_index);
+
+    return;
+}
+
+void
+Gui::run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
+                                          unsigned short int in_sampler_index)
 {
     // Select deck.
     this->highlight_deck_sampler_area(in_deck_index);
@@ -2718,7 +2725,7 @@ Gui::select_and_run_sample1_decoding_process_deck1()
     this->highlight_deck_sampler_area(0);
 
     // Decode and play sample audio file on sampler 1.
-    this->run_sample_1_decoding_process();
+    this->run_sampler_decoding_process(0);
 
     // Release the button.
     this->load_sample1_1_button->setEnabled(true);
@@ -2736,7 +2743,7 @@ Gui::select_and_run_sample1_decoding_process_deck2()
     this->highlight_deck_sampler_area(1);
 
     // Decode and play sample audio file on sampler 1.
-    this->run_sample_1_decoding_process();
+    this->run_sampler_decoding_process(0);
 
     // Release the button.
     this->load_sample2_1_button->setEnabled(true);
@@ -2754,7 +2761,7 @@ Gui::select_and_run_sample2_decoding_process_deck1()
     this->highlight_deck_sampler_area(0);
 
     // Decode and play sample audio file on sampler 2.
-    this->run_sample_2_decoding_process();
+    this->run_sampler_decoding_process(1);
 
     // Release the button.
     this->load_sample1_2_button->setEnabled(true);
@@ -2772,7 +2779,7 @@ Gui::select_and_run_sample2_decoding_process_deck2()
     this->highlight_deck_sampler_area(1);
 
     // Decode and play sample audio file on sampler 2.
-    this->run_sample_2_decoding_process();
+    this->run_sampler_decoding_process(1);
 
     // Release the button.
     this->load_sample2_2_button->setEnabled(true);
@@ -2790,7 +2797,7 @@ Gui::select_and_run_sample3_decoding_process_deck1()
     this->highlight_deck_sampler_area(0);
 
     // Decode and play sample audio file on sampler 3.
-    this->run_sample_3_decoding_process();
+    this->run_sampler_decoding_process(2);
 
     // Release the button.
     this->load_sample1_3_button->setEnabled(true);
@@ -2808,7 +2815,7 @@ Gui::select_and_run_sample3_decoding_process_deck2()
     this->highlight_deck_sampler_area(1);
 
     // Decode and play sample audio file on sampler 3.
-    this->run_sample_3_decoding_process();
+    this->run_sampler_decoding_process(2);
 
     // Release the button.
     this->load_sample2_3_button->setEnabled(true);
@@ -2826,7 +2833,7 @@ Gui::select_and_run_sample4_decoding_process_deck1()
     this->highlight_deck_sampler_area(0);
 
     // Decode and play sample audio file on sampler 4.
-    this->run_sample_4_decoding_process();
+    this->run_sampler_decoding_process(3);
 
     // Release the button.
     this->load_sample1_4_button->setEnabled(true);
@@ -2844,71 +2851,11 @@ Gui::select_and_run_sample4_decoding_process_deck2()
     this->highlight_deck_sampler_area(1);
 
     // Decode and play sample audio file on sampler 4.
-    this->run_sample_4_decoding_process();
+    this->run_sampler_decoding_process(3);
 
     // Release the button.
     this->load_sample2_4_button->setEnabled(true);
     this->load_sample2_4_button->setChecked(false);
-}
-
-void
-Gui::run_sample_1_decoding_process()
-{
-    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
-    {
-        this->run_sampler_decoding_process(1, 0);
-    }
-    else
-    {
-        this->run_sampler_decoding_process(0, 0);
-    }
-
-    return;
-}
-
-void
-Gui::run_sample_2_decoding_process()
-{
-    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
-    {
-        this->run_sampler_decoding_process(1, 1);
-    }
-    else
-    {
-        this->run_sampler_decoding_process(0, 1);
-    }
-
-    return;
-}
-
-void
-Gui::run_sample_3_decoding_process()
-{
-    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
-    {
-        this->run_sampler_decoding_process(1, 2);
-    }
-    else
-    {
-        this->run_sampler_decoding_process(0, 2);
-    }
-
-    return;
-}
-
-void
-Gui::run_sample_4_decoding_process()
-{
-    if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
-    {
-        this->run_sampler_decoding_process(1, 3);
-    }
-    else
-    {
-        this->run_sampler_decoding_process(0, 3);
-    }
-
-    return;
 }
 
 void
@@ -3903,8 +3850,11 @@ QSamplerContainerWidget::QSamplerContainerWidget(unsigned short  in_deck_index,
     this->sampler_index = in_sampler_index;
 
     // Connect drop actions (load file in sampler).
-    QObject::connect(this,             SIGNAL(file_dropped_in_sampler(unsigned short int, unsigned short int)),
-                     in_dropto_object, SLOT(run_sampler_decoding_process(unsigned short int, unsigned short int)));
+    QObject::connect(this, &QSamplerContainerWidget::file_dropped_in_sampler,
+                     [this, in_dropto_object](unsigned short int deck_index, unsigned short int sampler_index)
+                     {
+                        in_dropto_object->run_sampler_decoding_process(deck_index, sampler_index);
+                     });
     return;
 }
 

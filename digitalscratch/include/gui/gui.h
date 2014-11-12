@@ -375,6 +375,10 @@ class Gui : public QObject
     void hide_samplers();
     void show_samplers();
 
+ public slots:
+    void run_sampler_decoding_process(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
+
  private slots:
     bool show_config_window();
     void set_fullscreen();
@@ -404,12 +408,9 @@ class Gui : public QObject
     void select_and_run_sample2_decoding_process_deck2();
     void select_and_run_sample3_decoding_process_deck2();
     void select_and_run_sample4_decoding_process_deck2();
-    void run_sampler_decoding_process(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
-    void run_sample_1_decoding_process();
-    void run_sample_2_decoding_process();
-    void run_sample_3_decoding_process();
-    void run_sample_4_decoding_process();
+    void run_sampler_decoding_process(unsigned short int in_sampler_index);
+    void run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
+                                              unsigned short int in_sampler_index);
     void set_sampler_1_text(QString in_text, unsigned short int in_sampler_index);
     void set_sampler_2_text(QString in_text, unsigned short int in_sampler_index);
     void on_sampler_button_play_click(unsigned short int in_deck_index,
