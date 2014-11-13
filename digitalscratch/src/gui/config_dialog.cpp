@@ -183,8 +183,8 @@ Config_dialog::show()
                                                        QDialogButtonBox::Cancel,
                                                        Qt::Horizontal,
                                                        this);
-    QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, [this](){this->accept();});
+    QObject::connect(buttonBox, &QDialogButtonBox::rejected, [this](){this->reject();});
 
     // Create main vertical layout.
     QVBoxLayout *main_layout = new QVBoxLayout(this);
@@ -203,7 +203,7 @@ QWidget *Config_dialog::init_tab_player()
     QLabel *base_dir_label = new QLabel(tr("Base music directory: "), this);
     this->base_dir_path->setMinimumWidth(300);
     QPushButton *base_dir_button = new QPushButton(tr("Browse..."), this);
-    QObject::connect(base_dir_button, SIGNAL(clicked()), this, SLOT(show_browse_window()));
+    QObject::connect(base_dir_button, &QPushButton::clicked, [this](){this->show_browse_window();});
 
     // Player tab: select GUI style.
     QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
@@ -215,7 +215,7 @@ QWidget *Config_dialog::init_tab_player()
     QLabel *extern_prog_label = new QLabel(tr("External prog to run at startup: "), this);
     this->extern_prog->setMinimumWidth(300);
     QPushButton *extern_prog_button = new QPushButton(tr("Browse..."), this);
-    QObject::connect(extern_prog_button, SIGNAL(clicked()), this, SLOT(show_browse_extern_prog_window()));
+    QObject::connect(extern_prog_button, &QPushButton::clicked, [this](){this->show_browse_extern_prog_window();});
 
     // Player tab: setup layout.
     QGridLayout *player_tab_layout = new QGridLayout(this);
@@ -339,7 +339,7 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(amplify_coeff_label, 3, 0);
     motion_detect_layout->addWidget(this->amplify_coeff, 3, 1);
     motion_detect_layout->addWidget(this->amplify_coeff_value, 3, 2);
-    QObject::connect(this->amplify_coeff, SIGNAL(valueChanged(int)), this, SLOT(set_amplify_coeff_value(int)));
+    QObject::connect(this->amplify_coeff, &QSlider::valueChanged, [this](int value){this->set_amplify_coeff_value(value);});
 
     QLabel *min_amplitude_for_normal_speed_label = new QLabel(tr("Minimal signal amplitude @ speed = 100%:"), this);
     this->min_amplitude_for_normal_speed->setMinimum(1);
@@ -348,7 +348,7 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(min_amplitude_for_normal_speed_label, 4, 0);
     motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed, 4, 1);
     motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed_value, 4, 2);
-    QObject::connect(this->min_amplitude_for_normal_speed, SIGNAL(valueChanged(int)), this, SLOT(set_min_amplitude_for_normal_speed_value(int)));
+    QObject::connect(this->min_amplitude_for_normal_speed, &QSlider::valueChanged, [this](int value){this->set_min_amplitude_for_normal_speed_value(value);});
 
     QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
     this->min_amplitude->setMinimum(1);
@@ -357,12 +357,12 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(min_amplitude_label, 5, 0);
     motion_detect_layout->addWidget(this->min_amplitude, 5, 1);
     motion_detect_layout->addWidget(this->min_amplitude_value, 5, 2);
-    QObject::connect(this->min_amplitude, SIGNAL(valueChanged(int)), this, SLOT(set_min_amplitude_value(int)));
+    QObject::connect(this->min_amplitude, &QSlider::valueChanged, [this](int value){this->set_min_amplitude_value(value);});
 
     QPushButton *motion_params_reset_to_default = new QPushButton(this);
     motion_params_reset_to_default->setText(tr("Reset to default"));
     motion_detect_layout->addWidget(motion_params_reset_to_default, 10, 0, Qt::AlignLeft);
-    QObject::connect(motion_params_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_motion_detection_params()));
+    QObject::connect(motion_params_reset_to_default, &QPushButton::clicked, [this](){this->reset_motion_detection_params();});
 
     motion_detect_layout->setColumnStretch(0, 0);
     motion_detect_layout->setColumnStretch(1, 30);
@@ -528,7 +528,7 @@ QWidget *Config_dialog::init_tab_shortcuts()
     QPushButton *shortcut_reset_to_default = new QPushButton(this);
     shortcut_reset_to_default->setText(tr("Reset to default"));
     shortcuts_layout->addWidget(shortcut_reset_to_default, 11, 4, Qt::AlignRight);
-    QObject::connect(shortcut_reset_to_default, SIGNAL(clicked()), this, SLOT(reset_shortcuts()));
+    QObject::connect(shortcut_reset_to_default, &QPushButton::clicked, [this](){this->reset_shortcuts();});
 
     // Force space between shortcuts columns.
     shortcuts_layout->setColumnMinimumWidth(1, 150);
@@ -536,26 +536,26 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->setColumnMinimumWidth(4, 150);
 
     // Signal send ShortCutQLabels when a new value is there.
-    QObject::connect(this->kb_switch_playback,           SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_load_track_on_deck,        SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_play_begin_track_on_deck,  SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_get_next_track_from_deck,  SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_set_cue_point1_on_deck,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_play_cue_point1_on_deck,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_set_cue_point2_on_deck,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_play_cue_point2_on_deck,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_set_cue_point3_on_deck,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_play_cue_point3_on_deck,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_set_cue_point4_on_deck,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_play_cue_point4_on_deck,   SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_fullscreen,                SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_collapse_browse,           SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_load_track_on_sampler1,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_load_track_on_sampler2,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_load_track_on_sampler3,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_load_track_on_sampler4,    SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_help,                      SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
-    QObject::connect(this->kb_file_search,               SIGNAL(new_value(QString)), this, SLOT(validate_and_set_shortcut(const QString&)));
+    QObject::connect(this->kb_switch_playback,          &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_switch_playback);});
+    QObject::connect(this->kb_load_track_on_deck,       &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_deck);});
+    QObject::connect(this->kb_play_begin_track_on_deck, &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_begin_track_on_deck);});
+    QObject::connect(this->kb_get_next_track_from_deck, &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_get_next_track_from_deck);});
+    QObject::connect(this->kb_set_cue_point1_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point1_on_deck);});
+    QObject::connect(this->kb_play_cue_point1_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point1_on_deck);});
+    QObject::connect(this->kb_set_cue_point2_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point2_on_deck);});
+    QObject::connect(this->kb_play_cue_point2_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point2_on_deck);});
+    QObject::connect(this->kb_set_cue_point3_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point3_on_deck);});
+    QObject::connect(this->kb_play_cue_point3_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point3_on_deck);});
+    QObject::connect(this->kb_set_cue_point4_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point4_on_deck);});
+    QObject::connect(this->kb_play_cue_point4_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point4_on_deck);});
+    QObject::connect(this->kb_fullscreen,               &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_fullscreen);});
+    QObject::connect(this->kb_collapse_browse,          &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_collapse_browse);});
+    QObject::connect(this->kb_load_track_on_sampler1,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler1);});
+    QObject::connect(this->kb_load_track_on_sampler2,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler2);});
+    QObject::connect(this->kb_load_track_on_sampler3,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler3);});
+    QObject::connect(this->kb_load_track_on_sampler4,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler4);});
+    QObject::connect(this->kb_help,                     &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_help);});
+    QObject::connect(this->kb_file_search,              &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_file_search);});
 
     // Create tab.
     QWidget *shortcuts_tab = new QWidget(this);
@@ -593,12 +593,10 @@ bool Config_dialog::is_duplicate_shortcut(const QString& in_value)
     return false;
 }
 
-void Config_dialog::validate_and_set_shortcut(const QString& in_value)
+void Config_dialog::validate_and_set_shortcut(const QString& in_value, ShortcutQLabel *in_label)
 {
     // Get keyboard shortcut label to work on.
-    QObject *sender_obj = sender();
-    ShortcutQLabel *label = qobject_cast<ShortcutQLabel*>(sender_obj);
-    if(label != 0)
+    if(in_label != 0)
     {
         // Check if new shortcut is duplicate.
         if (this->is_duplicate_shortcut(in_value) == true)
@@ -616,12 +614,12 @@ void Config_dialog::validate_and_set_shortcut(const QString& in_value)
             msg_box.exec();
 
             // Then put back the old shortcut.
-            label->set_old_text();
+            in_label->set_old_text();
         }
         else
         {
             // Shortcut is correct, set it in the label.
-            label->setText(in_value);
+            in_label->setText(in_value);
         }
     }
 }

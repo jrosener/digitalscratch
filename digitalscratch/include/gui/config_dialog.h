@@ -156,5 +156,5 @@ class Config_dialog : public QDialog
     void set_amplify_coeff_value(int in_value);
     void set_min_amplitude_for_normal_speed_value(int in_value);
     void set_min_amplitude_value(int in_value);
-    void validate_and_set_shortcut(const QString& in_value);
+    void validate_and_set_shortcut(const QString& in_value, ShortcutQLabel *in_label);
 };
