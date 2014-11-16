@@ -39,30 +39,24 @@
 #include "digital_scratch_api.h"
 #include "application_logging.h"
 
-Timecode_control_process::Timecode_control_process(QList<QSharedPointer<Playback_parameters>> &in_params,
-                                                   unsigned short int                          in_nb_decks,
-                                                   QString                                     in_vinyl_type,
-                                                   unsigned int                                in_sample_rate)
+Timecode_control_process::Timecode_control_process(QSharedPointer<Playback_parameters> &in_param,
+                                                   QString                              in_vinyl_type,
+                                                   unsigned int                         in_sample_rate)
 {
-    this->params = in_params;
-    this->nb_decks = in_nb_decks;
-    this->dscratch_ids = new int[in_nb_decks];
+    this->params = in_param;
 
     //
     // Initialize DigitalScratch library.
     //
-    for (unsigned short int i = 0; i < in_nb_decks; i++)
+    // Create turntable.
+    QString turntable_name;
+    turntable_name = "turntable";
+    if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
+                                  (char*)in_vinyl_type.toStdString().c_str(),
+                                  in_sample_rate,
+                                  &this->dscratch_id) != 0)
     {
-        // Create turntable.
-        QString turntable_name;
-        turntable_name = "turntable_" + i;
-        if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
-                                      (char*)in_vinyl_type.toStdString().c_str(),
-                                      in_sample_rate,
-                                      &this->dscratch_ids[i]) != 0)
-        {
-            qCCritical(DS_PLAYBACK) << "can not create turntable";
-        }
+        qCCritical(DS_PLAYBACK) << "can not create turntable";
     }
 
     return;
@@ -71,13 +65,7 @@ Timecode_control_process::Timecode_control_process(QList<QSharedPointer<Playback
 Timecode_control_process::~Timecode_control_process()
 {
     // Delete dscratch turntable.
-    for (unsigned short int i = 0; i < this->nb_decks; i++)
-    {
-        dscratch_delete_turntable(this->dscratch_ids[i]);
-    }
-
-    // Delete dscratch ids.
-    delete [] this->dscratch_ids;
+    dscratch_delete_turntable(this->dscratch_id);
 
     return;
 }
@@ -85,74 +73,60 @@ Timecode_control_process::~Timecode_control_process()
 bool
 Timecode_control_process::run(unsigned short int  in_nb_samples,
                               float              *in_samples_1,
-                              float              *in_samples_2,
-                              float              *in_samples_3,
-                              float              *in_samples_4)
+                              float              *in_samples_2)
 {
-    int   j              = 0;
     int   are_new_params = 0;
     float speed    = 0.0;
     float volume   = 0.0;
-    float *samples[] = { in_samples_1, in_samples_2, in_samples_3, in_samples_4 };
+    float *samples[] = { in_samples_1, in_samples_2};
 
     // Iterate over decks and analyze captured timecode.
-    for (int i = 0; i < this->nb_decks; i++)
+    if (dscratch_analyze_recorded_datas(this->dscratch_id,
+                                        samples[0],
+                                        samples[1],
+                                        in_nb_samples) != 0)
     {
-        if (dscratch_analyze_recorded_datas(this->dscratch_ids[i],
-                                            samples[j],
-                                            samples[j+1],
-                                            in_nb_samples) != 0)
-        {
-            qCWarning(DS_PLAYBACK) << "cannot analyze captured data";
-        }
+        qCWarning(DS_PLAYBACK) << "cannot analyze captured data";
+    }
 
-        // Update playing parameters.
-        if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_ids[i],
-                                                              &speed,
-                                                              &volume)) == 0)
+    // Update playing parameters.
+    if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_id,
+                                                          &speed,
+                                                          &volume)) == 0)
+    {
+        if (are_new_params == 0)
         {
-            if (are_new_params == 0)
+            this->params->set_new_data(true);
+            if (speed != NO_NEW_SPEED_FOUND)
             {
-                this->params[i]->set_new_data(true);
-                if (speed != NO_NEW_SPEED_FOUND)
-                {
-                    this->params[i]->set_speed(speed);
-                    this->params[i]->set_new_speed(true);
-                }
-                else
-                {
-                    this->params[i]->set_new_speed(false);
-                }
-                if (volume != NO_NEW_VOLUME_FOUND)
-                {
-                    this->params[i]->set_volume(volume);
-                    this->params[i]->set_new_volume(true);
-                }
-                else
-                {
-                    this->params[i]->set_new_volume(false);
-                }
+                this->params->set_speed(speed);
+                this->params->set_new_speed(true);
             }
             else
             {
-                this->params[i]->set_new_data(false);
+                this->params->set_new_speed(false);
+            }
+            if (volume != NO_NEW_VOLUME_FOUND)
+            {
+                this->params->set_volume(volume);
+                this->params->set_new_volume(true);
+            }
+            else
+            {
+                this->params->set_new_volume(false);
             }
         }
-        j = j + 2;
+        else
+        {
+            this->params->set_new_data(false);
+        }
     }
 
     return true;
 }
 
 int
-Timecode_control_process::get_dscratch_id(unsigned short int in_index)
+Timecode_control_process::get_dscratch_id()
 {
-    int out_dscratch_id = -1;
-
-    if (in_index < this->nb_decks)
-    {
-        out_dscratch_id = this->dscratch_ids[in_index];
-    }
-
-    return out_dscratch_id;
+    return this->dscratch_id;
 }

@@ -93,10 +93,13 @@ int main(int argc, char *argv[])
     // Create tracks, sampler, decoder process,... for each deck.
     QList<QSharedPointer<Audio_track>>                        ats;
     QList<QSharedPointer<Audio_file_decoding_process>>        dec_procs;
+    QList<QSharedPointer<Playback_parameters>>                play_params;
+    QList<QSharedPointer<Timecode_control_process>>           tcode_controls;
     QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
-    QList<QSharedPointer<Playback_parameters>>                play_params;
-    for (auto i = 1; i <= settings->get_nb_decks(); i++)
+    QList<QSharedPointer<Audio_track_playback_process>>       at_playbacks;
+    int *dscratch_ids = new int[settings->get_nb_decks()];
+    for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
         // Track for a deck.
         QSharedPointer<Audio_track>                 at(new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate()));
@@ -104,9 +107,16 @@ int main(int argc, char *argv[])
         ats << at;
         dec_procs << dec_proc;
 
-        // Playback parameters.
+        // Playback parameters for a deck.
         QSharedPointer<Playback_parameters> play_param(new Playback_parameters);
         play_params << play_param;
+
+        // Process which analyze captured timecode data for a deck.
+        QSharedPointer<Timecode_control_process> tcode_control(new Timecode_control_process(play_param,
+                                                                                            settings->get_vinyl_type(),
+                                                                                            settings->get_sample_rate()));
+        tcode_controls << tcode_control;
+        dscratch_ids[i] = tcode_control->get_dscratch_id();
 
         // Set of samplers for a deck.
         QList<QSharedPointer<Audio_track>>                 at_sampler;
@@ -120,26 +130,13 @@ int main(int argc, char *argv[])
         }
         at_samplers << at_sampler;
         dec_sampler_procs << dec_sampler_proc;
-    }
 
-    // Process which analyze captured timecode data.
-    QSharedPointer<Timecode_control_process> tcode_control(new Timecode_control_process(play_params,
-                                                                                        settings->get_nb_decks(),
-                                                                                        settings->get_vinyl_type(),
-                                                                                        settings->get_sample_rate()));
-    int *dscratch_ids;
-    dscratch_ids = new int[settings->get_nb_decks()];
-    for (auto i = 0; i < settings->get_nb_decks(); i++)
-    {
-        dscratch_ids[i] = tcode_control->get_dscratch_id(i);
+        // Playback process for a deck.
+        QSharedPointer<Audio_track_playback_process> at_playback(new Audio_track_playback_process(at,
+                                                                                                  at_sampler,
+                                                                                                  play_param));
+        at_playbacks << at_playback;
     }
-
-    // Playback process.
-    QSharedPointer<Audio_track_playback_process> at_playback(new Audio_track_playback_process(ats,
-                                                                                              at_samplers,
-                                                                                              play_params,
-                                                                                              settings->get_nb_decks(),
-                                                                                              nb_samplers));
 
     // Access sound card.
     // TODO add settings to check if we want to use the timecode to get playback params or not (so no capture).
@@ -147,9 +144,10 @@ int main(int argc, char *argv[])
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    QSharedPointer<Sound_capture_and_playback_process> capture_and_playback(new Sound_capture_and_playback_process(tcode_control,
-                                                                                                                   at_playback,
-                                                                                                                   sound_card));
+    QSharedPointer<Sound_capture_and_playback_process> capture_and_playback(new Sound_capture_and_playback_process(tcode_controls,
+                                                                                                                   at_playbacks,
+                                                                                                                   sound_card,
+                                                                                                                   settings->get_nb_decks()));
     // TODO if not using timecode to get playback params
     //Only_playback_process *playback_external_params = new Playback_process_with_external_parameters(playback, sound_card);
 
@@ -159,7 +157,7 @@ int main(int argc, char *argv[])
                                     dec_procs,
                                     dec_sampler_procs,
                                     play_params,
-                                    at_playback,
+                                    at_playbacks,
                                     settings->get_nb_decks(),
                                     sound_card,
                                     capture_and_playback,

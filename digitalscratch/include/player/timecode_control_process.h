@@ -44,22 +44,18 @@ using namespace std;
 class Timecode_control_process
 {
  private:
-    unsigned short int                          nb_decks;
-    QList<QSharedPointer<Playback_parameters>>  params;             // Table of nb_decks playback parameters.
-    int                                        *dscratch_ids;       // Table of nb_decks dscratch ids.
+    QSharedPointer<Playback_parameters> params;
+    int                                 dscratch_id;
 
  public:
-    Timecode_control_process(QList<QSharedPointer<Playback_parameters>> &in_params,
-                             unsigned short int                          in_nb_decks,
-                             QString                                     in_vinyl_type,
-                             unsigned int                                in_sample_rate);
+    Timecode_control_process(QSharedPointer<Playback_parameters> &in_param,
+                             QString                              in_vinyl_type,
+                             unsigned int                         in_sample_rate);
     virtual ~Timecode_control_process();
 
     bool run(unsigned short int  in_nb_samples,
              float              *in_samples_1,
-             float              *in_samples_2,
-             float              *in_samples_3,
-             float              *in_samples_4);
+             float              *in_samples_2);
 
-    int get_dscratch_id(unsigned short int in_index);
+    int get_dscratch_id();
 };

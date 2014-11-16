@@ -49,7 +49,8 @@ Playback_parameters::~Playback_parameters()
 bool
 Playback_parameters::reset()
 {
-    this->speed = 0.0;
+    this->speed  = 0.0;
+    this->volume = 0.0;
 
     return true;
 }

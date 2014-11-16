@@ -37,22 +37,24 @@
 #include "application_logging.h"
 
 
-Sound_capture_and_playback_process::Sound_capture_and_playback_process(QSharedPointer<Timecode_control_process>     &in_tcode_control,
-                                                                       QSharedPointer<Audio_track_playback_process> &in_playback,
-                                                                       QSharedPointer<Sound_driver_access_rules>    &in_sound_card)
+Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
+                                                                       QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
+                                                                       QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
+                                                                       unsigned short int                               in_nb_decks)
 {
-    if (in_tcode_control.data() == NULL ||
-        in_playback.data()      == NULL ||
-        in_sound_card.data()    == NULL)
+    if (in_tcode_controls.count() == 0 ||
+        in_playbacks.count()      == 0 ||
+        in_sound_card.data()      == NULL)
     {
         qCWarning(DS_PLAYBACK) << "bad input parameters";
         return;
     }
     else
     {
-        this->tcode_control = in_tcode_control;
-        this->playback      = in_playback;
-        this->sound_card    = in_sound_card;
+        this->tcode_controls = in_tcode_controls;
+        this->playbacks      = in_playbacks;
+        this->sound_card     = in_sound_card;
+        this->nb_decks       = in_nb_decks;
     }
 
     return;
@@ -97,26 +99,38 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
     }
 
     // Analyze captured data. // TODO : a ne faire que si mode = timecode
-    if (this->tcode_control->run(in_nb_buffer_frames,
+    if (this->tcode_controls[0]->run(in_nb_buffer_frames,
                                  input_buffer_1,
-                                 input_buffer_2,
-                                 input_buffer_3,
-                                 input_buffer_4) == false)
+                                 input_buffer_2) == false)
     {
-        qCWarning(DS_PLAYBACK) << "timecode analysis failed";
+        qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck 1";
+        return false;
+    }
+    if ((this->nb_decks > 1) &&
+       (this->tcode_controls[1]->run(in_nb_buffer_frames,
+                                     input_buffer_3,
+                                     input_buffer_4) == false))
+    {
+        qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck 2";
         return false;
     }
 
     // Faire un cas particulier pour mode = manual.
 
     // Play data.
-    if (this->playback->run(in_nb_buffer_frames,
+    if (this->playbacks[0]->run(in_nb_buffer_frames,
                             output_buffer_1,
-                            output_buffer_2,
-                            output_buffer_3,
-                            output_buffer_4) == false)
+                            output_buffer_2) == false)
     {
-        qCWarning(DS_PLAYBACK) << "playback process failed";
+        qCWarning(DS_PLAYBACK) << "playback process failed for deck 1";
+        return false;
+    }
+    if ((this->nb_decks > 1) &&
+        (this->playbacks[1]->run(in_nb_buffer_frames,
+                            output_buffer_3,
+                            output_buffer_4) == false))
+    {
+        qCWarning(DS_PLAYBACK) << "playback process failed for deck 2";
         return false;
     }
 

@@ -94,14 +94,14 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
          QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
          QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
          QList<QSharedPointer<Playback_parameters>>                &in_params,
-         QSharedPointer<Audio_track_playback_process>              &in_playback,
+         QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
          unsigned short int                                         in_nb_decks,
          QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
          QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
          int                                                       *in_dscratch_ids)
 {
     // Check input parameters.
-    if (in_playback.data()             == NULL ||
+    if (in_playbacks.count()           == 0    ||
         in_sound_card.data()           == NULL ||
         in_capture_and_playback.data() == NULL ||
         in_dscratch_ids                == NULL)
@@ -121,7 +121,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     this->decs                    = in_decs;
     this->dec_samplers            = in_dec_samplers;
     this->params                  = in_params;
-    this->playback                = in_playback;
+    this->playbacks               = in_playbacks;
     this->nb_decks                = in_nb_decks;
     this->sound_card              = in_sound_card;
     this->capture_and_play        = in_capture_and_playback;
@@ -1464,11 +1464,14 @@ Gui::connect_decks_area()
     QObject::connect(this->deck2_gbox, &PlaybackQGroupBox::file_dropped, [this](){this->select_and_run_audio_file_decoding_process_deck2();});
 
     // Remaining time for each deck.
-    QObject::connect(this->playback.data(), &Audio_track_playback_process::remaining_time_changed,
-                     [this](unsigned int remaining_time, int deck_index)
-                     {
-                        this->set_remaining_time(remaining_time, deck_index);
-                     });
+    for(int i = 0; i < this->nb_decks; i++)
+    {
+        QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::remaining_time_changed,
+                         [this, i](unsigned int remaining_time)
+                         {
+                            this->set_remaining_time(remaining_time, i);
+                         });
+    }
 
     // Name of the track for each deck.
     QObject::connect(this->ats[0].data(), &Audio_track::name_changed, [this](QString name){this->deck1_track_name->setText(name);});
@@ -1742,19 +1745,22 @@ Gui::connect_samplers_area()
                 [this, i](){this->on_sampler_button_del_click(1, i);});
     }
 
-    // Remaining time for samplers.
-    QObject::connect(this->playback.data(), &Audio_track_playback_process::sampler_remaining_time_changed,
-                    [this](unsigned int remaining_time, int deck_index, int sampler_index)
-                    {
-                        this->set_sampler_remaining_time(remaining_time, deck_index, sampler_index);
-                    });
+    for (int i = 0; i < this->nb_decks; i++)
+    {
+        // Remaining time for samplers.
+        QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::sampler_remaining_time_changed,
+                        [this, i](unsigned int remaining_time, int sampler_index)
+                        {
+                            this->set_sampler_remaining_time(remaining_time, i, sampler_index);
+                        });
 
-    // State for samplers.
-    QObject::connect(this->playback.data(), &Audio_track_playback_process::sampler_state_changed,
-                    [this](int deck_index, int sampler_index, bool state)
-                    {
-                        this->set_sampler_state(deck_index, sampler_index, state);
-                    });
+        // State for samplers.
+        QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::sampler_state_changed,
+                        [this, i](int sampler_index, bool state)
+                        {
+                            this->set_sampler_state(i, sampler_index, state);
+                        });
+    }
 }
 
 void
@@ -2705,9 +2711,9 @@ Gui::run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
         }
         else
         {
-            this->playback->reset_sampler(in_deck_index, in_sampler_index);
+            this->playbacks[in_deck_index]->reset_sampler(in_sampler_index);
             this->set_sampler_state(in_deck_index, in_sampler_index, false);
-            this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
+            this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
         }
     }
 
@@ -2878,11 +2884,11 @@ Gui::on_sampler_button_play_click(unsigned short int in_deck_index,
 {
     // First stop playback (and return to beginning of the song).
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
-    this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
+    this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
 
     // Then start playback again.
     this->set_sampler_state(in_deck_index, in_sampler_index, true);
-    this->playback->set_sampler_state(in_deck_index, in_sampler_index, true);
+    this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, true);
 
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);
@@ -2896,7 +2902,7 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
 {
     // Stop playback (and return to beginning of the song).
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
-    this->playback->set_sampler_state(in_deck_index, in_sampler_index, false);
+    this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
 
     // Select playback area (if not already done).
     this->highlight_deck_sampler_area(in_deck_index);
@@ -2909,7 +2915,7 @@ Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
                                  unsigned short int in_sampler_index)
 {
     // Remove track loaded in the sampler.
-    this->playback->del_sampler(in_deck_index, in_sampler_index);
+    this->playbacks[in_deck_index]->del_sampler(in_sampler_index);
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
 
     // Select playback area (if not already done).
@@ -3069,7 +3075,7 @@ Gui::run_audio_file_decoding_process()
         if (info.fileName().compare(deck_track_name->text()) != 0 )
         {
             // Stop playback.
-            this->playback->stop(deck_index);
+            this->playbacks[deck_index]->stop();
 
             // Clear audio track and waveform.
             decode_process->clear();
@@ -3087,14 +3093,14 @@ Gui::run_audio_file_decoding_process()
         deck_waveform->reset();
 
         // Reset playback process.
-        this->playback->reset(deck_index);
+        this->playbacks[deck_index]->reset();
         deck_waveform->move_slider(0.0);
 
         // Reset cue point.
         for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
         {
-            deck_waveform->move_cue_slider(i, this->playback->get_cue_point(deck_index, i));
-            deck_cue_point[i]->setText(this->playback->get_cue_point_str(deck_index, i));
+            deck_waveform->move_cue_slider(i, this->playbacks[deck_index]->get_cue_point(i));
+            deck_cue_point[i]->setText(this->playbacks[deck_index]->get_cue_point_str(i));
         }
 
         // Update waveform.
@@ -3177,11 +3183,11 @@ Gui::set_remaining_time(unsigned int in_remaining_time, int in_deck_index)
     if (in_deck_index == 0)
     {
 
-       this->deck1_waveform->move_slider(this->playback->get_position(0));
+       this->deck1_waveform->move_slider(this->playbacks[in_deck_index]->get_position());
     }
     else
     {
-        this->deck2_waveform->move_slider(this->playback->get_position(1));
+        this->deck2_waveform->move_slider(this->playbacks[in_deck_index]->get_position());
     }
 
     return;
@@ -3247,7 +3253,7 @@ Gui::set_sampler_state(int  in_deck_index,
                        bool in_state)
 {
     // Change state only if a sample is loaded and playing.
-    if ((this->playback->is_sampler_loaded(in_deck_index, in_sampler_index) == true) && (in_state == true))
+    if ((this->playbacks[in_deck_index]->is_sampler_loaded(in_sampler_index) == true) && (in_state == true))
     {
         if (in_deck_index == 0)
         {
@@ -3338,7 +3344,7 @@ Gui::speed_up_down(float in_speed_inc, int in_deck_index)
 void
 Gui::deck1_jump_to_position(float in_position)
 {
-    this->playback->jump_to_position(0, in_position);
+    this->playbacks[0]->jump_to_position(in_position);
     this->highlight_deck_sampler_area(0);
 
     return;
@@ -3347,7 +3353,7 @@ Gui::deck1_jump_to_position(float in_position)
 void
 Gui::deck2_jump_to_position(float in_position)
 {
-    this->playback->jump_to_position(1, in_position);
+    this->playbacks[1]->jump_to_position(in_position);
     this->highlight_deck_sampler_area(1);
 
     return;
@@ -3359,12 +3365,12 @@ Gui::deck_go_to_begin()
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
         // Deck 2.
-        this->playback->jump_to_position(1, 0.0);
+        this->playbacks[1]->jump_to_position(0.0);
     }
     else
     {
         // Deck 1.
-        this->playback->jump_to_position(0, 0.0);
+        this->playbacks[0]->jump_to_position(0.0);
     }
 
     return;
@@ -3400,16 +3406,16 @@ Gui::deck_set_cue_point(int in_cue_point_number)
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {       
         // Deck 2.
-        this->deck2_waveform->move_cue_slider(in_cue_point_number, this->playback->get_position(1));
-        this->playback->store_cue_point(1, in_cue_point_number);
-        this->cue_point_deck2_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(1, in_cue_point_number));
+        this->deck2_waveform->move_cue_slider(in_cue_point_number, this->playbacks[1]->get_position());
+        this->playbacks[1]->store_cue_point(in_cue_point_number);
+        this->cue_point_deck2_labels[in_cue_point_number]->setText(this->playbacks[1]->get_cue_point_str(in_cue_point_number));
     }
     else
     {
         // Deck 1.
-        this->deck1_waveform->move_cue_slider(in_cue_point_number, this->playback->get_position(0));
-        this->playback->store_cue_point(0, in_cue_point_number);
-        this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(0, in_cue_point_number));
+        this->deck1_waveform->move_cue_slider(in_cue_point_number, this->playbacks[0]->get_position());
+        this->playbacks[0]->store_cue_point(in_cue_point_number);
+        this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playbacks[0]->get_cue_point_str(in_cue_point_number));
     }
 
     return;
@@ -3445,12 +3451,12 @@ Gui::deck_go_to_cue_point(int in_cue_point_number)
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {        
         // Deck 2.
-        this->playback->jump_to_cue_point(1, in_cue_point_number);
+        this->playbacks[1]->jump_to_cue_point(in_cue_point_number);
     }
     else
     {
         // Deck 1.
-        this->playback->jump_to_cue_point(0, in_cue_point_number);
+        this->playbacks[0]->jump_to_cue_point(in_cue_point_number);
     }
 
     return;
@@ -3486,16 +3492,16 @@ Gui::deck_del_cue_point(int in_cue_point_number)
     if ((this->nb_decks > 1) && (this->deck2_gbox->is_selected() == true))
     {
         // Deck 2.
-        this->playback->delete_cue_point(1, in_cue_point_number);
+        this->playbacks[1]->delete_cue_point(in_cue_point_number);
         this->deck2_waveform->move_cue_slider(in_cue_point_number, 0.0);
-        this->cue_point_deck2_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(1, in_cue_point_number));
+        this->cue_point_deck2_labels[in_cue_point_number]->setText(this->playbacks[1]->get_cue_point_str(in_cue_point_number));
     }
     else
     {
         // Deck 1.
-        this->playback->delete_cue_point(0, in_cue_point_number);
+        this->playbacks[0]->delete_cue_point(in_cue_point_number);
         this->deck1_waveform->move_cue_slider(in_cue_point_number, 0.0);
-        this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playback->get_cue_point_str(0, in_cue_point_number));
+        this->cue_point_deck1_labels[in_cue_point_number]->setText(this->playbacks[0]->get_cue_point_str(in_cue_point_number));
     }
 
     return;
