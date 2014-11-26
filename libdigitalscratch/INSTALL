@@ -17,7 +17,7 @@ or
 - MS Win SDK 7.1 (VS2010): http://www.microsoft.com/en-us/download/details.aspx?id=8279
 
 [Libraries]
-- Qt SDK (qt5.x): http://qt-project.org
+- Qt SDK (qt5.x): http://www.qt.io
 
 [Ubuntu 13.04]
 - build-essential

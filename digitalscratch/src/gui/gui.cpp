@@ -736,7 +736,7 @@ Gui::show_about_window()
     QLabel *built = new QLabel("<b>" + tr("Built with:") + "</b>");
     built->setTextFormat(Qt::RichText);
     QLabel *qt_version                = new QLabel((QString("- Qt v") + QString(qVersion())).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://qt-project.org\">http://qt-project.org</a>");
+                                                   + ", <a style=\"color: grey\" href=\"http://www.qt.io\">http://www.qt.io</a>");
     QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8()
                                                    + ", <a style=\"color: grey\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
     QLabel *libavcodec_version        = new QLabel((QString("- libavcodec v") + QString::number(LIBAVCODEC_VERSION_MAJOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MINOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MICRO)).toUtf8()

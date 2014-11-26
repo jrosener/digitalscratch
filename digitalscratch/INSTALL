@@ -16,7 +16,7 @@ or
 - MS Win SDK 7.1 (VS2010): http://www.microsoft.com/en-us/download/details.aspx?id=8279
 
 [Libraries]
-- Qt SDK (qt5.x):          http://qt-project.org
+- Qt SDK (qt5.x):          http://www.qt.io
 - mpg123 library:          http://www.mpg123.de
 - FLAC library:            http://flac.sourceforge.net
 - Digital Scratch library: http://www.digital-scratch.org
