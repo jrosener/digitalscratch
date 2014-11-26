@@ -158,7 +158,6 @@ int main(int argc, char *argv[])
                                     dec_sampler_procs,
                                     play_params,
                                     at_playbacks,
-                                    settings->get_nb_decks(),
                                     sound_card,
                                     capture_and_playback,
                                     dscratch_ids));

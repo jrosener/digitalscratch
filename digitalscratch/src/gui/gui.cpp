@@ -95,7 +95,6 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
          QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
          QList<QSharedPointer<Playback_parameters>>                &in_params,
          QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
-         unsigned short int                                         in_nb_decks,
          QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
          QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
          int                                                       *in_dscratch_ids)
@@ -110,6 +109,9 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
         return;
     }
 
+    // Get app settings.
+    this->settings = &Singleton<Application_settings>::get_instance();
+
     // Get decks/tracks and sound capture/playback engine.
     this->ats                     = in_ats;
     this->at_samplers             = in_at_samplers;
@@ -122,7 +124,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     this->dec_samplers            = in_dec_samplers;
     this->params                  = in_params;
     this->playbacks               = in_playbacks;
-    this->nb_decks                = in_nb_decks;
+    this->nb_decks                = this->settings->get_nb_decks();
     this->sound_card              = in_sound_card;
     this->capture_and_play        = in_capture_and_playback;
     this->dscratch_ids            = in_dscratch_ids;
@@ -131,9 +133,6 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     this->config_dialog                   = NULL;
     this->refresh_audio_collection_dialog = NULL;
     this->about_dialog                    = NULL;
-
-    // Get app settings.
-    this->settings = &Singleton<Application_settings>::get_instance();
 
     // Create and show the main window.
     if (this->create_main_window() != true)

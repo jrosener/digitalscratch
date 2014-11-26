@@ -327,7 +327,6 @@ class Gui : public QObject
         QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
         QList<QSharedPointer<Playback_parameters>>                &in_params,
         QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
-        unsigned short int                                         in_nb_decks,
         QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
         QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
         int                                                       *in_dscratch_ids);
