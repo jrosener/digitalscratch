@@ -66,6 +66,32 @@ using namespace std;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
+class SpeedQPushButton : public QPushButton
+{
+   Q_OBJECT
+
+   Q_PROPERTY(bool pressed
+              READ is_pressed
+              WRITE set_pressed
+              STORED true)
+   private:
+       bool l_pressed;
+       void set_pressed(bool is_pressed) { l_pressed = is_pressed; }
+
+   protected:
+       void mousePressEvent(QMouseEvent *in_mouse_event);
+       void mouseReleaseEvent(QMouseEvent *in_mouse_event);
+
+   public:
+       SpeedQPushButton(const QString &title);
+       virtual ~SpeedQPushButton();
+       bool is_pressed() { return l_pressed; }
+       void redraw();
+
+   signals:
+       void right_clicked();
+};
+
 class PlaybackQGroupBox : public QGroupBox
 {
    Q_OBJECT
@@ -98,30 +124,39 @@ class PlaybackQGroupBox : public QGroupBox
        void file_dropped();
 };
 
-class SpeedQPushButton : public QPushButton
+class Deck : public PlaybackQGroupBox
 {
    Q_OBJECT
 
-   Q_PROPERTY(bool pressed
-              READ is_pressed
-              WRITE set_pressed
-              STORED true)
-   private:
-       bool l_pressed;
-       void set_pressed(bool is_pressed) { l_pressed = is_pressed; }
+   public:
+       QSharedPointer<Audio_track> at;
+       QLabel            *track_name;
+       QLabel            *key;
+       Waveform          *waveform;
+       QHBoxLayout       *remaining_time_layout;
+       Remaining_time    *remaining_time;
+       QHBoxLayout       *buttons_layout;
+       QPushButton       *timecode_manual_button;
+       QLabel            *speed;
+       SpeedQPushButton  *speed_up_button;
+       SpeedQPushButton  *speed_down_button;
+       SpeedQPushButton  *accel_up_button;
+       SpeedQPushButton  *accel_down_button;
+       QPushButton       *restart_button;
+       QPushButton      **cue_set_buttons;
+       QPushButton      **cue_play_buttons;
+       QPushButton      **cue_del_buttons;
+       QLabel           **cue_point_labels;
 
-   protected:
-       void mousePressEvent(QMouseEvent *in_mouse_event);
-       void mouseReleaseEvent(QMouseEvent *in_mouse_event);
+   private:
+       Application_settings  *settings;
 
    public:
-       SpeedQPushButton(const QString &title);
-       virtual ~SpeedQPushButton();
-       bool is_pressed() { return l_pressed; }
-       void redraw();
-
-   signals:
-       void right_clicked();
+       Deck(const QString &title, QSharedPointer<Audio_track> &in_at);
+       virtual ~Deck();
+       void init_display();
+       void set_key(const QString& in_key);
+       void switch_speed_mode(bool in_mode);
 };
 
 class TreeViewIconProvider : public QFileIconProvider
@@ -166,48 +201,13 @@ class Gui : public QObject
 
     // Decks area.
     QHBoxLayout                        *decks_layout;
-    Remaining_time                    **decks_remaining_time;
     QShortcut                          *shortcut_go_to_begin;
     QShortcut                         **shortcut_set_cue_points;
     QShortcut                         **shortcut_go_to_cue_points;
     QShortcut                          *shortcut_switch_playback;
 
-    // Deck 1.
-    PlaybackQGroupBox                  *deck1_gbox;
-    QLabel                             *deck1_track_name;
-    QLabel                             *deck1_key;
-    Waveform                           *deck1_waveform;
-    QHBoxLayout                        *deck1_remaining_time_layout;
-    QHBoxLayout                        *deck1_buttons_layout;
-    QPushButton                        *deck1_timecode_manual_button;
-    QLabel                             *deck1_speed;
-    SpeedQPushButton                   *speed_up_on_deck1_button;
-    SpeedQPushButton                   *speed_down_on_deck1_button;
-    SpeedQPushButton                   *accel_up_on_deck1_button;
-    SpeedQPushButton                   *accel_down_on_deck1_button;
-    QPushButton                        *restart_on_deck1_button;
-    QPushButton                       **cue_set_on_deck1_buttons;
-    QPushButton                       **cue_play_on_deck1_buttons;
-    QPushButton                       **cue_del_on_deck1_buttons;
-    QLabel                            **cue_point_deck1_labels;
-
-    // Deck 2.
-    PlaybackQGroupBox                  *deck2_gbox;
-    QLabel                             *deck2_track_name;
-    QLabel                             *deck2_key;
-    Waveform                           *deck2_waveform;
-    QHBoxLayout                        *deck2_remaining_time_layout;
-    QHBoxLayout                        *deck2_buttons_layout;
-    QLabel                             *deck2_speed;
-    SpeedQPushButton                   *speed_up_on_deck2_button;
-    SpeedQPushButton                   *speed_down_on_deck2_button;
-    SpeedQPushButton                   *accel_up_on_deck2_button;
-    SpeedQPushButton                   *accel_down_on_deck2_button;
-    QPushButton                        *restart_on_deck2_button;
-    QPushButton                       **cue_set_on_deck2_buttons;
-    QPushButton                       **cue_play_on_deck2_buttons;
-    QPushButton                       **cue_del_on_deck2_buttons;
-    QLabel                            **cue_point_deck2_labels;
+    // Decks .
+    QList<Deck*>                        decks;
 
     // Samplers area.
     QHBoxLayout                        *samplers_layout;
@@ -338,8 +338,6 @@ class Gui : public QObject
     void clean_header_buttons();
     void connect_header_buttons();
     void init_decks_area();
-    void init_deck1_area();
-    void init_deck2_area();
     void clean_decks_area();
     void connect_decks_area();
     void init_samplers_area();
@@ -367,6 +365,7 @@ class Gui : public QObject
     void highlight_deck_sampler_area(unsigned short int in_deck_index);
     void highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                             bool               switch_on);
+    // TODO: add a method: int get_selected_deck()
     void resize_file_browser_columns();
     void analyze_audio_collection(bool is_all_files);
     void set_help_shortcut_value();
@@ -395,8 +394,7 @@ class Gui : public QObject
     void accept_refresh_audio_collection_dialog_new_files();
     bool show_error_window(QString in_error_message);
     void done_error_window();
-    void select_and_run_audio_file_decoding_process_deck1();
-    void select_and_run_audio_file_decoding_process_deck2();
+    void select_and_run_audio_file_decoding_process(unsigned short int in_deck_index);
     void run_audio_file_decoding_process();
     void show_hide_samplers();
     void select_and_run_sample1_decoding_process_deck1();
@@ -418,28 +416,20 @@ class Gui : public QObject
                                       unsigned short int in_sampler_index);
     void on_sampler_button_del_click(unsigned short int in_deck_index,
                                      unsigned short int in_sampler_index);
-    void set_deck1_key(const QString& in_key);
-    void set_deck2_key(const QString& in_key);
     void set_remaining_time(unsigned int in_remaining_time, int in_deck_index);
     void set_sampler_remaining_time(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);
     void set_sampler_state(int in_deck_index, int in_sampler_index, bool in_state);
-    void deck1_jump_to_position(float in_position); // 0.0 < Position < 1.0
-    void deck2_jump_to_position(float in_position); // 0.0 < Position < 1.0
+    void jump_to_position(float in_position, unsigned short int in_deck_index); // 0.0 < Position < 1.0
     void deck_go_to_begin();
-    void deck1_go_to_begin();
-    void deck2_go_to_begin();
+    void go_to_begin(unsigned short int in_deck_index);
     void deck_set_cue_point(int in_cue_point_number);
-    void deck1_set_cue_point(int in_cue_point_number);
-    void deck2_set_cue_point(int in_cue_point_number);
+    void set_cue_point(unsigned short int in_deck_index, int in_cue_point_number);
     void deck_go_to_cue_point(int in_cue_point_number);
-    void deck1_go_to_cue_point(int in_cue_point_number);
-    void deck2_go_to_cue_point(int in_cue_point_number);
+    void go_to_cue_point(unsigned short int in_deck_index, int in_cue_point_number);
     void deck_del_cue_point(int in_cue_point_number);
-    void deck1_del_cue_point(int in_cue_point_number);
-    void deck2_del_cue_point(int in_cue_point_number);
+    void del_cue_point(unsigned short int in_deck_index, int in_cue_point_number);
     void switch_playback_selection();
-    void select_playback_1();
-    void select_playback_2();
+    void select_playback(int in_deck_index);
     void hover_playback(int in_deck_index);
     void unhover_playback(int in_deck_index);
     void can_close();
