@@ -129,27 +129,27 @@ class Deck : public PlaybackQGroupBox
    Q_OBJECT
 
    public:
-       QSharedPointer<Audio_track> at;
-       QLabel            *track_name;
-       QLabel            *key;
-       Waveform          *waveform;
-       QHBoxLayout       *remaining_time_layout;
-       Remaining_time    *remaining_time;
-       QHBoxLayout       *buttons_layout;
-       QPushButton       *timecode_manual_button;
-       QLabel            *speed;
-       SpeedQPushButton  *speed_up_button;
-       SpeedQPushButton  *speed_down_button;
-       SpeedQPushButton  *accel_up_button;
-       SpeedQPushButton  *accel_down_button;
-       QPushButton       *restart_button;
-       QPushButton      **cue_set_buttons;
-       QPushButton      **cue_play_buttons;
-       QPushButton      **cue_del_buttons;
-       QLabel           **cue_point_labels;
+       QSharedPointer<Audio_track>   at;
+       QLabel                       *track_name;
+       QLabel                       *key;
+       Waveform                     *waveform;
+       QHBoxLayout                  *remaining_time_layout;
+       Remaining_time               *remaining_time;
+       QHBoxLayout                  *buttons_layout;
+       QPushButton                  *timecode_manual_button;
+       QLabel                       *speed;
+       SpeedQPushButton             *speed_up_button;
+       SpeedQPushButton             *speed_down_button;
+       SpeedQPushButton             *accel_up_button;
+       SpeedQPushButton             *accel_down_button;
+       QPushButton                  *restart_button;
+       QPushButton                 **cue_set_buttons;
+       QPushButton                 **cue_play_buttons;
+       QPushButton                 **cue_del_buttons;
+       QLabel                      **cue_point_labels;
 
    private:
-       Application_settings  *settings;
+       Application_settings *settings;
 
    public:
        Deck(const QString &title, QSharedPointer<Audio_track> &in_at);
@@ -158,6 +158,30 @@ class Deck : public PlaybackQGroupBox
        void set_key(const QString& in_key);
        void switch_speed_mode(bool in_mode);
 };
+
+class Sampler : public PlaybackQGroupBox
+{
+   Q_OBJECT
+
+   public:
+       QList<QPushButton*>  buttons_play;
+       QList<QPushButton*>  buttons_stop;
+       QList<QPushButton*>  buttons_del;
+       QList<QLabel*>       tracknames;
+       QList<QLabel*>       remaining_times;
+       QWidget             *area;
+
+   private:
+       unsigned short int    nb_samplers;
+       Application_settings *settings;
+
+   public:
+       Sampler(const QString      &in_title,
+               unsigned short int  in_nb_samplers);
+       virtual ~Sampler();
+       void init_display();
+};
+
 
 class TreeViewIconProvider : public QFileIconProvider
 {
@@ -205,13 +229,12 @@ class Gui : public QObject
     QShortcut                         **shortcut_set_cue_points;
     QShortcut                         **shortcut_go_to_cue_points;
     QShortcut                          *shortcut_switch_playback;
-
-    // Decks .
     QList<Deck*>                        decks;
 
     // Samplers area.
     QHBoxLayout                        *samplers_layout;
     QPushButton                        *show_hide_samplers_button;
+    //QList<Sampler*>                     samplers;
 
     // Sampler 1.
     PlaybackQGroupBox                  *sampler1_gbox;
