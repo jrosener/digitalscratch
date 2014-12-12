@@ -234,25 +234,7 @@ class Gui : public QObject
     // Samplers area.
     QHBoxLayout                        *samplers_layout;
     QPushButton                        *show_hide_samplers_button;
-    //QList<Sampler*>                     samplers;
-
-    // Sampler 1.
-    PlaybackQGroupBox                  *sampler1_gbox;
-    QPushButton                       **sampler1_buttons_play;
-    QPushButton                       **sampler1_buttons_stop;
-    QPushButton                       **sampler1_buttons_del;
-    QLabel                            **sampler1_trackname;
-    QLabel                            **sampler1_remainingtime;
-    QWidget                            *sampler1_widget;
-
-    // Sampler 2.
-    PlaybackQGroupBox                  *sampler2_gbox;
-    QPushButton                       **sampler2_buttons_play;
-    QPushButton                       **sampler2_buttons_stop;
-    QPushButton                       **sampler2_buttons_del;
-    QLabel                            **sampler2_trackname;
-    QLabel                            **sampler2_remainingtime;
-    QWidget                            *sampler2_widget;
+    QList<Sampler*>                     samplers;
 
     // File and folder browser area.
     QHBoxLayout                        *file_layout;
@@ -364,8 +346,6 @@ class Gui : public QObject
     void clean_decks_area();
     void connect_decks_area();
     void init_samplers_area();
-    void init_sampler1_area();
-    void init_sampler2_area();
     void clean_samplers_area();
     void connect_samplers_area();
     void connect_decks_and_samplers_selection();
@@ -388,7 +368,7 @@ class Gui : public QObject
     void highlight_deck_sampler_area(unsigned short int in_deck_index);
     void highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                             bool               switch_on);
-    // TODO: add a method: int get_selected_deck()
+    unsigned short int get_selected_deck_index();
     void resize_file_browser_columns();
     void analyze_audio_collection(bool is_all_files);
     void set_help_shortcut_value();
@@ -431,8 +411,7 @@ class Gui : public QObject
     void run_sampler_decoding_process(unsigned short int in_sampler_index);
     void run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
                                               unsigned short int in_sampler_index);
-    void set_sampler_1_text(QString in_text, unsigned short int in_sampler_index);
-    void set_sampler_2_text(QString in_text, unsigned short int in_sampler_index);
+    void set_sampler_text(QString in_text, unsigned short int in_deck_index, unsigned short int in_sampler_index);
     void on_sampler_button_play_click(unsigned short int in_deck_index,
                                       unsigned short int in_sampler_index);
     void on_sampler_button_stop_click(unsigned short int in_deck_index,

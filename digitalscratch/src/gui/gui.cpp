@@ -628,7 +628,7 @@ Gui::show_refresh_audio_collection_dialog()
 void
 Gui::show_hide_samplers()
 {
-    if (this->sampler1_widget->isVisible() == true)
+    if (this->samplers[0]->area->isVisible() == true)
     {
         // Hide samplers.
         this->hide_samplers();
@@ -645,12 +645,10 @@ Gui::hide_samplers()
 {
     this->show_hide_samplers_button->setChecked(false);
     this->settings->set_samplers_visible(false);
-    this->sampler1_widget->setVisible(false);
-    this->sampler1_gbox->setMaximumHeight(20);
-    if (this->nb_decks > 1)
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        this->sampler2_widget->setVisible(false);
-        this->sampler2_gbox->setMaximumHeight(20);
+        this->samplers[i]->area->setVisible(false);
+        this->samplers[i]->setMaximumHeight(20);
     }
 }
 
@@ -659,12 +657,10 @@ Gui::show_samplers()
 {
     this->show_hide_samplers_button->setChecked(true);
     this->settings->set_samplers_visible(true);
-    this->sampler1_gbox->setMaximumHeight(999);
-    this->sampler1_widget->setVisible(true);
-    if (this->nb_decks > 1)
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        this->sampler2_gbox->setMaximumHeight(999);
-        this->sampler2_widget->setVisible(true);
+        this->samplers[i]->setMaximumHeight(999);
+        this->samplers[i]->area->setVisible(true);
     }
 }
 
@@ -1180,25 +1176,18 @@ Gui::connect_decks_area()
 void
 Gui::init_samplers_area()
 {
- /// NEW PART
-//    // Create horizontal layout for samplers.
-//    this->samplers_layout = new QHBoxLayout;
+    // Create horizontal layout for samplers.
+    this->samplers_layout = new QHBoxLayout;
 
-//    // Create sampler area and put it in layout.
-//    this->samplers.clear();
-//    for (unsigned short int i = 0; i < this->nb_decks; i++)
-//    {
-//        Sampler *sp = new Sampler(tr("Sampler ") + QString::number(i+1), this->nb_samplers);
-//        sp->init_display();
-//        this->samplers.push_back(sp);
-//        this->samplers_layout->addWidget(this->samplers[i]);
-//    }
-/////
-
- /// OLD to be removed
-    // Init sampler 1 and 2.
-    this->init_sampler1_area();
-    this->init_sampler2_area();
+    // Create sampler area and put it in layout.
+    this->samplers.clear();
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        Sampler *sp = new Sampler(tr("Sampler ") + QString::number(i+1), this->nb_samplers);
+        sp->init_display();
+        this->samplers.push_back(sp);
+        this->samplers_layout->addWidget(this->samplers[i]);
+    }
 
     // Sampler's show/hide button.
     this->show_hide_samplers_button = new QPushButton();
@@ -1207,164 +1196,144 @@ Gui::init_samplers_area()
     this->show_hide_samplers_button->setFixedSize(12, 12);
     this->show_hide_samplers_button->setCheckable(true);
     this->show_hide_samplers_button->setChecked(true);
-
-    // Samplers layout.
-    this->samplers_layout = new QHBoxLayout();
-    this->samplers_layout->addWidget(this->sampler1_gbox, 100);
     this->samplers_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignVCenter);
-    if (this->nb_decks > 1)
-    {
-        this->samplers_layout->addWidget(this->sampler2_gbox, 100);
-    }
- ////
 }
 
-void
-Gui::init_sampler1_area()
-{
-    // Sampler 1 group box
-    this->sampler1_buttons_play  = new QPushButton*[this->nb_samplers];
-    this->sampler1_buttons_stop  = new QPushButton*[this->nb_samplers];
-    this->sampler1_buttons_del   = new QPushButton*[this->nb_samplers];
-    this->sampler1_trackname     = new QLabel*[this->nb_samplers];
-    this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
-    QVBoxLayout *sampler1_layout = new QVBoxLayout();
-    this->sampler1_widget        = new QWidget();
-    this->sampler1_widget->setLayout(sampler1_layout);
-    sampler1_layout->setMargin(0);
-    QVBoxLayout *sampler1_layout_container = new QVBoxLayout();
-    sampler1_layout_container->addWidget(this->sampler1_widget);
-    sampler1_layout->setMargin(0);
-    this->sampler1_widget->setObjectName("Sampler_main_widget");
-    QString sampler1_name("A");
-    for (int i = 0; i < this->nb_samplers; i++)
-    {
-        this->sampler1_buttons_play[i] = new QPushButton();
-        this->sampler1_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler1_buttons_play[i]->setFixedSize(16, 16);
-        this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler1_buttons_play[i]->setCheckable(true);
-        this->sampler1_buttons_play[i]->setToolTip(tr("Play sample from start"));
-        this->sampler1_buttons_stop[i] = new QPushButton();
-        this->sampler1_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler1_buttons_stop[i]->setFixedSize(16, 16);
-        this->sampler1_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler1_buttons_stop[i]->setCheckable(true);
-        this->sampler1_buttons_stop[i]->setChecked(true);
-        this->sampler1_buttons_stop[i]->setToolTip(tr("Stop sample"));
-        this->sampler1_buttons_del[i] = new QPushButton();
-        this->sampler1_buttons_del[i]->setObjectName("Sampler_del_buttons");
-        this->sampler1_buttons_del[i]->setFixedSize(16, 16);
-        this->sampler1_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler1_buttons_del[i]->setCheckable(true);
-        this->sampler1_buttons_del[i]->setChecked(true);
-        this->sampler1_buttons_del[i]->setToolTip(tr("Delete sample"));
-        this->sampler1_trackname[i]     = new QLabel(tr("--"));
-        this->sampler1_remainingtime[i] = new QLabel("- 00");
+//void
+//Gui::init_sampler1_area()
+//{
+//    // Sampler 1 group box
+//    this->sampler1_buttons_play  = new QPushButton*[this->nb_samplers];
+//    this->sampler1_buttons_stop  = new QPushButton*[this->nb_samplers];
+//    this->sampler1_buttons_del   = new QPushButton*[this->nb_samplers];
+//    this->sampler1_trackname     = new QLabel*[this->nb_samplers];
+//    this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
+//    QVBoxLayout *sampler1_layout = new QVBoxLayout();
+//    this->sampler1_widget        = new QWidget();
+//    this->sampler1_widget->setLayout(sampler1_layout);
+//    sampler1_layout->setMargin(0);
+//    QVBoxLayout *sampler1_layout_container = new QVBoxLayout();
+//    sampler1_layout_container->addWidget(this->sampler1_widget);
+//    sampler1_layout->setMargin(0);
+//    this->sampler1_widget->setObjectName("Sampler_main_widget");
+//    QString sampler1_name("A");
+//    for (int i = 0; i < this->nb_samplers; i++)
+//    {
+//        this->sampler1_buttons_play[i] = new QPushButton();
+//        this->sampler1_buttons_play[i]->setObjectName("Sampler_play_buttons");
+//        this->sampler1_buttons_play[i]->setFixedSize(16, 16);
+//        this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
+//        this->sampler1_buttons_play[i]->setCheckable(true);
+//        this->sampler1_buttons_play[i]->setToolTip(tr("Play sample from start"));
+//        this->sampler1_buttons_stop[i] = new QPushButton();
+//        this->sampler1_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
+//        this->sampler1_buttons_stop[i]->setFixedSize(16, 16);
+//        this->sampler1_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
+//        this->sampler1_buttons_stop[i]->setCheckable(true);
+//        this->sampler1_buttons_stop[i]->setChecked(true);
+//        this->sampler1_buttons_stop[i]->setToolTip(tr("Stop sample"));
+//        this->sampler1_buttons_del[i] = new QPushButton();
+//        this->sampler1_buttons_del[i]->setObjectName("Sampler_del_buttons");
+//        this->sampler1_buttons_del[i]->setFixedSize(16, 16);
+//        this->sampler1_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
+//        this->sampler1_buttons_del[i]->setCheckable(true);
+//        this->sampler1_buttons_del[i]->setChecked(true);
+//        this->sampler1_buttons_del[i]->setToolTip(tr("Delete sample"));
+//        this->sampler1_trackname[i]     = new QLabel(tr("--"));
+//        this->sampler1_remainingtime[i] = new QLabel("- 00");
 
-        QSamplerContainerWidget *container = new QSamplerContainerWidget(0, i, this);
-        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
-        QLabel *sampler1_name_label = new QLabel(sampler1_name);
-        sampler1_name_label->setFixedWidth(15);
-        sampler_horz_layout->addWidget(sampler1_name_label,             1);
-        sampler_horz_layout->addWidget(this->sampler1_buttons_play[i],  1);
-        sampler_horz_layout->addWidget(this->sampler1_buttons_stop[i],  1);
-        sampler_horz_layout->addWidget(this->sampler1_buttons_del[i],   1);
-        sampler_horz_layout->addWidget(this->sampler1_remainingtime[i], 4);
-        sampler_horz_layout->addWidget(this->sampler1_trackname[i],     95);
-        sampler_horz_layout->setMargin(0);
-        container->setLayout(sampler_horz_layout);
-        sampler1_layout->addWidget(container);
+//        QSamplerContainerWidget *container = new QSamplerContainerWidget(0, i, this);
+//        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
+//        QLabel *sampler1_name_label = new QLabel(sampler1_name);
+//        sampler1_name_label->setFixedWidth(15);
+//        sampler_horz_layout->addWidget(sampler1_name_label,             1);
+//        sampler_horz_layout->addWidget(this->sampler1_buttons_play[i],  1);
+//        sampler_horz_layout->addWidget(this->sampler1_buttons_stop[i],  1);
+//        sampler_horz_layout->addWidget(this->sampler1_buttons_del[i],   1);
+//        sampler_horz_layout->addWidget(this->sampler1_remainingtime[i], 4);
+//        sampler_horz_layout->addWidget(this->sampler1_trackname[i],     95);
+//        sampler_horz_layout->setMargin(0);
+//        container->setLayout(sampler_horz_layout);
+//        sampler1_layout->addWidget(container);
 
-        sampler1_name[0].unicode()++; // Next sampler letter.
-    }
-    this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
-    this->sampler1_gbox->setObjectName("SamplerGBox");
-    this->sampler1_gbox->setLayout(sampler1_layout_container);
-}
+//        sampler1_name[0].unicode()++; // Next sampler letter.
+//    }
+//    this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
+//    this->sampler1_gbox->setObjectName("SamplerGBox");
+//    this->sampler1_gbox->setLayout(sampler1_layout_container);
+//}
 
-void
-Gui::init_sampler2_area()
-{
-    // Sampler 2 group box
-    this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
-    this->sampler2_buttons_stop  = new QPushButton*[this->nb_samplers];
-    this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
-    this->sampler2_trackname     = new QLabel*[this->nb_samplers];
-    this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
-    QVBoxLayout *sampler2_layout = new QVBoxLayout();
-    this->sampler2_widget        = new QWidget();
-    this->sampler2_widget->setLayout(sampler2_layout);
-    sampler2_layout->setMargin(0);
-    QVBoxLayout *sampler2_layout_container = new QVBoxLayout();
-    sampler2_layout_container->addWidget(this->sampler2_widget);
-    sampler2_layout->setMargin(0);
-    this->sampler2_widget->setObjectName("Sampler_main_widget");
-    QString sampler2_name("A");
-    for (int i = 0; i < this->nb_samplers; i++)
-    {
-        this->sampler2_buttons_play[i] = new QPushButton();
-        this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
-        this->sampler2_buttons_play[i]->setFixedSize(16, 16);
-        this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler2_buttons_play[i]->setCheckable(true);
-        this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
-        this->sampler2_buttons_stop[i] = new QPushButton();
-        this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-        this->sampler2_buttons_stop[i]->setFixedSize(16, 16);
-        this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler2_buttons_stop[i]->setCheckable(true);
-        this->sampler2_buttons_stop[i]->setChecked(true);
-        this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
-        this->sampler2_buttons_del[i] = new QPushButton();
-        this->sampler2_buttons_del[i]->setObjectName("Sampler_del_buttons");
-        this->sampler2_buttons_del[i]->setFixedSize(16, 16);
-        this->sampler2_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
-        this->sampler2_buttons_del[i]->setCheckable(true);
-        this->sampler2_buttons_del[i]->setChecked(true);
-        this->sampler2_buttons_del[i]->setToolTip(tr("Delete sample"));
-        this->sampler2_trackname[i]     = new QLabel(tr("--"));
-        this->sampler2_remainingtime[i] = new QLabel("- 00");
+//void
+//Gui::init_sampler2_area()
+//{
+//    // Sampler 2 group box
+//    this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
+//    this->sampler2_buttons_stop  = new QPushButton*[this->nb_samplers];
+//    this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
+//    this->sampler2_trackname     = new QLabel*[this->nb_samplers];
+//    this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
+//    QVBoxLayout *sampler2_layout = new QVBoxLayout();
+//    this->sampler2_widget        = new QWidget();
+//    this->sampler2_widget->setLayout(sampler2_layout);
+//    sampler2_layout->setMargin(0);
+//    QVBoxLayout *sampler2_layout_container = new QVBoxLayout();
+//    sampler2_layout_container->addWidget(this->sampler2_widget);
+//    sampler2_layout->setMargin(0);
+//    this->sampler2_widget->setObjectName("Sampler_main_widget");
+//    QString sampler2_name("A");
+//    for (int i = 0; i < this->nb_samplers; i++)
+//    {
+//        this->sampler2_buttons_play[i] = new QPushButton();
+//        this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
+//        this->sampler2_buttons_play[i]->setFixedSize(16, 16);
+//        this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
+//        this->sampler2_buttons_play[i]->setCheckable(true);
+//        this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
+//        this->sampler2_buttons_stop[i] = new QPushButton();
+//        this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
+//        this->sampler2_buttons_stop[i]->setFixedSize(16, 16);
+//        this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
+//        this->sampler2_buttons_stop[i]->setCheckable(true);
+//        this->sampler2_buttons_stop[i]->setChecked(true);
+//        this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
+//        this->sampler2_buttons_del[i] = new QPushButton();
+//        this->sampler2_buttons_del[i]->setObjectName("Sampler_del_buttons");
+//        this->sampler2_buttons_del[i]->setFixedSize(16, 16);
+//        this->sampler2_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
+//        this->sampler2_buttons_del[i]->setCheckable(true);
+//        this->sampler2_buttons_del[i]->setChecked(true);
+//        this->sampler2_buttons_del[i]->setToolTip(tr("Delete sample"));
+//        this->sampler2_trackname[i]     = new QLabel(tr("--"));
+//        this->sampler2_remainingtime[i] = new QLabel("- 00");
 
-        QSamplerContainerWidget *container = new QSamplerContainerWidget(1, i, this);
-        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
-        QLabel *sampler2_name_label = new QLabel(sampler2_name);
-        sampler2_name_label->setFixedWidth(15);
-        sampler_horz_layout->addWidget(sampler2_name_label,             1);
-        sampler_horz_layout->addWidget(this->sampler2_buttons_play[i],  1);
-        sampler_horz_layout->addWidget(this->sampler2_buttons_stop[i],  1);
-        sampler_horz_layout->addWidget(this->sampler2_buttons_del[i],   1);
-        sampler_horz_layout->addWidget(this->sampler2_remainingtime[i], 4);
-        sampler_horz_layout->addWidget(this->sampler2_trackname[i],     95);
-        sampler_horz_layout->setMargin(0);
-        container->setLayout(sampler_horz_layout);
-        sampler2_layout->addWidget(container);
+//        QSamplerContainerWidget *container = new QSamplerContainerWidget(1, i, this);
+//        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
+//        QLabel *sampler2_name_label = new QLabel(sampler2_name);
+//        sampler2_name_label->setFixedWidth(15);
+//        sampler_horz_layout->addWidget(sampler2_name_label,             1);
+//        sampler_horz_layout->addWidget(this->sampler2_buttons_play[i],  1);
+//        sampler_horz_layout->addWidget(this->sampler2_buttons_stop[i],  1);
+//        sampler_horz_layout->addWidget(this->sampler2_buttons_del[i],   1);
+//        sampler_horz_layout->addWidget(this->sampler2_remainingtime[i], 4);
+//        sampler_horz_layout->addWidget(this->sampler2_trackname[i],     95);
+//        sampler_horz_layout->setMargin(0);
+//        container->setLayout(sampler_horz_layout);
+//        sampler2_layout->addWidget(container);
 
-        sampler2_name[0].unicode()++; // Next sampler letter.
-    }
-    this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
-    this->sampler2_gbox->setObjectName("SamplerGBox");
-    this->sampler2_gbox->setLayout(sampler2_layout_container);
-}
+//        sampler2_name[0].unicode()++; // Next sampler letter.
+//    }
+//    this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
+//    this->sampler2_gbox->setObjectName("SamplerGBox");
+//    this->sampler2_gbox->setLayout(sampler2_layout_container);
+//}
 
 void
 Gui::clean_samplers_area()
 {
-    // Sampler 1.
-    delete [] this->sampler1_buttons_play;
-    delete [] this->sampler1_buttons_stop;
-    delete [] this->sampler1_buttons_del;
-    delete [] this->sampler1_trackname;
-    delete [] this->sampler1_remainingtime;
-    delete this->sampler1_widget;
-
-    // Sampler 2.
-    delete [] this->sampler2_buttons_play;
-    delete [] this->sampler2_buttons_stop;
-    delete [] this->sampler2_buttons_del;
-    delete [] this->sampler2_trackname;
-    delete [] this->sampler2_remainingtime;
-    delete this->sampler2_widget;
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        delete this->samplers[i];
+    }
 }
 
 void
@@ -1373,48 +1342,30 @@ Gui::connect_samplers_area()
     // Show/hide samplers.
     QObject::connect(this->show_hide_samplers_button, &QPushButton::clicked, [this](){this->show_hide_samplers();});
 
-    // Name of samplers.
-    for (unsigned short int i = 0; i < this->nb_samplers; i++)
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        QObject::connect(this->at_samplers[0][i].data(), &Audio_track::name_changed,
-                        [this, i](QString text)
-                        {
-                            this->set_sampler_1_text(text, i);
-                        });
-        if (this->nb_decks > 1)
+        for (unsigned short int j = 0; j < this->nb_samplers; j++)
         {
-            QObject::connect(this->at_samplers[1][i].data(), &Audio_track::name_changed,
-                            [this, i](QString text)
+            // Button: play sampler.
+            QObject::connect(this->samplers[i]->buttons_play[j], &QPushButton::clicked,
+                             [this, i, j](){this->on_sampler_button_play_click(i, j);});
+
+            // Button: stop sampler.
+            QObject::connect(this->samplers[i]->buttons_stop[j], &QPushButton::clicked,
+                             [this, i, j](){this->on_sampler_button_stop_click(i, j);});
+
+            // Button: del sampler.
+            QObject::connect(this->samplers[i]->buttons_del[j], &QPushButton::clicked,
+                             [this, i, j](){this->on_sampler_button_del_click(i, j);});
+
+            // Track name.
+            QObject::connect(this->at_samplers[i][j].data(), &Audio_track::name_changed,
+                            [this, i, j](QString text)
                             {
-                                this->set_sampler_2_text(text, i);
+                                this->set_sampler_text(text, i, j);
                             });
         }
-    }
 
-    // Start stop samplers.
-    for (unsigned short int i = 0; i < this->nb_samplers; i++)
-    {
-        // Button: play sampler.
-        QObject::connect(this->sampler1_buttons_play[i], &QPushButton::clicked,
-                [this, i](){this->on_sampler_button_play_click(0, i);});
-        if (this->nb_decks > 1) QObject::connect(this->sampler2_buttons_play[i], &QPushButton::clicked,
-                [this, i](){this->on_sampler_button_play_click(1, i);});
-
-        // Button: stop sampler.
-        QObject::connect(this->sampler1_buttons_stop[i], &QPushButton::clicked,
-                [this, i](){this->on_sampler_button_stop_click(0, i);});
-        if (this->nb_decks > 1) QObject::connect(this->sampler2_buttons_stop[i], &QPushButton::clicked,
-                [this, i](){this->on_sampler_button_stop_click(1, i);});
-
-        // Button: del sampler.
-        QObject::connect(this->sampler1_buttons_del[i], &QPushButton::clicked,
-                [this, i](){this->on_sampler_button_del_click(0, i);});
-        if (this->nb_decks > 1) QObject::connect(this->sampler2_buttons_del[i], &QPushButton::clicked,
-                [this, i](){this->on_sampler_button_del_click(1, i);});
-    }
-
-    for (int i = 0; i < this->nb_decks; i++)
-    {
         // Remaining time for samplers.
         QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::sampler_remaining_time_changed,
                         [this, i](unsigned int remaining_time, int sampler_index)
@@ -1434,33 +1385,24 @@ Gui::connect_samplers_area()
 void
 Gui::connect_decks_and_samplers_selection()
 {
-    // Create mouse action to select deck/sampler.
-    for (int i = 0; i < this->nb_decks; i++)
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        QObject::connect(this->decks[i], &Deck::selected, [this, i](){this->select_playback(i);});
-    }
-    QObject::connect(this->sampler1_gbox, &PlaybackQGroupBox::selected, [this](){this->select_playback(0);});
-    QObject::connect(this->sampler2_gbox, &PlaybackQGroupBox::selected, [this](){this->select_playback(1);});
+        // Create mouse action to select deck/sampler.
+        QObject::connect(this->decks[i],    &Deck::selected,    [this, i](){this->select_playback(i);});
+        QObject::connect(this->samplers[i], &Sampler::selected, [this, i](){this->select_playback(i);});
 
-    // Create mouse action when deck/sampler is hovered (mouse entering area).
-    for (int i = 0; i < this->nb_decks; i++)
-    {
-        QObject::connect(this->decks[i], &Deck::hover, [this, i](){this->hover_playback(i);});
-    }
-    QObject::connect(this->sampler1_gbox, &PlaybackQGroupBox::hover, [this](){this->hover_playback(0);});
-    QObject::connect(this->sampler2_gbox, &PlaybackQGroupBox::hover, [this](){this->hover_playback(1);});
+        // Create mouse action when deck/sampler is hovered (mouse entering area).
+        QObject::connect(this->decks[i],    &Deck::hover,    [this, i](){this->hover_playback(i);});
+        QObject::connect(this->samplers[i], &Sampler::hover, [this, i](){this->hover_playback(i);});
 
-    // Create mouse action when deck/sampler is unhovered (mouse leaving area).
-    for (int i = 0; i < this->nb_decks; i++)
-    {
-        QObject::connect(this->decks[i], &Deck::unhover, [this, i](){this->unhover_playback(i);});
+        // Create mouse action when deck/sampler is unhovered (mouse leaving area).
+        QObject::connect(this->decks[i],    &Deck::unhover,    [this, i](){this->unhover_playback(i);});
+        QObject::connect(this->samplers[i], &Sampler::unhover, [this, i](){this->unhover_playback(i);});
     }
-    QObject::connect(this->sampler1_gbox, &PlaybackQGroupBox::unhover, [this](){this->unhover_playback(0);});
-    QObject::connect(this->sampler2_gbox, &PlaybackQGroupBox::unhover, [this](){this->unhover_playback(1);});
 
     // Preselect deck and sampler 1.
     this->decks[0]->setProperty("selected", true);
-    this->sampler1_gbox->setProperty("selected", true);
+    this->samplers[0]->setProperty("selected", true);
 
     // Connect keyboard shortcut to switch selection of decks/samplers.
     this->shortcut_switch_playback = new QShortcut(this->window);
@@ -2065,18 +2007,6 @@ Gui::apply_main_window_style()
     if (this->window_style == QString(GUI_STYLE_NATIVE))
     {
         // Set manually some standard icons.
-        for (int i = 0; i < this->nb_samplers; i++)
-        {
-            this->sampler1_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
-            this->sampler2_buttons_play[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
-            this->sampler1_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
-            this->sampler2_buttons_stop[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
-            this->sampler1_buttons_del[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
-            this->sampler2_buttons_del[i]->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
-        }
-        this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
-        this->load_track_on_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
-
         for (unsigned short int i = 0; i < this->nb_decks; i++)
         {
             this->decks[i]->restart_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaSkipBackward));
@@ -2089,7 +2019,16 @@ Gui::apply_main_window_style()
                 this->decks[i]->cue_del_buttons[j]->setIcon(QIcon());
                 this->decks[i]->cue_del_buttons[j]->setText("x");
             }
+            for (unsigned short int j = 0; j < this->nb_samplers; j++)
+            {
+                this->samplers[i]->buttons_play[j]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaPlay));
+                this->samplers[i]->buttons_stop[j]->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
+                this->samplers[i]->buttons_del[j]->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
+            }
         }
+        this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
+        this->load_track_on_deck1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
+
         this->load_sample1_1_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample1_2_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
         this->load_sample1_3_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
@@ -2115,14 +2054,14 @@ Gui::apply_main_window_style()
     else
     {
         // Reset some icons (can not be done nicely in CSS).
-        for (int i = 0; i < this->nb_samplers; i++)
+        for (unsigned short int i = 0; i < this->nb_decks; i++)
         {
-            this->sampler1_buttons_play[i]->setIcon(QIcon());
-            this->sampler2_buttons_play[i]->setIcon(QIcon());
-            this->sampler1_buttons_stop[i]->setIcon(QIcon());
-            this->sampler2_buttons_stop[i]->setIcon(QIcon());
-            this->sampler1_buttons_del[i]->setIcon(QIcon());
-            this->sampler2_buttons_del[i]->setIcon(QIcon());
+            for (int j = 0; j < this->nb_samplers; j++)
+            {
+                this->samplers[i]->buttons_play[i]->setIcon(QIcon());
+                this->samplers[i]->buttons_stop[i]->setIcon(QIcon());
+                this->samplers[i]->buttons_del[i]->setIcon(QIcon());
+            }
         }
         this->refresh_file_browser->setIcon(QIcon());
         this->load_track_on_deck1_button->setIcon(QIcon());
@@ -2520,16 +2459,9 @@ Gui::select_and_run_sample4_decoding_process_deck2()
 }
 
 void
-Gui::set_sampler_1_text(QString in_text, unsigned short int in_sampler_index)
+Gui::set_sampler_text(QString in_text, unsigned short int in_deck_index, unsigned short int in_sampler_index)
 {
-    this->sampler1_trackname[in_sampler_index]->setText(in_text);
-    return;
-}
-
-void
-Gui::set_sampler_2_text(QString in_text, unsigned short int in_sampler_index)
-{
-    this->sampler2_trackname[in_sampler_index]->setText(in_text);
+    this->samplers[in_deck_index]->tracknames[in_sampler_index]->setText(in_text);
     return;
 }
 
@@ -2698,6 +2630,26 @@ Gui::select_and_run_audio_file_decoding_process(unsigned short int in_deck_index
     }
 }
 
+unsigned short int
+Gui::get_selected_deck_index()
+{
+    unsigned short int index = 0;
+    bool found = false;
+    while ((found == false) && (index < this->nb_decks))
+    {
+        if (this->decks[index]->is_selected() == true)
+        {
+            found = true;
+        }
+        else
+        {
+            index++;
+        }
+    }
+
+    return index;
+}
+
 void
 Gui::run_audio_file_decoding_process()
 {
@@ -2710,11 +2662,7 @@ Gui::run_audio_file_decoding_process()
     if (info.isFile() == true)
     {
         // Get selected deck/sampler.
-        unsigned short int deck_index = 0; // TODO: write a method: unsigned short int Gui::get_selected_deck_index();
-        if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true))
-        {
-            deck_index = 1;
-        }
+        unsigned short int deck_index = this->get_selected_deck_index();
         QLabel    *deck_track_name = this->decks[deck_index]->track_name;
         QLabel   **deck_cue_point  = this->decks[deck_index]->cue_point_labels;
         Waveform  *deck_waveform   = this->decks[deck_index]->waveform;
@@ -2813,14 +2761,7 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
 {
     if (in_remaining_time == 0)
     {
-        if (in_deck_index == 0)
-        {
-            this->sampler1_remainingtime[in_sampler_index]->setText("- 00");
-        }
-        else
-        {
-            this->sampler2_remainingtime[in_sampler_index]->setText("- 00");
-        }
+        this->samplers[in_deck_index]->remaining_times[in_sampler_index]->setText("- 00");
     }
     else
     {
@@ -2831,28 +2772,15 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
         QString sec  = QString::number(tmp_division.rem);
 
         // Change displayed remaining time (if different than previous one).
-        if (in_deck_index == 0 &&
-            sec.compare(this->sampler1_remainingtime[in_sampler_index]->text()) != 0)
+        if (sec.compare(this->samplers[in_deck_index]->remaining_times[in_sampler_index]->text()) != 0)
         {
             if (sec.size() == 1)
             {
-                this->sampler1_remainingtime[in_sampler_index]->setText("- 0" + sec);
+                this->samplers[in_deck_index]->remaining_times[in_sampler_index]->setText("- 0" + sec);
             }
             else
             {
-                this->sampler1_remainingtime[in_sampler_index]->setText("- " + sec);
-            }
-        }
-        if (in_deck_index == 1 &&
-            sec.compare(this->sampler2_remainingtime[in_sampler_index]->text()) != 0)
-        {
-            if (sec.size() == 1)
-            {
-                this->sampler2_remainingtime[in_sampler_index]->setText("- 0" + sec);
-            }
-            else
-            {
-                this->sampler2_remainingtime[in_sampler_index]->setText("- " + sec);
+                this->samplers[in_deck_index]->remaining_times[in_sampler_index]->setText("- " + sec);
             }
         }
     }
@@ -2868,30 +2796,13 @@ Gui::set_sampler_state(int  in_deck_index,
     // Change state only if a sample is loaded and playing.
     if ((this->playbacks[in_deck_index]->is_sampler_loaded(in_sampler_index) == true) && (in_state == true))
     {
-        if (in_deck_index == 0)
-        {
-            this->sampler1_buttons_play[in_sampler_index]->setChecked(true);
-            this->sampler1_buttons_stop[in_sampler_index]->setChecked(false);
-        }
-        else
-        {
-            this->sampler2_buttons_play[in_sampler_index]->setChecked(true);
-            this->sampler2_buttons_stop[in_sampler_index]->setChecked(false);
-        }
-
+        this->samplers[in_deck_index]->buttons_play[in_sampler_index]->setChecked(true);
+        this->samplers[in_deck_index]->buttons_stop[in_sampler_index]->setChecked(false);
     }
     else // Sampler is stopping or is not loaded, make play button inactive.
     {
-        if (in_deck_index == 0)
-        {
-            this->sampler1_buttons_play[in_sampler_index]->setChecked(false);
-            this->sampler1_buttons_stop[in_sampler_index]->setChecked(true);
-        }
-        else
-        {
-            this->sampler2_buttons_play[in_sampler_index]->setChecked(false);
-            this->sampler2_buttons_stop[in_sampler_index]->setChecked(true);
-        }
+        this->samplers[in_deck_index]->buttons_play[in_sampler_index]->setChecked(false);
+        this->samplers[in_deck_index]->buttons_stop[in_sampler_index]->setChecked(true);
     }
 
     return;
@@ -3053,20 +2964,19 @@ Gui::del_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 void
 Gui::switch_playback_selection()
 {
-    // Switch deck selection. // TODO: select the next Deck in this->deck list (circular selection).
-    if (this->nb_decks > 1)
+    // Find the selected deck.
+    unsigned short int sel_deck = this->get_selected_deck_index();
+
+    // Highlight the next one (circular selection).
+    if (sel_deck + 1 == this->nb_decks)
     {
-        if (this->decks[0]->property("selected").toBool() == true)
-        {
-            // Select deck/sample #2
-            this->highlight_deck_sampler_area(1);
-        }
-        else
-        {
-            // Select deck/sample #1
-            this->highlight_deck_sampler_area(0);
-        }
+        sel_deck = 0;
     }
+    else
+    {
+        sel_deck++;
+    }
+    this->highlight_deck_sampler_area(sel_deck);
 
     return;
 }
@@ -3090,23 +3000,22 @@ Gui::highlight_deck_sampler_area(unsigned short int in_deck_index)
     }
 
     // Select one pair deck+sampler, deselect the other.
-    for (unsigned short int i = 0; i < in_deck_index; i++)
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        this->decks[i]->setProperty("selected", false);
-    }
-    this->decks[in_deck_index]->setProperty("selected", true);
-    for (unsigned short int i = in_deck_index+1; i < this->nb_decks; i++)
-    {
-        this->decks[i]->setProperty("selected", false);
-    }
+        if (i == in_deck_index)
+        {
+            this->decks[i]->setProperty("selected", true);
+            this->samplers[i]->setProperty("selected", true);
+        }
+        else
+        {
+            this->decks[i]->setProperty("selected", false);
+            this->samplers[i]->setProperty("selected", false);
+        }
 
-    this->sampler1_gbox->setProperty("selected", switch_on);
-    this->sampler2_gbox->setProperty("selected", !switch_on);
-
-    // Redraw widget (necessary to reparse stylesheet).
-    this->decks[in_deck_index]->redraw();
-    this->sampler1_gbox->redraw();
-    this->sampler2_gbox->redraw();
+        this->decks[i]->redraw();
+        this->samplers[i]->redraw();
+    }
 
     return;
 }
@@ -3131,27 +3040,13 @@ void
 Gui::highlight_border_deck_sampler_area(unsigned short int in_deck_index,
                                         bool               switch_on)
 {
-    if (in_deck_index == 0)
-    {
-        // highlight pair deck+sampler.
-        this->decks[in_deck_index]->setProperty("hover", switch_on);
-        this->sampler1_gbox->setProperty("hover", switch_on);
+    // highlight pair deck+sampler.
+    this->decks[in_deck_index]->setProperty("hover", switch_on);
+    this->samplers[in_deck_index]->setProperty("hover", switch_on);
 
-        // Redraw widget (necessary to reparse stylesheet).
-        this->decks[in_deck_index]->redraw();
-        this->sampler1_gbox->redraw();
-    }
-
-    if (in_deck_index == 1)
-    {
-        // highlight pair deck+sampler.
-        this->decks[in_deck_index]->setProperty("hover", switch_on);
-        this->sampler2_gbox->setProperty("hover", switch_on);
-
-        // Redraw widget (necessary to reparse stylesheet).
-        this->decks[in_deck_index]->redraw();
-        this->sampler2_gbox->redraw();
-    }
+    // Redraw widget (necessary to reparse stylesheet).
+    this->decks[in_deck_index]->redraw();
+    this->samplers[in_deck_index]->redraw();
 
     return;
 }
@@ -3593,6 +3488,7 @@ Sampler::init_display()
         horz_layout->setMargin(0);
 //        container->setLayout(horz_layout);
 //        layout->addWidget(container);
+        // TODO: implement again drag and drop !
         layout->addLayout(horz_layout);
 
         name[0].unicode()++; // Next sampler letter.
