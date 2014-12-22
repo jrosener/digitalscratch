@@ -1119,7 +1119,7 @@ Gui::connect_decks_area()
                         });
 
         // Enable track file dropping.
-        QObject::connect(this->decks[i], &PlaybackQGroupBox::file_dropped, [this, i](){this->select_and_run_audio_file_decoding_process(i);});
+        QObject::connect(this->decks[i], &Deck::file_dropped, [this, i](){this->select_and_run_audio_file_decoding_process(i);});
 
         // Remaining time.
         QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::remaining_time_changed,
@@ -1364,6 +1364,13 @@ Gui::connect_samplers_area()
                             {
                                 this->set_sampler_text(text, i, j);
                             });
+
+            // Drag and drop: load file.
+            QObject::connect(this->samplers[i]->drop_areas[j], &QSamplerContainerWidget::file_dropped_in_sampler,
+                             [this, i, j]()
+                             {
+                                this->run_sampler_decoding_process(i, j);
+                             });
         }
 
         // Remaining time for samplers.
@@ -2993,12 +3000,6 @@ Gui::select_playback(int in_deck_index)
 void
 Gui::highlight_deck_sampler_area(unsigned short int in_deck_index)
 {
-    bool switch_on = false;
-    if (in_deck_index == 0)
-    {
-        switch_on = true;
-    }
-
     // Select one pair deck+sampler, deselect the other.
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
@@ -3183,19 +3184,6 @@ PlaybackQGroupBox::dragEnterEvent(QDragEnterEvent *in_event)
 void
 PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
 {
-    // Decode dragged file names as a string list.
-    QByteArray encoded_dragged_data = in_event->mimeData()->data("application/vnd.text.list");
-    QDataStream encoded_dragged_stream(&encoded_dragged_data, QIODevice::ReadOnly);
-    QStringList new_items;
-    int rows = 0;
-    while (encoded_dragged_stream.atEnd() == false)
-    {
-        QString text;
-        encoded_dragged_stream >> text;
-        new_items << text;
-        rows++;
-    }
-
     // Accept the drop action.
     in_event->acceptProposedAction();
 
@@ -3359,7 +3347,7 @@ Deck::init_display()
         this->buttons_layout->addLayout(cue_points_layout, 1);
     }
 
-    // Create main deck layout. // FIXME : what the point of general_layout ???
+    // Create main deck layout.
     QHBoxLayout *general_layout = new QHBoxLayout();
     QVBoxLayout *sub_layout     = new QVBoxLayout();
 
@@ -3435,13 +3423,12 @@ Sampler::init_display()
 {
     // Main sampler layout.
     QVBoxLayout *layout = new QVBoxLayout();
-    this->area     = new QWidget();
-    this->area->setLayout(layout);
     layout->setMargin(0);
     QVBoxLayout *layout_container = new QVBoxLayout();
-    layout_container->addWidget(this->area);
-    layout->setMargin(0);
+    this->area = new QWidget();
+    this->area->setLayout(layout);
     this->area->setObjectName("Sampler_main_widget");
+    layout_container->addWidget(this->area);
 
     // Play, stop, del buttons.
     QString name("A");
@@ -3486,10 +3473,12 @@ Sampler::init_display()
         horz_layout->addWidget(this->remaining_times[i], 4);
         horz_layout->addWidget(this->tracknames[i],     95);
         horz_layout->setMargin(0);
-//        container->setLayout(horz_layout);
-//        layout->addWidget(container);
-        // TODO: implement again drag and drop !
-        layout->addLayout(horz_layout);
+
+        // Drag and drop areas.
+        QSamplerContainerWidget *container = new QSamplerContainerWidget();
+        this->drop_areas.push_back(container);
+        container->setLayout(horz_layout);
+        layout->addWidget(container);
 
         name[0].unicode()++; // Next sampler letter.
     }
@@ -3550,20 +3539,10 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
     return;
 }
 
-QSamplerContainerWidget::QSamplerContainerWidget(unsigned short  in_deck_index,
-                                                 unsigned short  in_sampler_index,
-                                                 Gui            *in_dropto_object) : QWidget()
+QSamplerContainerWidget::QSamplerContainerWidget() : QWidget()
 {
     this->setAcceptDrops(true);
-    this->deck_index    = in_deck_index;
-    this->sampler_index = in_sampler_index;
 
-    // Connect drop actions (load file in sampler).
-    QObject::connect(this, &QSamplerContainerWidget::file_dropped_in_sampler,
-                     [this, in_dropto_object](unsigned short int deck_index, unsigned short int sampler_index)
-                     {
-                        in_dropto_object->run_sampler_decoding_process(deck_index, sampler_index);
-                     });
     return;
 }
 
@@ -3589,7 +3568,7 @@ QSamplerContainerWidget::dropEvent(QDropEvent *in_event)
     in_event->acceptProposedAction();
 
     // Send a signal saying that a file was dropped into the sampler.
-    emit file_dropped_in_sampler(this->deck_index, this->sampler_index);
+    emit file_dropped_in_sampler();
 }
 
 TreeViewIconProvider::TreeViewIconProvider()

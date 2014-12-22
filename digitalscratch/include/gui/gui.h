@@ -159,17 +159,34 @@ class Deck : public PlaybackQGroupBox
        void switch_speed_mode(bool in_mode);
 };
 
+class QSamplerContainerWidget : public QWidget
+{
+   Q_OBJECT
+
+  protected:
+       void dragEnterEvent(QDragEnterEvent *in_event);
+       void dropEvent(QDropEvent *in_event);
+
+   public:
+       QSamplerContainerWidget();
+       virtual ~QSamplerContainerWidget();
+
+   signals:
+       void file_dropped_in_sampler();
+};
+
 class Sampler : public PlaybackQGroupBox
 {
    Q_OBJECT
 
    public:
-       QList<QPushButton*>  buttons_play;
-       QList<QPushButton*>  buttons_stop;
-       QList<QPushButton*>  buttons_del;
-       QList<QLabel*>       tracknames;
-       QList<QLabel*>       remaining_times;
-       QWidget             *area;
+       QList<QPushButton*>              buttons_play;
+       QList<QPushButton*>              buttons_stop;
+       QList<QPushButton*>              buttons_del;
+       QList<QLabel*>                   tracknames;
+       QList<QLabel*>                   remaining_times;
+       QList<QSamplerContainerWidget*>  drop_areas;
+       QWidget                         *area; // Used for making samplers visible or not.
 
    private:
        unsigned short int    nb_samplers;
@@ -181,7 +198,6 @@ class Sampler : public PlaybackQGroupBox
        virtual ~Sampler();
        void init_display();
 };
-
 
 class TreeViewIconProvider : public QFileIconProvider
 {
@@ -451,27 +467,4 @@ class Gui : public QObject
     void switch_speed_mode(bool in_mode, int in_deck_index);
     void update_speed_label(float in_speed, int in_deck_index);
     void speed_up_down(float in_speed_inc, int in_deck_index);
-};
-
-class QSamplerContainerWidget : public QWidget
-{
-   Q_OBJECT
-
-   private:
-       unsigned short int deck_index;
-       unsigned short int sampler_index;
-
-   protected:
-       void dragEnterEvent(QDragEnterEvent *in_event);
-       void dropEvent(QDropEvent *in_event);
-
-   public:
-       QSamplerContainerWidget(unsigned short int  in_deck_index,
-                               unsigned short int  in_sampler_index,
-                               Gui                *in_dropto_object);
-       virtual ~QSamplerContainerWidget();
-
-   signals:
-       void file_dropped_in_sampler(unsigned short int in_deck_index,
-                                    unsigned short int in_sampler_index);
 };
