@@ -1551,7 +1551,7 @@ Gui::init_file_browser_area()
 
     // File browser buttons.
     QWidget *file_browser_buttons_widget = new QWidget();
-    QGridLayout *file_browser_buttons_layout         = new QGridLayout(file_browser_buttons_widget);
+    QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
     QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
     file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
@@ -1568,51 +1568,67 @@ Gui::init_file_browser_area()
     file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
     file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
     file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
-    file_browser_buttons_layout->addWidget(this->refresh_file_browser,           0, 3, Qt::AlignCenter);
     if (this->nb_decks > 1)
     {
-        file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 4, Qt::AlignRight);
-        file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 5, Qt::AlignRight);
-        file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 6, Qt::AlignRight);
+        file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 3, Qt::AlignRight);
+        file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 4, Qt::AlignRight);
+        file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 5, Qt::AlignRight);
     }
     file_browser_buttons_layout->setColumnStretch(0, 1);
     file_browser_buttons_layout->setColumnStretch(1, 100);
     file_browser_buttons_layout->setColumnStretch(2, 1);
-    file_browser_buttons_layout->setColumnStretch(3, 10);
     if (this->nb_decks > 1)
     {
-        file_browser_buttons_layout->setColumnStretch(4, 1);
-        file_browser_buttons_layout->setColumnStretch(5, 100);
-        file_browser_buttons_layout->setColumnStretch(6, 1);
+        file_browser_buttons_layout->setColumnStretch(3, 1);
+        file_browser_buttons_layout->setColumnStretch(4, 100);
+        file_browser_buttons_layout->setColumnStretch(5, 1);
     }
     file_browser_buttons_widget->setFixedHeight(37);
 
-    // Create layout and group box for file browser.
-    QVBoxLayout *file_browser_layout = new QVBoxLayout();
-    file_browser_layout->addWidget(file_browser_buttons_widget);
-
+    // Horizontal separator (between load buttons and file browser area).
     QFrame* horiz_line = new QFrame();
     horiz_line->setFrameShape(QFrame::HLine);
-    horiz_line->setObjectName("Horizontal_line");
-    file_browser_layout->addWidget(horiz_line);
+    horiz_line->setObjectName("Separator_line");
 
-    QVBoxLayout *file_browser_and_search_layout = new QVBoxLayout();
-    file_browser_and_search_layout->addWidget(this->file_browser);
-    file_browser_and_search_layout->addWidget(this->file_search, 0, Qt::AlignBottom);
-    file_browser_and_search_layout->setMargin(0);
+    // Build file browser and search area.
+    QVBoxLayout *browser_search_layout = new QVBoxLayout();
+    browser_search_layout->addWidget(this->file_browser);
+    browser_search_layout->addWidget(this->file_search, 0, Qt::AlignBottom);
+    browser_search_layout->setMargin(0);
     QWidget *file_browser_and_search_widget = new QWidget();
-    file_browser_and_search_widget->setLayout(file_browser_and_search_layout);
+    file_browser_and_search_widget->setLayout(browser_search_layout);
 
+    // Add a splitter beetween the folder browser and the file browser.
     this->browser_splitter = new QSplitter();
     this->browser_splitter->addWidget(this->folder_browser);
     this->browser_splitter->addWidget(file_browser_and_search_widget);
     this->browser_splitter->setStretchFactor(0, 1);
     this->browser_splitter->setStretchFactor(1, 4);
-    file_browser_layout->addWidget(this->browser_splitter);
 
+    // Vertical separator.
+    QFrame* vertic_line = new QFrame();
+    vertic_line->setFrameShape(QFrame::VLine);
+    vertic_line->setObjectName("Separator_line");
+
+    // Vertical set of buttons on the right.
+    QVBoxLayout *action_buttons_layout = new QVBoxLayout();
+    action_buttons_layout->addWidget(this->refresh_file_browser);
+
+    // Layout of the bottom part of the file browser (folder browser, file browser, set of buttons).
+    QWidget *bottom_container_widget = new QWidget();
+    QHBoxLayout *bottom_container = new QHBoxLayout(bottom_container_widget);
+    bottom_container->addWidget(this->browser_splitter, 100);
+    bottom_container->addWidget(vertic_line, 1);
+    bottom_container->addLayout(action_buttons_layout, 10);
+
+    // Main layout and group box.
+    QVBoxLayout *file_browser_layout = new QVBoxLayout();
+    file_browser_layout->addWidget(file_browser_buttons_widget, 1);
+    file_browser_layout->addWidget(horiz_line, 1);
+    file_browser_layout->addWidget(bottom_container_widget, 100);
     this->file_browser_gbox = new QGroupBox();
-    this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
     this->file_browser_gbox->setLayout(file_browser_layout);
+    this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
 
     this->file_layout = new QHBoxLayout();
     this->file_layout->addWidget(this->file_browser_gbox, 50);

@@ -1149,7 +1149,7 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 }
 
 
-QFrame#Horizontal_line {
+QFrame#Separator_line {
     color : gray;
 }
 
