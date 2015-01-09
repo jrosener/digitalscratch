@@ -397,31 +397,33 @@ QProgressBar#Progress::chunk
    background-color: grey;
 }
 
-QWidget#Sampler_main_widget
+QPushButton#Right_vertical_bar_buttons
 {
-    background: transparent;
-}
-
-
-QPushButton#Sampler_show_hide_buttons
-{
+   font:             7pt;
    background-color: gray;
+   height:           15px;
+   width:            90px;
    border:           none;
    border-radius:    0px;
    padding:          2px;
-   image:            url(:/pixmaps/dark-collapse_off.png);
+   image:            url(:/pixmaps/dark-file_browser_update.png);
+   image-position:   left;
+   color:            dark;
 }
-QPushButton#Sampler_show_hide_buttons:hover
+QPushButton#Right_vertical_bar_buttons:hover
 {
-   background-color: lightGray;
+   background-color: black;
    border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-file_browser_update_white.png);
 }
-QPushButton#Sampler_show_hide_buttons:checked
+QPushButton#Right_vertical_bar_buttons:checked
 {
    background-color: gray;
-   image:            url(:/pixmaps/dark-collapse_on.png);
+   image:            url(:/pixmaps/dark-file_browser_update_white.png);
+   image-position:   left;
+   color:            white;
 }
-
 
 QPushButton#Sampler_play_buttons
 {
@@ -473,34 +475,6 @@ QPushButton#Sampler_del_buttons:hover
 {
    background-color: lightGray;
    border:           1px solid orange;
-}
-
-QPushButton#Refresh_browser_button
-{
-   background-color: gray;
-   border:           none;
-   border-radius:    0px;
-   padding:          4px;
-   image:            url(:/pixmaps/dark-file_browser_update.png);
-}
-QPushButton#Refresh_browser_button:hover
-{
-   background-color: transparent;
-   border:           1px solid orange;
-   color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-file_browser_update_white.png);
-}
-QPushButton#Refresh_browser_button:pressed
-{
-   color:            black;
-   background-color: lightGray;
-   image:            url(:/pixmaps/dark-file_browser_update.png);
-}
-QPushButton#Refresh_browser_button:checked
-{
-   background-color: gray;
-   border:           1px solid orange;
-   image:            url(:/pixmaps/dark-file_browser_update_white.png);
 }
 
 QPushButton#Load_track_button_1

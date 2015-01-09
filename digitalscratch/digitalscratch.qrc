@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
+    <file>pixmaps/dark-audio_file.png</file>
     <file>pixmaps/dark-audio_file_white.png</file>
     <file>pixmaps/dark-folder_white.png</file>
     <file>pixmaps/dark-drive_white.png</file>

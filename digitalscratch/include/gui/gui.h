@@ -186,7 +186,6 @@ class Sampler : public PlaybackQGroupBox
        QList<QLabel*>                   tracknames;
        QList<QLabel*>                   remaining_times;
        QList<QSamplerContainerWidget*>  drop_areas;
-       QWidget                         *area; // Used for making samplers visible or not.
 
    private:
        unsigned short int    nb_samplers;
@@ -248,6 +247,7 @@ class Gui : public QObject
     QList<Deck*>                        decks;
 
     // Samplers area.
+    QWidget                            *samplers_container;
     QHBoxLayout                        *samplers_layout;
     QPushButton                        *show_hide_samplers_button;
     QList<Sampler*>                     samplers;
@@ -257,6 +257,8 @@ class Gui : public QObject
     QSplitter                          *browser_splitter;
     QGroupBox                          *file_browser_gbox;
     QPushButton                        *refresh_file_browser;
+
+    QList<QList<QPushButton*>>          deck_sampler_control_buttons;
     QPushButton                        *load_track_on_deck1_button;
     QPushButton                        *load_track_on_deck2_button;
     QPushButton                        *load_sample1_1_button;

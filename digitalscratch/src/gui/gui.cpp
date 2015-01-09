@@ -628,7 +628,7 @@ Gui::show_refresh_audio_collection_dialog()
 void
 Gui::show_hide_samplers()
 {
-    if (this->samplers[0]->area->isVisible() == true)
+    if (this->samplers_container->isVisible() == true)
     {
         // Hide samplers.
         this->hide_samplers();
@@ -645,10 +645,11 @@ Gui::hide_samplers()
 {
     this->show_hide_samplers_button->setChecked(false);
     this->settings->set_samplers_visible(false);
+        this->samplers_container->hide();
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        this->samplers[i]->area->setVisible(false);
-        this->samplers[i]->setMaximumHeight(20);
+//        this->samplers[i]->area->setVisible(false);
+//        this->samplers[i]->setMaximumHeight(20);
     }
 }
 
@@ -657,10 +658,12 @@ Gui::show_samplers()
 {
     this->show_hide_samplers_button->setChecked(true);
     this->settings->set_samplers_visible(true);
+            this->samplers_container->show();
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        this->samplers[i]->setMaximumHeight(999);
-        this->samplers[i]->area->setVisible(true);
+//        this->samplers[i]->setMaximumHeight(999);
+//        this->samplers[i]->area->setVisible(true);
+   //     this->samplers[i]->setVisible(true);
     }
 }
 
@@ -915,12 +918,12 @@ Gui::create_main_window()
     this->window->setLayout(main_layout);
 
     // Put every components in main layout.
-    main_layout->addLayout(this->header_layout,   5);
-    main_layout->addLayout(this->decks_layout,    30);
-    main_layout->addLayout(this->samplers_layout, 5);
-    main_layout->addLayout(this->file_layout,     65);
-    main_layout->addLayout(this->bottom_layout,   0);
-    main_layout->addLayout(this->status_layout,   0);
+    main_layout->addLayout(this->header_layout,      5);
+    main_layout->addLayout(this->decks_layout,       30);
+    main_layout->addWidget(this->samplers_container, 5);
+    main_layout->addLayout(this->file_layout,        65);
+    main_layout->addLayout(this->bottom_layout,      0);
+    main_layout->addLayout(this->status_layout,      0);
 
     // Display main window.
     this->window->show();
@@ -1177,7 +1180,10 @@ void
 Gui::init_samplers_area()
 {
     // Create horizontal layout for samplers.
-    this->samplers_layout = new QHBoxLayout;
+    this->samplers_layout = new QHBoxLayout();
+    this->samplers_layout->setMargin(0);
+    this->samplers_container = new QWidget();
+    this->samplers_container->setLayout(samplers_layout);
 
     // Create sampler area and put it in layout.
     this->samplers.clear();
@@ -1188,15 +1194,6 @@ Gui::init_samplers_area()
         this->samplers.push_back(sp);
         this->samplers_layout->addWidget(this->samplers[i]);
     }
-
-    // Sampler's show/hide button.
-    this->show_hide_samplers_button = new QPushButton();
-    this->show_hide_samplers_button->setObjectName("Sampler_show_hide_buttons");
-    this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
-    this->show_hide_samplers_button->setFixedSize(12, 12);
-    this->show_hide_samplers_button->setCheckable(true);
-    this->show_hide_samplers_button->setChecked(true);
-    this->samplers_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignVCenter);
 }
 
 void
@@ -1327,10 +1324,9 @@ Gui::init_file_browser_area()
     this->file_browser_selected_index = 0;    
 
     // Create function buttons for file browser.
-    this->refresh_file_browser = new QPushButton();
-    this->refresh_file_browser->setObjectName("Refresh_browser_button");
+    this->refresh_file_browser = new QPushButton(tr("SCAN FILES"));
+    this->refresh_file_browser->setObjectName("Right_vertical_bar_buttons");
     this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
-    this->refresh_file_browser->setFixedSize(24, 24);
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
 
@@ -1479,16 +1475,24 @@ Gui::init_file_browser_area()
     vertic_line->setFrameShape(QFrame::VLine);
     vertic_line->setObjectName("Separator_line");
 
-    // Vertical set of buttons on the right.
+    // Vertical set of buttons on the right: refresh file borwser (calculate music key).
     QVBoxLayout *action_buttons_layout = new QVBoxLayout();
-    action_buttons_layout->addWidget(this->refresh_file_browser);
+    action_buttons_layout->addWidget(this->refresh_file_browser, 1, Qt::AlignTop);
+
+    // Vertical set of buttons on the right: show/hide the sampler area.
+    this->show_hide_samplers_button = new QPushButton(tr("SAMPLERS"));
+    this->show_hide_samplers_button->setObjectName("Right_vertical_bar_buttons");
+    this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
+    this->show_hide_samplers_button->setCheckable(true);
+    this->show_hide_samplers_button->setChecked(true);
+    action_buttons_layout->addWidget(this->show_hide_samplers_button, 100, Qt::AlignTop);
 
     // Layout of the bottom part of the file browser (folder browser, file browser, set of buttons).
     QWidget *bottom_container_widget = new QWidget();
     QHBoxLayout *bottom_container = new QHBoxLayout(bottom_container_widget);
     bottom_container->addWidget(this->browser_splitter, 100);
     bottom_container->addWidget(vertic_line, 1);
-    bottom_container->addLayout(action_buttons_layout, 10);
+    bottom_container->addLayout(action_buttons_layout);
 
     // Main layout and group box.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
@@ -3308,12 +3312,6 @@ Sampler::init_display()
 {
     // Main sampler layout.
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    QVBoxLayout *layout_container = new QVBoxLayout();
-    this->area = new QWidget();
-    this->area->setLayout(layout);
-    this->area->setObjectName("Sampler_main_widget");
-    layout_container->addWidget(this->area);
 
     // Play, stop, del buttons.
     QString name("A");
@@ -3368,7 +3366,7 @@ Sampler::init_display()
         name[0].unicode()++; // Next sampler letter.
     }
 
-    this->setLayout(layout_container);
+    this->setLayout(layout);
 }
 
 SpeedQPushButton::SpeedQPushButton(const QString &title) : QPushButton(title)
