@@ -1199,134 +1199,6 @@ Gui::init_samplers_area()
     this->samplers_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignVCenter);
 }
 
-//void
-//Gui::init_sampler1_area()
-//{
-//    // Sampler 1 group box
-//    this->sampler1_buttons_play  = new QPushButton*[this->nb_samplers];
-//    this->sampler1_buttons_stop  = new QPushButton*[this->nb_samplers];
-//    this->sampler1_buttons_del   = new QPushButton*[this->nb_samplers];
-//    this->sampler1_trackname     = new QLabel*[this->nb_samplers];
-//    this->sampler1_remainingtime = new QLabel*[this->nb_samplers];
-//    QVBoxLayout *sampler1_layout = new QVBoxLayout();
-//    this->sampler1_widget        = new QWidget();
-//    this->sampler1_widget->setLayout(sampler1_layout);
-//    sampler1_layout->setMargin(0);
-//    QVBoxLayout *sampler1_layout_container = new QVBoxLayout();
-//    sampler1_layout_container->addWidget(this->sampler1_widget);
-//    sampler1_layout->setMargin(0);
-//    this->sampler1_widget->setObjectName("Sampler_main_widget");
-//    QString sampler1_name("A");
-//    for (int i = 0; i < this->nb_samplers; i++)
-//    {
-//        this->sampler1_buttons_play[i] = new QPushButton();
-//        this->sampler1_buttons_play[i]->setObjectName("Sampler_play_buttons");
-//        this->sampler1_buttons_play[i]->setFixedSize(16, 16);
-//        this->sampler1_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
-//        this->sampler1_buttons_play[i]->setCheckable(true);
-//        this->sampler1_buttons_play[i]->setToolTip(tr("Play sample from start"));
-//        this->sampler1_buttons_stop[i] = new QPushButton();
-//        this->sampler1_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-//        this->sampler1_buttons_stop[i]->setFixedSize(16, 16);
-//        this->sampler1_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
-//        this->sampler1_buttons_stop[i]->setCheckable(true);
-//        this->sampler1_buttons_stop[i]->setChecked(true);
-//        this->sampler1_buttons_stop[i]->setToolTip(tr("Stop sample"));
-//        this->sampler1_buttons_del[i] = new QPushButton();
-//        this->sampler1_buttons_del[i]->setObjectName("Sampler_del_buttons");
-//        this->sampler1_buttons_del[i]->setFixedSize(16, 16);
-//        this->sampler1_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
-//        this->sampler1_buttons_del[i]->setCheckable(true);
-//        this->sampler1_buttons_del[i]->setChecked(true);
-//        this->sampler1_buttons_del[i]->setToolTip(tr("Delete sample"));
-//        this->sampler1_trackname[i]     = new QLabel(tr("--"));
-//        this->sampler1_remainingtime[i] = new QLabel("- 00");
-
-//        QSamplerContainerWidget *container = new QSamplerContainerWidget(0, i, this);
-//        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
-//        QLabel *sampler1_name_label = new QLabel(sampler1_name);
-//        sampler1_name_label->setFixedWidth(15);
-//        sampler_horz_layout->addWidget(sampler1_name_label,             1);
-//        sampler_horz_layout->addWidget(this->sampler1_buttons_play[i],  1);
-//        sampler_horz_layout->addWidget(this->sampler1_buttons_stop[i],  1);
-//        sampler_horz_layout->addWidget(this->sampler1_buttons_del[i],   1);
-//        sampler_horz_layout->addWidget(this->sampler1_remainingtime[i], 4);
-//        sampler_horz_layout->addWidget(this->sampler1_trackname[i],     95);
-//        sampler_horz_layout->setMargin(0);
-//        container->setLayout(sampler_horz_layout);
-//        sampler1_layout->addWidget(container);
-
-//        sampler1_name[0].unicode()++; // Next sampler letter.
-//    }
-//    this->sampler1_gbox = new PlaybackQGroupBox(tr("Sample player 1"));
-//    this->sampler1_gbox->setObjectName("SamplerGBox");
-//    this->sampler1_gbox->setLayout(sampler1_layout_container);
-//}
-
-//void
-//Gui::init_sampler2_area()
-//{
-//    // Sampler 2 group box
-//    this->sampler2_buttons_play  = new QPushButton*[this->nb_samplers];
-//    this->sampler2_buttons_stop  = new QPushButton*[this->nb_samplers];
-//    this->sampler2_buttons_del   = new QPushButton*[this->nb_samplers];
-//    this->sampler2_trackname     = new QLabel*[this->nb_samplers];
-//    this->sampler2_remainingtime = new QLabel*[this->nb_samplers];
-//    QVBoxLayout *sampler2_layout = new QVBoxLayout();
-//    this->sampler2_widget        = new QWidget();
-//    this->sampler2_widget->setLayout(sampler2_layout);
-//    sampler2_layout->setMargin(0);
-//    QVBoxLayout *sampler2_layout_container = new QVBoxLayout();
-//    sampler2_layout_container->addWidget(this->sampler2_widget);
-//    sampler2_layout->setMargin(0);
-//    this->sampler2_widget->setObjectName("Sampler_main_widget");
-//    QString sampler2_name("A");
-//    for (int i = 0; i < this->nb_samplers; i++)
-//    {
-//        this->sampler2_buttons_play[i] = new QPushButton();
-//        this->sampler2_buttons_play[i]->setObjectName("Sampler_play_buttons");
-//        this->sampler2_buttons_play[i]->setFixedSize(16, 16);
-//        this->sampler2_buttons_play[i]->setFocusPolicy(Qt::NoFocus);
-//        this->sampler2_buttons_play[i]->setCheckable(true);
-//        this->sampler2_buttons_play[i]->setToolTip(tr("Play sample from start"));
-//        this->sampler2_buttons_stop[i] = new QPushButton();
-//        this->sampler2_buttons_stop[i]->setObjectName("Sampler_stop_buttons");
-//        this->sampler2_buttons_stop[i]->setFixedSize(16, 16);
-//        this->sampler2_buttons_stop[i]->setFocusPolicy(Qt::NoFocus);
-//        this->sampler2_buttons_stop[i]->setCheckable(true);
-//        this->sampler2_buttons_stop[i]->setChecked(true);
-//        this->sampler2_buttons_stop[i]->setToolTip(tr("Stop sample"));
-//        this->sampler2_buttons_del[i] = new QPushButton();
-//        this->sampler2_buttons_del[i]->setObjectName("Sampler_del_buttons");
-//        this->sampler2_buttons_del[i]->setFixedSize(16, 16);
-//        this->sampler2_buttons_del[i]->setFocusPolicy(Qt::NoFocus);
-//        this->sampler2_buttons_del[i]->setCheckable(true);
-//        this->sampler2_buttons_del[i]->setChecked(true);
-//        this->sampler2_buttons_del[i]->setToolTip(tr("Delete sample"));
-//        this->sampler2_trackname[i]     = new QLabel(tr("--"));
-//        this->sampler2_remainingtime[i] = new QLabel("- 00");
-
-//        QSamplerContainerWidget *container = new QSamplerContainerWidget(1, i, this);
-//        QHBoxLayout *sampler_horz_layout = new QHBoxLayout();
-//        QLabel *sampler2_name_label = new QLabel(sampler2_name);
-//        sampler2_name_label->setFixedWidth(15);
-//        sampler_horz_layout->addWidget(sampler2_name_label,             1);
-//        sampler_horz_layout->addWidget(this->sampler2_buttons_play[i],  1);
-//        sampler_horz_layout->addWidget(this->sampler2_buttons_stop[i],  1);
-//        sampler_horz_layout->addWidget(this->sampler2_buttons_del[i],   1);
-//        sampler_horz_layout->addWidget(this->sampler2_remainingtime[i], 4);
-//        sampler_horz_layout->addWidget(this->sampler2_trackname[i],     95);
-//        sampler_horz_layout->setMargin(0);
-//        container->setLayout(sampler_horz_layout);
-//        sampler2_layout->addWidget(container);
-
-//        sampler2_name[0].unicode()++; // Next sampler letter.
-//    }
-//    this->sampler2_gbox = new PlaybackQGroupBox(tr("Sample player 2"));
-//    this->sampler2_gbox->setObjectName("SamplerGBox");
-//    this->sampler2_gbox->setLayout(sampler2_layout_container);
-//}
-
 void
 Gui::clean_samplers_area()
 {
@@ -1551,37 +1423,34 @@ Gui::init_file_browser_area()
 
     // File browser buttons.
     QWidget *file_browser_buttons_widget = new QWidget();
-    QGridLayout *file_browser_buttons_layout = new QGridLayout(file_browser_buttons_widget);
-    QHBoxLayout *file_browser_sample1_buttons_layout = new QHBoxLayout();
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_1_button);
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_2_button);
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_3_button);
-    file_browser_sample1_buttons_layout->addWidget(this->load_sample1_4_button);
-    QHBoxLayout *file_browser_sample2_buttons_layout = new QHBoxLayout();
+    QHBoxLayout *file_browser_buttons_layout = new QHBoxLayout(file_browser_buttons_widget);
+    QHBoxLayout *file_browser_button1_layout = new QHBoxLayout();
+    file_browser_button1_layout->addWidget(this->load_track_on_deck1_button);
+    file_browser_button1_layout->addWidget(this->show_next_key_from_deck1_button);
+    file_browser_button1_layout->addSpacing(20);
+    file_browser_button1_layout->addWidget(this->load_sample1_1_button);
+    file_browser_button1_layout->addWidget(this->load_sample1_2_button);
+    file_browser_button1_layout->addWidget(this->load_sample1_3_button);
+    file_browser_button1_layout->addWidget(this->load_sample1_4_button);
+    file_browser_buttons_layout->addLayout(file_browser_button1_layout);
+
     if (this->nb_decks > 1)
     {
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_1_button);
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_2_button);
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_3_button);
-        file_browser_sample2_buttons_layout->addWidget(this->load_sample2_4_button);
-    }
-    file_browser_buttons_layout->addWidget(this->load_track_on_deck1_button,     0, 0, Qt::AlignLeft);
-    file_browser_buttons_layout->addWidget(this->show_next_key_from_deck1_button,0, 1, Qt::AlignLeft);
-    file_browser_buttons_layout->addLayout(file_browser_sample1_buttons_layout,  0, 2, Qt::AlignRight);
-    if (this->nb_decks > 1)
-    {
-        file_browser_buttons_layout->addLayout(file_browser_sample2_buttons_layout,  0, 3, Qt::AlignRight);
-        file_browser_buttons_layout->addWidget(this->show_next_key_from_deck2_button,0, 4, Qt::AlignRight);
-        file_browser_buttons_layout->addWidget(this->load_track_on_deck2_button,     0, 5, Qt::AlignRight);
-    }
-    file_browser_buttons_layout->setColumnStretch(0, 1);
-    file_browser_buttons_layout->setColumnStretch(1, 100);
-    file_browser_buttons_layout->setColumnStretch(2, 1);
-    if (this->nb_decks > 1)
-    {
-        file_browser_buttons_layout->setColumnStretch(3, 1);
-        file_browser_buttons_layout->setColumnStretch(4, 100);
-        file_browser_buttons_layout->setColumnStretch(5, 1);
+        // Vertical separator.
+        QFrame* line = new QFrame();
+        line->setFrameShape(QFrame::VLine);
+        line->setObjectName("Separator_line");
+        file_browser_buttons_layout->addWidget(line, 1);
+
+        QHBoxLayout *file_browser_button2_layout = new QHBoxLayout();
+        file_browser_button2_layout->addWidget(this->load_track_on_deck2_button);
+        file_browser_button2_layout->addWidget(this->show_next_key_from_deck2_button);
+        file_browser_button2_layout->addSpacing(20);
+        file_browser_button2_layout->addWidget(this->load_sample2_1_button);
+        file_browser_button2_layout->addWidget(this->load_sample2_2_button);
+        file_browser_button2_layout->addWidget(this->load_sample2_3_button);
+        file_browser_button2_layout->addWidget(this->load_sample2_4_button);
+        file_browser_buttons_layout->addLayout(file_browser_button2_layout);
     }
     file_browser_buttons_widget->setFixedHeight(37);
 
