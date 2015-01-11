@@ -408,7 +408,7 @@ QPushButton#Right_vertical_bar_buttons
    padding:          2px;
    image:            url(:/pixmaps/dark-file_browser_update.png);
    image-position:   left;
-   color:            dark;
+   color:            black;
 }
 QPushButton#Right_vertical_bar_buttons:hover
 {
