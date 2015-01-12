@@ -3048,16 +3048,18 @@ FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_
         this->load_sample_buttons << load_sample_button;
         this->addWidget(load_sample_button);
 
+        QString shortcut;
+        switch (i)
+        {
+            case 0: shortcut = KB_LOAD_TRACK_ON_SAMPLER1; break;
+            case 1: shortcut = KB_LOAD_TRACK_ON_SAMPLER2; break;
+            case 2: shortcut = KB_LOAD_TRACK_ON_SAMPLER3; break;
+            case 3: shortcut = KB_LOAD_TRACK_ON_SAMPLER4; break;
+        }
+        this->load_sample_buttons[i]->setToolTip("<p>" + tr("Load selected track to sample ") + name + "</p><em>" + settings->get_keyboard_shortcut(shortcut) + "</em>");
+
         name[0].unicode()++; // Next sampler letter.
     }
-    if (this->load_sample_buttons.size() >= 1)
-       this->load_sample_buttons[0]->setToolTip("<p>" + tr("Load selected track to sample ") + name + "</p><em>" + settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1) + "</em>");
-    if (this->load_sample_buttons.size() >= 2)
-       this->load_sample_buttons[1]->setToolTip("<p>" + tr("Load selected track to sample ") + name + "</p><em>" + settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2) + "</em>");
-    if (this->load_sample_buttons.size() >= 3)
-       this->load_sample_buttons[2]->setToolTip("<p>" + tr("Load selected track to sample ") + name + "</p><em>" + settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3) + "</em>");
-    if (this->load_sample_buttons.size() >= 4)
-       this->load_sample_buttons[3]->setToolTip("<p>" + tr("Load selected track to sample ") + name + "</p><em>" + settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4) + "</em>");
 
     return;
 }
