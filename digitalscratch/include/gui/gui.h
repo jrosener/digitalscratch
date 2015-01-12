@@ -198,6 +198,22 @@ class Sampler : public PlaybackQGroupBox
        void init_display();
 };
 
+class FileBrowserControlButtons : public QHBoxLayout
+{
+   Q_OBJECT
+
+   public:
+       QPushButton         *load_track_on_deck_button;
+       QPushButton         *show_next_key_from_deck_button;
+       QList<QPushButton*>  load_sample_buttons;
+
+   public:
+       FileBrowserControlButtons(unsigned short int in_deck_index,
+                                 unsigned short int in_nb_samplers);
+       virtual ~FileBrowserControlButtons();
+       void init_display();
+};
+
 class TreeViewIconProvider : public QFileIconProvider
 {
     public:
@@ -258,19 +274,7 @@ class Gui : public QObject
     QGroupBox                          *file_browser_gbox;
     QPushButton                        *refresh_file_browser;
 
-    QList<QList<QPushButton*>>          deck_sampler_control_buttons;
-    QPushButton                        *load_track_on_deck1_button;
-    QPushButton                        *load_track_on_deck2_button;
-    QPushButton                        *load_sample1_1_button;
-    QPushButton                        *load_sample2_1_button;
-    QPushButton                        *load_sample1_2_button;
-    QPushButton                        *load_sample2_2_button;
-    QPushButton                        *load_sample1_3_button;
-    QPushButton                        *load_sample2_3_button;
-    QPushButton                        *load_sample1_4_button;
-    QPushButton                        *load_sample2_4_button;
-    QPushButton                        *show_next_key_from_deck1_button;
-    QPushButton                        *show_next_key_from_deck2_button;
+    QList<FileBrowserControlButtons*>   file_browser_control_buttons;
     QFutureWatcher<void>               *watcher_parse_directory;
 
     // Folder browser.
@@ -283,10 +287,7 @@ class Gui : public QObject
     QTreeView                          *file_browser;
     QShortcut                          *shortcut_collapse_browser;
     QShortcut                          *shortcut_load_audio_file;
-    QShortcut                          *shortcut_load_sample_file_1;
-    QShortcut                          *shortcut_load_sample_file_2;
-    QShortcut                          *shortcut_load_sample_file_3;
-    QShortcut                          *shortcut_load_sample_file_4;
+    QList<QShortcut*>                   shortcut_load_samples;
     QShortcut                          *shortcut_show_next_keys;
     QShortcut                          *shortcut_file_search;
     QShortcut                          *shortcut_file_search_press_enter;
@@ -418,14 +419,8 @@ class Gui : public QObject
     void select_and_run_audio_file_decoding_process(unsigned short int in_deck_index);
     void run_audio_file_decoding_process();
     void show_hide_samplers();
-    void select_and_run_sample1_decoding_process_deck1();
-    void select_and_run_sample2_decoding_process_deck1();
-    void select_and_run_sample3_decoding_process_deck1();
-    void select_and_run_sample4_decoding_process_deck1();
-    void select_and_run_sample1_decoding_process_deck2();
-    void select_and_run_sample2_decoding_process_deck2();
-    void select_and_run_sample3_decoding_process_deck2();
-    void select_and_run_sample4_decoding_process_deck2();
+    void select_and_run_sample_decoding_process(unsigned short int in_deck_index,
+                                                unsigned short int in_sampler_index);
     void run_sampler_decoding_process(unsigned short int in_sampler_index);
     void run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
                                               unsigned short int in_sampler_index);
@@ -458,8 +453,7 @@ class Gui : public QObject
     void sync_file_browser_to_audio_collection();
     void on_finished_analyze_audio_collection();
     void update_refresh_progress_value(int in_value);
-    void select_and_show_next_keys_deck1();
-    void select_and_show_next_keys_deck2();
+    void select_and_show_next_keys(unsigned short int in_deck_index);
     void show_next_keys();
     void on_file_browser_header_click(int in_index);
     void on_progress_cancel_button_click();

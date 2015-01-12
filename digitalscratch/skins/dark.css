@@ -561,7 +561,7 @@ QPushButton#Load_track_button_2:checked
    image:            url(:/pixmaps/dark-load_file_white_2.png);
 }
 
-QPushButton#Load_track_sample_button_a
+QPushButton#Load_track_sample_button_A
 {
    background-color: gray;
    border:           none;
@@ -569,27 +569,27 @@ QPushButton#Load_track_sample_button_a
    padding:          4px;
    image:            url(:/pixmaps/dark-load_sample_a.png);
 }
-QPushButton#Load_track_sample_button_a:hover
+QPushButton#Load_track_sample_button_A:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
    image:            url(:/pixmaps/dark-load_sample_white_a.png);
 }
-QPushButton#Load_track_sample_button_a:pressed
+QPushButton#Load_track_sample_button_A:pressed
 {
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-load_sample_a.png);
 }
-QPushButton#Load_track_sample_button_a:checked
+QPushButton#Load_track_sample_button_A:checked
 {
    background-color: gray;
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-load_sample_white_a.png);
 }
 
-QPushButton#Load_track_sample_button_b
+QPushButton#Load_track_sample_button_B
 {
    background-color: gray;
    border:           none;
@@ -597,27 +597,27 @@ QPushButton#Load_track_sample_button_b
    padding:          4px;
    image:            url(:/pixmaps/dark-load_sample_b.png);
 }
-QPushButton#Load_track_sample_button_b:hover
+QPushButton#Load_track_sample_button_B:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
    image:            url(:/pixmaps/dark-load_sample_white_b.png);
 }
-QPushButton#Load_track_sample_button_b:pressed
+QPushButton#Load_track_sample_button_B:pressed
 {
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-load_sample_b.png);
 }
-QPushButton#Load_track_sample_button_b:checked
+QPushButton#Load_track_sample_button_B:checked
 {
    background-color: gray;
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-load_sample_white_b.png);
 }
 
-QPushButton#Load_track_sample_button_c
+QPushButton#Load_track_sample_button_C
 {
    background-color: gray;
    border:           none;
@@ -625,27 +625,27 @@ QPushButton#Load_track_sample_button_c
    padding:          4px;
    image:            url(:/pixmaps/dark-load_sample_c.png);
 }
-QPushButton#Load_track_sample_button_c:hover
+QPushButton#Load_track_sample_button_C:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
    image:            url(:/pixmaps/dark-load_sample_white_c.png);
 }
-QPushButton#Load_track_sample_button_c:pressed
+QPushButton#Load_track_sample_button_C:pressed
 {
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-load_sample_c.png);
 }
-QPushButton#Load_track_sample_button_c:checked
+QPushButton#Load_track_sample_button_C:checked
 {
    background-color: gray;
    border:           1px solid orange;
    image:            url(:/pixmaps/dark-load_sample_white_c.png);
 }
 
-QPushButton#Load_track_sample_button_d
+QPushButton#Load_track_sample_button_D
 {
    background-color: gray;
    border:           none;
@@ -653,20 +653,20 @@ QPushButton#Load_track_sample_button_d
    padding:          4px;
    image:            url(:/pixmaps/dark-load_sample_d.png);
 }
-QPushButton#Load_track_sample_button_d:hover
+QPushButton#Load_track_sample_button_D:hover
 {
    background-color: transparent;
    border:           1px solid orange;
    color:            #f2f2ed;
    image:            url(:/pixmaps/dark-load_sample_white_d.png);
 }
-QPushButton#Load_track_sample_button_d:pressed
+QPushButton#Load_track_sample_button_D:pressed
 {
    color:            black;
    background-color: lightGray;
    image:            url(:/pixmaps/dark-load_sample_d.png);
 }
-QPushButton#Load_track_sample_button_d:checked
+QPushButton#Load_track_sample_button_D:checked
 {
    background-color: gray;
    border:           1px solid orange;
