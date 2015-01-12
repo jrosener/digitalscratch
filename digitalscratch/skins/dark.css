@@ -397,7 +397,7 @@ QProgressBar#Progress::chunk
    background-color: grey;
 }
 
-QPushButton#Right_vertical_bar_buttons
+QPushButton#Right_vertic_button_samplers
 {
    font:             7pt;
    background-color: gray;
@@ -410,20 +410,49 @@ QPushButton#Right_vertical_bar_buttons
    image-position:   left;
    color:            black;
 }
-QPushButton#Right_vertical_bar_buttons:hover
+QPushButton#Right_vertic_button_samplers:hover
 {
    background-color: black;
    border:           1px solid orange;
    color:            white;
    image:            url(:/pixmaps/dark-file_browser_update_white.png);
 }
-QPushButton#Right_vertical_bar_buttons:checked
+QPushButton#Right_vertic_button_samplers:checked
 {
    background-color: gray;
    image:            url(:/pixmaps/dark-file_browser_update_white.png);
    image-position:   left;
    color:            white;
 }
+
+QPushButton#Right_vertic_button_scan_files
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-audio_file.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Right_vertic_button_scan_files:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-audio_file_white.png);
+}
+QPushButton#Right_vertic_button_scan_files:checked
+{
+   background-color: gray;
+   image:            url(:/pixmaps/dark-audio_file_white.png);
+   image-position:   left;
+   color:            white;
+}
+
 
 QPushButton#Sampler_play_buttons
 {

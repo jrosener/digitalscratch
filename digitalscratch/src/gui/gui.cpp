@@ -1318,7 +1318,7 @@ Gui::init_file_browser_area()
 
     // Create function buttons for file browser.
     this->refresh_file_browser = new QPushButton(tr("SCAN FILES"));
-    this->refresh_file_browser->setObjectName("Right_vertical_bar_buttons");
+    this->refresh_file_browser->setObjectName("Right_vertic_button_scan_files");
     this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
@@ -1375,7 +1375,7 @@ Gui::init_file_browser_area()
 
     // Vertical set of buttons on the right: show/hide the sampler area.
     this->show_hide_samplers_button = new QPushButton(tr("SAMPLERS"));
-    this->show_hide_samplers_button->setObjectName("Right_vertical_bar_buttons");
+    this->show_hide_samplers_button->setObjectName("Right_vertic_button_samplers");
     this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
     this->show_hide_samplers_button->setCheckable(true);
     this->show_hide_samplers_button->setChecked(true);
