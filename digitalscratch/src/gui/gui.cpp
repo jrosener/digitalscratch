@@ -2740,6 +2740,7 @@ Deck::~Deck()
     delete this->key;
     delete this->waveform;
     delete this->remaining_time_layout;
+    delete this->remaining_time;
     delete this->buttons_layout;
     delete this->speed;
     delete this->timecode_manual_button;
@@ -2947,8 +2948,6 @@ Sampler::Sampler(const QString      &in_title,
 
 Sampler::~Sampler()
 {
-    // delete this->area; // FIXME: needed ?
-
     return;
 }
 
