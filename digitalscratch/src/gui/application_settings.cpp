@@ -83,6 +83,9 @@ Application_settings::init_settings()
     if (this->settings.contains(NB_DECKS_CFG) == false) {
         this->settings.setValue(NB_DECKS_CFG, this->get_nb_decks_default());
     }
+    if (this->settings.contains(NB_SAMPLERS_CFG) == false) {
+        this->settings.setValue(NB_SAMPLERS_CFG, this->get_nb_samplers_default());
+    }
 
     //
     // Sound card settings.
@@ -336,6 +339,23 @@ Application_settings::get_available_nb_decks()
     return this->available_nb_decks;
 }
 
+unsigned short int
+Application_settings::get_nb_samplers()
+{
+    return this->settings.value(NB_SAMPLERS_CFG).toUInt();
+}
+
+unsigned short int
+Application_settings::get_nb_samplers_default()
+{
+    return NB_SAMPLERS_DEFAULT;
+}
+
+void
+Application_settings::set_nb_samplers(unsigned short int in_nb_samplers)
+{
+    this->settings.setValue(NB_SAMPLERS_CFG, in_nb_samplers);
+}
 
 //
 // Timecode signal detection settings.

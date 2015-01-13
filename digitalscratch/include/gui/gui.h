@@ -273,7 +273,6 @@ class Gui : public QObject
     QSplitter                          *browser_splitter;
     QGroupBox                          *file_browser_gbox;
     QPushButton                        *refresh_file_browser;
-
     QList<FileBrowserControlButtons*>   file_browser_control_buttons;
     QFutureWatcher<void>               *watcher_parse_directory;
 
@@ -375,7 +374,6 @@ class Gui : public QObject
     void clean_bottom_help();
     void init_bottom_status();
     void clean_bottom_status();
-
     void display_audio_file_collection();
     bool apply_main_window_style();
     bool set_file_browser_playlist_tracks(Playlist *in_playlist);
@@ -385,8 +383,7 @@ class Gui : public QObject
     bool restart_sound_card(short unsigned int in_nb_channels);
     bool apply_application_settings();
     void highlight_deck_sampler_area(unsigned short int in_deck_index);
-    void highlight_border_deck_sampler_area(unsigned short int in_deck_index,
-                                            bool               switch_on);
+    void highlight_border_deck_sampler_area(unsigned short int in_deck_index, bool switch_on);
     unsigned short int get_selected_deck_index();
     void resize_file_browser_columns();
     void analyze_audio_collection(bool is_all_files);

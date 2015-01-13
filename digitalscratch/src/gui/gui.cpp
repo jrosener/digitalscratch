@@ -115,16 +115,12 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     // Get decks/tracks and sound capture/playback engine.
     this->ats                     = in_ats;
     this->at_samplers             = in_at_samplers;
-    this->nb_samplers             = 0;
-    if (in_at_samplers.count() >= 1)
-    {
-        this->nb_samplers         = in_at_samplers[0].count();
-    }
     this->decs                    = in_decs;
     this->dec_samplers            = in_dec_samplers;
     this->params                  = in_params;
     this->playbacks               = in_playbacks;
     this->nb_decks                = this->settings->get_nb_decks();
+    this->nb_samplers             = this->settings->get_nb_samplers();
     this->sound_card              = in_sound_card;
     this->capture_and_play        = in_capture_and_playback;
     this->dscratch_ids            = in_dscratch_ids;
@@ -3048,7 +3044,7 @@ FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_
         this->load_sample_buttons << load_sample_button;
         this->addWidget(load_sample_button);
 
-        QString shortcut;
+        QString shortcut = "";
         switch (i)
         {
             case 0: shortcut = KB_LOAD_TRACK_ON_SAMPLER1; break;
@@ -3056,7 +3052,14 @@ FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_
             case 2: shortcut = KB_LOAD_TRACK_ON_SAMPLER3; break;
             case 3: shortcut = KB_LOAD_TRACK_ON_SAMPLER4; break;
         }
-        this->load_sample_buttons[i]->setToolTip("<p>" + tr("Load selected track to sample ") + name + "</p><em>" + settings->get_keyboard_shortcut(shortcut) + "</em>");
+        if (shortcut.isEmpty() == false)
+        {
+            this->load_sample_buttons[i]->setToolTip("<p>" + tr("Load selected track to sampler ") + name + "</p><em>" + settings->get_keyboard_shortcut(shortcut) + "</em>");
+        }
+        else
+        {
+            this->load_sample_buttons[i]->setToolTip("<p>" + tr("Load selected track to sampler ") + name + "</p>");
+        }
 
         name[0].unicode()++; // Next sampler letter.
     }

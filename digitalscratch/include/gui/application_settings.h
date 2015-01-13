@@ -63,6 +63,8 @@ using namespace std;
 #define EXTERN_PROG_CFG           "player/extern_prog"
 #define NB_DECKS_CFG              "player/nb_decks"
 #define NB_DECKS_DEFAULT          2
+#define NB_SAMPLERS_CFG           "player/nb_samplers"
+#define NB_SAMPLERS_DEFAULT       4
 
 // Sound caracteristics.
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
@@ -202,6 +204,10 @@ class Application_settings : public QObject
     signed short int     get_nb_decks();
     signed short int     get_nb_decks_default();
     QList<unsigned int>  get_available_nb_decks();
+
+    void                 set_nb_samplers(unsigned short int in_nb_samplers);
+    unsigned short int   get_nb_samplers();
+    unsigned short int   get_nb_samplers_default();
 
     void                 set_sample_rate(unsigned int in_sample_rate);
     unsigned int         get_sample_rate();

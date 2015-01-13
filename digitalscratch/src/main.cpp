@@ -58,10 +58,6 @@ int main(int argc, char *argv[])
                                                     *.warning=true\n \
                                                     *.critical=true\n"));
 
-
-    // Number of samplers. FIXME: move to application_const.h ?
-    unsigned short int nb_samplers = 4;
-
     // Create application.
     QApplication app(argc, argv);
 
@@ -121,7 +117,7 @@ int main(int argc, char *argv[])
         // Set of samplers for a deck.
         QList<QSharedPointer<Audio_track>>                 at_sampler;
         QList<QSharedPointer<Audio_file_decoding_process>> dec_sampler_proc;
-        for (auto j = 1; j <= nb_samplers; j++)
+        for (auto j = 1; j <= settings->get_nb_samplers(); j++)
         {
             QSharedPointer<Audio_track>                 at_s(new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate()));
             QSharedPointer<Audio_file_decoding_process> dec_s_proc(new Audio_file_decoding_process(at_s));
