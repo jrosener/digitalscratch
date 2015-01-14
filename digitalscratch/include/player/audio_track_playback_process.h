@@ -56,7 +56,7 @@ class Audio_track_playback_process : public QObject
     QList<QSharedPointer<Audio_track>>    at_samplers;
     QSharedPointer<Playback_parameters>   param;
     unsigned int                          current_sample;
-    unsigned int                         *cue_points; // Table of cue points // TODO: switch to QList
+    QList<unsigned int>                   cue_points;
     unsigned int                          remaining_time;
     unsigned int                         *sampler_current_samples; // Table of nb_samplers playback current_sample. // TODO: switch to QList
     unsigned int                         *sampler_remaining_times; // Table of nb_samplers remaining time (in msec). // TODO: switch to QList

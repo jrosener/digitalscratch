@@ -53,8 +53,10 @@ Audio_track_playback_process::Audio_track_playback_process(QSharedPointer<Audio_
     this->src_state   = NULL;
     this->src_data    = NULL;
 
-    this->cue_points = new unsigned int[MAX_NB_CUE_POINTS];
-    std::fill(this->cue_points, this->cue_points + MAX_NB_CUE_POINTS, 0);
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+    {
+        this->cue_points << 0;
+    }
     this->current_sample             = 0;
     this->stopped                    = true;
     this->remaining_time             = 0;
@@ -85,7 +87,6 @@ Audio_track_playback_process::Audio_track_playback_process(QSharedPointer<Audio_
 
 Audio_track_playback_process::~Audio_track_playback_process()
 {
-    delete [] this->cue_points;
     delete [] this->sampler_current_samples;
     delete [] this->sampler_remaining_times;
     delete [] this->sampler_current_states;
