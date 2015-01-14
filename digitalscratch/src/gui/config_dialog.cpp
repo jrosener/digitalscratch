@@ -64,7 +64,7 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
         this->gui_style_select->addItem(available_gui_styles.at(i));
     }
     this->nb_decks_select = new QComboBox(this);
-    QList<unsigned int> available_nb_decks = this->settings->get_available_nb_decks();
+    QList<unsigned short int> available_nb_decks = this->settings->get_available_nb_decks();
     for (int i = 0; i < available_nb_decks.size(); i++)
     {
         this->nb_decks_select->addItem(QString::number(available_nb_decks.at(i)));

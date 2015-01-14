@@ -167,7 +167,7 @@ class Application_settings : public QObject
     QList<QString>             available_vinyl_types;
     QList<unsigned short int>  available_rpms;
     QList<unsigned int>        available_sample_rates;
-    QList<unsigned int>        available_nb_decks;
+    QList<unsigned short int>  available_nb_decks;
     QList<QString>             available_sound_cards;
     bool                       audio_collection_full_refresh;
 
@@ -200,10 +200,10 @@ class Application_settings : public QObject
     QString         get_gui_style_default();
     QList<QString>  get_available_gui_styles();
 
-    void                 set_nb_decks(signed short int in_nb_decks);
-    signed short int     get_nb_decks();
-    signed short int     get_nb_decks_default();
-    QList<unsigned int>  get_available_nb_decks();
+    void                      set_nb_decks(unsigned short int in_nb_decks);
+    unsigned short int        get_nb_decks();
+    unsigned short int        get_nb_decks_default();
+    QList<unsigned short int> get_available_nb_decks();
 
     void                 set_nb_samplers(unsigned short int in_nb_samplers);
     unsigned short int   get_nb_samplers();
