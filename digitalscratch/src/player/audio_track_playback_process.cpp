@@ -175,18 +175,21 @@ Audio_track_playback_process::play_audio_track(unsigned short int   in_nb_sample
 
 #if 0
     // Fake implementation (just play track), do not use playback parameters.
-    short signed int *sample_pointer = &((this->ats[in_deck_index]->get_samples())[this->current_samples[in_deck_index]]);
+    short signed int *sample_pointer = &this->at->get_samples()[this->current_sample];
     std::copy(sample_pointer, sample_pointer + (in_nb_samples * 2), this->src_int_input_data);
     src_short_to_float_array(this->src_int_input_data, this->src_float_input_data, in_nb_samples * 2);
 
-    for (int i = (0 + (in_deck_index * 2));
-         i < (in_nb_samples * this->nb_decks * 2);
-         i = i + (this->nb_decks * 2))
+    float *ptr = this->src_float_input_data;
+    for (int i = 0; i < in_nb_samples; i++)
     {
-        out_samples[i]   = &this->src_float_input_data[i];
-        out_samples[i+1] = &this->src_float_input_data[i+1];
+        out_samples[0][i] = *ptr;
+        ptr++;
+        out_samples[1][i] = *ptr;
+        ptr++;
     }
-    this->current_samples[in_deck_index] += in_nb_samples*2;
+
+    this->current_sample += in_nb_samples*2;
+
 #else
     if (this->play_data_with_playback_parameters(in_nb_samples, out_samples) == false)
     {
@@ -461,32 +464,34 @@ Audio_track_playback_process::play_data_with_playback_parameters(unsigned short 
     {
         qCWarning(DS_PLAYBACK) << "libsamplerate fails: " << src_strerror(err);
     }
-
-    // Change current pointer on sample to play
-    if (speed > 0.0)
-    {
-        this->current_sample += this->src_data->input_frames_used * 2;
-    }
     else
     {
-        this->current_sample -= this->src_data->input_frames_used * 2;
+        // Change current pointer on sample to play
+        if (speed > 0.0)
+        {
+            this->current_sample += this->src_data->input_frames_used * 2;
+        }
+        else
+        {
+            this->current_sample -= this->src_data->input_frames_used * 2;
+        }
+
+        // Change volume.
+        this->change_volume(this->src_float_output_data, in_nb_samples * 2);
+
+        // Put result in sound card interleaved output stream.
+        float *ptr = this->src_float_output_data;
+        for (int i = 0; i < in_nb_samples; i++)
+        {
+            out_samples[0][i] = *ptr;
+            ptr++;
+            out_samples[1][i] = *ptr;
+            ptr++;
+        }
+
+        // Play samplers.
+        this->play_sampler(in_nb_samples, out_samples);
     }
-
-    // Change volume.
-    this->change_volume(this->src_float_output_data, in_nb_samples * 2);
-
-    // Put result in sound card interleaved output stream.
-    float *ptr = this->src_float_output_data;
-    for (int i = 0; i < in_nb_samples; i++)
-    {
-        out_samples[0][i] = *ptr;
-        ptr++;
-        out_samples[1][i] = *ptr;
-        ptr++;
-    }
-
-    // Play samplers.
-    this->play_sampler(in_nb_samples, out_samples);
 
     return true;
 }
