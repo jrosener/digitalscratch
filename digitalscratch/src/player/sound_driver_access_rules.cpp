@@ -38,9 +38,9 @@
 
 Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_channels)
 {
-    if ((in_nb_channels == 0) || (in_nb_channels > 4))
+    if (in_nb_channels < 2)
     {
-        qCWarning(DS_SOUNDCARD) << "DigitalScratch can only handle 2 decks maximum.";
+        qCWarning(DS_SOUNDCARD) << "Number of channels must be at least 2.";
         return;
     }
 

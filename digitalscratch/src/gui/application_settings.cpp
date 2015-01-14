@@ -42,7 +42,7 @@ Application_settings::Application_settings() : settings(APPLICATION_NAME)
     this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
     this->available_vinyl_types << FINAL_SCRATCH_VINYL << SERATO_VINYL << MIXVIBES_VINYL;
     this->available_rpms << RPM_33 << RPM_45;
-    this->available_nb_decks << 1 << 2;
+    this->available_nb_decks << 1 << 2 << 3;
     this->available_sample_rates << 44100 << 48000 << 96000;
 
     this->available_sound_cards = Audio_device_access_rules::get_device_list();

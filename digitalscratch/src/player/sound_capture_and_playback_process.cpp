@@ -40,7 +40,7 @@
 Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
                                                                        QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
                                                                        QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
-                                                                       unsigned short int                               in_nb_decks)
+                                                                       unsigned short int                                   in_nb_decks)
 {
     if (in_tcode_controls.count() == 0 ||
         in_playbacks.count()      == 0 ||
@@ -68,70 +68,45 @@ Sound_capture_and_playback_process::~Sound_capture_and_playback_process()
 bool
 Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
 {
-    float *input_buffer_1  = NULL;
-    float *input_buffer_2  = NULL;
-    float *input_buffer_3  = NULL;
-    float *input_buffer_4  = NULL;
-
-    float *output_buffer_1  = NULL;
-    float *output_buffer_2  = NULL;
-    float *output_buffer_3  = NULL;
-    float *output_buffer_4  = NULL;
+    QList<float *> input_buffers;
+    QList<float *> output_buffers;
 
     // Get sound card buffers. // TODO : a ne faire que si mode = timecode
-    if(this->sound_card->get_input_buffers(in_nb_buffer_frames,
-                                           &input_buffer_1,
-                                           &input_buffer_2,
-                                           &input_buffer_3,
-                                           &input_buffer_4) == false)
+    if(this->sound_card->get_input_buffers(in_nb_buffer_frames, input_buffers) == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not get input buffers";
         return false;
     }
-    if(this->sound_card->get_output_buffers(in_nb_buffer_frames,
-                                            &output_buffer_1,
-                                            &output_buffer_2,
-                                            &output_buffer_3,
-                                            &output_buffer_4) == false)
+    if(this->sound_card->get_output_buffers(in_nb_buffer_frames, output_buffers) == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not get output buffers";
         return false;
     }
 
     // Analyze captured data. // TODO : a ne faire que si mode = timecode
-    if (this->tcode_controls[0]->run(in_nb_buffer_frames,
-                                 input_buffer_1,
-                                 input_buffer_2) == false)
+    for (unsigned short int i = 0; i < this->tcode_controls.size(); i++)
     {
-        qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck 1";
-        return false;
-    }
-    if ((this->nb_decks > 1) &&
-       (this->tcode_controls[1]->run(in_nb_buffer_frames,
-                                     input_buffer_3,
-                                     input_buffer_4) == false))
-    {
-        qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck 2";
-        return false;
+        if (this->tcode_controls[i]->run(in_nb_buffer_frames,
+                                         input_buffers[i*2],
+                                         input_buffers[i*2 + 1]) == false)
+        {
+            qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck " << i + 1;
+            return false;
+        }
     }
 
-    // Faire un cas particulier pour mode = manual.
+    // TODO: Faire un cas particulier pour mode = manual.
 
     // Play data.
-    if (this->playbacks[0]->run(in_nb_buffer_frames,
-                            output_buffer_1,
-                            output_buffer_2) == false)
+    for (unsigned short int i = 0; i < this->playbacks.size(); i++)
     {
-        qCWarning(DS_PLAYBACK) << "playback process failed for deck 1";
-        return false;
-    }
-    if ((this->nb_decks > 1) &&
-        (this->playbacks[1]->run(in_nb_buffer_frames,
-                            output_buffer_3,
-                            output_buffer_4) == false))
-    {
-        qCWarning(DS_PLAYBACK) << "playback process failed for deck 2";
-        return false;
+        if (this->playbacks[i]->run(in_nb_buffer_frames,
+                                    output_buffers[i*2],
+                                    output_buffers[i*2 + 1]) == false)
+        {
+            qCWarning(DS_PLAYBACK) << "playback process failed for deck 1";
+            return false;
+        }
     }
 
     return true;

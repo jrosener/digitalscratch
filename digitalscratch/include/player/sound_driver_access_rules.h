@@ -60,16 +60,8 @@ class Sound_driver_access_rules : public QObject
     virtual bool start(void *in_callback_param) = 0;
     virtual bool restart() = 0;
     virtual bool stop() = 0;
-    virtual bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
-                                   float              **out_buffer_1,
-                                   float              **out_buffer_2,
-                                   float              **out_buffer_3,
-                                   float              **out_buffer_4) = 0;
-    virtual bool get_output_buffers(unsigned short int   in_nb_buffer_frames,
-                                    float              **out_buffer_1,
-                                    float              **out_buffer_2,
-                                    float              **out_buffer_3,
-                                    float              **out_buffer_4) = 0;
+    virtual bool get_input_buffers(unsigned short int  in_nb_buffer_frames, QList<float*> &out_buffers) = 0;
+    virtual bool get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float*> &out_buffers) = 0;
 
  signals:
    void error_msg(QString in_error_message);

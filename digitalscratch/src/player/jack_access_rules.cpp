@@ -107,14 +107,13 @@ Jack_access_rules::start(void *in_callback_param)
     // Create input ports.
     if (this->do_capture == true)
     {
-        this->input_port = new jack_port_t*[this->nb_channels];
         for (int i = 0; i < this->nb_channels; i++)
         {
-            this->input_port[i] = jack_port_register(this->stream,
-                                                     input_port_names[i],
-                                                     JACK_DEFAULT_AUDIO_TYPE,
-                                                     JackPortIsInput,
-                                                     0);
+            this->input_port << jack_port_register(this->stream,
+                                                    input_port_names[i],
+                                                    JACK_DEFAULT_AUDIO_TYPE,
+                                                    JackPortIsInput,
+                                                    0);
             if (this->input_port[i] == NULL)
             {
                 qCWarning(DS_SOUNDCARD) << "no more JACK input ports available";
@@ -125,14 +124,13 @@ Jack_access_rules::start(void *in_callback_param)
     }
 
     // Create output ports.
-    this->output_port = new jack_port_t*[this->nb_channels];
     for (int i = 0; i < this->nb_channels; i++)
     {
-        this->output_port[i] = jack_port_register(this->stream,
-                                                 output_port_names[i],
-                                                 JACK_DEFAULT_AUDIO_TYPE,
-                                                 JackPortIsOutput,
-                                                 0);
+        this->output_port << jack_port_register(this->stream,
+                                                output_port_names[i],
+                                                JACK_DEFAULT_AUDIO_TYPE,
+                                                JackPortIsOutput,
+                                                0);
         if (this->output_port[i] == NULL)
         {
             qCWarning(DS_SOUNDCARD) << "no more JACK output ports available";
@@ -239,23 +237,16 @@ Jack_access_rules::stop()
 }
 
 bool
-Jack_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_frames,
-                                     float              **out_buffer_1,
-                                     float              **out_buffer_2,
-                                     float              **out_buffer_3,
-                                     float              **out_buffer_4)
+Jack_access_rules::get_input_buffers(unsigned short int in_nb_buffer_frames, QList<float*> &out_buffers)
 {
     bool result;
 
     if (this->do_capture == true)
     {
         // Get buffers from jack ports.
-        *out_buffer_1 = (float *)jack_port_get_buffer(this->input_port[0], in_nb_buffer_frames);
-        *out_buffer_2 = (float *)jack_port_get_buffer(this->input_port[1], in_nb_buffer_frames);
-        if (this->nb_channels >= 4)
+        for (unsigned short int i = 0; i < this->nb_channels; i++)
         {
-            *out_buffer_3 = (float *)jack_port_get_buffer(this->input_port[2], in_nb_buffer_frames);
-            *out_buffer_4 = (float *)jack_port_get_buffer(this->input_port[3], in_nb_buffer_frames);
+            out_buffers << (float *)jack_port_get_buffer(this->input_port[i], in_nb_buffer_frames);
         }
 
         result = true;
@@ -269,19 +260,12 @@ Jack_access_rules::get_input_buffers(unsigned short int   in_nb_buffer_frames,
 }
 
 bool
-Jack_access_rules::get_output_buffers(unsigned short int   in_nb_buffer_frames,
-                                      float              **out_buffer_1,
-                                      float              **out_buffer_2,
-                                      float              **out_buffer_3,
-                                      float              **out_buffer_4)
+Jack_access_rules::get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float *> &out_buffers)
 {
     // Get buffers from jack ports.
-    *out_buffer_1 = (float *)jack_port_get_buffer(this->output_port[0], in_nb_buffer_frames);
-    *out_buffer_2 = (float *)jack_port_get_buffer(this->output_port[1], in_nb_buffer_frames);
-    if (this->nb_channels >= 4)
+    for (unsigned short int i = 0; i < this->nb_channels; i++)
     {
-        *out_buffer_3 = (float *)jack_port_get_buffer(this->output_port[2], in_nb_buffer_frames);
-        *out_buffer_4 = (float *)jack_port_get_buffer(this->output_port[3], in_nb_buffer_frames);
+        out_buffers <<  (float *)jack_port_get_buffer(this->output_port[i], in_nb_buffer_frames);
     }
 
     return true;

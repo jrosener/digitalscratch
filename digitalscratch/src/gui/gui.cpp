@@ -1809,9 +1809,9 @@ Gui::apply_main_window_style()
             this->file_browser_control_buttons[i]->show_next_key_from_deck_button->setIcon(QIcon());
             for (int j = 0; j < this->nb_samplers; j++)
             {
-                this->samplers[i]->buttons_play[i]->setIcon(QIcon());
-                this->samplers[i]->buttons_stop[i]->setIcon(QIcon());
-                this->samplers[i]->buttons_del[i]->setIcon(QIcon());
+                this->samplers[i]->buttons_play[j]->setIcon(QIcon());
+                this->samplers[i]->buttons_stop[j]->setIcon(QIcon());
+                this->samplers[i]->buttons_del[j]->setIcon(QIcon());
                 this->file_browser_control_buttons[i]->load_sample_buttons[j]->setIcon(QIcon());
             }
         }

@@ -53,7 +53,7 @@ class Sound_capture_and_playback_process
     Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
                                        QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
                                        QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
-                                       unsigned short int                                  in_nb_decks);
+                                       unsigned short int                                   in_nb_decks);
     virtual ~Sound_capture_and_playback_process();
 
     bool run(unsigned short int in_nb_buffer_frames);

@@ -64,8 +64,8 @@ class Jack_access_rules : public Sound_driver_access_rules
     AUDIO_STREAM_TYPE stream;
 
  public:
-    jack_port_t  **input_port;
-    jack_port_t  **output_port;
+    QList<jack_port_t*> input_port;
+    QList<jack_port_t*> output_port;
 
  public:
     Jack_access_rules(unsigned short int in_nb_channels);
@@ -75,14 +75,6 @@ class Jack_access_rules : public Sound_driver_access_rules
     bool start(void *in_callback_param);
     bool restart();
     bool stop();
-    bool get_input_buffers(unsigned short int   in_nb_buffer_frames,
-                           float              **out_buffer_1,
-                           float              **out_buffer_2,
-                           float              **out_buffer_3,
-                           float              **out_buffer_4);
-    bool get_output_buffers(unsigned short int   in_nb_buffer_frames,
-                            float              **out_buffer_1,
-                            float              **out_buffer_2,
-                            float              **out_buffer_3,
-                            float              **out_buffer_4);
+    bool get_input_buffers(unsigned short int  in_nb_buffer_frames, QList<float *> &out_buffers);
+    bool get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float*> &out_buffers);
 };
