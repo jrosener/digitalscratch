@@ -702,7 +702,7 @@ QPushButton#Load_track_sample_button_D:checked
    image:            url(:/pixmaps/dark-load_sample_white_d.png);
 }
 
-QPushButton#Timecode_toggle
+QPushButton#Timecode_manual_buttons
 {
    color:            black;
    background-color: gray;
@@ -717,22 +717,23 @@ QPushButton#Timecode_toggle
    height:           12px;
    font:             7pt;
 }
-QPushButton#Timecode_toggle:hover
+QPushButton#Timecode_manual_buttons:hover
 {
    border:           1px solid orange;
 }
-QPushButton#Timecode_toggle:pressed
+QPushButton#Timecode_manual_buttons:pressed
 {
    color:            black;
    border-style:     inset;
    background-color: lightGray;
 }
-QPushButton#Timecode_toggle:checked
+QPushButton#Timecode_manual_buttons:checked
 {
    color:            black;
    background-color: orange;
    border-width:     1px;
    border-color:     gray;
+   border-style:     inset;
 }
 
 QLabel#Speed_value

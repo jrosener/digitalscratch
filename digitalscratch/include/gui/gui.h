@@ -136,7 +136,9 @@ class Deck : public PlaybackQGroupBox
        QHBoxLayout                  *remaining_time_layout;
        Remaining_time               *remaining_time;
        QHBoxLayout                  *buttons_layout;
-       QPushButton                  *timecode_manual_button;
+       QPushButton                  *timecode_button;
+       QPushButton                  *manual_button;
+       bool                          speed_mode;
        QLabel                       *speed;
        SpeedQPushButton             *speed_up_button;
        SpeedQPushButton             *speed_down_button;
@@ -156,7 +158,10 @@ class Deck : public PlaybackQGroupBox
        virtual ~Deck();
        void init_display();
        void set_key(const QString& in_key);
-       void switch_speed_mode(bool in_mode);
+
+    public slots:
+       void set_speed_mode_timecode();
+       void set_speed_mode_manual();
 };
 
 class QSamplerContainerWidget : public QWidget
@@ -457,7 +462,6 @@ class Gui : public QObject
     void start_control_and_playback();
     void stop_control_and_playback();
     void run_concurrent_read_collection_from_db();
-    void switch_speed_mode(bool in_mode, int in_deck_index);
     void update_speed_label(float in_speed, int in_deck_index);
     void speed_up_down(float in_speed_inc, int in_deck_index);
 };

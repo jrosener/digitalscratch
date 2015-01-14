@@ -1073,10 +1073,15 @@ Gui::connect_decks_area()
     for(unsigned short int i = 0; i < this->nb_decks; i++)
     {
         // Toggle timecode/manual mode.
-        QObject::connect(this->decks[i]->timecode_manual_button, &QPushButton::toggled,
-                        [this](bool in_mode)
+        QObject::connect(this->decks[i]->timecode_button, &QPushButton::clicked,
+                        [this, i]()
                         {
-                            this->switch_speed_mode(in_mode, 0);
+                            this->decks[i]->set_speed_mode_timecode();
+                        });
+        QObject::connect(this->decks[i]->manual_button, &QPushButton::clicked,
+                        [this, i]()
+                        {
+                            this->decks[i]->set_speed_mode_manual();
                         });
 
         // Display speed.
@@ -2368,16 +2373,6 @@ Gui::set_sampler_state(int  in_deck_index,
 }
 
 void
-Gui::switch_speed_mode(bool in_mode, int in_deck_index)
-{
-    Q_UNUSED(in_deck_index); // FIXME: modify method to handle 2 decks.
-
-
-   this->decks[0]->switch_speed_mode(in_mode);
-    // TODO: switch mode.
-}
-
-void
 Gui::update_speed_label(float in_speed, int in_deck_index)
 {
     double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
@@ -2726,6 +2721,7 @@ Deck::Deck(const QString &in_title, QSharedPointer<Audio_track> &in_at) : Playba
     this->at = in_at;
     this->settings = &Singleton<Application_settings>::get_instance();
     this->setObjectName("DeckGBox");
+    this->speed_mode = false;
 
     return;
 }
@@ -2739,7 +2735,8 @@ Deck::~Deck()
     delete this->remaining_time;
     delete this->buttons_layout;
     delete this->speed;
-    delete this->timecode_manual_button;
+    delete this->timecode_button;
+    delete this->manual_button;
     delete this->speed_up_button;
     delete this->speed_down_button;
     delete this->accel_up_button;
@@ -2782,13 +2779,24 @@ Deck::init_display()
 
     // Speed management.
     QVBoxLayout *timecode_speed_layout = new QVBoxLayout();
-    this->timecode_manual_button = new QPushButton(tr("TIMECODE"));
-    this->timecode_manual_button->setToolTip("<p>" + tr("Switch speed mode TIMECODE/MANUAL.") + "</p>");
-    this->timecode_manual_button->setObjectName("Timecode_toggle");
-    this->timecode_manual_button->setFocusPolicy(Qt::NoFocus);
-    this->timecode_manual_button->setCheckable(true);
-    this->timecode_manual_button->setChecked(true);
-    timecode_speed_layout->addWidget(this->timecode_manual_button);
+    QHBoxLayout *timecode_manual_layout = new QHBoxLayout();
+    this->timecode_button = new QPushButton(tr("TIM"));
+    this->timecode_button->setToolTip("<p>" + tr("Control speed with timecoded vinyl.") + "</p>");
+    this->timecode_button->setObjectName("Timecode_manual_buttons");
+    this->timecode_button->setFocusPolicy(Qt::NoFocus);
+    this->timecode_button->setCheckable(true);
+    this->timecode_button->setChecked(true);
+    timecode_manual_layout->addWidget(this->timecode_button);
+    this->manual_button = new QPushButton(tr("MAN"));
+    this->manual_button->setToolTip("<p>" + tr("Control speed manually.") + "</p>");
+    this->manual_button->setObjectName("Timecode_manual_buttons");
+    this->manual_button->setFocusPolicy(Qt::NoFocus);
+    this->manual_button->setCheckable(true);
+    this->manual_button->setChecked(false);
+    this->manual_button->setEnabled(false); // TODO: enable again when implementation is done.
+    timecode_manual_layout->addWidget(this->manual_button);
+
+    timecode_speed_layout->addLayout(timecode_manual_layout);
     this->speed = new QLabel(tr("+000.0%"));
     this->speed->setObjectName("Speed_value");
     timecode_speed_layout->addWidget(this->speed);
@@ -2821,8 +2829,8 @@ Deck::init_display()
     this->buttons_layout->addLayout(speed_layout);
     this->buttons_layout->addStretch(1000);
 
-    // Select speed control mode.
-    this->switch_speed_mode(true);
+    // Set default speed control mode.
+    this->set_speed_mode_timecode();
 
     // Restart button.
     this->restart_button = new QPushButton();
@@ -2896,24 +2904,42 @@ Deck::init_display()
 }
 
 void
-Deck::switch_speed_mode(bool in_mode)
+Deck::set_speed_mode_timecode()
 {
-    // Mode: false=manual, true=timecode
-    if (in_mode == true)
+    if (this->speed_mode == false)
     {
-        this->timecode_manual_button->setText(tr("TIMECODE"));
+        // Switch to timecode mode.
+        this->timecode_button->setChecked(true);
+        this->manual_button->setChecked(false);
         this->speed_up_button->hide();
         this->speed_down_button->hide();
         this->accel_up_button->hide();
         this->accel_down_button->hide();
+        this->speed_mode = true;
     }
     else
     {
-        this->timecode_manual_button->setText(tr("MANUAL"));
+       this->timecode_button->setChecked(true);
+    }
+}
+
+void
+Deck::set_speed_mode_manual()
+{
+    if (this->speed_mode == true)
+    {
+        // Switch to manual mode.
+        this->timecode_button->setChecked(false);
+        this->manual_button->setChecked(true);
         this->speed_up_button->show();
         this->speed_down_button->show();
         this->accel_up_button->show();
         this->accel_down_button->show();
+        this->speed_mode = false;
+    }
+    else
+    {
+       this->manual_button->setChecked(true);
     }
 }
 
