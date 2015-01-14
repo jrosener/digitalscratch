@@ -58,9 +58,9 @@ class Audio_track_playback_process : public QObject
     unsigned int                          current_sample;
     QList<unsigned int>                   cue_points;
     unsigned int                          remaining_time;
-    unsigned int                         *sampler_current_samples; // Table of nb_samplers playback current_sample. // TODO: switch to QList
-    unsigned int                         *sampler_remaining_times; // Table of nb_samplers remaining time (in msec). // TODO: switch to QList
-    bool                                 *sampler_current_states;  // Table of nb_samplers states of sampler (true=play). // TODO: switch to QList
+    QList<unsigned int>                   sampler_current_samples;
+    QList<unsigned int>                   sampler_remaining_times;
+    QList<bool>                           sampler_current_states;  // States of sampler (true=play).
     unsigned short int                    need_update_remaining_time;
     bool                                  stopped;                 // State (stopped = true) of audio track playback.
     unsigned short int                    nb_samplers;

@@ -53,21 +53,15 @@ Audio_track_playback_process::Audio_track_playback_process(QSharedPointer<Audio_
     this->src_state   = NULL;
     this->src_data    = NULL;
 
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        this->cue_points << 0;
-    }
+    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++) this->cue_points << 0;
     this->current_sample             = 0;
     this->stopped                    = true;
     this->remaining_time             = 0;
     this->src_state                  = nullptr;
     this->src_data                   = nullptr;
-    this->sampler_current_samples    = new unsigned int[nb_samplers];
-    this->sampler_remaining_times    = new unsigned int[nb_samplers];
-    this->sampler_current_states     = new bool        [nb_samplers];
-    std::fill(this->sampler_current_samples, this->sampler_current_samples + nb_samplers, 0);
-    std::fill(this->sampler_remaining_times, this->sampler_remaining_times + nb_samplers, 0);
-    std::fill(this->sampler_current_states,  this->sampler_current_states  + nb_samplers, false);
+    for (unsigned short int i = 0; i < this->nb_samplers; i++) this->sampler_current_samples << 0;
+    for (unsigned short int i = 0; i < this->nb_samplers; i++) this->sampler_remaining_times << 0;
+    for (unsigned short int i = 0; i < this->nb_samplers; i++) this->sampler_current_states  << false;
     this->need_update_remaining_time = 0;
 
     // Init libsamplerate.
@@ -87,10 +81,6 @@ Audio_track_playback_process::Audio_track_playback_process(QSharedPointer<Audio_
 
 Audio_track_playback_process::~Audio_track_playback_process()
 {
-    delete [] this->sampler_current_samples;
-    delete [] this->sampler_remaining_times;
-    delete [] this->sampler_current_states;
-
     // Close libsamplerate.
     if (this->src_state != nullptr)
     {
