@@ -260,7 +260,6 @@ win32 {
 ############################
 
 OTHER_FILES += \
-    TODO \
     README \
     NEWS \
     INSTALL \
