@@ -131,6 +131,7 @@ class Deck : public PlaybackQGroupBox
    public:
        QSharedPointer<Audio_track>   at;
        QLabel                       *track_name;
+       QPushButton                  *thru_button;
        QLabel                       *key;
        Waveform                     *waveform;
        QHBoxLayout                  *remaining_time_layout;
@@ -466,4 +467,5 @@ class Gui : public QObject
     void run_concurrent_read_collection_from_db();
     void update_speed_label(float in_speed, int in_deck_index);
     void speed_up_down(float in_speed_inc, int in_deck_index);
+    void playback_thru(unsigned short int in_deck_index, bool in_on_off);
 };

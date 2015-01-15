@@ -55,6 +55,7 @@ Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSh
         this->playbacks      = in_playbacks;
         this->sound_card     = in_sound_card;
         this->nb_decks       = in_nb_decks;
+        this->mode           = timecode;
     }
 
     return;
@@ -71,7 +72,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
     QList<float *> input_buffers;
     QList<float *> output_buffers;
 
-    // Get sound card buffers. // TODO : a ne faire que si mode = timecode
+    // Get sound card buffers.
     if(this->sound_card->get_input_buffers(in_nb_buffer_frames, input_buffers) == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not get input buffers";
@@ -83,19 +84,35 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
         return false;
     }
 
-    // Analyze captured data. // TODO : a ne faire que si mode = timecode
-    for (unsigned short int i = 0; i < this->tcode_controls.size(); i++)
+    switch(this->mode)
     {
-        if (this->tcode_controls[i]->run(in_nb_buffer_frames,
-                                         input_buffers[i*2],
-                                         input_buffers[i*2 + 1]) == false)
+        // Analyze captured data with libdigitalscratch.
+        case timecode:
         {
-            qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck " << i + 1;
-            return false;
-        }
-    }
+            for (unsigned short int i = 0; i < this->tcode_controls.size(); i++)
+            {
+                if (this->tcode_controls[i]->run(in_nb_buffer_frames,
+                                                 input_buffers[i*2],
+                                                 input_buffers[i*2 + 1]) == false)
+                {
+                    qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck " << i + 1;
+                    return false;
+                }
+            }
 
-    // TODO: Faire un cas particulier pour mode = manual.
+            break;
+        }
+        // Copy data from input sound card buffers to output ones.
+        case thru:
+        {
+            for (int i = 0; i < input_buffers.size(); i++)
+            {
+                std::copy(input_buffers[i], input_buffers[i] + in_nb_buffer_frames, output_buffers[i]);
+            }
+            break;
+        }
+        // TODO case manual (use speed value from GUI buttons)
+    }
 
     // Play data.
     for (unsigned short int i = 0; i < this->playbacks.size(); i++)
@@ -110,4 +127,10 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
     }
 
     return true;
+}
+
+void
+Sound_capture_and_playback_process::set_process_mode(ProcessMode mode)
+{
+    this->mode = mode;
 }

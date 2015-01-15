@@ -1136,6 +1136,10 @@ Gui::connect_decks_area()
         // Name of the track.
         QObject::connect(this->ats[i].data(), &Audio_track::name_changed, [this, i](QString name){this->decks[i]->track_name->setText(name);});
 
+        // Thru button.
+        QObject::connect(this->decks[i]->thru_button, &QPushButton::clicked,
+                         [this, i](bool checked) {playback_thru(i, checked);});
+
         // Music key of the track.
         QObject::connect(this->ats[i].data(), &Audio_track::key_changed, [this, i](QString key){this->decks[i]->set_key(key);});
 
@@ -2654,6 +2658,21 @@ Gui::show_next_keys()
     return;
 }
 
+void
+Gui::playback_thru(unsigned short int in_deck_index, bool in_on_off)
+{
+    // TODO implement playback bypass (copy line input sound data directly to soundcard output).
+    if (in_on_off == true)
+    {
+        this->capture_and_play->set_process_mode(thru);
+    }
+    else
+    {
+        this->capture_and_play->set_process_mode(timecode);
+    }
+
+}
+
 PlaybackQGroupBox::PlaybackQGroupBox(const QString &title) : QGroupBox(title)
 {
     // Init.
@@ -2737,6 +2756,7 @@ Deck::Deck(const QString &in_title, QSharedPointer<Audio_track> &in_at) : Playba
 Deck::~Deck()
 {
     delete this->track_name;
+    delete this->thru_button;
     delete this->key;
     delete this->waveform;
     delete this->remaining_time_layout;
@@ -2763,11 +2783,15 @@ Deck::init_display()
 {
     // Create track name, key and waveform.
     this->track_name = new QLabel(tr("T r a c k"));
-    this->key        = new QLabel();
-    this->waveform   = new Waveform(this->at, this);
     this->track_name->setObjectName("TrackName");
+    this->thru_button = new QPushButton(tr("THRU"));
+    this->thru_button->setObjectName("Thru_button");
+    this->thru_button->setCheckable(true);
+    this->thru_button->setChecked(false);
+    this->key = new QLabel();
     this->key->setObjectName("KeyValue");
     this->set_key("");
+    this->waveform = new Waveform(this->at, this);
     this->waveform->setObjectName("Waveform");
 
     // Create remaining time.
@@ -2897,9 +2921,12 @@ Deck::init_display()
     // Create main deck layout.
     QHBoxLayout *general_layout = new QHBoxLayout();
     QVBoxLayout *sub_layout     = new QVBoxLayout();
+    QHBoxLayout *track_layout   = new QHBoxLayout();
 
     // Put track name, position and timecode info in sub layout.
-    sub_layout->addWidget(this->track_name,            5);
+    track_layout->addWidget(this->track_name,  95);
+    track_layout->addWidget(this->thru_button, 5);
+    sub_layout->addLayout(track_layout,                5);
     sub_layout->addLayout(this->remaining_time_layout, 5);
     sub_layout->addWidget(this->waveform,              85);
     sub_layout->addLayout(this->buttons_layout,        5);
