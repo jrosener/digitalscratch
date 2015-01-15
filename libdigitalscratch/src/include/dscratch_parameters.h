@@ -6,7 +6,7 @@
 /*                                                                            */
 /*--------------------------------------------------( dscratch_parameters.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2014                                                   */
+/*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
