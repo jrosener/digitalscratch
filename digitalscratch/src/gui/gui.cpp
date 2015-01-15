@@ -646,6 +646,10 @@ Gui::hide_samplers()
     this->show_hide_samplers_button->setChecked(false);
     this->settings->set_samplers_visible(false);
     this->samplers_container->hide();
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        this->file_browser_control_buttons[i]->hide_load_sample_buttons();
+    }
 }
 
 void
@@ -654,6 +658,10 @@ Gui::show_samplers()
     this->show_hide_samplers_button->setChecked(true);
     this->settings->set_samplers_visible(true);
     this->samplers_container->show();
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        this->file_browser_control_buttons[i]->show_load_sample_buttons();
+    }
 }
 
 void
@@ -3095,6 +3103,25 @@ FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_
 
 FileBrowserControlButtons::~FileBrowserControlButtons()
 {
+    return;
+}
+
+void FileBrowserControlButtons::hide_load_sample_buttons()
+{
+    for (unsigned short int i = 0; i < this->load_sample_buttons.size(); i++)
+    {
+        this->load_sample_buttons[i]->hide();
+    }
+
+    return;
+}
+
+void FileBrowserControlButtons::show_load_sample_buttons()
+{
+    for (unsigned short int i = 0; i < this->load_sample_buttons.size(); i++)
+    {
+        this->load_sample_buttons[i]->show();
+    }
 
     return;
 }

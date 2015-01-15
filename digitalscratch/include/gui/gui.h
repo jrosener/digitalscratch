@@ -217,6 +217,8 @@ class FileBrowserControlButtons : public QHBoxLayout
                                  unsigned short int in_nb_samplers);
        virtual ~FileBrowserControlButtons();
        void init_display();
+       void hide_load_sample_buttons();
+       void show_load_sample_buttons();
 };
 
 class TreeViewIconProvider : public QFileIconProvider
