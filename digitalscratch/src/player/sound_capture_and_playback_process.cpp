@@ -116,8 +116,8 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
             // Copy data from input sound card buffers to output ones.
             case thru:
             {
-                std::copy(input_buffers[i*2],     input_buffers[i*2] + in_nb_buffer_frames,     output_buffers[i*2]);
-                std::copy(input_buffers[i*2 + 1], input_buffers[i*2 + 1] + in_nb_buffer_frames, output_buffers[i*2 + 1]);
+                memcpy_s(output_buffers[i*2],     in_nb_buffer_frames, input_buffers[i*2],     in_nb_buffer_frames);
+                memcpy_s(output_buffers[i*2 + 1], in_nb_buffer_frames, input_buffers[i*2 + 1], in_nb_buffer_frames);
                 break;
             }
             // TODO case manual (use speed value from GUI buttons)
