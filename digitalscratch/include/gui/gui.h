@@ -92,6 +92,18 @@ class SpeedQPushButton : public QPushButton
        void right_clicked();
 };
 
+class SpeedQLabel : public QLabel
+{
+   Q_OBJECT
+
+   protected:
+       void mouseReleaseEvent(QMouseEvent *in_mouse_event);
+
+   signals:
+       void right_clicked();
+};
+
+
 class PlaybackQGroupBox : public QGroupBox
 {
    Q_OBJECT
@@ -139,8 +151,7 @@ class Deck : public PlaybackQGroupBox
        QHBoxLayout                  *buttons_layout;
        QPushButton                  *timecode_button;
        QPushButton                  *manual_button;
-       bool                          speed_mode;
-       QLabel                       *speed;
+       SpeedQLabel                  *speed;
        SpeedQPushButton             *speed_up_button;
        SpeedQPushButton             *speed_down_button;
        SpeedQPushButton             *accel_up_button;
@@ -467,7 +478,8 @@ class Gui : public QObject
     void start_control_and_playback();
     void stop_control_and_playback();
     void run_concurrent_read_collection_from_db();
-    void update_speed_label(float in_speed, int in_deck_index);
-    void speed_up_down(float in_speed_inc, int in_deck_index);
+    void update_speed_label(float in_speed, unsigned short in_deck_index);
+    void speed_up_down(float in_speed_inc, unsigned short int in_deck_index);
+    void speed_reset_to_100p(unsigned short int in_deck_index);
     void playback_thru(unsigned short int in_deck_index, bool in_on_off);
 };

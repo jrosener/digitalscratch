@@ -53,4 +53,5 @@ class Manual_control_process
 
     bool run();
     void inc_speed(float in_speed_inc);
+    void reset_speed_to_100p();
 };

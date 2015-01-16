@@ -55,9 +55,6 @@ Manual_control_process::run()
 {
     this->params->set_new_data(true);
 
-    this->params->set_speed(this->speed); // TODO use speed from gui buttons.
-    this->params->set_new_speed(true);
-
     this->params->set_volume(1.0); // TODO calculate volume based on speed.
     this->params->set_new_volume(true);
 
@@ -67,6 +64,11 @@ Manual_control_process::run()
 void
 Manual_control_process::inc_speed(float in_speed_inc)
 {
-    this->speed = this->params->get_speed() + in_speed_inc;
+    this->params->set_speed(this->params->get_speed() + in_speed_inc);
 }
 
+void
+Manual_control_process::reset_speed_to_100p()
+{
+    this->params->set_speed(1.0);
+}

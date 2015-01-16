@@ -153,3 +153,9 @@ Sound_capture_and_playback_process::set_process_mode(ProcessMode in_mode, unsign
 {
     this->modes[in_deck_index] = in_mode;
 }
+
+ProcessMode
+Sound_capture_and_playback_process::get_process_mode(unsigned short int in_deck_index)
+{
+    return this->modes[in_deck_index];
+}

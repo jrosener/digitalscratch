@@ -68,4 +68,5 @@ class Sound_capture_and_playback_process
 
     bool run(unsigned short int in_nb_buffer_frames);
     void set_process_mode(ProcessMode in_mode, unsigned short in_deck_index);
+    ProcessMode get_process_mode(unsigned short in_deck_index);
 };

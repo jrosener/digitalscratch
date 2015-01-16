@@ -1084,14 +1084,30 @@ Gui::connect_decks_area()
     {
         // Toggle timecode/manual mode.
         QObject::connect(this->decks[i]->timecode_button, &QPushButton::clicked,
-                        [this, i]()
-                        {
-                            this->decks[i]->set_speed_mode_timecode();
+                         [this, i](bool checked)
+                         {
+                             if (checked == true)
+                             {
+                                 this->decks[i]->set_speed_mode_timecode();
+                                 this->capture_and_play->set_process_mode(timecode, i);
+                             }
+                             else
+                             {
+                                 this->decks[i]->timecode_button->setChecked(true);
+                             }
                         });
         QObject::connect(this->decks[i]->manual_button, &QPushButton::clicked,
-                        [this, i]()
+                        [this, i](bool checked)
                         {
-                            this->decks[i]->set_speed_mode_manual();
+                            if (checked == true)
+                            {
+                                this->decks[i]->set_speed_mode_manual();
+                                this->capture_and_play->set_process_mode(manual, i);
+                            }
+                            else
+                            {
+                                this->decks[i]->manual_button->setChecked(true);
+                            }
                         });
 
         // Display speed.
@@ -1099,6 +1115,16 @@ Gui::connect_decks_area()
                         [this, i](float in_speed)
                         {
                             this->update_speed_label(in_speed, i);
+                        });
+
+        // Manual mode only: reset speed to 100% when right clicking on speed label.
+        QObject::connect(this->decks[i]->speed, &SpeedQLabel::right_clicked,
+                        [this, i]()
+                        {
+                            if (this->capture_and_play->get_process_mode(i) == manual)
+                            {
+                                this->speed_reset_to_100p(i);
+                            }
                         });
 
         // Speed up/down 0.1%.
@@ -2387,7 +2413,7 @@ Gui::set_sampler_state(int  in_deck_index,
 }
 
 void
-Gui::update_speed_label(float in_speed, int in_deck_index)
+Gui::update_speed_label(float in_speed, unsigned short int in_deck_index)
 {
     double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
@@ -2396,7 +2422,17 @@ Gui::update_speed_label(float in_speed, int in_deck_index)
 }
 
 void
-Gui::speed_up_down(float in_speed_inc, int in_deck_index)
+Gui::speed_reset_to_100p(unsigned short int in_deck_index)
+{
+    // Select deck.
+    this->highlight_deck_sampler_area(in_deck_index);
+
+    // Increment speed.
+    this->manual_controls[in_deck_index]->reset_speed_to_100p();
+}
+
+void
+Gui::speed_up_down(float in_speed_inc, unsigned short int in_deck_index)
 {
     // Select deck.
     this->highlight_deck_sampler_area(in_deck_index);
@@ -2742,7 +2778,6 @@ Deck::Deck(const QString &in_title, QSharedPointer<Audio_track> &in_at) : Playba
     this->at = in_at;
     this->settings = &Singleton<Application_settings>::get_instance();
     this->setObjectName("DeckGBox");
-    this->speed_mode = false;
 
     return;
 }
@@ -2822,19 +2857,20 @@ Deck::init_display()
     timecode_manual_layout->addWidget(this->manual_button);
 
     timecode_speed_layout->addLayout(timecode_manual_layout);
-    this->speed = new QLabel(tr("+000.0%"));
+    this->speed = new SpeedQLabel();
+    this->speed->setText(tr("+000.0%"));
     this->speed->setObjectName("Speed_value");
     timecode_speed_layout->addWidget(this->speed);
     this->buttons_layout->addLayout(timecode_speed_layout);
     QGridLayout *speed_layout = new QGridLayout();
     this->speed_up_button = new SpeedQPushButton("+");
-    this->speed_up_button->setToolTip("<p>" + tr("speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_up_button->setToolTip("<p>" + tr("Speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_up_button->setObjectName("Speed_button");
     this->speed_up_button->setFocusPolicy(Qt::NoFocus);
     this->speed_up_button->setFixedSize(15, 15);
     speed_layout->addWidget(speed_up_button, 0, 1);
     this->speed_down_button = new SpeedQPushButton("-");
-    this->speed_down_button->setToolTip("<p>" + tr("slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_down_button->setToolTip("<p>" + tr("Slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_down_button->setObjectName("Speed_button");
     this->speed_down_button->setFocusPolicy(Qt::NoFocus);
     this->speed_down_button->setFixedSize(15, 15);
@@ -2936,41 +2972,23 @@ Deck::init_display()
 void
 Deck::set_speed_mode_timecode()
 {
-    if (this->speed_mode == false)
-    {
-        // Switch to timecode mode.
-        this->timecode_button->setChecked(true);
-        this->manual_button->setChecked(false);
-        this->speed_up_button->hide();
-        this->speed_down_button->hide();
-        this->accel_up_button->hide();
-        this->accel_down_button->hide();
-        this->speed_mode = true;
-    }
-    else
-    {
-       this->timecode_button->setChecked(true);
-    }
+    // Switch to timecode mode.
+    this->manual_button->setChecked(false);
+    this->speed_up_button->hide();
+    this->speed_down_button->hide();
+    this->accel_up_button->hide();
+    this->accel_down_button->hide();
 }
 
 void
 Deck::set_speed_mode_manual()
 {
-    if (this->speed_mode == true)
-    {
-        // Switch to manual mode.
-        this->timecode_button->setChecked(false);
-        this->manual_button->setChecked(true);
-        this->speed_up_button->show();
-        this->speed_down_button->show();
-        this->accel_up_button->show();
-        this->accel_down_button->show();
-        this->speed_mode = false;
-    }
-    else
-    {
-       this->manual_button->setChecked(true);
-    }
+    // Switch to manual mode.
+    this->timecode_button->setChecked(false);
+    this->speed_up_button->show();
+    this->speed_down_button->show();
+    this->accel_up_button->show();
+    this->accel_down_button->show();
 }
 
 void
@@ -3192,6 +3210,18 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
 
     QPushButton::mouseReleaseEvent(in_mouse_event);
 
+    // Forward the right click event.
+    if (in_mouse_event->button() == Qt::RightButton)
+    {
+        emit this->right_clicked();
+    }
+
+    return;
+}
+
+void
+SpeedQLabel::mouseReleaseEvent(QMouseEvent *in_mouse_event)
+{
     // Forward the right click event.
     if (in_mouse_event->button() == Qt::RightButton)
     {
