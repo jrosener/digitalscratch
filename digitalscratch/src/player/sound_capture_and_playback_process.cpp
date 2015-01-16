@@ -55,7 +55,10 @@ Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSh
         this->playbacks      = in_playbacks;
         this->sound_card     = in_sound_card;
         this->nb_decks       = in_nb_decks;
-        this->mode           = timecode;
+        for (unsigned short int i = 0; i < in_nb_decks; i++)
+        {
+            this->modes << timecode;
+        }
     }
 
     return;
@@ -84,13 +87,13 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
         return false;
     }
 
-    switch(this->mode)
+    for (unsigned short int i = 0; i < this->tcode_controls.size(); i++)
     {
-        // Analyze captured data with libdigitalscratch.
-        case timecode:
+        switch(this->modes[i])
         {
-            for (unsigned short int i = 0; i < this->tcode_controls.size(); i++)
+            case timecode:
             {
+                // Analyze captured data with libdigitalscratch.
                 if (this->tcode_controls[i]->run(in_nb_buffer_frames,
                                                  input_buffers[i*2],
                                                  input_buffers[i*2 + 1]) == false)
@@ -98,31 +101,30 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                     qCWarning(DS_PLAYBACK) << "timecode analysis failed for deck " << i + 1;
                     return false;
                 }
-            }
 
-            break;
-        }
-        // Copy data from input sound card buffers to output ones.
-        case thru:
-        {
-            for (int i = 0; i < input_buffers.size(); i++)
+                // Play data.
+                if (this->playbacks[i]->run(in_nb_buffer_frames,
+                                            output_buffers[i*2],
+                                            output_buffers[i*2 + 1]) == false)
+                {
+                    qCWarning(DS_PLAYBACK) << "playback process failed for deck 1";
+                    return false;
+                }
+
+                break;
+            }
+            // Copy data from input sound card buffers to output ones.
+            case thru:
             {
-                std::copy(input_buffers[i], input_buffers[i] + in_nb_buffer_frames, output_buffers[i]);
+                std::copy(input_buffers[i*2],     input_buffers[i*2] + in_nb_buffer_frames,     output_buffers[i*2]);
+                std::copy(input_buffers[i*2 + 1], input_buffers[i*2 + 1] + in_nb_buffer_frames, output_buffers[i*2 + 1]);
+                break;
             }
-            break;
-        }
-        // TODO case manual (use speed value from GUI buttons)
-    }
-
-    // Play data.
-    for (unsigned short int i = 0; i < this->playbacks.size(); i++)
-    {
-        if (this->playbacks[i]->run(in_nb_buffer_frames,
-                                    output_buffers[i*2],
-                                    output_buffers[i*2 + 1]) == false)
-        {
-            qCWarning(DS_PLAYBACK) << "playback process failed for deck 1";
-            return false;
+            // TODO case manual (use speed value from GUI buttons)
+            case manual:
+            {
+                break;
+            }
         }
     }
 
@@ -130,7 +132,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
 }
 
 void
-Sound_capture_and_playback_process::set_process_mode(ProcessMode mode)
+Sound_capture_and_playback_process::set_process_mode(ProcessMode in_mode, unsigned short int in_deck_index)
 {
-    this->mode = mode;
+    this->modes[in_deck_index] = in_mode;
 }

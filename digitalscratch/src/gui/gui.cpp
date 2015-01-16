@@ -2661,14 +2661,13 @@ Gui::show_next_keys()
 void
 Gui::playback_thru(unsigned short int in_deck_index, bool in_on_off)
 {
-    // TODO implement playback bypass (copy line input sound data directly to soundcard output).
     if (in_on_off == true)
     {
-        this->capture_and_play->set_process_mode(thru);
+        this->capture_and_play->set_process_mode(thru, in_deck_index);
     }
     else
     {
-        this->capture_and_play->set_process_mode(timecode);
+        this->capture_and_play->set_process_mode(timecode, in_deck_index);
     }
 
 }
