@@ -76,14 +76,13 @@ Timecode_control_process::run(unsigned short int  in_nb_samples,
                               float              *in_samples_2)
 {
     int   are_new_params = 0;
-    float speed    = 0.0;
-    float volume   = 0.0;
-    float *samples[] = { in_samples_1, in_samples_2};
+    float speed          = 0.0;
+    float volume         = 0.0;
 
     // Iterate over decks and analyze captured timecode.
     if (dscratch_analyze_recorded_datas(this->dscratch_id,
-                                        samples[0],
-                                        samples[1],
+                                        in_samples_1,
+                                        in_samples_2,
                                         in_nb_samples) != 0)
     {
         qCWarning(DS_PLAYBACK) << "cannot analyze captured data";

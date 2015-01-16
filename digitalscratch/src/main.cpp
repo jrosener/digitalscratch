@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Audio_file_decoding_process>>        dec_procs;
     QList<QSharedPointer<Playback_parameters>>                play_params;
     QList<QSharedPointer<Timecode_control_process>>           tcode_controls;
+    QList<QSharedPointer<Manual_control_process>>             manual_controls;
     QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
     QList<QSharedPointer<Audio_track_playback_process>>       at_playbacks;
@@ -114,6 +115,10 @@ int main(int argc, char *argv[])
         tcode_controls << tcode_control;
         dscratch_ids[i] = tcode_control->get_dscratch_id();
 
+        // Process which get playback parameters from keyboard or gui buttons.
+        QSharedPointer<Manual_control_process> manual_control(new Manual_control_process(play_param));
+        manual_controls << manual_control;
+
         // Set of samplers for a deck.
         QList<QSharedPointer<Audio_track>>                 at_sampler;
         QList<QSharedPointer<Audio_file_decoding_process>> dec_sampler_proc;
@@ -135,17 +140,15 @@ int main(int argc, char *argv[])
     }
 
     // Access sound card.
-    // TODO add settings to check if we want to use the timecode to get playback params or not (so no capture).
     QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
     QSharedPointer<Sound_capture_and_playback_process> capture_and_playback(new Sound_capture_and_playback_process(tcode_controls,
+                                                                                                                   manual_controls,
                                                                                                                    at_playbacks,
                                                                                                                    sound_card,
                                                                                                                    settings->get_nb_decks()));
-    // TODO if not using timecode to get playback params
-    //Only_playback_process *playback_external_params = new Playback_process_with_external_parameters(playback, sound_card);
 
     // Create GUI.
     QSharedPointer<Gui> gui(new Gui(ats,
@@ -153,6 +156,7 @@ int main(int argc, char *argv[])
                                     dec_procs,
                                     dec_sampler_procs,
                                     play_params,
+                                    manual_controls,
                                     at_playbacks,
                                     sound_card,
                                     capture_and_playback,

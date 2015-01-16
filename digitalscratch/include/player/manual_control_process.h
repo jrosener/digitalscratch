@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------( sound_capture_and_playback_process.h )-*/
+/*-----------------------------------------------( manual_control_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,46 +26,31 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/* Behavior class: process called each time there are new captured data and   */
-/*                 playable data are ready.                                   */
+/* Behavior class: determine playback parametrs based on keyboard and gui     */
+/*                 buttons                                                    */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include "timecode_control_process.h"
-#include "manual_control_process.h"
-#include "audio_track_playback_process.h"
-#include "sound_driver_access_rules.h"
+#include <iostream>
+#include <QSharedPointer>
+
+#include "playback_parameters.h"
 #include "application_const.h"
 
 using namespace std;
 
-enum ProcessMode
-{
-    timecode,
-    manual,
-    thru
-};
-
-class Sound_capture_and_playback_process
+class Manual_control_process
 {
  private:
-    QList<QSharedPointer<Manual_control_process>>       manual_controls;
-    QList<QSharedPointer<Timecode_control_process>>     tcode_controls;
-    QList<QSharedPointer<Audio_track_playback_process>> playbacks;
-    QSharedPointer<Sound_driver_access_rules>           sound_card;
-    unsigned short int                                  nb_decks;
-    QList<ProcessMode>                                  modes;
+    QSharedPointer<Playback_parameters> params;
+    float speed;
 
  public:
-    Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
-                                       QList<QSharedPointer<Manual_control_process>>       &in_manual_controls,
-                                       QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
-                                       QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
-                                       unsigned short int                                   in_nb_decks);
-    virtual ~Sound_capture_and_playback_process();
+    Manual_control_process(QSharedPointer<Playback_parameters> &in_param);
+    virtual ~Manual_control_process();
 
-    bool run(unsigned short int in_nb_buffer_frames);
-    void set_process_mode(ProcessMode in_mode, unsigned short in_deck_index);
+    bool run();
+    void inc_speed(float in_speed_inc);
 };

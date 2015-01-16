@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------( sound_capture_and_playback_process.h )-*/
+/*-------------------------------------------( manual_control_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,46 +26,47 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/* Behavior class: process called each time there are new captured data and   */
-/*                 playable data are ready.                                   */
+/* Behavior class: determine playback parametrs based on keyboard and gui     */
+/*                 buttons                                                    */
 /*                                                                            */
 /*============================================================================*/
 
-#pragma once
+#include <QtDebug>
+#include <QString>
 
-#include "timecode_control_process.h"
 #include "manual_control_process.h"
-#include "audio_track_playback_process.h"
-#include "sound_driver_access_rules.h"
-#include "application_const.h"
+#include "application_logging.h"
 
-using namespace std;
-
-enum ProcessMode
+Manual_control_process::Manual_control_process(QSharedPointer<Playback_parameters> &in_param)
 {
-    timecode,
-    manual,
-    thru
-};
+    this->params = in_param;
+    this->speed  = 1.0;
 
-class Sound_capture_and_playback_process
+    return;
+}
+
+Manual_control_process::~Manual_control_process()
 {
- private:
-    QList<QSharedPointer<Manual_control_process>>       manual_controls;
-    QList<QSharedPointer<Timecode_control_process>>     tcode_controls;
-    QList<QSharedPointer<Audio_track_playback_process>> playbacks;
-    QSharedPointer<Sound_driver_access_rules>           sound_card;
-    unsigned short int                                  nb_decks;
-    QList<ProcessMode>                                  modes;
+    return;
+}
 
- public:
-    Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
-                                       QList<QSharedPointer<Manual_control_process>>       &in_manual_controls,
-                                       QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
-                                       QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
-                                       unsigned short int                                   in_nb_decks);
-    virtual ~Sound_capture_and_playback_process();
+bool
+Manual_control_process::run()
+{
+    this->params->set_new_data(true);
 
-    bool run(unsigned short int in_nb_buffer_frames);
-    void set_process_mode(ProcessMode in_mode, unsigned short in_deck_index);
-};
+    this->params->set_speed(this->speed); // TODO use speed from gui buttons.
+    this->params->set_new_speed(true);
+
+    this->params->set_volume(1.0); // TODO calculate volume based on speed.
+    this->params->set_new_volume(true);
+
+    return true;
+}
+
+void
+Manual_control_process::inc_speed(float in_speed_inc)
+{
+    this->speed = this->params->get_speed() + in_speed_inc;
+}
+

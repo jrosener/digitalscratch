@@ -94,6 +94,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
          QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
          QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
          QList<QSharedPointer<Playback_parameters>>                &in_params,
+         QList<QSharedPointer<Manual_control_process>>             &in_manual_controls,
          QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
          QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
          QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
@@ -118,6 +119,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     this->decs                    = in_decs;
     this->dec_samplers            = in_dec_samplers;
     this->params                  = in_params;
+    this->manual_controls         = in_manual_controls;
     this->playbacks               = in_playbacks;
     this->nb_decks                = this->settings->get_nb_decks();
     this->nb_samplers             = this->settings->get_nb_samplers();
@@ -1101,26 +1103,26 @@ Gui::connect_decks_area()
 
         // Speed up/down 0.1%.
         QObject::connect(this->decks[i]->speed_up_button, &SpeedQPushButton::clicked,
-                        [this]()
+                        [this, i]()
                         {
-                            this->speed_up_down(0.001f, 0);
+                            this->speed_up_down(0.001f, i);
                         });
         QObject::connect(this->decks[i]->speed_down_button, &SpeedQPushButton::clicked,
-                        [this]()
+                        [this, i]()
                         {
-                            speed_up_down(-0.001f, 0);
+                            speed_up_down(-0.001f, i);
                         });
 
         // Speed up/down 1%.
         QObject::connect(this->decks[i]->speed_up_button, &SpeedQPushButton::right_clicked,
-                        [this]()
+                        [this, i]()
                         {
-                            speed_up_down(0.01f, 0);
+                            speed_up_down(0.01f, i);
                         });
         QObject::connect(this->decks[i]->speed_down_button, &SpeedQPushButton::right_clicked,
-                        [this]()
+                        [this, i]()
                         {
-                            speed_up_down(-0.01f, 0);
+                            speed_up_down(-0.01f, i);
                         });
 
         // Enable track file dropping.
@@ -2400,14 +2402,7 @@ Gui::speed_up_down(float in_speed_inc, int in_deck_index)
     this->highlight_deck_sampler_area(in_deck_index);
 
     // Increment speed.
-    if (in_deck_index == 0)
-    {
-        this->params[0]->inc_speed(in_speed_inc);
-    }
-    else
-    {
-        this->params[1]->inc_speed(in_speed_inc);
-    }
+    this->manual_controls[in_deck_index]->inc_speed(in_speed_inc);
 }
 
 void
@@ -2824,7 +2819,6 @@ Deck::init_display()
     this->manual_button->setFocusPolicy(Qt::NoFocus);
     this->manual_button->setCheckable(true);
     this->manual_button->setChecked(false);
-    this->manual_button->setEnabled(false); // TODO: enable again when implementation is done.
     timecode_manual_layout->addWidget(this->manual_button);
 
     timecode_speed_layout->addLayout(timecode_manual_layout);
@@ -2834,13 +2828,13 @@ Deck::init_display()
     this->buttons_layout->addLayout(timecode_speed_layout);
     QGridLayout *speed_layout = new QGridLayout();
     this->speed_up_button = new SpeedQPushButton("+");
-    this->speed_up_button->setToolTip("<p>" + tr("+0.1% speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_up_button->setToolTip("<p>" + tr("speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_up_button->setObjectName("Speed_button");
     this->speed_up_button->setFocusPolicy(Qt::NoFocus);
     this->speed_up_button->setFixedSize(15, 15);
     speed_layout->addWidget(speed_up_button, 0, 1);
     this->speed_down_button = new SpeedQPushButton("-");
-    this->speed_down_button->setToolTip("<p>" + tr("-0.1% slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_down_button->setToolTip("<p>" + tr("slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->speed_down_button->setObjectName("Speed_button");
     this->speed_down_button->setFocusPolicy(Qt::NoFocus);
     this->speed_down_button->setFixedSize(15, 15);
@@ -2850,12 +2844,14 @@ Deck::init_display()
     this->accel_up_button->setObjectName("Speed_button");
     this->accel_up_button->setFocusPolicy(Qt::NoFocus);
     this->accel_up_button->setFixedSize(15, 15);
+    this->accel_up_button->setEnabled(false); // TODO; enable it when implementation is done.
     speed_layout->addWidget(accel_up_button, 0, 2);
     this->accel_down_button = new SpeedQPushButton("↶");
     this->accel_down_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
     this->accel_down_button->setObjectName("Speed_button");
     this->accel_down_button->setFocusPolicy(Qt::NoFocus);
     this->accel_down_button->setFixedSize(15, 15);
+    this->accel_down_button->setEnabled(false); // TODO; enable it when implementation is done.
     speed_layout->addWidget(accel_down_button, 1, 2);
     this->buttons_layout->addLayout(speed_layout);
     this->buttons_layout->addStretch(1000);

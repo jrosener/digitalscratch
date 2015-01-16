@@ -38,23 +38,26 @@
 
 
 Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
+                                                                       QList<QSharedPointer<Manual_control_process>>       &in_manual_controls,
                                                                        QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
                                                                        QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
                                                                        unsigned short int                                   in_nb_decks)
 {
-    if (in_tcode_controls.count() == 0 ||
-        in_playbacks.count()      == 0 ||
-        in_sound_card.data()      == NULL)
+    if (in_tcode_controls.count()  == 0 ||
+        in_playbacks.count()       == 0 ||
+        in_manual_controls.count() == 0 ||
+        in_sound_card.data()       == NULL)
     {
         qCWarning(DS_PLAYBACK) << "bad input parameters";
         return;
     }
     else
     {
-        this->tcode_controls = in_tcode_controls;
-        this->playbacks      = in_playbacks;
-        this->sound_card     = in_sound_card;
-        this->nb_decks       = in_nb_decks;
+        this->tcode_controls  = in_tcode_controls;
+        this->manual_controls = in_manual_controls;
+        this->playbacks       = in_playbacks;
+        this->sound_card      = in_sound_card;
+        this->nb_decks        = in_nb_decks;
         for (unsigned short int i = 0; i < in_nb_decks; i++)
         {
             this->modes << timecode;
@@ -107,22 +110,36 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                                             output_buffers[i*2],
                                             output_buffers[i*2 + 1]) == false)
                 {
-                    qCWarning(DS_PLAYBACK) << "playback process failed for deck 1";
+                    qCWarning(DS_PLAYBACK) << "playback process failed for deck " << i + 1;
                     return false;
                 }
 
                 break;
             }
-            // Copy data from input sound card buffers to output ones.
             case thru:
             {
+                // Copy data from input sound card buffers to output ones (bypass playback).
                 memcpy(output_buffers[i*2],     input_buffers[i*2],     in_nb_buffer_frames);
                 memcpy(output_buffers[i*2 + 1], input_buffers[i*2 + 1], in_nb_buffer_frames);
                 break;
             }
-            // TODO case manual (use speed value from GUI buttons)
             case manual:
             {
+                // Get playback parameters (mainly speed) from gui buttons.
+                if (this->manual_controls[i]->run() == false)
+                {
+                    qCWarning(DS_PLAYBACK) << "manual playback control failed for deck " << i + 1;
+                    return false;
+                }
+
+                // Play data.
+                if (this->playbacks[i]->run(in_nb_buffer_frames,
+                                            output_buffers[i*2],
+                                            output_buffers[i*2 + 1]) == false)
+                {
+                    qCWarning(DS_PLAYBACK) << "playback process failed for deck " << i + 1;
+                    return false;
+                }
                 break;
             }
         }

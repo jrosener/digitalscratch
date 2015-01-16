@@ -345,6 +345,7 @@ class Gui : public QObject
     QList<QSharedPointer<Audio_file_decoding_process>>         decs;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>>  dec_samplers;
     QList<QSharedPointer<Playback_parameters>>                 params;
+    QList<QSharedPointer<Manual_control_process>>              manual_controls;
     QList<QSharedPointer<Audio_track_playback_process>>        playbacks;
     QSharedPointer<Sound_driver_access_rules>                  sound_card;
     QSharedPointer<Sound_capture_and_playback_process>         capture_and_play;
@@ -357,6 +358,7 @@ class Gui : public QObject
         QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
         QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
         QList<QSharedPointer<Playback_parameters>>                &in_params,
+        QList<QSharedPointer<Manual_control_process>>             &in_manual_controls,
         QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
         QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
         QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
