@@ -119,8 +119,8 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
             case thru:
             {
                 // Copy data from input sound card buffers to output ones (bypass playback).
-                memcpy(output_buffers[i*2],     input_buffers[i*2],     in_nb_buffer_frames);
-                memcpy(output_buffers[i*2 + 1], input_buffers[i*2 + 1], in_nb_buffer_frames);
+                memcpy(output_buffers[i*2],     input_buffers[i*2],     in_nb_buffer_frames * sizeof(float));
+                memcpy(output_buffers[i*2 + 1], input_buffers[i*2 + 1], in_nb_buffer_frames * sizeof(float));
                 break;
             }
             case manual:
