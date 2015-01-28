@@ -591,6 +591,34 @@ QPushButton#Load_track_button_2:checked
    image:            url(:/pixmaps/dark-load_file_white_2.png);
 }
 
+QPushButton#Load_track_button_3
+{
+   background-color: gray;
+   border:           none;
+   border-radius:    0px;
+   padding:          4px;
+   image:            url(:/pixmaps/dark-load_file_3.png);
+}
+QPushButton#Load_track_button_3:hover
+{
+   background-color: transparent;
+   border:           1px solid orange;
+   color:            #f2f2ed;
+   image:            url(:/pixmaps/dark-load_file_white_3.png);
+}
+QPushButton#Load_track_button_3:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-load_file_3.png);
+}
+QPushButton#Load_track_button_3:checked
+{
+   background-color: gray;
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-load_file_white_3.png);
+}
+
 QPushButton#Load_track_sample_button_A
 {
    background-color: gray;
