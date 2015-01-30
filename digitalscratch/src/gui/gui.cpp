@@ -1089,6 +1089,7 @@ Gui::connect_decks_area()
                              if (checked == true)
                              {
                                  this->decks[i]->set_speed_mode_timecode();
+                                 this->decks[i]->thru_button->setChecked(false);
                                  this->capture_and_play->set_process_mode(timecode, i);
                              }
                              else
@@ -1166,7 +1167,7 @@ Gui::connect_decks_area()
 
         // Thru button.
         QObject::connect(this->decks[i]->thru_button, &QPushButton::clicked,
-                         [this, i](bool checked) {playback_thru(i, checked);});
+                         [this, i](bool checked) {this->playback_thru(i, checked);});
 
         // Music key of the track.
         QObject::connect(this->ats[i].data(), &Audio_track::key_changed, [this, i](QString key){this->decks[i]->set_key(key);});
@@ -2978,6 +2979,7 @@ Deck::set_speed_mode_timecode()
     this->speed_down_button->hide();
     this->accel_up_button->hide();
     this->accel_down_button->hide();
+    this->thru_button->show();
 }
 
 void
@@ -2989,6 +2991,7 @@ Deck::set_speed_mode_manual()
     this->speed_down_button->show();
     this->accel_up_button->show();
     this->accel_down_button->show();
+    this->thru_button->hide();
 }
 
 void

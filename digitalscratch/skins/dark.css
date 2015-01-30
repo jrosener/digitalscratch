@@ -777,7 +777,7 @@ QPushButton#Thru_button
    padding-bottom:   1px;
    padding-left:     3px;
    padding-right:    3px;
-   height:           12px;
+   height:           10px;
    font:             7pt;
 }
 QPushButton#Thru_button:hover
