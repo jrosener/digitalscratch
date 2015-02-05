@@ -24,7 +24,7 @@ or
 - JACK library:            http://jackaudio.org/
 - LibKeyFinder:            http://www.ibrahimshaath.co.uk/keyfinder/
 
-[Ubuntu 13.04]
+[Ubuntu 14.10]
 - build-essential
 - qt5-default
 - libmpg123-dev

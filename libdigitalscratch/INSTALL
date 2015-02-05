@@ -19,7 +19,7 @@ or
 [Libraries]
 - Qt SDK (qt5.x): http://www.qt.io
 
-[Ubuntu 13.04]
+[Ubuntu 14.10]
 - build-essential
 - qt5-default
 
