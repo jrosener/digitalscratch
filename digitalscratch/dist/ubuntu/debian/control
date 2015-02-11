@@ -9,7 +9,7 @@ Vcs-Git: git://github.com/jrosener/digitalscratch.git
 
 Package: digitalscratch
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt5sql5-sqlite
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
