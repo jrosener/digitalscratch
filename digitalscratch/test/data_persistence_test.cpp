@@ -193,3 +193,84 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     QVERIFY2(data_persist->delete_cue_point(at, 1)        == true,  "delete updated cue point 2");
     QVERIFY2(data_persist->get_cue_point(at, 1, position) == false, "get cue point 2");
 }
+
+void Data_persistence_Test::testCasePersistTag()
+{
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+
+    // Store new tag.
+    QVERIFY2(data_persist->store_tag("tag1") == true, "store new tag1");
+    QVERIFY2(data_persist->store_tag("tag2") == true, "store new tag2");
+    // Try to store existing tag (should not fail).
+    QVERIFY2(data_persist->store_tag("tag1") == true, "store existing tag1");
+
+    // Get tag list.
+    QStringList tags;
+    data_persist->get_full_tag_list(tags);
+    QVERIFY2(tags.size() == 2, "nb tags = 2");
+    QVERIFY2(tags[0] == "tag1", "tag[0] = tag1");
+    QVERIFY2(tags[1] == "tag2", "tag[1] = tag2");
+
+    // Rename existing tag.
+    QVERIFY2(data_persist->rename_tag("tag1", "tag renamed") == true, "rename existing tag1");
+    // Try renaming missing tag (should fail).
+    QVERIFY2(data_persist->rename_tag("tag missing", "tag renamed") == false, "rename missing tag");
+
+    // Get tag list.
+    tags.clear();
+    data_persist->get_full_tag_list(tags);
+    QVERIFY2(tags.size() == 2, "nb tags = 2");
+    QVERIFY2(tags[0] == "tag renamed", "tag[0] = tag renamed");
+    QVERIFY2(tags[1] == "tag2", "tag[1] = tag2");
+
+    // Delete existing tag.
+    QVERIFY2(data_persist->delete_tag("tag renamed") == true, "delete existing tag renamed");
+    QVERIFY2(data_persist->delete_tag("tag2") == true, "delete existing tag2");
+    // Try deleting missing tag.
+    QVERIFY2(data_persist->delete_tag("tag2") == false, "delete missing tag2");
+
+    // Get tag list.
+    tags.clear();
+    data_persist->get_full_tag_list(tags);
+    QVERIFY2(tags.size() == 0, "nb tags = 0");
+
+    // Store again 2 tags.
+    QVERIFY2(data_persist->store_tag("house") == true, "store new tag house");
+    QVERIFY2(data_persist->store_tag("techno") == true, "store new tag techno");
+
+    // Store 2 tracks.
+    QSharedPointer<Audio_track> at1(new Audio_track(44100));
+    QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
+    at1->set_fullpath(fullpath);
+    at1->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at1->set_music_key("A1");
+    QVERIFY2(data_persist->store_audio_track(at1) == true, "audio track 1 store");
+    QSharedPointer<Audio_track> at2(new Audio_track(44100));
+    fullpath = QString(DATA_DIR) + QString(DATA_TRACK_2);
+    at2->set_fullpath(fullpath);
+    at2->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at2->set_music_key("A2");
+    QVERIFY2(data_persist->store_audio_track(at2) == true, "audio track 2 store");
+
+    // Add tags to track and check them.
+    QVERIFY2(data_persist->add_tag_to_track(at1, "techno") == true, "Add tag techno to track 1");
+    QVERIFY2(data_persist->add_tag_to_track(at1, "techno") == true, "Add tag techno twice to track 1");
+    QVERIFY2(data_persist->add_tag_to_track(at1, "house") == true, "Add tag house to track 1");
+    tags.clear();
+    data_persist->get_tags_from_track(at1, tags);
+    QVERIFY2(tags.size() == 2, "nb tags = 2");
+    QVERIFY2(tags[0] == "techno", "tags[0] = techno");
+    QVERIFY2(tags[1] == "house",  "tags[1] = house");
+    QVERIFY2(data_persist->rem_tag_from_track(at1, "house") == true, "Delete tag house from track 1");
+    tags.clear();
+    data_persist->get_tags_from_track(at1, tags);
+    QVERIFY2(tags.size() == 1, "nb tags = 1");
+    QVERIFY2(tags[0] == "techno", "tags[0] = techno");
+
+    QVERIFY2(data_persist->add_tag_to_track(at2, "house") == true, "Add tag house to track 2");
+    tags.clear();
+    data_persist->get_tags_from_track(at2, tags);
+    QVERIFY2(tags.size() == 1, "nb tags = 1");
+    QVERIFY2(tags[0] == "house", "tags[0] = house");
+}
+
