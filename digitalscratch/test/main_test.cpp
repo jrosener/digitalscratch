@@ -4,6 +4,7 @@
 #include <utils_test.h>
 #include <data_persistence_test.h>
 #include <playlist_persistence_test.h>
+#include <audio_device_access_rules_test.h>
 
 int main(int argc, char** argv)
 {
@@ -38,6 +39,10 @@ int main(int argc, char** argv)
    }
    {
       Playlist_persistence_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
+   {
+      Audio_device_access_rules_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
 

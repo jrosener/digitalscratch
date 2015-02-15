@@ -43,7 +43,7 @@ void Audio_file_decoding_process_Test::testCaseRun()
     QString   hash      = Utils::get_file_hash(fullpath, FILE_HASH_SIZE);
     QString   key       = "A1";
     decoder.clear();
-    QVERIFY2(decoder.run(fullpath, hash, key) == true,  "decode small mp3");
+    QVERIFY2(decoder.run(fullpath, hash, key) == true,   "decode small mp3");
     QVERIFY2(at->get_path() == file_info.absolutePath(), "check path of small mp3");
     QVERIFY2(at->get_hash() == hash,                     "check file hash of small mp3");
     QVERIFY2(at->get_music_key() == key,                 "check music key of small mp3");

@@ -111,14 +111,16 @@ CONFIG(test) {
                test/audio_file_decoding_process_test.h \
                test/utils_test.h \
                test/data_persistence_test.h \
-               test/playlist_persistence_test.h
+               test/playlist_persistence_test.h \
+               test/audio_device_access_rules_test.h
 
     SOURCES += test/main_test.cpp \
                test/audio_track_test.cpp \
                test/audio_file_decoding_process_test.cpp \
                test/utils_test.cpp \
                test/data_persistence_test.cpp \
-               test/playlist_persistence_test.cpp
+               test/playlist_persistence_test.cpp \
+               test/audio_device_access_rules_test.cpp
 }
 
 

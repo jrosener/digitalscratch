@@ -39,6 +39,23 @@
 #include "application_settings.h"
 #include "application_logging.h"
 
+QList<QString> Audio_device_access_rules::get_device_list()
+{
+    // Get list of available devices.
+    QList<QString> device_names;
+    foreach(const QAudioDeviceInfo &device, QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
+    {
+        cout << "Device name: " << qPrintable(device.deviceName()) << endl;;
+        cout << "  SupportedChannelCount: "; foreach (auto item, device.supportedChannelCounts()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
+        cout << "  SupportedSampleRates: "; foreach (auto item, device.supportedSampleRates()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
+        cout << "  SupportedSampleSizes: "; foreach (auto item, device.supportedSampleSizes()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
+        cout << "  SupportedCodecs: "; foreach (auto item, device.supportedCodecs()) cout << qPrintable(item) << "/"; cout << endl;
+        device_names.append(device.deviceName());
+    }
+
+    return device_names;
+}
+
 Audio_device_access_rules::Audio_device_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
 {
     return;
@@ -50,21 +67,6 @@ Audio_device_access_rules::~Audio_device_access_rules()
     this->stop();
 
     return;
-}
-
-QList<QString> Audio_device_access_rules::get_device_list()
-{
-    // Get list of available devices.
-    QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-
-    // Fill a list with device names (should be unique).
-    QList<QString> device_names;
-    for(int i = 0; i < devices.size(); ++i)
-    {
-        device_names.append(devices.at(i).deviceName());
-    }
-
-    return device_names;
 }
 
 bool
