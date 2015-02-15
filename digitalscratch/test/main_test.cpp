@@ -41,10 +41,12 @@ int main(int argc, char** argv)
       Playlist_persistence_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
+#ifdef ENABLE_TEST_DEVICE
    {
       Audio_device_access_rules_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
+#endif
 
    // Wait until threads are done (necessary because no QApplication is created/deleted).
    QThreadPool::globalInstance()->waitForDone();

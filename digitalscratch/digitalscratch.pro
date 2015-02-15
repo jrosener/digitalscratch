@@ -39,6 +39,12 @@ else {
     # Qt 5 and more
     QT += gui widgets sql concurrent multimedia
 }
+
+DEFINES += ENABLE_TEST_DEVICE
+CONFIG(test-no_device_test) {
+    CONFIG   += test
+    DEFINES  -= ENABLE_TEST_DEVICE
+}
 CONFIG(test) {
     QT       += testlib
     TARGET    = digitalscratch-test
@@ -46,8 +52,10 @@ CONFIG(test) {
     CONFIG   -= app_bundle
 }
 else {
-    TARGET = digitalscratch
+    DEFINES  -= ENABLE_TEST_DEVICE
+    TARGET    = digitalscratch
 }
+
 DEPENDPATH += . src include/gui include/player src/gui src/player
 INCLUDEPATH += . include/player include/gui include
 

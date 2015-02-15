@@ -13,5 +13,5 @@ script:
   - make clean && qmake CONFIG+=test && make
   - ./libdigitalscratch-test
   - cd ../digitalscratch && qmake && make
-  - make clean && qmake CONFIG+=test && make
+  - make clean && qmake CONFIG+=test-no_device_test && make
   - ./digitalscratch-test
