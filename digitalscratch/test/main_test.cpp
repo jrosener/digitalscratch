@@ -5,9 +5,13 @@
 #include <data_persistence_test.h>
 #include <playlist_persistence_test.h>
 #include <audio_device_access_rules_test.h>
+#include <sound_capture_and_playback_process_test.h>
 
 int main(int argc, char** argv)
 {
+    // Necessary to have an event loop needed by some tests.
+    QCoreApplication app(argc, argv);
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
@@ -46,10 +50,14 @@ int main(int argc, char** argv)
       Audio_device_access_rules_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
+   {
+      Sound_capture_and_playback_process_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
 #endif
 
    // Wait until threads are done (necessary because no QApplication is created/deleted).
-   QThreadPool::globalInstance()->waitForDone();
+  // QThreadPool::globalInstance()->waitForDone();
 
    return status;
 }

@@ -63,6 +63,17 @@ class Sound_driver_access_rules : public QObject
     virtual bool get_input_buffers(unsigned short int  in_nb_buffer_frames, QList<float*> &out_buffers) = 0;
     virtual bool get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float*> &out_buffers) = 0;
 
+ #ifdef ENABLE_TEST_MODE
+ public:
+    bool use_timecode_from_file(const QString &path);
+
+ private:
+    bool using_fake_timecode;
+
+ protected:
+    bool fill_input_buf(unsigned short int in_nb_buffer_frames, QList<float*> &io_buffers);
+ #endif
+
  signals:
    void error_msg(QString in_error_message);
 };

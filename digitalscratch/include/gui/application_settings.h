@@ -41,7 +41,11 @@
 using namespace std;
 
 // Application and main window.
-#define APPLICATION_NAME          "digitalscratch"
+#ifndef ENABLE_TEST_MODE
+    #define APPLICATION_NAME      "digitalscratch"
+#else
+    #define APPLICATION_NAME      "digitalscratch-test"
+#endif
 
 #define MAIN_WIN_SIZE_CFG         "player/main_win_size"
 #define MAIN_WIN_SIZE_CFG_DEFAULT "1024x640"

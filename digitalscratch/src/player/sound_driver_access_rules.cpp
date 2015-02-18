@@ -36,6 +36,11 @@
 #include "singleton.h"
 #include "application_logging.h"
 
+#ifdef ENABLE_TEST_MODE
+#include "audio_track.h"
+#include "audio_file_decoding_process.h"
+#endif
+
 Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_channels)
 {
     if (in_nb_channels < 2)
@@ -48,6 +53,10 @@ Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_ch
     this->callback_param = NULL;
     this->do_capture = true;
     this->running = false;
+
+    #ifdef ENABLE_TEST_MODE
+    this->using_fake_timecode = false;
+    #endif
 
     return;
 }
@@ -68,3 +77,36 @@ Sound_driver_access_rules::set_capture(bool in_do_capture)
 {
     this->do_capture = in_do_capture;
 }
+
+#ifdef ENABLE_TEST_MODE
+bool
+Sound_driver_access_rules::use_timecode_from_file(const QString &path)
+{
+    bool result = true;
+
+    // Decode timecode file.    
+    QSharedPointer<Audio_track> at(new Audio_track(15, 44100));
+    Audio_file_decoding_process decoder(at, false);
+    QFileInfo file_info = QFileInfo(path);
+    result = decoder.run(file_info.absoluteFilePath());
+
+    if (result == true)
+    {
+        // Now use fake timecode as captured input buffers.
+        this->using_fake_timecode = true;
+    }
+
+    return result;
+}
+
+bool
+Sound_driver_access_rules::fill_input_buf(unsigned short int in_nb_buffer_frames, QList<float*> &io_buffers)
+{
+    if (this->using_fake_timecode == true)
+    {
+        // TODO Overwrite buffer with pre-recorded timecode buffer (circular buffer).
+    }
+
+    return true;
+}
+#endif

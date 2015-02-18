@@ -45,11 +45,13 @@ QList<QString> Audio_device_access_rules::get_device_list()
     QList<QString> device_names;
     foreach(const QAudioDeviceInfo &device, QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
     {
+       #if 0
         cout << "Device name: " << qPrintable(device.deviceName()) << endl;;
         cout << "  SupportedChannelCount: "; foreach (auto item, device.supportedChannelCounts()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
         cout << "  SupportedSampleRates: "; foreach (auto item, device.supportedSampleRates()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
         cout << "  SupportedSampleSizes: "; foreach (auto item, device.supportedSampleSizes()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
         cout << "  SupportedCodecs: "; foreach (auto item, device.supportedCodecs()) cout << qPrintable(item) << "/"; cout << endl;
+       #endif
         device_names.append(device.deviceName());
     }
 

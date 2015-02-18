@@ -43,9 +43,9 @@ using namespace std;
 
 enum ProcessMode
 {
-    timecode,
-    manual,
-    thru
+    TIMECODE,
+    MANUAL,
+    THRU
 };
 
 class Sound_capture_and_playback_process

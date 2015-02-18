@@ -60,7 +60,7 @@ Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSh
         this->nb_decks        = in_nb_decks;
         for (unsigned short int i = 0; i < in_nb_decks; i++)
         {
-            this->modes << timecode;
+            this->modes << TIMECODE;
         }
     }
 
@@ -94,7 +94,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
     {
         switch(this->modes[i])
         {
-            case timecode:
+            case TIMECODE:
             {
                 // Analyze captured data with libdigitalscratch.
                 if (this->tcode_controls[i]->run(in_nb_buffer_frames,
@@ -116,14 +116,14 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
 
                 break;
             }
-            case thru:
+            case THRU:
             {
                 // Copy data from input sound card buffers to output ones (bypass playback).
                 memcpy(output_buffers[i*2],     input_buffers[i*2],     in_nb_buffer_frames * sizeof(float));
                 memcpy(output_buffers[i*2 + 1], input_buffers[i*2 + 1], in_nb_buffer_frames * sizeof(float));
                 break;
             }
-            case manual:
+            case MANUAL:
             {
                 // Get playback parameters (mainly speed) from gui buttons.
                 if (this->manual_controls[i]->run() == false)
