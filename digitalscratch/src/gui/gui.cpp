@@ -1791,9 +1791,19 @@ Gui::can_close()
     // Close request confirmed.
     if (msg_box.exec() == QMessageBox::Ok)
     {
+        this->sound_card->stop();
         this->window->close();
     }
 }
+
+void
+Gui::force_close()
+{
+    // User probably clicked on the 'X' button, so close without confirmation.
+    this->sound_card->stop();
+    //this->window->close(); // Looks not necessary.
+}
+
 
 bool
 Gui::apply_main_window_style()

@@ -163,6 +163,9 @@ int main(int argc, char *argv[])
                                     dscratch_ids));
     Q_UNUSED(gui);
 
+    // Custom app close (especially needed to stop the audio loop if user click on 'X').
+    app.connect(&app,SIGNAL(aboutToQuit()), gui.data(), SLOT(force_close()));
+
     // Forward the quit call.
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
 

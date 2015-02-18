@@ -416,6 +416,7 @@ class Gui : public QObject
  public slots:
     void run_sampler_decoding_process(unsigned short int in_deck_index,
                                       unsigned short int in_sampler_index);
+    void force_close();
 
  private slots:
     bool show_config_window();
@@ -465,7 +466,6 @@ class Gui : public QObject
     void select_playback(int in_deck_index);
     void hover_playback(int in_deck_index);
     void unhover_playback(int in_deck_index);
-    void can_close();
     void on_file_browser_expand(QModelIndex);
     void on_file_browser_double_click(QModelIndex in_model_index);
     void sync_file_browser_to_audio_collection();
@@ -482,4 +482,5 @@ class Gui : public QObject
     void speed_up_down(float in_speed_inc, unsigned short int in_deck_index);
     void speed_reset_to_100p(unsigned short int in_deck_index);
     void playback_thru(unsigned short int in_deck_index, bool in_on_off);
+    void can_close();
 };
