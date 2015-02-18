@@ -38,9 +38,9 @@
 
 Audio_track_key_process::Audio_track_key_process(QSharedPointer<Audio_track> &in_at)
 {
-    if (in_at.data() == NULL)
+    if (in_at.data() == nullptr)
     {
-        qCWarning(DS_MUSICKEY) << "audio track is NULL";
+        qCWarning(DS_MUSICKEY) << "audio track is null";
     }
     else
     {

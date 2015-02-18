@@ -43,7 +43,7 @@
 Waveform::Waveform(QSharedPointer<Audio_track> &in_at, QWidget *in_parent) : QLabel(in_parent)
 {
     // Get audio track.
-    if (in_at.data() == NULL)
+    if (in_at.data() == nullptr)
     {
         qCCritical(DS_OBJECTLIFE) << "audio track can not be null";
     }

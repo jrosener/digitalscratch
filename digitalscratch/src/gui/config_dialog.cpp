@@ -658,7 +658,7 @@ Config_dialog::show_browse_window()
                                                     QFileDialog::ShowDirsOnly);
 
     // Update base directory path.
-    if (dir != NULL)
+    if (dir != nullptr)
     {
         this->base_dir_path->setText(dir);
     }
@@ -675,7 +675,7 @@ Config_dialog::show_browse_extern_prog_window()
                                                      QDir::homePath());
 
     // Update base directory path.
-    if (file_path != NULL)
+    if (file_path != nullptr)
     {
         this->extern_prog->setText(file_path);
     }

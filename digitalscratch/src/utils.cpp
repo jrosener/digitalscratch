@@ -56,9 +56,9 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
     QString hash("");
 
     // Check if path is defined.
-    if (in_path == NULL)
+    if (in_path == nullptr)
     {
-        qCWarning(DS_FILE) << "path is NULL.";
+        qCWarning(DS_FILE) << "path is null.";
         return "";
     }
 
@@ -202,7 +202,7 @@ void Utils::get_next_music_keys(QString  in_key,
                                 QString& next_major_key)
 {
     QString         result = "";
-    QList<QString> *keys   = NULL;
+    QList<QString> *keys   = nullptr;
 
     // Init minor/major key list if not already done.
     if (minor_keys.size() == 0)
@@ -243,7 +243,7 @@ void Utils::get_next_music_keys(QString  in_key,
             keys = &minor_keys;
         }
 
-        if (keys != NULL)
+        if (keys != nullptr)
         {
             // Get the next key from minor or major list.
             if ((index + 1) > (keys->size() - 1))

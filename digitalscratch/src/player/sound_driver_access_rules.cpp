@@ -49,14 +49,14 @@ Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_ch
         return;
     }
 
-    this->nb_channels = in_nb_channels;
-    this->callback_param = NULL;
-    this->do_capture = true;
-    this->running = false;
+    this->nb_channels    = in_nb_channels;
+    this->callback_param = nullptr;
+    this->do_capture     = true;
+    this->running        = false;
 
-    #ifdef ENABLE_TEST_MODE
+#ifdef ENABLE_TEST_MODE
     this->using_fake_timecode = false;
-    #endif
+#endif
 
     return;
 }

@@ -106,7 +106,7 @@ Audio_collection_item *Audio_collection_item::get_parent()
 
 int Audio_collection_item::get_row() const
 {
-    if (this->parentItem != NULL)
+    if (this->parentItem != nullptr)
     {
         return this->parentItem->childItems.indexOf(const_cast<Audio_collection_item*>(this));
     }
@@ -208,7 +208,7 @@ void Audio_collection_item::store_to_db()
 
 Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractItemModel(in_parent)
 {
-    this->rootItem = NULL;
+    this->rootItem = nullptr;
     this->create_header("", false);
     this->audio_item_list.clear();
     this->root_path = "";
@@ -221,7 +221,7 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
 
 Audio_collection_model::~Audio_collection_model()
 {
-    if (this->rootItem != NULL)
+    if (this->rootItem != nullptr)
     {
         delete this->rootItem;
     }
@@ -256,7 +256,7 @@ void Audio_collection_model::create_header(QString in_path, bool in_show_path)
         rootData << tr("Path");
     }
 
-    if (this->rootItem != NULL)
+    if (this->rootItem != nullptr)
     {
         delete this->rootItem;
     }
@@ -310,7 +310,7 @@ QModelIndex Audio_collection_model::set_playlist(Playlist *in_playlist)
 
 QModelIndex Audio_collection_model::get_root_index()
 {
-    if (this->rootItem != NULL)
+    if (this->rootItem != nullptr)
     {
         return createIndex(0, 0, this->rootItem);
     }
@@ -588,7 +588,7 @@ Qt::ItemFlags Audio_collection_model::flags(const QModelIndex &in_index) const
     // Get item.
     Audio_collection_item *item;
     item = static_cast<Audio_collection_item*>(in_index.internalPointer());
-    if ((item != NULL) && (item->is_directory() == false))
+    if ((item != nullptr) && (item->is_directory() == false))
     {
         // Only a file can be dragged to a deck.
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
@@ -628,7 +628,7 @@ QModelIndex Audio_collection_model::index(int in_row, int in_column, const QMode
     }
 
     Audio_collection_item *childItem = parentItem->get_child(in_row);
-    if (childItem != NULL)
+    if (childItem != nullptr)
     {
         return createIndex(in_row, in_column, childItem);
     }
@@ -648,7 +648,7 @@ QModelIndex Audio_collection_model::parent(const QModelIndex &in_index) const
     Audio_collection_item *childItem  = static_cast<Audio_collection_item*>(in_index.internalPointer());
     Audio_collection_item *parentItem = childItem->get_parent();
 
-    if ((parentItem == this->rootItem) || (parentItem == NULL))
+    if ((parentItem == this->rootItem) || (parentItem == nullptr))
     {
         return QModelIndex();
     }
@@ -935,7 +935,7 @@ Audio_collection_model::search(QString in_text)
 void
 Audio_collection_model::clear()
 {
-    if (this->rootItem != NULL)
+    if (this->rootItem != nullptr)
     {
         this->beginRemoveRows(this->get_root_index(), 0, this->rowCount());
         this->endRemoveRows();

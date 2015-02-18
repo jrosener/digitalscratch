@@ -50,8 +50,8 @@ Audio_track_playback_process::Audio_track_playback_process(QSharedPointer<Audio_
     this->at_samplers = in_at_sampler;
     this->param       = in_param;
     this->nb_samplers = in_at_sampler.count();
-    this->src_state   = NULL;
-    this->src_data    = NULL;
+    this->src_state   = nullptr;
+    this->src_data    = nullptr;
 
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++) this->cue_points << 0;
     this->current_sample             = 0;
@@ -66,7 +66,7 @@ Audio_track_playback_process::Audio_track_playback_process(QSharedPointer<Audio_
 
     // Init libsamplerate.
     int error;
-    if ((this->src_state = src_new(SRC_LINEAR, 2, &error)) == NULL)
+    if ((this->src_state = src_new(SRC_LINEAR, 2, &error)) == nullptr)
     {
         qCWarning(DS_PLAYBACK) << "src_new() failed : " << src_strerror(error);
         return;
@@ -245,7 +245,7 @@ bool
 Audio_track_playback_process::play_sampler(unsigned short int   in_nb_samples,
                                            float              **out_samples)
 {
-    short signed int *sample_pointer = NULL;
+    short signed int *sample_pointer = nullptr;
     float sample = 0.0;
     int   index  = 0;
 

@@ -46,7 +46,7 @@ Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSh
     if (in_tcode_controls.count()  == 0 ||
         in_playbacks.count()       == 0 ||
         in_manual_controls.count() == 0 ||
-        in_sound_card.data()       == NULL)
+        in_sound_card.data()       == nullptr)
     {
         qCWarning(DS_PLAYBACK) << "bad input parameters";
         return;

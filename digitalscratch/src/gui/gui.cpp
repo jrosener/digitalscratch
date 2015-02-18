@@ -101,10 +101,10 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
          int                                                       *in_dscratch_ids)
 {
     // Check input parameters.
-    if (in_playbacks.count()           == 0    ||
-        in_sound_card.data()           == NULL ||
-        in_capture_and_playback.data() == NULL ||
-        in_dscratch_ids                == NULL)
+    if (in_playbacks.count()           == 0       ||
+        in_sound_card.data()           == nullptr ||
+        in_capture_and_playback.data() == nullptr ||
+        in_dscratch_ids                == nullptr)
     {
         qCCritical(DS_OBJECTLIFE) << "bad input parameters";
         return;
@@ -128,9 +128,9 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     this->dscratch_ids            = in_dscratch_ids;
 
     // Init pop-up dialogs.
-    this->config_dialog                   = NULL;
-    this->refresh_audio_collection_dialog = NULL;
-    this->about_dialog                    = NULL;
+    this->config_dialog                   = nullptr;
+    this->refresh_audio_collection_dialog = nullptr;
+    this->about_dialog                    = nullptr;
 
     // Create and show the main window.
     if (this->create_main_window() != true)
@@ -345,7 +345,7 @@ bool
 Gui::show_config_window()
 {
     // Create a configuration dialog.
-    if (this->config_dialog != NULL)
+    if (this->config_dialog != nullptr)
     {
         delete this->config_dialog;
     }
@@ -363,7 +363,7 @@ Gui::show_config_window()
 
     // Cleanup.
     delete this->config_dialog;
-    this->config_dialog = NULL;
+    this->config_dialog = nullptr;
 
     return true;
 }
@@ -511,7 +511,7 @@ Gui::reject_refresh_audio_collection_dialog()
 void
 Gui::close_refresh_audio_collection_dialog()
 {
-    if (this->refresh_audio_collection_dialog != NULL)
+    if (this->refresh_audio_collection_dialog != nullptr)
     {
         this->refresh_audio_collection_dialog->done(QDialog::Rejected);
     }
@@ -525,7 +525,7 @@ Gui::accept_refresh_audio_collection_dialog_all_files()
     // Analyze all files of audio collection.
     this->analyze_audio_collection(true);
 
-    if (this->refresh_audio_collection_dialog != NULL)
+    if (this->refresh_audio_collection_dialog != nullptr)
     {
         this->refresh_audio_collection_dialog->done(QDialog::Accepted);
     }
@@ -539,7 +539,7 @@ Gui::accept_refresh_audio_collection_dialog_new_files()
     // Analyze all files of audio collection.
     this->analyze_audio_collection(false);
 
-    if (this->refresh_audio_collection_dialog != NULL)
+    if (this->refresh_audio_collection_dialog != nullptr)
     {
         this->refresh_audio_collection_dialog->done(QDialog::Accepted);
     }
@@ -554,7 +554,7 @@ Gui::show_refresh_audio_collection_dialog()
     if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
     {
         // Create the dialog object.
-        if (this->refresh_audio_collection_dialog != NULL)
+        if (this->refresh_audio_collection_dialog != nullptr)
         {
             delete this->refresh_audio_collection_dialog;
         }
@@ -616,7 +616,7 @@ Gui::show_refresh_audio_collection_dialog()
 
         // Cleanup.
         delete this->refresh_audio_collection_dialog;
-        this->refresh_audio_collection_dialog = NULL;
+        this->refresh_audio_collection_dialog = nullptr;
     }
     else
     {
@@ -669,7 +669,7 @@ Gui::show_samplers()
 void
 Gui::done_about_window()
 {
-    if (this->about_dialog != NULL)
+    if (this->about_dialog != nullptr)
     {
         this->about_dialog->done(QDialog::Accepted);
     }
@@ -681,7 +681,7 @@ bool
 Gui::show_about_window()
 {
     // Create about window.
-    if (this->about_dialog != NULL)
+    if (this->about_dialog != nullptr)
     {
         delete this->about_dialog;
     }
@@ -832,7 +832,7 @@ Gui::show_about_window()
 
     // Cleanup.
     delete this->about_dialog;
-    this->about_dialog = NULL;
+    this->about_dialog = nullptr;
 
     return true;
 }
@@ -840,7 +840,7 @@ Gui::show_about_window()
 void
 Gui::done_error_window()
 {
-    if (this->error_dialog != NULL)
+    if (this->error_dialog != nullptr)
     {
         this->error_dialog->done(QDialog::Accepted);
     }
@@ -1829,7 +1829,7 @@ Gui::apply_main_window_style()
         this->progress_cancel_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
 
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
-        if (icon_prov != NULL)
+        if (icon_prov != nullptr)
         {
             ((TreeViewIconProvider*)icon_prov)->set_default_icons();
         }
@@ -1865,7 +1865,7 @@ Gui::apply_main_window_style()
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
-        if (icon_prov != NULL)
+        if (icon_prov != nullptr)
         {
             ((TreeViewIconProvider*)icon_prov)->set_icons(QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_DRIVE_SUFFIX).scaledToWidth(10,      Qt::SmoothTransformation)),
                                                           QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10,     Qt::SmoothTransformation)),

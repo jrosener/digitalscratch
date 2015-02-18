@@ -44,7 +44,7 @@ Audio_track::Audio_track(unsigned int in_sample_rate)
     // Do not store audio samples.
     this->sample_rate = in_sample_rate;
     this->max_nb_samples = 0;
-    this->samples = NULL;
+    this->samples = nullptr;
     this->reset();
 
     return;
@@ -80,7 +80,7 @@ Audio_track::reset()
     this->filename       = "";
     this->music_key      = "";
     this->music_key_tag  = "";
-    if (this->samples != NULL)
+    if (this->samples != nullptr)
     {
         std::fill(this->samples, this->samples + this->max_nb_samples + this->get_security_nb_samples(), 0);
     }
@@ -103,7 +103,7 @@ Audio_track::get_end_of_samples()
 bool
 Audio_track::set_end_of_samples(unsigned int in_end_of_samples)
 {
-    if (this->samples != NULL)
+    if (this->samples != nullptr)
     {
         if (in_end_of_samples > this->get_max_nb_samples())
         {

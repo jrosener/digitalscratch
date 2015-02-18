@@ -68,9 +68,9 @@ Jack_access_rules::~Jack_access_rules()
 bool
 Jack_access_rules::start(void *in_callback_param)
 {
-    const char     **ports       = NULL;
+    const char     **ports       = nullptr;
     const char      *client_name = CLIENT_NAME;
-    const char      *server_name = NULL;
+    const char      *server_name = nullptr;
     jack_options_t   options     = JackNullOption;
     jack_status_t    status;
     const char      *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
@@ -81,7 +81,7 @@ Jack_access_rules::start(void *in_callback_param)
 
     // Open a client connection to the JACK server.
     this->stream = jack_client_open(client_name, options, &status, server_name);
-    if (this->stream == NULL)
+    if (this->stream == nullptr)
     {
         qCWarning(DS_SOUNDCARD) << "jack_client_open() failed.";
         if (status & JackServerFailed)
@@ -114,7 +114,7 @@ Jack_access_rules::start(void *in_callback_param)
                                                     JACK_DEFAULT_AUDIO_TYPE,
                                                     JackPortIsInput,
                                                     0);
-            if (this->input_port[i] == NULL)
+            if (this->input_port[i] == nullptr)
             {
                 qCWarning(DS_SOUNDCARD) << "no more JACK input ports available";
                 emit error_msg(QString("No more Jack input ports available, please configure/start Jack server properly."));
@@ -131,7 +131,7 @@ Jack_access_rules::start(void *in_callback_param)
                                                 JACK_DEFAULT_AUDIO_TYPE,
                                                 JackPortIsOutput,
                                                 0);
-        if (this->output_port[i] == NULL)
+        if (this->output_port[i] == nullptr)
         {
             qCWarning(DS_SOUNDCARD) << "no more JACK output ports available";
             emit error_msg(QString("No more Jack output ports available, please configure/start Jack server properly."));
@@ -156,8 +156,8 @@ Jack_access_rules::start(void *in_callback_param)
     // it.
     if (settings->get_auto_jack_connections() == true)
     {
-        ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsOutput);
-        if (ports == NULL)
+        ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsOutput);
+        if (ports == nullptr)
         {
             qCWarning(DS_SOUNDCARD) << "no physical capture ports";
             emit error_msg(QString("No Jack physical capture ports available, please configure/start Jack server properly."));
@@ -176,8 +176,8 @@ Jack_access_rules::start(void *in_callback_param)
 
         if (this->do_capture == true)
         {
-            ports = jack_get_ports(this->stream, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
-            if (ports == NULL)
+            ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsInput);
+            if (ports == nullptr)
             {
                 qCWarning(DS_SOUNDCARD) << "no physical playback ports";
                 emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));

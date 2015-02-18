@@ -38,8 +38,8 @@ void Utils_Test::testCaseGetFileHash()
               == "f610ccedaf72485853b3829b3b88a38c", "track 3 hash");
 
     // Check bad input parameters.
-    QVERIFY2(Utils::get_file_hash("", 200) == "",   "path does not exist, no hash");
-    QVERIFY2(Utils::get_file_hash(NULL, 200) == "", "path is null, no hash");
+    QVERIFY2(Utils::get_file_hash("", 200) == "", "path does not exist, no hash");
+    QVERIFY2(Utils::get_file_hash(nullptr, 200) == "", "path is null, no hash");
     QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_1), 0) == "", "nb kbytes is 0");
 }
 

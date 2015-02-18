@@ -195,7 +195,7 @@ bool Data_persistence::store_audio_track(QSharedPointer<Audio_track> &in_at)
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
        (in_at->get_hash().size() == 0))
     {
         result = false;
@@ -278,7 +278,7 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
     bool result = true;
 
     // Check input parameter.
-    if ((io_at.data() == NULL) ||
+    if ((io_at.data() == nullptr) ||
         (io_at->get_hash().size() == 0))
     {
         qCWarning(DS_DB) << "can not get audio track: hash not specified.";
@@ -326,7 +326,7 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS) ||
         (in_position_msec > in_at->get_length()))
@@ -423,7 +423,7 @@ bool Data_persistence::get_cue_point(QSharedPointer<Audio_track> &in_at,
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS))
     {
@@ -485,7 +485,7 @@ bool Data_persistence::delete_cue_point(QSharedPointer<Audio_track> &in_at,
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
         (in_at->get_hash().size() == 0) ||
         (in_number >= MAX_NB_CUE_POINTS))
     {
@@ -751,7 +751,7 @@ bool Data_persistence::add_tag_to_track(QSharedPointer<Audio_track> &in_at,
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
         (in_at->get_hash().size() == 0) ||
         (in_tag_name == ""))
     {
@@ -865,7 +865,7 @@ bool Data_persistence::get_tags_from_track(QSharedPointer<Audio_track> &in_at,
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
         (in_at->get_hash().size() == 0))
     {
         qCWarning(DS_DB) << "can not get tags from track: wrong params.";
@@ -915,7 +915,7 @@ bool Data_persistence::rem_tag_from_track(QSharedPointer<Audio_track> &in_at,
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == NULL) ||
+    if ((in_at.data() == nullptr) ||
         (in_at->get_hash().size() == 0) ||
         (in_tag_name == ""))
     {

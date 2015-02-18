@@ -59,9 +59,9 @@ extern "C"
 Audio_file_decoding_process::Audio_file_decoding_process(QSharedPointer<Audio_track> &in_at,
                                                          bool                         in_do_resample)
 {
-    if (in_at.data() == NULL)
+    if (in_at.data() == nullptr)
     {
-        qCCritical(DS_FILE) << "audio track is NULL";
+        qCCritical(DS_FILE) << "audio track is null";
     }
     else
     {
@@ -94,9 +94,9 @@ Audio_file_decoding_process::run(const QString &in_path,
                                  const QString &in_music_key)
 {
     // Check if path is defined.
-    if (in_path == NULL)
+    if (in_path == nullptr)
     {
-        qCWarning(DS_FILE) << "file path is NULL";
+        qCWarning(DS_FILE) << "file path is null";
         return false;
     }
 
@@ -188,8 +188,8 @@ Audio_file_decoding_process::decode()
     }
 
     // Open file.
-    AVFormatContext* format_context = NULL;
-    if (avformat_open_input(&format_context, filename, NULL, NULL) != 0)
+    AVFormatContext* format_context = nullptr;
+    if (avformat_open_input(&format_context, filename, nullptr, nullptr) != 0)
     {
         av_free(frame);
         qCWarning(DS_FILE) << "error opening file" << qPrintable(filename);
@@ -197,7 +197,7 @@ Audio_file_decoding_process::decode()
     }
 
     // Get audio format.
-    if (avformat_find_stream_info(format_context, NULL) < 0)
+    if (avformat_find_stream_info(format_context, nullptr) < 0)
     {
         av_free(frame);
         avformat_close_input(&format_context);
@@ -206,7 +206,7 @@ Audio_file_decoding_process::decode()
     }
 
     // Find the audio stream (some container files can have multiple streams in them).
-    AVStream* audio_stream = NULL;
+    AVStream* audio_stream = nullptr;
     for (unsigned int i = 0; i < format_context->nb_streams; ++i)
     {
         if (format_context->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
@@ -215,7 +215,7 @@ Audio_file_decoding_process::decode()
             break;
         }
     }
-    if (audio_stream == NULL)
+    if (audio_stream == nullptr)
     {
         av_free(frame);
         avformat_close_input(&format_context);
@@ -226,14 +226,14 @@ Audio_file_decoding_process::decode()
     // Get codec of the audio file.
     AVCodecContext* codec_context = audio_stream->codec;
     codec_context->codec = avcodec_find_decoder(codec_context->codec_id);
-    if (codec_context->codec == NULL)
+    if (codec_context->codec == nullptr)
     {
         av_free(frame);
         avformat_close_input(&format_context);
         qCWarning(DS_FILE) << "couldn't find a proper decoder" << qPrintable(filename);
         return false;
     }
-    else if (avcodec_open2(codec_context, codec_context->codec, NULL) != 0)
+    else if (avcodec_open2(codec_context, codec_context->codec, nullptr) != 0)
     {
         av_free(frame);
         avformat_close_input(&format_context);
@@ -297,17 +297,17 @@ Audio_file_decoding_process::decode()
                     channel_0 = new short signed int [frame->nb_samples];
                     short signed int *channel_1;
                     channel_1 = new short signed int [frame->nb_samples];
-                    if (frame->data[0] != NULL)
+                    if (frame->data[0] != nullptr)
                     {
                         memcpy(channel_0, frame->data[0], data_size);
                     }
-                    if (frame->data[1] != NULL)
+                    if (frame->data[1] != nullptr)
                     {
                         memcpy(channel_1, frame->data[1], data_size);
                     }
                     for (int i = 0; i < frame->nb_samples; i++)
                     {
-                        if (frame->data[0] != NULL)
+                        if (frame->data[0] != nullptr)
                         {
                             output_samples[i*2]   = channel_0[i];
                         }
@@ -315,7 +315,7 @@ Audio_file_decoding_process::decode()
                         {
                             output_samples[i*2]   = 0;
                         }
-                        if (frame->data[1] != NULL)
+                        if (frame->data[1] != nullptr)
                         {
                             output_samples[i*2+1] = channel_1[i];
                         }

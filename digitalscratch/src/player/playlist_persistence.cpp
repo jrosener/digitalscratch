@@ -57,7 +57,7 @@ Playlist_persistence::~Playlist_persistence()
 bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist)
 {
     // Check parameters.
-    if (io_playlist == NULL)
+    if (io_playlist == nullptr)
     {
         return false;
     }
@@ -124,7 +124,7 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
 bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist)
 {
     // Check parameters.
-    if (io_playlist == NULL)
+    if (io_playlist == nullptr)
     {
         return false;
     }
