@@ -151,20 +151,19 @@ int main(int argc, char *argv[])
                                                                                                                    settings->get_nb_decks()));
 
     // Create GUI.
-    QSharedPointer<Gui> gui(new Gui(ats,
-                                    at_samplers,
-                                    dec_procs,
-                                    dec_sampler_procs,
-                                    play_params,
-                                    manual_controls,
-                                    at_playbacks,
-                                    sound_card,
-                                    capture_and_playback,
-                                    dscratch_ids));
-    Q_UNUSED(gui);
+    Gui gui(ats,
+            at_samplers,
+            dec_procs,
+            dec_sampler_procs,
+            play_params,
+            manual_controls,
+            at_playbacks,
+            sound_card,
+            capture_and_playback,
+            dscratch_ids);
 
     // Custom app close (especially needed to stop the audio loop if user click on 'X').
-    app.connect(&app,SIGNAL(aboutToQuit()), gui.data(), SLOT(force_close()));
+    app.connect(&app,SIGNAL(aboutToQuit()), &gui, SLOT(force_close()));
 
     // Forward the quit call.
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
