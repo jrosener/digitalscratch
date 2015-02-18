@@ -180,18 +180,18 @@ class Application_settings : public QObject
     virtual ~Application_settings();
 
  public:
-    void    set_main_window_size(QSize in_size);
+    void    set_main_window_size(const QSize &size);
     QSize   get_main_window_size();
     QString get_main_window_size_default();
 
-    void       set_browser_splitter_size(QByteArray in_state);
+    void       set_browser_splitter_size(const QByteArray &state);
     QByteArray get_browser_splitter_size();
 
-    void    set_main_window_position(QPoint in_pos);
+    void    set_main_window_position(const QPoint &pos);
     QPoint  get_main_window_position();
     QString get_main_window_position_default();
 
-    void    set_tracks_base_dir_path(QString in_tracks_base_dir_path);
+    void    set_tracks_base_dir_path(const QString &path);
     QString get_tracks_base_dir_path();
     QString get_tracks_base_dir_path_default();
 
@@ -199,47 +199,47 @@ class Application_settings : public QObject
     QString get_extern_prog();
     QString get_extern_prog_default();
 
-    void            set_gui_style(QString in_gui_style);
+    void            set_gui_style(const QString &style);
     QString         get_gui_style();
     QString         get_gui_style_default();
     QList<QString>  get_available_gui_styles();
 
-    void                      set_nb_decks(unsigned short int in_nb_decks);
+    void                      set_nb_decks(const unsigned short int &nb_decks);
     unsigned short int        get_nb_decks();
     unsigned short int        get_nb_decks_default();
     QList<unsigned short int> get_available_nb_decks();
 
-    void                 set_nb_samplers(unsigned short int in_nb_samplers);
+    void                 set_nb_samplers(const unsigned short int &nb_samplers);
     unsigned short int   get_nb_samplers();
     unsigned short int   get_nb_samplers_default();
 
-    void                 set_sample_rate(unsigned int in_sample_rate);
+    void                 set_sample_rate(const unsigned int &sample_rate);
     unsigned int         get_sample_rate();
     unsigned int         get_sample_rate_default();
     QList<unsigned int>  get_available_sample_rates();
 
-    void            set_sound_driver(QString in_driver);
+    void            set_sound_driver(const QString &driver);
     QString         get_sound_driver();
     QString         get_sound_driver_default();
-    void            set_internal_sound_card(QString in_card);
+    void            set_internal_sound_card(const QString &card);
     QString         get_internal_sound_card();
     QString         get_internal_sound_card_default();
     QList<QString>  get_available_internal_sound_cards();
 
-    void            set_auto_jack_connections(bool in_autoconnect);
+    void            set_auto_jack_connections(const bool &do_autoconnect);
     bool            get_auto_jack_connections();
     bool            get_auto_jack_connections_default();
 
-    void            set_autostart_motion_detection(bool in_autostart);
+    void            set_autostart_motion_detection(const bool &do_autostart);
     bool            get_autostart_motion_detection();
     bool            get_autostart_motion_detection_default();
 
-    void            set_vinyl_type(QString in_vinyl_type);
+    void            set_vinyl_type(const QString &type);
     QString         get_vinyl_type();
     QString         get_vinyl_type_default();
     QList<QString>  get_available_vinyl_types();
 
-    void                   set_rpm(unsigned short int in_rpm);
+    void                   set_rpm(const unsigned short int &rpm);
     unsigned short int     get_rpm();
     unsigned short int     get_rpm_default();
     QList<unsigned short>  get_available_rpms();
@@ -248,25 +248,25 @@ class Application_settings : public QObject
     int   get_input_amplify_coeff();
     int   get_input_amplify_coeff_default();
 
-    void  set_min_amplitude_for_normal_speed(float in_amplitude);
+    void  set_min_amplitude_for_normal_speed(const float &amplitude);
     float get_min_amplitude_for_normal_speed();
     float get_min_amplitude_for_normal_speed_default();
-    float get_min_amplitude_for_normal_speed_default_from_vinyl_type(QString vinyl_type);
+    float get_min_amplitude_for_normal_speed_default_from_vinyl_type(const QString &type);
 
-    void  set_min_amplitude(float in_amplitude);
+    void  set_min_amplitude(const float &amplitude);
     float get_min_amplitude();
     float get_min_amplitude_default();
-    float get_min_amplitude_default_from_vinyl_type(QString vinyl_type);
+    float get_min_amplitude_default_from_vinyl_type(const QString &type);
 
-    void    set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value);
+    void    set_keyboard_shortcut(const QString &kb_shortcut_path, const QString &value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);
 
-    void set_samplers_visible(bool is_visible);
+    void set_samplers_visible(const bool &is_visible);
     bool get_samplers_visible();
     bool get_samplers_visible_default();
 
     // Runtime settings (not stored in preference file).
-    void set_audio_collection_full_refresh(bool in_full_refresh);
+    void set_audio_collection_full_refresh(const bool &full_refresh);
     bool get_audio_collection_full_refresh();
 
  private:

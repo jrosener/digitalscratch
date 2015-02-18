@@ -185,10 +185,10 @@ Application_settings::init_settings()
 }
 
 void
-Application_settings::set_main_window_size(QSize in_size)
+Application_settings::set_main_window_size(const QSize &size)
 {
     this->settings.setValue(MAIN_WIN_SIZE_CFG,
-                             QString::number(in_size.width()) + "x" + QString::number(in_size.height()));
+                             QString::number(size.width()) + "x" + QString::number(size.height()));
 }
 
 QSize
@@ -214,10 +214,10 @@ Application_settings::get_main_window_size_default()
 }
 
 void
-Application_settings::set_main_window_position(QPoint in_pos)
+Application_settings::set_main_window_position(const QPoint &pos)
 {
     this->settings.setValue(MAIN_WIN_POS_CFG,
-                             QString::number(in_pos.x()) + "," + QString::number(in_pos.y()));
+                            QString::number(pos.x()) + "," + QString::number(pos.y()));
 }
 
 QPoint
@@ -244,9 +244,9 @@ Application_settings::get_main_window_position_default()
 }
 
 void
-Application_settings::set_tracks_base_dir_path(QString in_tracks_base_dir_path)
+Application_settings::set_tracks_base_dir_path(const QString &path)
 {
-    this->settings.setValue(BASE_DIR_PATH_CFG, in_tracks_base_dir_path);
+    this->settings.setValue(BASE_DIR_PATH_CFG, path);
 }
 
 QString
@@ -262,9 +262,9 @@ Application_settings::get_tracks_base_dir_path_default()
 }
 
 void
-Application_settings::set_browser_splitter_size(QByteArray in_state)
+Application_settings::set_browser_splitter_size(const QByteArray &state)
 {
-    this->settings.setValue(BROWSER_SPLITTER_SIZE_CFG, in_state);
+    this->settings.setValue(BROWSER_SPLITTER_SIZE_CFG, state);
 }
 
 QByteArray
@@ -310,9 +310,9 @@ Application_settings::get_gui_style_default()
 }
 
 void
-Application_settings::set_gui_style(QString in_gui_style)
+Application_settings::set_gui_style(const QString &style)
 {
-    this->settings.setValue(GUI_STYLE_CFG, in_gui_style);
+    this->settings.setValue(GUI_STYLE_CFG, style);
 }
 
 unsigned short int
@@ -338,9 +338,9 @@ Application_settings::get_nb_decks_default()
 }
 
 void
-Application_settings::set_nb_decks(unsigned short in_nb_decks)
+Application_settings::set_nb_decks(const unsigned short int &nb_decks)
 {
-    this->settings.setValue(NB_DECKS_CFG, in_nb_decks);
+    this->settings.setValue(NB_DECKS_CFG, nb_decks);
 }
 
 QList<unsigned short int>
@@ -362,9 +362,9 @@ Application_settings::get_nb_samplers_default()
 }
 
 void
-Application_settings::set_nb_samplers(unsigned short int in_nb_samplers)
+Application_settings::set_nb_samplers(const unsigned short int &nb_samplers)
 {
-    this->settings.setValue(NB_SAMPLERS_CFG, in_nb_samplers);
+    this->settings.setValue(NB_SAMPLERS_CFG, nb_samplers);
 }
 
 //
@@ -407,17 +407,17 @@ Application_settings::get_min_amplitude_for_normal_speed_default()
 }
 
 float
-Application_settings::get_min_amplitude_for_normal_speed_default_from_vinyl_type(QString vinyl_type)
+Application_settings::get_min_amplitude_for_normal_speed_default_from_vinyl_type(const QString &type)
 {
-    return dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(vinyl_type.toLocal8Bit().data());
+    return dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(type.toLocal8Bit().data());
 }
 
 void
-Application_settings::set_min_amplitude_for_normal_speed(float in_amplitude)
+Application_settings::set_min_amplitude_for_normal_speed(const float &amplitude)
 {
     QString value;
-    value.setNum(in_amplitude);
-    if (in_amplitude > 0.0 && in_amplitude < 1.0) // Range: ]0,1[
+    value.setNum(amplitude);
+    if (amplitude > 0.0 && amplitude < 1.0) // Range: ]0,1[
     {
         this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, value);
     }
@@ -436,24 +436,24 @@ Application_settings::get_min_amplitude_default()
 }
 
 float
-Application_settings::get_min_amplitude_default_from_vinyl_type(QString vinyl_type)
+Application_settings::get_min_amplitude_default_from_vinyl_type(const QString &type)
 {
-    return dscratch_get_default_min_amplitude_from_vinyl_type(vinyl_type.toLocal8Bit().data());
+    return dscratch_get_default_min_amplitude_from_vinyl_type(type.toLocal8Bit().data());
 }
 
 void
-Application_settings::set_min_amplitude(float in_amplitude)
+Application_settings::set_min_amplitude(const float &amplitude)
 {
     QString value;
-    value.setNum(in_amplitude);
-    if (in_amplitude > 0.0 && in_amplitude < 1.0) // Range: ]0,1[
+    value.setNum(amplitude);
+    if (amplitude > 0.0 && amplitude < 1.0) // Range: ]0,1[
     {
         this->settings.setValue(MIN_AMPLITUDE, value);
     }
 }
 
 void
-Application_settings::set_samplers_visible(bool is_visible)
+Application_settings::set_samplers_visible(const bool &is_visible)
 {
     this->settings.setValue(SAMPLERS_VISIBLE_CFG, is_visible);
 }
@@ -474,11 +474,11 @@ Application_settings::get_samplers_visible_default()
 // Playback parameters settings.
 //
 void
-Application_settings::set_keyboard_shortcut(QString in_kb_shortcut_path, QString in_value)
+Application_settings::set_keyboard_shortcut(const QString &kb_shortcut_path, const QString &value)
 {
-    if (in_value.isEmpty() == false)
+    if (value.isEmpty() == false)
     {
-        this->settings.setValue(in_kb_shortcut_path, in_value);
+        this->settings.setValue(kb_shortcut_path, value);
     }
 }
 
@@ -501,9 +501,9 @@ Application_settings::get_sample_rate_default()
 }
 
 void
-Application_settings::set_sample_rate(unsigned int in_sample_rate)
+Application_settings::set_sample_rate(const unsigned int &sample_rate)
 {
-    this->settings.setValue(SAMPLE_RATE_CFG, in_sample_rate);
+    this->settings.setValue(SAMPLE_RATE_CFG, sample_rate);
 }
 
 bool
@@ -519,15 +519,15 @@ Application_settings::get_auto_jack_connections_default()
 }
 
 void
-Application_settings::set_auto_jack_connections(bool in_autoconnect)
+Application_settings::set_auto_jack_connections(const bool &do_autoconnect)
 {
-    this->settings.setValue(AUTO_JACK_CONNECTIONS_CFG, in_autoconnect);
+    this->settings.setValue(AUTO_JACK_CONNECTIONS_CFG, do_autoconnect);
 }
 
 void
-Application_settings::set_sound_driver(QString in_driver)
+Application_settings::set_sound_driver(const QString &driver)
 {
-    this->settings.setValue(SOUND_DRIVER_CFG, in_driver);
+    this->settings.setValue(SOUND_DRIVER_CFG, driver);
 }
 
 QString
@@ -543,9 +543,9 @@ Application_settings::get_sound_driver_default()
 }
 
 void
-Application_settings::set_internal_sound_card(QString in_card)
+Application_settings::set_internal_sound_card(const QString &card)
 {
-    this->settings.setValue(SOUND_CARD_CFG, in_card);
+    this->settings.setValue(SOUND_CARD_CFG, card);
 }
 
 QString
@@ -579,9 +579,9 @@ Application_settings::get_autostart_motion_detection_default()
 }
 
 void
-Application_settings::set_autostart_motion_detection(bool in_autostart)
+Application_settings::set_autostart_motion_detection(const bool &do_autostart)
 {
-    this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, in_autostart);
+    this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, do_autostart);
 }
 
 QString
@@ -597,9 +597,9 @@ Application_settings::get_vinyl_type_default()
 }
 
 void
-Application_settings::set_vinyl_type(QString in_vinyl_type)
+Application_settings::set_vinyl_type(const QString &type)
 {
-    this->settings.setValue(VINYL_TYPE_CFG, in_vinyl_type);
+    this->settings.setValue(VINYL_TYPE_CFG, type);
 }
 
 QList<QString>
@@ -609,11 +609,11 @@ Application_settings::get_available_vinyl_types()
 }
 
 void
-Application_settings::set_rpm(unsigned short int in_rpm)
+Application_settings::set_rpm(const unsigned short int &rpm)
 {
     QString value;
-    value.setNum(in_rpm);
-    if (in_rpm == 33 || in_rpm == 45) // Range: 33 or 45.
+    value.setNum(rpm);
+    if (rpm == 33 || rpm == 45) // Supported speeds are 33 and 45 rpm, nothing else.
     {
         this->settings.setValue(RPM_CFG, value);
     }
@@ -647,9 +647,9 @@ Application_settings::get_available_sample_rates()
 }
 
 void
-Application_settings::set_audio_collection_full_refresh(bool in_full_refresh)
+Application_settings::set_audio_collection_full_refresh(const bool &full_refresh)
 {
-    this->audio_collection_full_refresh = in_full_refresh;
+    this->audio_collection_full_refresh = full_refresh;
 }
 
 bool
