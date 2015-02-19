@@ -345,7 +345,6 @@ class Gui : public QObject
 
     // Pop dialogs.
     Config_dialog                      *config_dialog;
-    QDialog                            *about_dialog;
     QDialog                            *refresh_audio_collection_dialog;
     QDialog                            *error_dialog;
 
@@ -427,7 +426,6 @@ class Gui : public QObject
     void press_esc_in_search_bar();
     void file_search_string(QString in_text);
     bool show_about_window();
-    void done_about_window();
     bool show_refresh_audio_collection_dialog();
     void reject_refresh_audio_collection_dialog();
     void close_refresh_audio_collection_dialog();

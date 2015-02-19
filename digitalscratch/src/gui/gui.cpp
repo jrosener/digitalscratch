@@ -130,7 +130,6 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     // Init pop-up dialogs.
     this->config_dialog                   = nullptr;
     this->refresh_audio_collection_dialog = nullptr;
-    this->about_dialog                    = nullptr;
 
     // Create and show the main window.
     if (this->create_main_window() != true)
@@ -666,173 +665,160 @@ Gui::show_samplers()
     }
 }
 
-void
-Gui::done_about_window()
-{
-    if (this->about_dialog != nullptr)
-    {
-        this->about_dialog->done(QDialog::Accepted);
-    }
-
-    return;
-}
-
 bool
 Gui::show_about_window()
 {
     // Create about window.
-    if (this->about_dialog != nullptr)
-    {
-        delete this->about_dialog;
-    }
-    this->about_dialog = new QDialog(this->window);
+    QDialog about_dialog;
 
     // Set properties : title, icon.
-    this->about_dialog->setWindowTitle(tr("About DigitalScratch"));
+    about_dialog.setWindowTitle(tr("About DigitalScratch"));
     if (this->nb_decks > 1)
     {
-        this->about_dialog->setWindowIcon(QIcon(ICON_2));
+        about_dialog.setWindowIcon(QIcon(ICON_2));
     }
     else
     {
-        this->about_dialog->setWindowIcon(QIcon(ICON));
+        about_dialog.setWindowIcon(QIcon(ICON));
     }
-
 
     //
     // Set content (logo, name-version, description, credit, license, libraries).
     //
-    QLabel *logo = new QLabel();
-    logo->setPixmap(QPixmap(LOGO));
-    logo->setAlignment(Qt::AlignHCenter);
+    QLabel logo;
+    logo.setPixmap(QPixmap(LOGO));
+    logo.setAlignment(Qt::AlignHCenter);
 
     QString version = QString("<h1>DigitalScratch ") + QString(STR(VERSION)) + QString("</h1>");
-    QLabel *name = new QLabel(tr(version.toUtf8()));
-    name->setAlignment(Qt::AlignHCenter);
-    name->setTextFormat(Qt::RichText);
+    QLabel name(tr(version.toUtf8()));
+    name.setAlignment(Qt::AlignHCenter);
+    name.setTextFormat(Qt::RichText);
 
-    QLabel *description = new QLabel(tr("A vinyl emulation software."));
-    description->setAlignment(Qt::AlignHCenter);
+    QLabel description(tr("A vinyl emulation software."));
+    description.setAlignment(Qt::AlignHCenter);
 
-    QLabel *web_site = new QLabel("<a style=\"color: orange\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
-    web_site->setAlignment(Qt::AlignHCenter);
-    web_site->setTextFormat(Qt::RichText);
-    web_site->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    web_site->setOpenExternalLinks(true);
+    QLabel web_site("<a style=\"color: orange\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
+    web_site.setAlignment(Qt::AlignHCenter);
+    web_site.setTextFormat(Qt::RichText);
+    web_site.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    web_site.setOpenExternalLinks(true);
 
-    QLabel *credit = new QLabel(tr("Copyright (C) 2003-2015 Julien Rosener"));
-    credit->setAlignment(Qt::AlignHCenter);
+    QLabel credit(tr("Copyright (C) 2003-2015 Julien Rosener"));
+    credit.setAlignment(Qt::AlignHCenter);
 
-    QLabel *license = new QLabel(tr("This program is free software; you can redistribute it and/or modify <br/>\
-                                     it under the terms of the GNU General Public License as published by <br/>\
-                                     the Free Software Foundation; either version 3 of the License, or <br/>\
-                                     (at your option) any later version.<br/><br/>"));
-    license->setTextFormat(Qt::RichText);
-    license->setAlignment(Qt::AlignHCenter);
+    QLabel license(tr("This program is free software; you can redistribute it and/or modify <br/>\
+                       it under the terms of the GNU General Public License as published by <br/>\
+                       the Free Software Foundation; either version 3 of the License, or <br/>\
+                       (at your option) any later version.<br/><br/>"));
+    license.setTextFormat(Qt::RichText);
+    license.setAlignment(Qt::AlignHCenter);
 
-    QLabel *built = new QLabel("<b>" + tr("Built with:") + "</b>");
-    built->setTextFormat(Qt::RichText);
-    QLabel *qt_version                = new QLabel((QString("- Qt v") + QString(qVersion())).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.qt.io\">http://www.qt.io</a>");
-    QLabel *libdigitalscratch_version = new QLabel((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
-    QLabel *libavcodec_version        = new QLabel((QString("- libavcodec v") + QString::number(LIBAVCODEC_VERSION_MAJOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MINOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MICRO)).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
-    QLabel *libavformat_version       = new QLabel((QString("- libavformat v") + QString::number(LIBAVFORMAT_VERSION_MAJOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MINOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MICRO)).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
-    QLabel *libavutil_version         = new QLabel((QString("- libavutil v") + QString::number(LIBAVUTIL_VERSION_MAJOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MINOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MICRO)).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
-    QLabel *libsamplerate_version     = new QLabel((QString("- ") + QString(src_get_version())).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.mega-nerd.com/SRC/\">http://www.mega-nerd.com/SRC/</a>");
-    QLabel *libjack_version           = new QLabel((QString("- libjack v") + QString(jack_get_version_string())).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://jackaudio.org\">http://jackaudio.org</a>");
-    QLabel *libkeyfinder_version      = new QLabel((QString("- libkeyfinder v") + QString(kfinder_get_version())).toUtf8()
-                                                   + ", <a style=\"color: grey\" href=\"http://www.ibrahimshaath.co.uk/keyfinder/\">http://www.ibrahimshaath.co.uk/keyfinder/</a>");
+    QLabel built("<b>" + tr("Built with:") + "</b>");
 
-    qt_version->setTextFormat(Qt::RichText);
-    qt_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    qt_version->setOpenExternalLinks(true);
+    built.setTextFormat(Qt::RichText);
+    QLabel qt_version((QString("- Qt v") + QString(qVersion())).toUtf8()
+                       + ", <a style=\"color: grey\" href=\"http://www.qt.io\">http://www.qt.io</a>");
+    qt_version.setTextFormat(Qt::RichText);
+    qt_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    qt_version.setOpenExternalLinks(true);
 
-    libdigitalscratch_version->setTextFormat(Qt::RichText);
-    libdigitalscratch_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libdigitalscratch_version->setOpenExternalLinks(true);
+    QLabel libdigitalscratch_version((QString("- libdigitalscratch v") + QString(dscratch_get_version())).toUtf8()
+                                     + ", <a style=\"color: grey\" href=\"http://www.digital-scratch.org\">http://www.digital-scratch.org</a>");
+    libdigitalscratch_version.setTextFormat(Qt::RichText);
+    libdigitalscratch_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libdigitalscratch_version.setOpenExternalLinks(true);
 
-    libavcodec_version->setTextFormat(Qt::RichText);
-    libavcodec_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libavcodec_version->setOpenExternalLinks(true);
+    QLabel libavcodec_version((QString("- libavcodec v")
+                               + QString::number(LIBAVCODEC_VERSION_MAJOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MINOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MICRO)).toUtf8()
+                               + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+    libavcodec_version.setTextFormat(Qt::RichText);
+    libavcodec_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libavcodec_version.setOpenExternalLinks(true);
 
-    libavformat_version->setTextFormat(Qt::RichText);
-    libavformat_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libavformat_version->setOpenExternalLinks(true);
+    QLabel libavformat_version((QString("- libavformat v")
+                                + QString::number(LIBAVFORMAT_VERSION_MAJOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MINOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MICRO)).toUtf8()
+                                + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+    libavformat_version.setTextFormat(Qt::RichText);
+    libavformat_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libavformat_version.setOpenExternalLinks(true);
 
-    libavutil_version->setTextFormat(Qt::RichText);
-    libavutil_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libavutil_version->setOpenExternalLinks(true);
+    QLabel libavutil_version((QString("- libavutil v")
+                              + QString::number(LIBAVUTIL_VERSION_MAJOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MINOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MICRO)).toUtf8()
+                              + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+    libavutil_version.setTextFormat(Qt::RichText);
+    libavutil_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libavutil_version.setOpenExternalLinks(true);
 
-    libsamplerate_version->setTextFormat(Qt::RichText);
-    libsamplerate_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libsamplerate_version->setOpenExternalLinks(true);
+    QLabel libsamplerate_version((QString("- ") + QString(src_get_version())).toUtf8()
+                                  + ", <a style=\"color: grey\" href=\"http://www.mega-nerd.com/SRC/\">http://www.mega-nerd.com/SRC/</a>");
+    libsamplerate_version.setTextFormat(Qt::RichText);
+    libsamplerate_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libsamplerate_version.setOpenExternalLinks(true);
 
-    libjack_version->setTextFormat(Qt::RichText);
-    libjack_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libjack_version->setOpenExternalLinks(true);
+    QLabel libjack_version((QString("- libjack v") + QString(jack_get_version_string())).toUtf8()
+                            + ", <a style=\"color: grey\" href=\"http://jackaudio.org\">http://jackaudio.org</a>");
+    libjack_version.setTextFormat(Qt::RichText);
+    libjack_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libjack_version.setOpenExternalLinks(true);
 
-    libkeyfinder_version->setTextFormat(Qt::RichText);
-    libkeyfinder_version->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    libkeyfinder_version->setOpenExternalLinks(true);
+    QLabel libkeyfinder_version((QString("- libkeyfinder v") + QString(kfinder_get_version())).toUtf8()
+                                 + ", <a style=\"color: grey\" href=\"http://www.ibrahimshaath.co.uk/keyfinder/\">http://www.ibrahimshaath.co.uk/keyfinder/</a>");
+    libkeyfinder_version.setTextFormat(Qt::RichText);
+    libkeyfinder_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libkeyfinder_version.setOpenExternalLinks(true);
 
-    QLabel *credits = new QLabel("<br/><b>" + tr("Credits:") + "</b>");
-    credits->setTextFormat(Qt::RichText);
-    QLabel *icons = new QLabel("- Devine icons: <a style=\"color: grey\" href=\"http://ipapun.deviantart.com\">http://ipapun.deviantart.com</a>");
-    icons->setTextFormat(Qt::RichText);
-    icons->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    icons->setOpenExternalLinks(true);
+    QLabel icons_credits("<br/><b>" + tr("Credits:") + "</b>");
+    icons_credits.setTextFormat(Qt::RichText);
 
-    QLabel *help = new QLabel("<br/><b>" + tr("Help:") + "</b>");
-    help->setTextFormat(Qt::RichText);
-    QLabel *wiki = new QLabel("- Online help: <a style=\"color: grey\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
-    wiki->setTextFormat(Qt::RichText);
-    wiki->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    wiki->setOpenExternalLinks(true);
+    QLabel icons("- Devine icons: <a style=\"color: grey\" href=\"http://ipapun.deviantart.com\">http://ipapun.deviantart.com</a>");
+    icons.setTextFormat(Qt::RichText);
+    icons.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    icons.setOpenExternalLinks(true);
+
+    QLabel help("<br/><b>" + tr("Help:") + "</b>");
+    help.setTextFormat(Qt::RichText);
+
+    QLabel wiki("- Online help: <a style=\"color: grey\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
+    wiki.setTextFormat(Qt::RichText);
+    wiki.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    wiki.setOpenExternalLinks(true);
 
     // Close button.
-    QDialogButtonBox *button = new QDialogButtonBox(QDialogButtonBox::Close);
-    QObject::connect(button, &QDialogButtonBox::rejected,
-                     [this](){this->done_about_window();});
+    QDialogButtonBox button(QDialogButtonBox::Close);
+    QObject::connect(&button, &QDialogButtonBox::rejected, [&about_dialog](){about_dialog.close();});
 
     // Full window layout.
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(logo, Qt::AlignHCenter);
-    layout->addWidget(name, Qt::AlignHCenter);
-    layout->addWidget(description, Qt::AlignHCenter);
-    layout->addWidget(web_site, Qt::AlignHCenter);
-    layout->addWidget(credit);
-    layout->addWidget(license);
-    layout->addWidget(built);
-    layout->addWidget(qt_version);
-    layout->addWidget(libdigitalscratch_version);
-    layout->addWidget(libavcodec_version);
-    layout->addWidget(libavformat_version);
-    layout->addWidget(libavutil_version);
-    layout->addWidget(libsamplerate_version);
-    layout->addWidget(libjack_version);
-    layout->addWidget(libkeyfinder_version);
-    layout->addWidget(credits);
-    layout->addWidget(icons);
-    layout->addWidget(help);
-    layout->addWidget(wiki);
-    layout->addWidget(button);
+    QVBoxLayout layout;
+    layout.addWidget(&logo, Qt::AlignHCenter);
+    layout.addWidget(&name, Qt::AlignHCenter);
+    layout.addWidget(&description, Qt::AlignHCenter);
+    layout.addWidget(&web_site, Qt::AlignHCenter);
+    layout.addWidget(&credit);
+    layout.addWidget(&license);
+    layout.addWidget(&built);
+    layout.addWidget(&qt_version);
+    layout.addWidget(&libdigitalscratch_version);
+    layout.addWidget(&libavcodec_version);
+    layout.addWidget(&libavformat_version);
+    layout.addWidget(&libavutil_version);
+    layout.addWidget(&libsamplerate_version);
+    layout.addWidget(&libjack_version);
+    layout.addWidget(&libkeyfinder_version);
+    layout.addWidget(&icons_credits);
+    layout.addWidget(&icons);
+    layout.addWidget(&help);
+    layout.addWidget(&wiki);
+    layout.addWidget(&button);
 
     // Put layout in dialog.
-    this->about_dialog->setLayout(layout);
-    layout->setSizeConstraint(QLayout::SetFixedSize);
+    about_dialog.setLayout(&layout);
+    layout.setSizeConstraint(QLayout::SetFixedSize);
+
+    // Apply stylesheet.
+    about_dialog.setStyleSheet(Utils::get_current_stylesheet_css());
 
     // Show dialog.
-    this->about_dialog->exec();
-
-    // Cleanup.
-    delete this->about_dialog;
-    this->about_dialog = nullptr;
+    about_dialog.exec();
 
     return true;
 }
