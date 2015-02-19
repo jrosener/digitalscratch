@@ -346,7 +346,6 @@ class Gui : public QObject
     // Pop dialogs.
     Config_dialog                      *config_dialog;
     QDialog                            *refresh_audio_collection_dialog;
-    QDialog                            *error_dialog;
 
     // Main processing elements.
     QList<QSharedPointer<Audio_track>>                         ats;
@@ -432,7 +431,6 @@ class Gui : public QObject
     void accept_refresh_audio_collection_dialog_all_files();
     void accept_refresh_audio_collection_dialog_new_files();
     bool show_error_window(QString in_error_message);
-    void done_error_window();
     void select_and_run_audio_file_decoding_process(unsigned short int in_deck_index);
     void run_audio_file_decoding_process();
     void show_hide_samplers();

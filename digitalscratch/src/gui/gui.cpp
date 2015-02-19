@@ -823,17 +823,6 @@ Gui::show_about_window()
     return true;
 }
 
-void
-Gui::done_error_window()
-{
-    if (this->error_dialog != nullptr)
-    {
-        this->error_dialog->done(QDialog::Accepted);
-    }
-
-    return;
-}
-
 bool
 Gui::show_error_window(QString in_error_message)
 {
