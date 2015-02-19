@@ -40,14 +40,14 @@
 #include "waveform.h"
 #include "application_logging.h"
 
-Waveform::Waveform(QSharedPointer<Audio_track> &in_at, QWidget *in_parent) : QLabel(in_parent)
+Waveform::Waveform(const QSharedPointer<Audio_track> &at, QWidget *parent) : QLabel(parent)
 {
     // Get audio track.
-    if (in_at.data() == nullptr)
+    if (at.data() == nullptr)
     {
         qCCritical(DS_OBJECTLIFE) << "audio track can not be null";
     }
-    this->at = in_at;
+    this->at = at;
 
     // Init.
     this->area_height = 0;
@@ -200,94 +200,95 @@ Waveform::paintEvent(QPaintEvent *)
 }
 
 bool
-Waveform::jump_slider(int in_x)
+Waveform::jump_slider(const int &x_pos)
 {
     // Check boundaries.
-    if (in_x > this->area_width)
+    if (x_pos > this->area_width)
     {
         return false;
     }
 
     // Move slider to new position if possible.
-    unsigned int x_index = floor(((float)in_x * (float)this->at->get_max_nb_samples())
+    unsigned int x_index = floor(((float)x_pos * (float)this->at->get_max_nb_samples())
                                    / ((float)this->area_width * 100.0));
     if (x_index <= this->end_of_waveform)
     {
-        this->slider_position_x = in_x;
+        this->slider_position_x = x_pos;
         this->slider->setGeometry(this->slider_position_x, 0, 2, this->area_height);
 
         // Emit signal to change position in track.
-        emit slider_position_changed((float)in_x / (float)this->area_width);
+        emit slider_position_changed((float)x_pos / (float)this->area_width);
 
         // Store absolute position.
-        this->slider_absolute_position = (float)in_x / (float)this->area_width;
+        this->slider_absolute_position = (float)x_pos / (float)this->area_width;
     }
 
     return true;
 }
 
 void
-Waveform::mousePressEvent(QMouseEvent *in_mouse_event)
+Waveform::mousePressEvent(QMouseEvent *mouse_event)
 {
     // Move slider to mouse position.
-    this->jump_slider(in_mouse_event->x());
+    this->jump_slider(mouse_event->x());
 
     return;
 }
 
 bool
-Waveform::move_slider(float in_position)
+Waveform::move_slider(const float &position)
 {
     // Check position.
-    if (in_position > 1.0)
+    if (position > 1.0)
     {
         return false;
     }
 
     // Store absolute position.
-    this->slider_absolute_position = in_position;
+    this->slider_absolute_position = position;
 
     // Move slider to new position.
-    this->slider_position_x = in_position * this->area_width;
+    this->slider_position_x = position * this->area_width;
     this->slider->setGeometry(this->slider_position_x, 0, 2, this->area_height);
 
     return true;
 }
 
 bool
-Waveform::move_cue_slider(unsigned short int in_cue_point_num, float in_position)
+Waveform::move_cue_slider(const unsigned short int &cue_point_num,
+                          const float              &position)
 {
     // Check position.
-    if (in_position > 1.0)
+    if (position > 1.0)
     {
         return false;
     }
 
     // Store absolute position.
-    this->cue_sliders_absolute_position[in_cue_point_num] = in_position;
+    this->cue_sliders_absolute_position[cue_point_num] = position;
 
     // Move slider to new position.
-    this->cue_sliders_position_x[in_cue_point_num] = in_position * this->area_width;
-    this->draw_cue_slider(in_cue_point_num);
+    this->cue_sliders_position_x[cue_point_num] = position * this->area_width;
+    this->draw_cue_slider(cue_point_num);
 
     return true;
 }
 
 void
-Waveform::draw_cue_slider(unsigned short int in_cue_point_num)
+Waveform::draw_cue_slider(const unsigned short int &cue_point_num)
 {
     // Show cue slider if defined.
-    if (this->cue_sliders_position_x[in_cue_point_num] > 0)
+    if (this->cue_sliders_position_x[cue_point_num] > 0)
     {
-        this->cue_sliders[in_cue_point_num]->setGeometry(this->cue_sliders_position_x[in_cue_point_num], 0, 1, this->area_height);
-        this->cue_sliders_number[in_cue_point_num]->setGeometry(this->cue_sliders_position_x[in_cue_point_num], 0, 10, 10);
-        this->cue_sliders[in_cue_point_num]->show();
-        this->cue_sliders_number[in_cue_point_num]->show();
+        this->cue_sliders[cue_point_num]->setGeometry(this->cue_sliders_position_x[cue_point_num], 0, 1, this->area_height);
+        this->cue_sliders_number[cue_point_num]->setGeometry(this->cue_sliders_position_x[cue_point_num], 0, 10, 10);
+        this->cue_sliders[cue_point_num]->show();
+        this->cue_sliders_number[cue_point_num]->show();
     }
     else
     {
         // Cue point not defined (= 0), so hide it.
-        this->cue_sliders[in_cue_point_num]->hide();
-        this->cue_sliders_number[in_cue_point_num]->hide();
+        this->cue_sliders[cue_point_num]->hide();
+        this->cue_sliders_number[cue_point_num]->hide();
     }
 }

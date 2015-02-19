@@ -53,26 +53,26 @@ class Utils
 
  public:
     // Get a MD5 hash from in_kbytes bytes of the specified file.
-    static QString get_file_hash(QString in_path, unsigned int in_kbytes);
+    static QString get_file_hash(const QString &path, const unsigned int &kbytes);
 
     // Get full text content of a file.
-    static QString file_read_all_text(QString in_path);
+    static QString file_read_all_text(const QString &path);
 
     // Compute music key of an audio file.
-    static QString get_file_music_key(QString in_path);
+    static QString get_file_music_key(const QString &path);
 
     // Convert music key as clock number.
-    static QString convert_music_key_to_clock_number(QString in_key);
+    static QString convert_music_key_to_clock_number(const QString &key);
 
     // Get next music keys (as clock number).
-    static void get_next_music_keys(QString  in_key,
-                                    QString& next_key,
-                                    QString& prev_key,
-                                    QString& next_major_key);
+    static void get_next_music_keys(const QString &key,
+                                    QString &next_key,
+                                    QString &prev_key,
+                                    QString &next_major_key);
 
-    static QString get_str_time_from_sample_index(unsigned int in_sample_index,
-                                                  unsigned int in_sample_rate,
-                                                  bool         in_with_msec);
+    static QString get_str_time_from_sample_index(const unsigned int &sample_index,
+                                                  const unsigned int &sample_rate,
+                                                  const bool         &with_msec);
 
     // Get current CSS string stylesheet.
     static QString get_current_stylesheet_css();

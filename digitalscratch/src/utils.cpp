@@ -50,27 +50,27 @@
 QStringList Utils::audio_file_extensions = QStringList() << "ac3" << "flac" << "m4a" << "mp2" << "mp3" << "ogg" << "wav" << "wma";
 
 // Static utils functions.
-QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
+QString Utils::get_file_hash(const QString &path, const unsigned int &kbytes)
 {   
     // Init.
     QString hash("");
 
     // Check if path is defined.
-    if (in_path == nullptr)
+    if (path == nullptr)
     {
         qCWarning(DS_FILE) << "path is null.";
         return "";
     }
 
     // Check number of kbytes.
-    if (in_kbytes == 0)
+    if (kbytes == 0)
     {
         qCWarning(DS_FILE) << "nb bytes to hash is 0.";
         return "";
     }
 
     // Check if file exists.
-    QFile file(in_path);
+    QFile file(path);
     if (file.exists() == false)
     {
         qCWarning(DS_FILE) << "nb bytes to hash is 0.";
@@ -84,7 +84,7 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
     }
 
     // Get a hash of the first bytes of data (or the size of the file if it is less).
-    QByteArray bin  = file.read(std::min((qint64)(in_kbytes*1024), file.size()));
+    QByteArray bin  = file.read(std::min((qint64)(kbytes*1024), file.size()));
     hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
 
     // Cleanup.
@@ -93,11 +93,11 @@ QString Utils::get_file_hash(QString in_path, unsigned int in_kbytes)
     return hash;
 }
 
-QString Utils::file_read_all_text(QString in_path)
+QString Utils::file_read_all_text(const QString &path)
 {
     QString result = "";
 
-    QFile file(in_path);
+    QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
     {
         result = QString(file.readAll());
@@ -108,7 +108,7 @@ QString Utils::file_read_all_text(QString in_path)
 
 }
 
-QString Utils::get_file_music_key(QString in_path)
+QString Utils::get_file_music_key(const QString &path)
 {
     // Init result.
     QString result = "";
@@ -116,7 +116,7 @@ QString Utils::get_file_music_key(QString in_path)
     // Decode the audio track.
     QSharedPointer<Audio_track>                 at(new Audio_track(10, 44100)); // Force 44100 to calculate music key.
     QScopedPointer<Audio_file_decoding_process> dec(new Audio_file_decoding_process(at, false));
-    dec->run(in_path, "", "");
+    dec->run(path, "", "");
 
     // Compute the music key.
     QScopedPointer<Audio_track_key_process> key_proc(new Audio_track_key_process(at));
@@ -126,14 +126,14 @@ QString Utils::get_file_music_key(QString in_path)
     }
     else
     {
-        qCWarning(DS_FILE) << "cannot get music key for " << in_path;
+        qCWarning(DS_FILE) << "cannot get music key for " << path;
     }
     
     // Return result.
     return result;
 }
 
-QString Utils::convert_music_key_to_clock_number(QString in_key)
+QString Utils::convert_music_key_to_clock_number(const QString &key)
 {
     QMap<QString, QString> key_map; // Map music key to clock number.
     key_map.insert("AM",  "11B");
@@ -161,7 +161,7 @@ QString Utils::convert_music_key_to_clock_number(QString in_key)
     key_map.insert("AbM", "4B");
     key_map.insert("Abm", "1A");
 
-    return key_map.value(in_key, "");
+    return key_map.value(key, "");
 }
 
 QList<QString> Utils::minor_keys;
@@ -196,10 +196,10 @@ void Utils::setup_keys()
     major_keys.append("12B");
 }
 
-void Utils::get_next_music_keys(QString  in_key,
-                                QString& next_key,
-                                QString& prev_key,
-                                QString& next_major_key)
+void Utils::get_next_music_keys(const QString &key,
+                                QString &next_key,
+                                QString &prev_key,
+                                QString &next_major_key)
 {
     QString         result = "";
     QList<QString> *keys   = nullptr;
@@ -215,21 +215,21 @@ void Utils::get_next_music_keys(QString  in_key,
     prev_key       = "";
     next_major_key = "";
 
-    if (in_key.length() >= 2)
+    if (key.length() >= 2)
     {
         int index = 0;
 
         // Try to find music key in minor keys.
-        index = minor_keys.indexOf(in_key);
+        index = minor_keys.indexOf(key);
 
         if (index == -1)
         {
             // Key not found, try to find music key in major keys.
-            index = major_keys.indexOf(in_key);
+            index = major_keys.indexOf(key);
 
             if (index == -1)
             {
-                qCWarning(DS_MUSICKEY) << "cannot find next key of " << in_key;
+                qCWarning(DS_MUSICKEY) << "cannot find next key of " << key;
             }
             else
             {
@@ -280,18 +280,18 @@ void Utils::get_next_music_keys(QString  in_key,
     return;
 }
 
-QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
-                                              unsigned int in_sample_rate,
-                                              bool         in_with_msec)
+QString Utils::get_str_time_from_sample_index(const unsigned int &sample_index,
+                                              const unsigned int &sample_rate,
+                                              const bool         &with_msec)
 {
     // Return an empty string if the cue point is not set (i.e. is set to sample index 0).
-    if (in_sample_index == 0)
+    if (sample_index == 0)
     {
         return "__:__:___";
     }
 
     // Calculate sample index position as min:sec:msec
-    unsigned int msec = (unsigned int)(1000.0 * (float)(in_sample_index) / (2.0 * (float)in_sample_rate));
+    unsigned int msec = (unsigned int)(1000.0 * (float)(sample_index) / (2.0 * (float)sample_rate));
     int          sec  = msec / 1000.0;
     div_t        tmp_division = div(sec, 60);
     QString min_str  = QString::number(tmp_division.quot);
@@ -307,7 +307,7 @@ QString Utils::get_str_time_from_sample_index(unsigned int in_sample_index,
         sec_str = "0" + sec_str;
     }
     QString pos = min_str + ":" + sec_str;
-    if (in_with_msec == true)
+    if (with_msec == true)
     {
         if (msec_str.size() == 1)
         {

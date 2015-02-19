@@ -393,9 +393,9 @@ void Config_dialog::fill_tab_motion_detect()
     this->set_min_amplitude_value(this->min_amplitude->value());
 }
 
-void Config_dialog::set_amplify_coeff_slider(int in_value)
+void Config_dialog::set_amplify_coeff_slider(const int &value)
 {
-    this->amplify_coeff->setValue(in_value);
+    this->amplify_coeff->setValue(value);
 }
 
 int Config_dialog::get_amplify_coeff_slider()
@@ -404,14 +404,15 @@ int Config_dialog::get_amplify_coeff_slider()
 }
 
 void
-Config_dialog::set_amplify_coeff_value(int)
+Config_dialog::set_amplify_coeff_value(const int &value)
 {
+    Q_UNUSED(value);
     this->amplify_coeff_value->setText(QString::number(this->get_amplify_coeff_slider()));
 }
 
-void Config_dialog::set_min_amplitude_for_normal_speed_slider(float in_value)
+void Config_dialog::set_min_amplitude_for_normal_speed_slider(const float &value)
 {
-    this->min_amplitude_for_normal_speed->setValue(qRound(in_value * 100.0));
+    this->min_amplitude_for_normal_speed->setValue(qRound(value * 100.0));
 }
 
 float Config_dialog::get_min_amplitude_for_normal_speed_slider()
@@ -420,14 +421,15 @@ float Config_dialog::get_min_amplitude_for_normal_speed_slider()
 }
 
 void
-Config_dialog::set_min_amplitude_for_normal_speed_value(int)
+Config_dialog::set_min_amplitude_for_normal_speed_value(const int &value)
 {
+    Q_UNUSED(value);
     this->min_amplitude_for_normal_speed_value->setText(QString::number(this->get_min_amplitude_for_normal_speed_slider()));
 }
 
-void Config_dialog::set_min_amplitude_slider(float in_value)
+void Config_dialog::set_min_amplitude_slider(const float &value)
 {
-    this->min_amplitude->setValue(qRound(in_value * 1000.0));
+    this->min_amplitude->setValue(qRound(value * 1000.0));
 }
 
 float Config_dialog::get_min_amplitude_slider()
@@ -436,8 +438,9 @@ float Config_dialog::get_min_amplitude_slider()
 }
 
 void
-Config_dialog::set_min_amplitude_value(int)
+Config_dialog::set_min_amplitude_value(const int &value)
 {
+    Q_UNUSED(value);
     this->min_amplitude_value->setText(QString::number(this->get_min_amplitude_slider()));
 }
 
@@ -564,28 +567,28 @@ QWidget *Config_dialog::init_tab_shortcuts()
     return shortcuts_tab;
 }
 
-bool Config_dialog::is_duplicate_shortcut(const QString& in_value)
+bool Config_dialog::is_duplicate_shortcut(const QString &value)
 {
     // For each shortcut label, check if the provided shortcut already exists.
-    if ((this->kb_switch_playback->text().compare(in_value,          Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_deck->text().compare(in_value,       Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_begin_track_on_deck->text().compare(in_value, Qt::CaseInsensitive) == 0) ||
-        (this->kb_get_next_track_from_deck->text().compare(in_value, Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point1_on_deck->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point1_on_deck->text().compare(in_value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point2_on_deck->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point2_on_deck->text().compare(in_value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point3_on_deck->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point3_on_deck->text().compare(in_value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point4_on_deck->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point4_on_deck->text().compare(in_value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_fullscreen->text().compare(in_value,               Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler1->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler2->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler3->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler4->text().compare(in_value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_help->text().compare(in_value,                     Qt::CaseInsensitive) == 0) ||
-        (this->kb_file_search->text().compare(in_value,              Qt::CaseInsensitive) == 0))
+    if ((this->kb_switch_playback->text().compare(value,          Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_deck->text().compare(value,       Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_begin_track_on_deck->text().compare(value, Qt::CaseInsensitive) == 0) ||
+        (this->kb_get_next_track_from_deck->text().compare(value, Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point1_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point1_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point2_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point2_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point3_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point3_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point4_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point4_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
+        (this->kb_fullscreen->text().compare(value,               Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler1->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler2->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler3->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler4->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_help->text().compare(value,                     Qt::CaseInsensitive) == 0) ||
+        (this->kb_file_search->text().compare(value,              Qt::CaseInsensitive) == 0))
     {
         return true;
     }
@@ -593,20 +596,20 @@ bool Config_dialog::is_duplicate_shortcut(const QString& in_value)
     return false;
 }
 
-void Config_dialog::validate_and_set_shortcut(const QString& in_value, ShortcutQLabel *in_label)
+void Config_dialog::validate_and_set_shortcut(const QString &value, ShortcutQLabel *label)
 {
     // Get keyboard shortcut label to work on.
-    if(in_label != 0)
+    if(label != 0)
     {
         // Check if new shortcut is duplicate.
-        if (this->is_duplicate_shortcut(in_value) == true)
+        if (this->is_duplicate_shortcut(value) == true)
         {
             // Shortcut already exists, show an error and revert label.
             QMessageBox msg_box;
             msg_box.setWindowTitle("DigitalScratch");
             msg_box.setText("<h2>" + tr("Error") + "</h2>"
                             + "<br/>"
-                            + "Keyboard shortcut [ " + in_value  + " ] already exists, please set another one.");
+                            + "Keyboard shortcut [ " + value  + " ] already exists, please set another one.");
             msg_box.setStandardButtons(QMessageBox::Close);
             msg_box.setIcon(QMessageBox::Warning);
             msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
@@ -614,12 +617,12 @@ void Config_dialog::validate_and_set_shortcut(const QString& in_value, ShortcutQ
             msg_box.exec();
 
             // Then put back the old shortcut.
-            in_label->set_old_text();
+            label->set_old_text();
         }
         else
         {
             // Shortcut is correct, set it in the label.
-            in_label->setText(in_value);
+            label->setText(value);
         }
     }
 }

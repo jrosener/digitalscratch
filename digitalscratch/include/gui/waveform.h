@@ -61,24 +61,25 @@ class Waveform : public QLabel
     QPointF                     *points; // Table of points to display.
 
  public:
-    Waveform(QSharedPointer<Audio_track> &in_at, QWidget *in_parent = 0);
+    Waveform(const QSharedPointer<Audio_track> &at, QWidget *parent = 0);
     ~Waveform();
 
     void reset();                                                             // Clean list of points and force repaint.
-    bool move_slider(float in_position);                                      // Position is between 0.0 and 1.0.
-    bool move_cue_slider(unsigned short in_cue_point_num, float in_position); // Position is between 0.0 and 1.0.
+    bool move_slider(const float &position);                                  // Position is between 0.0 and 1.0.
+    bool move_cue_slider(const unsigned short &cue_point_num,                 // Position is between 0.0 and 1.0.
+                         const float          &position);
 
  private:
     void get_area_size();
-    bool jump_slider(int in_x);
+    bool jump_slider(const int &x_pos);
     bool generate_polyline();
-    void draw_cue_slider(unsigned short in_cue_point_num);
+    void draw_cue_slider(const unsigned short &cue_point_num);
 
  protected:
     virtual void paintEvent(QPaintEvent *);
-    void mousePressEvent(QMouseEvent *in_mouse_event);
+    void mousePressEvent(QMouseEvent *mouse_event);
 
  signals:
-    void slider_position_changed(float in_position);     // Position is between 0.0 and 1.0.
-    void cue_slider_position_changed(float in_position); // Position is between 0.0 and 1.0.
+    void slider_position_changed(const float &position);     // Position is between 0.0 and 1.0.
+    void cue_slider_position_changed(const float &position); // Position is between 0.0 and 1.0.
 };
