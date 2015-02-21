@@ -58,7 +58,7 @@ QList<QString> Audio_device_access_rules::get_device_list()
     return device_names;
 }
 
-Audio_device_access_rules::Audio_device_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
+Audio_device_access_rules::Audio_device_access_rules(const unsigned short int &nb_channels) : Sound_driver_access_rules(nb_channels)
 {
     return;
 }
@@ -118,12 +118,12 @@ Audio_device_access_rules::stop()
 }
 
 bool
-Audio_device_access_rules::get_input_buffers(unsigned short int in_nb_buffer_frames, QList<float *> &out_buffers)
+Audio_device_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
 {
     bool result;
 
     // TODO
-    Q_UNUSED(in_nb_buffer_frames);
+    Q_UNUSED(nb_buffer_frames);
     Q_UNUSED(out_buffers);
 
     if (this->do_capture == true)
@@ -139,10 +139,10 @@ Audio_device_access_rules::get_input_buffers(unsigned short int in_nb_buffer_fra
 }
 
 bool
-Audio_device_access_rules::get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float *> &out_buffers)
+Audio_device_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
 {
     // TODO
-    Q_UNUSED(in_nb_buffer_frames);
+    Q_UNUSED(nb_buffer_frames);
     Q_UNUSED(out_buffers);
 
     return true;

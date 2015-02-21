@@ -38,6 +38,11 @@
 
 #include "application_const.h"
 
+#ifdef ENABLE_TEST_MODE
+#include <audio_track.h>
+#include <QSharedPointer>
+#endif
+
 using namespace std;
 
 class Sound_driver_access_rules : public QObject
@@ -51,7 +56,7 @@ class Sound_driver_access_rules : public QObject
     bool                     do_capture;
 
  public:
-    Sound_driver_access_rules(unsigned short int in_nb_channels);
+    Sound_driver_access_rules(const unsigned short int &nb_channels);
     virtual ~Sound_driver_access_rules();
 
  public:
@@ -60,15 +65,17 @@ class Sound_driver_access_rules : public QObject
     virtual bool start(void *in_callback_param) = 0;
     virtual bool restart() = 0;
     virtual bool stop() = 0;
-    virtual bool get_input_buffers(unsigned short int  in_nb_buffer_frames, QList<float*> &out_buffers) = 0;
-    virtual bool get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float*> &out_buffers) = 0;
+    virtual bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers) = 0;
+    virtual bool get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers) = 0;
 
- #ifdef ENABLE_TEST_MODE
+#ifdef ENABLE_TEST_MODE
+ private:
+   bool using_fake_timecode;
+   unsigned int timecode_current_sample;
+   QSharedPointer<Audio_track> timecode;
+
  public:
     bool use_timecode_from_file(const QString &path);
-
- private:
-    bool using_fake_timecode;
 
  protected:
     bool fill_input_buf(unsigned short int in_nb_buffer_frames, QList<float*> &io_buffers);

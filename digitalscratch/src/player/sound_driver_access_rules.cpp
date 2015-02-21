@@ -41,15 +41,15 @@
 #include "audio_file_decoding_process.h"
 #endif
 
-Sound_driver_access_rules::Sound_driver_access_rules(unsigned short int in_nb_channels)
+Sound_driver_access_rules::Sound_driver_access_rules(const unsigned short int &nb_channels)
 {
-    if (in_nb_channels < 2)
+    if (nb_channels < 2)
     {
         qCWarning(DS_SOUNDCARD) << "Number of channels must be at least 2.";
         return;
     }
 
-    this->nb_channels    = in_nb_channels;
+    this->nb_channels    = nb_channels;
     this->callback_param = nullptr;
     this->do_capture     = true;
     this->running        = false;
@@ -85,8 +85,8 @@ Sound_driver_access_rules::use_timecode_from_file(const QString &path)
     bool result = true;
 
     // Decode timecode file.    
-    QSharedPointer<Audio_track> at(new Audio_track(15, 44100));
-    Audio_file_decoding_process decoder(at, false);
+    this->timecode = QSharedPointer<Audio_track>(new Audio_track(15, 44100));
+    Audio_file_decoding_process decoder(timecode, false);
     QFileInfo file_info = QFileInfo(path);
     result = decoder.run(file_info.absoluteFilePath());
 
@@ -94,6 +94,7 @@ Sound_driver_access_rules::use_timecode_from_file(const QString &path)
     {
         // Now use fake timecode as captured input buffers.
         this->using_fake_timecode = true;
+        this->timecode_current_sample = 0;
     }
 
     return result;
@@ -105,6 +106,25 @@ Sound_driver_access_rules::fill_input_buf(unsigned short int in_nb_buffer_frames
     if (this->using_fake_timecode == true)
     {
         // TODO Overwrite buffer with pre-recorded timecode buffer (circular buffer).
+        for (unsigned short int i = 0; i < io_buffers.size(); i++)
+        {
+            float *buffer = io_buffers[i];
+
+            // Reset input buffer.
+            std::fill(buffer, buffer + in_nb_buffer_frames, 0);
+
+            // Fill it with prerecorded timecode.
+            unsigned int j = timecode_current_sample + (i % 2); // i%2 = 0 or 1.
+            unsigned int k = 0;
+            while ((j < this->timecode->get_end_of_samples()) &&
+                   (k < in_nb_buffer_frames))
+            {
+                buffer[k] = this->timecode->get_samples()[j];
+                // timecode_current_sample // TODO a refaire.
+                k = k+1;
+                j = j+2;
+            }
+        }
     }
 
     return true;

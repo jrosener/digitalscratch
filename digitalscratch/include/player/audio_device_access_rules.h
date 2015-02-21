@@ -46,7 +46,7 @@ class Audio_device_access_rules : public Sound_driver_access_rules
     Q_OBJECT
 
  public:
-    Audio_device_access_rules(unsigned short int in_nb_channels);
+    Audio_device_access_rules(const unsigned short int &nb_channels);
     virtual ~Audio_device_access_rules();
 
  public:
@@ -54,6 +54,6 @@ class Audio_device_access_rules : public Sound_driver_access_rules
     bool start(void *in_callback_param);
     bool restart();
     bool stop();
-    bool get_input_buffers(unsigned short int  in_nb_buffer_frames, QList<float*> &out_buffers);
-    bool get_output_buffers(unsigned short int in_nb_buffer_frames, QList<float*> &out_buffers);
+    bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers);
+    bool get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers);
 };

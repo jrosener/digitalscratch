@@ -12,10 +12,12 @@
 #include <sound_driver_access_rules.h>
 #include <sound_capture_and_playback_process.h>
 #include <jack_access_rules.h>
+#include <audio_file_decoding_process.h>
 #include <qeventloop.h>
 
-#define DATA_DIR    "./test/data/"
-#define TIMECODE_1  "scratchlivecontrol-vinylrip-33rpm+0.mp3"
+#define DATA_DIR     "./test/data/"
+#define DATA_TRACK_1 "b_comp_-_p_dust.mp3"
+#define TIMECODE_1   "scratchlivecontrol-vinylrip-33rpm+0.mp3"
 
 Sound_capture_and_playback_process_Test::Sound_capture_and_playback_process_Test()
 {
@@ -49,6 +51,8 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack()
     QList<QSharedPointer<Manual_control_process>> manual_controls = {manual_control};
 
     QSharedPointer<Audio_track> at(new Audio_track(MAX_MINUTES_TRACK, settings->get_sample_rate()));
+    Audio_file_decoding_process decoder(at, false);
+    decoder.run(QString(DATA_DIR) + QString(DATA_TRACK_1), "", "");
 
     QList<QSharedPointer<Audio_track>> at_sampler;
     QSharedPointer<Audio_track> at_s(new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate()));
@@ -72,7 +76,7 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack()
     QVERIFY2(sound_card->start((void*)capture_and_play.data()) == true, "start capture and playback through jack");
 
     // Wait 10 sec.
-    QTest::qWait(10000);
+    QTest::qWait(100000);
 
     // Stop processing.
     sound_card->stop();
