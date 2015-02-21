@@ -105,25 +105,31 @@ Sound_driver_access_rules::fill_input_buf(unsigned short int in_nb_buffer_frames
 {
     if (this->using_fake_timecode == true)
     {
-        // TODO Overwrite buffer with pre-recorded timecode buffer (circular buffer).
+        // Overwrite buffer with pre-recorded timecode buffer (circular buffer).
+        float *buffer = nullptr;
         for (unsigned short int i = 0; i < io_buffers.size(); i++)
         {
-            float *buffer = io_buffers[i];
-
             // Reset input buffer.
+            buffer = io_buffers[i];
             std::fill(buffer, buffer + in_nb_buffer_frames, 0);
 
             // Fill it with prerecorded timecode.
-            unsigned int j = timecode_current_sample + (i % 2); // i%2 = 0 or 1.
-            unsigned int k = 0;
-            while ((j < this->timecode->get_end_of_samples()) &&
-                   (k < in_nb_buffer_frames))
+            unsigned int tcode_index  = timecode_current_sample + (i % 2); // i%2 = 0 or 1.
+            unsigned int buffer_index = 0;
+            while ((tcode_index < this->timecode->get_end_of_samples()) &&
+                   (buffer_index < in_nb_buffer_frames))
             {
-                buffer[k] = this->timecode->get_samples()[j];
-                // timecode_current_sample // TODO a refaire.
-                k = k+1;
-                j = j+2;
+                buffer[buffer_index] = this->timecode->get_samples()[tcode_index];
+                buffer_index++;
+                tcode_index += 2;
             }
+        }
+
+        // Move the index to the timecode data buffer for the next time.
+        timecode_current_sample += in_nb_buffer_frames * 2;
+        if (timecode_current_sample > this->timecode->get_end_of_samples())
+        {
+            timecode_current_sample = 0;
         }
     }
 

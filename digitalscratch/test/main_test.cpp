@@ -56,8 +56,5 @@ int main(int argc, char** argv)
    }
 #endif
 
-   // Wait until threads are done (necessary because no QApplication is created/deleted).
-  // QThreadPool::globalInstance()->waitForDone();
-
    return status;
 }

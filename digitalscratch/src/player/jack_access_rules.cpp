@@ -251,10 +251,10 @@ Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames,
 
         result = true;
 
-        #ifdef ENABLE_TEST_MODE
+#ifdef ENABLE_TEST_MODE
         // Fill buffer with pre-recorded timecode buffer (circular buffer).
         result = this->fill_input_buf(nb_buffer_frames, buffers);
-        #endif
+#endif
     }
     else
     {

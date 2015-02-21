@@ -76,7 +76,9 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack()
     QVERIFY2(sound_card->start((void*)capture_and_play.data()) == true, "start capture and playback through jack");
 
     // Wait 10 sec.
-    QTest::qWait(100000);
+    QTest::qWait(10000);
+
+    // TODO: For the moment, the test is a manual test: just listen to the 10sec of music.
 
     // Stop processing.
     sound_card->stop();
