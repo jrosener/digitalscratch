@@ -54,6 +54,6 @@ class Audio_device_access_rules : public Sound_driver_access_rules
     bool start(void *in_callback_param);
     bool restart();
     bool stop();
-    bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers);
-    bool get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers);
+    bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers) const;
+    bool get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers) const;
 };

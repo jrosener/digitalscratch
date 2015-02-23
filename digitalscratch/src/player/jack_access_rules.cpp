@@ -237,7 +237,7 @@ Jack_access_rules::stop()
 }
 
 bool
-Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &buffers)
+Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers)
 {
     bool result;
 
@@ -246,14 +246,14 @@ Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames,
         // Get buffers from jack ports.
         for (unsigned short int i = 0; i < this->nb_channels; i++)
         {
-            buffers << (float *)jack_port_get_buffer(this->input_port[i], nb_buffer_frames);
+            out_buffers << (float *)jack_port_get_buffer(this->input_port[i], nb_buffer_frames);
         }
 
         result = true;
 
 #ifdef ENABLE_TEST_MODE
         // Fill buffer with pre-recorded timecode buffer (circular buffer).
-        result = this->fill_input_buf(nb_buffer_frames, buffers);
+        result = this->fill_input_buf(nb_buffer_frames, out_buffers);
 #endif
     }
     else
@@ -265,12 +265,12 @@ Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames,
 }
 
 bool
-Jack_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &buffers)
+Jack_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
 {
     // Get buffers from jack ports.
     for (unsigned short int i = 0; i < this->nb_channels; i++)
     {
-        buffers <<  (float *)jack_port_get_buffer(this->output_port[i], nb_buffer_frames);
+        out_buffers <<  (float *)jack_port_get_buffer(this->output_port[i], nb_buffer_frames);
     }
 
     return true;

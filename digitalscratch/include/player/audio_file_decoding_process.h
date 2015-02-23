@@ -52,14 +52,14 @@ class Audio_file_decoding_process
     unsigned int                decoded_sample_rate;
 
  public:
-    Audio_file_decoding_process(QSharedPointer<Audio_track> &in_at,
-                                bool                         in_do_resample = true);
+    Audio_file_decoding_process(const QSharedPointer<Audio_track> &at,
+                                const bool &do_resample = true);
     virtual ~Audio_file_decoding_process();
 
     void clear();
-    bool run(const QString &in_path,
-             const QString &in_file_hash = "",
-             const QString &in_music_key = "");    // Make decoding of the audio file.
+    bool run(const QString &path,
+             const QString &file_hash = "",
+             const QString &music_key = "");    // Make decoding of the audio file.
 
  private:
     void resample_track();                    // Change sample rate of the audio track.

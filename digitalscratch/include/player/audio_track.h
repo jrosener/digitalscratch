@@ -57,34 +57,34 @@ class Audio_track : public QObject
     QString            music_key_tag;             // The main musical key of the track (get from metadata tag).
 
  public:
-    Audio_track(unsigned int in_sample_rate);       // Does not contains any samples.
-    Audio_track(short unsigned int in_max_minutes,  // Contains the table of decoded audio samples.
-                unsigned int       in_sample_rate);
+    Audio_track(const unsigned int &sample_rate);       // Does not contains any samples.
+    Audio_track(const short unsigned int &max_minutes,  // Contains the table of decoded audio samples.
+                const unsigned int       &sample_rate);
     virtual ~Audio_track();
 
  public:
-    void              reset();                                            // Reset internal track parameters.
-    short signed int *get_samples();                                      // Get a pointer on table of samples.
-    unsigned int      get_end_of_samples();                               // Get index of last used sample.
-    bool              set_end_of_samples(unsigned int in_end_of_samples); // Set index of last used sample.
-    unsigned int      get_max_nb_samples();                               // Get maximum number of samples.
-    unsigned int      get_sample_rate();                                  // Get sample rate.
-    unsigned int      get_security_nb_samples();                          // Get number of samples used for decoding security purpose.
-    unsigned int      get_length();                                       // Get length of the track (msec).
-    QString           get_length_str();                                   // Get length of the track (min:sec:msec).
-    QString           get_name();                                         // Get name of the track.
-    bool              set_name(QString in_name);                          // Set name of the track (basically artist+track).
-    QString           get_path();                                         // Get path of the track.
-    bool              set_fullpath(QString in_fullpath);                  // Set full path of the track.
-    QString           get_filename();                                     // Get name of the file.
-    QString           get_hash();                                         // Get hash of the file.
-    bool              set_hash(QString in_hash);                          // Set hash of the file.
-    QString           get_music_key();                                    // Get music key of the track.
-    bool              set_music_key(QString in_key);                      // Set music key of the track.
-    QString           get_music_key_tag();                                // Get music key of the track (from tag).
-    bool              set_music_key_tag(QString in_key_tag);              // Set music key of the track (from tag).
+    void              reset();                                                // Reset internal track parameters.
+    short signed int *get_samples() const;                                    // Get a pointer on table of samples.
+    unsigned int      get_end_of_samples() const;                             // Get index of last used sample.
+    bool              set_end_of_samples(const unsigned int &end_of_samples); // Set index of last used sample.
+    unsigned int      get_max_nb_samples() const;                             // Get maximum number of samples.
+    unsigned int      get_sample_rate() const;                                // Get sample rate.
+    unsigned int      get_security_nb_samples() const;                        // Get number of samples used for decoding security purpose.
+    unsigned int      get_length() const;                                     // Get length of the track (msec).
+    QString           get_length_str() const;                                 // Get length of the track (min:sec:msec).
+    QString           get_name() const;                                       // Get name of the track.
+    bool              set_name(const QString &name);                          // Set name of the track (basically artist+track).
+    QString           get_path() const;                                       // Get path of the track.
+    bool              set_fullpath(const QString &fullpath);                  // Set full path of the track.
+    QString           get_filename() const;                                   // Get name of the file.
+    QString           get_hash() const;                                       // Get hash of the file.
+    bool              set_hash(const QString &hash);                          // Set hash of the file.
+    QString           get_music_key() const;                                  // Get music key of the track.
+    bool              set_music_key(const QString &key);                      // Set music key of the track.
+    QString           get_music_key_tag() const;                              // Get music key of the track (from tag).
+    bool              set_music_key_tag(const QString &key_tag);              // Set music key of the track (from tag).
 
  signals:
-    void name_changed(QString in_name);
-    void key_changed(QString in_key);
+    void name_changed(const QString &name);
+    void key_changed(const QString &key);
 };

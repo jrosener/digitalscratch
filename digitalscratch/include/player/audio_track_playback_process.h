@@ -60,81 +60,60 @@ class Audio_track_playback_process : public QObject
     unsigned int                          remaining_time;
     QList<unsigned int>                   sampler_current_samples;
     QList<unsigned int>                   sampler_remaining_times;
-    QList<bool>                           sampler_current_states;  // States of sampler (true=play).
+    QList<bool>                           sampler_current_states;         // States of sampler (true=play).
     unsigned short int                    need_update_remaining_time;
-    bool                                  stopped;                 // State (stopped = true) of audio track playback.
+    bool                                  stopped;                        // State (stopped = true) of audio track playback.
     unsigned short int                    nb_samplers;
-    SRC_STATE                            *src_state;               // Libsamplerate internal state.
-    SRC_DATA                             *src_data;                // Libsamplerate internal structure.
+    SRC_STATE                            *src_state;                      // Libsamplerate internal state.
+    SRC_DATA                             *src_data;                       // Libsamplerate internal structure.
     short signed int                      src_int_input_data[SOUND_STRETCH_MAX_BUFFER];
     float                                 src_float_input_data[SOUND_STRETCH_MAX_BUFFER];
     float                                 src_float_output_data[SOUND_STRETCH_MAX_BUFFER];
     short signed int                      src_int_output_data[SOUND_STRETCH_MAX_BUFFER];
 
  public:
-    Audio_track_playback_process(QSharedPointer<Audio_track>         &in_at,
-                                 QList<QSharedPointer<Audio_track>>  &in_at_sampler,
-                                 QSharedPointer<Playback_parameters> &in_param);
+    Audio_track_playback_process(const QSharedPointer<Audio_track>         &at,
+                                 const QList<QSharedPointer<Audio_track>>  &at_sampler,
+                                 const QSharedPointer<Playback_parameters> &param);
 
     virtual ~Audio_track_playback_process();
 
-    bool run(unsigned short int  in_nb_samples,
-             float              *out_samples_1,
-             float              *out_samples_2);  // Prepare set of samples to be played in sound card.
+    bool run(const unsigned short int &nb_samples, float io_samples_1[], float io_samples_2[]);
 
     bool stop();
     bool reset();
-
-    bool reset_sampler(unsigned short int in_sampler_index);
-
-    void del_sampler(unsigned short int in_sampler_index);
-
-    bool jump_to_position(float in_position);
-
-    float    get_cue_point(unsigned short int in_cue_point_number);
-    bool     read_cue_point(unsigned short int in_cue_point_number);
-    bool     store_cue_point(unsigned short int in_cue_point_number);
-    bool     jump_to_cue_point(unsigned short int in_cue_point_number);
-    bool     delete_cue_point(unsigned short int in_cue_point_number);
-    QString  get_cue_point_str(unsigned short int in_cue_point_number);
-
+    bool jump_to_position(const float &position);
     float get_position(); // 0.0 < position < 1.0
 
-    bool get_sampler_state(unsigned short int in_sampler_index);
+    float get_cue_point(const unsigned short int &cue_point_number);
+    bool read_cue_point(const unsigned short int &cue_point_number);
+    bool store_cue_point(const unsigned short int &cue_point_number);
+    bool jump_to_cue_point(const unsigned short int &cue_point_number);
+    bool delete_cue_point(const unsigned short int &cue_point_number);
+    QString get_cue_point_str(const unsigned short int &cue_point_number) const;
 
-    bool set_sampler_state(unsigned short int in_sampler_index,
-                           bool               in_state);
-
-    bool is_sampler_loaded(unsigned short int in_sampler_index);
+    bool reset_sampler(const unsigned short int &sampler_index);
+    void del_sampler(const unsigned short int &sampler_index);
+    bool get_sampler_state(const unsigned short int &sampler_index);
+    bool set_sampler_state(const unsigned short int &sampler_index, const bool &state);
+    bool is_sampler_loaded(const unsigned short int &sampler_index);
 
  private:
-    bool play_empty(unsigned short int   in_nb_samples,
-                    float              **out_samples);
-
-    bool play_audio_track(unsigned short int   in_nb_samples,
-                          float              **out_samples);
-
-    bool play_sampler(unsigned short int   in_nb_samples,
-                      float              **out_samples);
+    bool play_empty(const unsigned short int &nb_samples, QVector<float*> &io_samples);
+    bool play_audio_track(const unsigned short int &nb_samples, QVector<float*> &io_samples);
+    bool play_sampler(const unsigned short int &nb_samples, QVector<float*> &io_samples);
+    bool play_data_with_playback_parameters(const unsigned short int &nb_samples, QVector<float*> &io_samples);
+    bool change_volume(float io_samples[], const unsigned short int &size);
 
     bool update_remaining_time();
+    bool update_sampler_remaining_time(const unsigned short int &sampler_index);
 
-    bool update_sampler_remaining_time(unsigned short int in_sampler_index);
-
-    bool play_data_with_playback_parameters(unsigned short int   in_nb_samples,
-                                            float              **out_samples);
-
-    bool change_volume(float              *in_buffer,
-                       unsigned short int  in_size);
-
-    float sample_index_to_float(unsigned int in_sample_index);
-
-    unsigned int sample_index_to_msec(unsigned int in_sample_index);
-
-    unsigned int msec_to_sample_index(unsigned int in_position_msec);
+    float sample_index_to_float(const unsigned int &sample_index);
+    unsigned int sample_index_to_msec(const unsigned int &sample_index);
+    unsigned int msec_to_sample_index(const unsigned int &position_msec);
 
  signals:
-    void remaining_time_changed(unsigned int in_remaining_time);
-    void sampler_remaining_time_changed(unsigned int in_remaining_time, int in_sampler_index);
-    void sampler_state_changed(int in_sampler_index, bool in_state);
+    void remaining_time_changed(const unsigned int &remaining_time);
+    void sampler_remaining_time_changed(const unsigned int &remaining_time, const int &sampler_index);
+    void sampler_state_changed(const int &sampler_index, const bool &state);
 };

@@ -118,7 +118,7 @@ Audio_device_access_rules::stop()
 }
 
 bool
-Audio_device_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
+Audio_device_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers) const
 {
     bool result;
 
@@ -139,7 +139,7 @@ Audio_device_access_rules::get_input_buffers(const unsigned short int &nb_buffer
 }
 
 bool
-Audio_device_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
+Audio_device_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers) const
 {
     // TODO
     Q_UNUSED(nb_buffer_frames);

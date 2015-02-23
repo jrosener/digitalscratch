@@ -189,14 +189,14 @@ bool Data_persistence::rollback_transaction()
     return this->db.rollback();
 }
 
-bool Data_persistence::store_audio_track(QSharedPointer<Audio_track> &in_at)
+bool Data_persistence::store_audio_track(const QSharedPointer<Audio_track> &at)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-       (in_at->get_hash().size() == 0))
+    if ((at.data() == nullptr) ||
+       (at->get_hash().size() == 0))
     {
         result = false;
     }
@@ -209,7 +209,7 @@ bool Data_persistence::store_audio_track(QSharedPointer<Audio_track> &in_at)
         this->mutex.lock();
 
         // Try to get audio track from Db.
-        QSqlQuery query = this->db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -218,18 +218,18 @@ bool Data_persistence::store_audio_track(QSharedPointer<Audio_track> &in_at)
         else if (query.next() == true) // Check if there is a record.
         {
             // An audio track with same hash already exists, update it if at least one element changed.
-            if ((query.value(1) != in_at->get_path()) ||
-                (query.value(2) != in_at->get_filename()) ||
-                (query.value(3) != in_at->get_music_key()) ||
-                (query.value(4) != in_at->get_music_key_tag()))
+            if ((query.value(1) != at->get_path()) ||
+                (query.value(2) != at->get_filename()) ||
+                (query.value(3) != at->get_music_key()) ||
+                (query.value(4) != at->get_music_key_tag()))
             {
                 int existing_id = query.value(0).toInt();
                 query.prepare("UPDATE TRACK SET path = :path, filename = :filename, key = :key, key_tag = :key_tag "
                               "WHERE id_track = :id_track");
-                query.bindValue(":path",     in_at->get_path());
-                query.bindValue(":filename", in_at->get_filename());
-                query.bindValue(":key",      in_at->get_music_key());
-                query.bindValue(":key_tag",  in_at->get_music_key_tag());
+                query.bindValue(":path",     at->get_path());
+                query.bindValue(":filename", at->get_filename());
+                query.bindValue(":key",      at->get_music_key());
+                query.bindValue(":key_tag",  at->get_music_key_tag());
                 query.bindValue(":id_track", QString::number(existing_id));
                 query.exec();
 
@@ -245,11 +245,11 @@ bool Data_persistence::store_audio_track(QSharedPointer<Audio_track> &in_at)
             // No existing audio track found, insert it in DB.
             query.prepare("INSERT INTO TRACK (hash, path, filename, key, key_tag) "
                           "VALUES (:hash, :path, :filename, :key, :key_tag)");
-            query.bindValue(":hash",     in_at->get_hash());
-            query.bindValue(":path",     in_at->get_path());
-            query.bindValue(":filename", in_at->get_filename());
-            query.bindValue(":key",      in_at->get_music_key());
-            query.bindValue(":key_tag",  in_at->get_music_key_tag());
+            query.bindValue(":hash",     at->get_hash());
+            query.bindValue(":path",     at->get_path());
+            query.bindValue(":filename", at->get_filename());
+            query.bindValue(":key",      at->get_music_key());
+            query.bindValue(":key_tag",  at->get_music_key_tag());
             query.exec();
 
             if (query.lastError().isValid())
@@ -318,18 +318,18 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
     return result;
 }
 
-bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
-                                       unsigned int                 in_number,
-                                       unsigned int                 in_position_msec)
+bool Data_persistence::store_cue_point(const QSharedPointer<Audio_track> &at,
+                                       const unsigned int                &number,
+                                       const unsigned int                &position_msec)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-        (in_at->get_hash().size() == 0) ||
-        (in_number >= MAX_NB_CUE_POINTS) ||
-        (in_position_msec > in_at->get_length()))
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0) ||
+        (number >= MAX_NB_CUE_POINTS) ||
+        (position_msec > at->get_length()))
     {
         result = false;
     }
@@ -339,7 +339,7 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
         (this->is_initialized == true))
     {
         // Create audio track if not already in DB.
-        if (this->store_audio_track(in_at) == false)
+        if (this->store_audio_track(at) == false)
         {
             result = false;
         }
@@ -349,7 +349,7 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
             this->mutex.lock();
 
             // Get audio track id from Db.
-            QSqlQuery query_at = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+            QSqlQuery query_at = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
             if (query_at.lastError().isValid())
             {
                 qCWarning(DS_DB) << "SELECT track failed: " << query_at.lastError().text();
@@ -359,7 +359,7 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
             {
                 // Audio track found, search for the cue point.
                 QSqlQuery query_cuepoint = this->db.exec(
-                          "SELECT id_cuepoint, position FROM TRACK_CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
+                          "SELECT id_cuepoint, position FROM TRACK_CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(number) + "\"");
                 if (query_cuepoint.lastError().isValid())
                 {
                     qCWarning(DS_DB) << "SELECT cue_point failed: " << query_cuepoint.lastError().text();
@@ -368,11 +368,11 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
                 else if (query_cuepoint.next() == true) // Check if there is a record.
                 {
                     // The cue point already exists, update it if the position changed.
-                    if (query_cuepoint.value(1) != in_position_msec)
+                    if (query_cuepoint.value(1) != position_msec)
                     {
                         int id_cuepoint = query_cuepoint.value(0).toInt();
                         query_cuepoint.prepare("UPDATE TRACK_CUE_POINT SET position = :position WHERE id_cuepoint = :id_cuepoint");
-                        query_cuepoint.bindValue(":position", in_position_msec);
+                        query_cuepoint.bindValue(":position", position_msec);
                         query_cuepoint.bindValue(":id_cuepoint", id_cuepoint);
                         query_cuepoint.exec();
 
@@ -389,8 +389,8 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
                     query_cuepoint.prepare("INSERT INTO TRACK_CUE_POINT (id_track, number, position) "
                                   "VALUES (:id_track, :number, :position)");
                     query_cuepoint.bindValue(":id_track", query_at.value(0));
-                    query_cuepoint.bindValue(":number",   in_number);
-                    query_cuepoint.bindValue(":position", in_position_msec);
+                    query_cuepoint.bindValue(":number",   number);
+                    query_cuepoint.bindValue(":position", position_msec);
                     query_cuepoint.exec();
 
                     if (query_cuepoint.lastError().isValid())
@@ -415,17 +415,17 @@ bool Data_persistence::store_cue_point(QSharedPointer<Audio_track> &in_at,
     return result;
 }
 
-bool Data_persistence::get_cue_point(QSharedPointer<Audio_track> &in_at,
-                                     unsigned int                 in_number,
-                                     unsigned int                &out_position_msec)
+bool Data_persistence::get_cue_point(const QSharedPointer<Audio_track> &at,
+                                     const unsigned int                &number,
+                                     unsigned int                      &out_position_msec)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-        (in_at->get_hash().size() == 0) ||
-        (in_number >= MAX_NB_CUE_POINTS))
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0) ||
+        (number >= MAX_NB_CUE_POINTS))
     {
         qCWarning(DS_DB) << "can not get cue point: wrong params.";
         result = false;
@@ -438,7 +438,7 @@ bool Data_persistence::get_cue_point(QSharedPointer<Audio_track> &in_at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -448,7 +448,7 @@ bool Data_persistence::get_cue_point(QSharedPointer<Audio_track> &in_at,
         {
             // The audio track exists, look for the specified cue point.
             QSqlQuery query_cue_point = this->db.exec(
-                        "SELECT position FROM TRACK_CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
+                        "SELECT position FROM TRACK_CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(number) + "\"");
             if (query_cue_point.lastError().isValid())
             {
                 qCWarning(DS_DB) << "SELECT cue point failed: " << query_cue_point.lastError().text();
@@ -478,16 +478,16 @@ bool Data_persistence::get_cue_point(QSharedPointer<Audio_track> &in_at,
     return result;
 }
 
-bool Data_persistence::delete_cue_point(QSharedPointer<Audio_track> &in_at,
-                                        unsigned int                 in_number)
+bool Data_persistence::delete_cue_point(const QSharedPointer<Audio_track> &at,
+                                        const unsigned int                &number)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-        (in_at->get_hash().size() == 0) ||
-        (in_number >= MAX_NB_CUE_POINTS))
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0) ||
+        (number >= MAX_NB_CUE_POINTS))
     {
         qCWarning(DS_DB) << "can not delete cue point: wrong params.";
         result = false;
@@ -500,7 +500,7 @@ bool Data_persistence::delete_cue_point(QSharedPointer<Audio_track> &in_at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             // Can not select audio track in DB.
@@ -511,7 +511,7 @@ bool Data_persistence::delete_cue_point(QSharedPointer<Audio_track> &in_at,
         {
             // The audio track exists, look for the specified cue point.
             QSqlQuery query_cue_point = this->db.exec(
-                        "DELETE FROM TRACK_CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(in_number) + "\"");
+                        "DELETE FROM TRACK_CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(number) + "\"");
             if (query_cue_point.lastError().isValid())
             {
                 // Can not delete cue point.
@@ -532,13 +532,13 @@ bool Data_persistence::delete_cue_point(QSharedPointer<Audio_track> &in_at,
     return result;
 }
 
-bool Data_persistence::store_tag(const QString &in_name)
+bool Data_persistence::store_tag(const QString &name)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if (in_name == "")
+    if (name == "")
     {
         result = false;
         qCWarning(DS_DB) << "Can not store an empty tag";
@@ -552,7 +552,7 @@ bool Data_persistence::store_tag(const QString &in_name)
         this->mutex.lock();
 
         // Try to get tag from Db.
-        QSqlQuery query = this->db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + in_name + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + name + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT tag failed: " << query.lastError().text();
@@ -563,7 +563,7 @@ bool Data_persistence::store_tag(const QString &in_name)
             // Tag not found, add it.
             query.prepare("INSERT INTO TAG (name) "
                           "VALUES (:name)");
-            query.bindValue(":name", in_name);
+            query.bindValue(":name", name);
             query.exec();
 
             if (query.lastError().isValid())
@@ -585,14 +585,14 @@ bool Data_persistence::store_tag(const QString &in_name)
     return result;
 }
 
-bool Data_persistence::rename_tag(const QString &in_old_name, const QString &in_new_name)
+bool Data_persistence::rename_tag(const QString &old_name, const QString &new_name)
 {
     // Init result.
     bool result = true;
 
     // Check input parameters.
-    if ((in_old_name == "") ||
-        (in_new_name == ""))
+    if ((old_name == "") ||
+        (new_name == ""))
     {
         result = false;
         qCWarning(DS_DB) << "Can rename an empty tag";
@@ -606,7 +606,7 @@ bool Data_persistence::rename_tag(const QString &in_old_name, const QString &in_
         this->mutex.lock();
 
         // Try to get tag from Db.
-        QSqlQuery query = this->db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + in_old_name + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + old_name + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT tag failed: " << query.lastError().text();
@@ -618,7 +618,7 @@ bool Data_persistence::rename_tag(const QString &in_old_name, const QString &in_
             int existing_id = query.value(0).toInt();
             query.prepare("UPDATE TAG SET name = :name "
                           "WHERE id_tag = :id_tag");
-            query.bindValue(":name", in_new_name);
+            query.bindValue(":name", new_name);
             query.bindValue(":id_tag", QString::number(existing_id));
             query.exec();
 
@@ -632,7 +632,7 @@ bool Data_persistence::rename_tag(const QString &in_old_name, const QString &in_
         {
             // Tag not found, error.
             result = false;
-            qCWarning(DS_DB) << "can not found the tag " << in_old_name;
+            qCWarning(DS_DB) << "can not found the tag " << old_name;
         }
 
         // Release the DB connection.
@@ -647,13 +647,13 @@ bool Data_persistence::rename_tag(const QString &in_old_name, const QString &in_
     return result;
 }
 
-bool Data_persistence::delete_tag(const QString &in_name)
+bool Data_persistence::delete_tag(const QString &name)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if (in_name == "")
+    if (name == "")
     {
         qCWarning(DS_DB) << "can not delete tag: empty tag name.";
         result = false;
@@ -666,7 +666,7 @@ bool Data_persistence::delete_tag(const QString &in_name)
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_tag FROM TAG WHERE name=\"" + in_name + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_tag FROM TAG WHERE name=\"" + name + "\"");
         if (query.lastError().isValid())
         {
             // Can not select tag in DB.
@@ -744,16 +744,16 @@ bool Data_persistence::get_full_tag_list(QStringList &out_tags)
     return result;
 }
 
-bool Data_persistence::add_tag_to_track(QSharedPointer<Audio_track> &in_at,
-                                        const QString               &in_tag_name)
+bool Data_persistence::add_tag_to_track(const QSharedPointer<Audio_track> &at,
+                                        const QString                     &tag_name)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-        (in_at->get_hash().size() == 0) ||
-        (in_tag_name == ""))
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0) ||
+        (tag_name == ""))
     {
         qCWarning(DS_DB) << "can not add tag to track: wrong params.";
         result = false;
@@ -766,7 +766,7 @@ bool Data_persistence::add_tag_to_track(QSharedPointer<Audio_track> &in_at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + in_at->get_hash() + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -775,7 +775,7 @@ bool Data_persistence::add_tag_to_track(QSharedPointer<Audio_track> &in_at,
         else if (query.next() == true) // Check if there is a record.
         {
             // The audio track exists, let's search the tag.
-            QSqlQuery query_tag = this->db.exec("SELECT id_tag FROM TAG WHERE name=\"" + in_tag_name + "\"");
+            QSqlQuery query_tag = this->db.exec("SELECT id_tag FROM TAG WHERE name=\"" + tag_name + "\"");
             if (query_tag.lastError().isValid())
             {
                 qCWarning(DS_DB) << "SELECT tag failed: " << query_tag.lastError().text();
@@ -809,15 +809,15 @@ bool Data_persistence::add_tag_to_track(QSharedPointer<Audio_track> &in_at,
     return result;
 }
 
-bool Data_persistence::store_track_tag(const QString &in_id_track,
-                                       const QString &in_id_tag)
+bool Data_persistence::store_track_tag(const QString &id_track,
+                                       const QString &id_tag)
 {
     // Init result.
     bool result = true;
     
     // Check input parameter.
-    if ((in_id_track == "") ||
-        (in_id_tag   == ""))
+    if ((id_track == "") ||
+        (id_tag   == ""))
     {
         result = false;
         qCWarning(DS_DB) << "Bad input ids";
@@ -828,7 +828,7 @@ bool Data_persistence::store_track_tag(const QString &in_id_track,
         (this->is_initialized == true))
     {
         // Try to get tag/track association  from Db.
-        QSqlQuery query = this->db.exec("SELECT id_track, id_tag FROM TRACK_TAG WHERE id_track=\"" + in_id_track + "\" AND id_tag=\"" + in_id_tag + "\"");
+        QSqlQuery query = this->db.exec("SELECT id_track, id_tag FROM TRACK_TAG WHERE id_track=\"" + id_track + "\" AND id_tag=\"" + id_tag + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track/tag failed: " << query.lastError().text();
@@ -838,8 +838,8 @@ bool Data_persistence::store_track_tag(const QString &in_id_track,
         {
             // Track/tag not found, add it.
             query.prepare("INSERT INTO TRACK_TAG (id_track, id_tag) VALUES (:id_track, :id_tag)");
-            query.bindValue(":id_track", in_id_track);
-            query.bindValue(":id_tag", in_id_tag);
+            query.bindValue(":id_track", id_track);
+            query.bindValue(":id_tag", id_tag);
             query.exec();
 
             if (query.lastError().isValid())
@@ -858,15 +858,15 @@ bool Data_persistence::store_track_tag(const QString &in_id_track,
     return result;
 }
 
-bool Data_persistence::get_tags_from_track(QSharedPointer<Audio_track> &in_at,
-                                           QStringList                 &out_tags)
+bool Data_persistence::get_tags_from_track(const QSharedPointer<Audio_track> &at,
+                                           QStringList                       &out_tags)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-        (in_at->get_hash().size() == 0))
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0))
     {
         qCWarning(DS_DB) << "can not get tags from track: wrong params.";
         result = false;
@@ -884,7 +884,7 @@ bool Data_persistence::get_tags_from_track(QSharedPointer<Audio_track> &in_at,
                                         "ON TAG.id_tag=TRACK_TAG.id_tag "
                                         "JOIN TRACK "
                                         "ON TRACK_TAG.id_track=TRACK.id_track "
-                                        "WHERE TRACK.hash=\"" + in_at->get_hash() + "\"");
+                                        "WHERE TRACK.hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             // Can not select tag list in DB.
@@ -908,16 +908,16 @@ bool Data_persistence::get_tags_from_track(QSharedPointer<Audio_track> &in_at,
 }
 
 
-bool Data_persistence::rem_tag_from_track(QSharedPointer<Audio_track> &in_at,
-                                          const QString               &in_tag_name)
+bool Data_persistence::rem_tag_from_track(const QSharedPointer<Audio_track> &at,
+                                          const QString                     &tag_name)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((in_at.data() == nullptr) ||
-        (in_at->get_hash().size() == 0) ||
-        (in_tag_name == ""))
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0) ||
+        (tag_name == ""))
     {
         qCWarning(DS_DB) << "can not delete tag from track: wrong params.";
         result = false;
@@ -937,7 +937,7 @@ bool Data_persistence::rem_tag_from_track(QSharedPointer<Audio_track> &in_at,
                                         "ON TRACK_TAG.id_tag=TAG.id_tag "
                                         "JOIN TRACK "
                                         "ON TRACK_TAG.id_track=TRACK.id_track "
-                                        "WHERE TRACK.hash=\"" + in_at->get_hash() + "\" AND TAG.name=\"" + in_tag_name + "\")");
+                                        "WHERE TRACK.hash=\"" + at->get_hash() + "\" AND TAG.name=\"" + tag_name + "\")");
         if (query.lastError().isValid())
         {
             // Can not delete tag in DB.

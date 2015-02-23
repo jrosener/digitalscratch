@@ -56,17 +56,17 @@ extern "C"
 
 #include "audio_file_decoding_process.h"
 
-Audio_file_decoding_process::Audio_file_decoding_process(QSharedPointer<Audio_track> &in_at,
-                                                         bool                         in_do_resample)
+Audio_file_decoding_process::Audio_file_decoding_process(const QSharedPointer<Audio_track> &at,
+                                                         const bool &do_resample)
 {
-    if (in_at.data() == nullptr)
+    if (at.data() == nullptr)
     {
         qCCritical(DS_FILE) << "audio track is null";
     }
     else
     {
-        this->at = in_at;
-        this->do_resample = in_do_resample;
+        this->at = at;
+        this->do_resample = do_resample;
         this->decoded_sample_rate = this->at->get_sample_rate();
 
         // Some libav decoder init.
@@ -89,22 +89,15 @@ Audio_file_decoding_process::clear()
 }
 
 bool
-Audio_file_decoding_process::run(const QString &in_path,
-                                 const QString &in_file_hash,
-                                 const QString &in_music_key)
+Audio_file_decoding_process::run(const QString &path,
+                                 const QString &file_hash,
+                                 const QString &music_key)
 {
-    // Check if path is defined.
-    if (in_path == nullptr)
-    {
-        qCWarning(DS_FILE) << "file path is null";
-        return false;
-    }
-
     // Check if file exists.
-    this->file.setFileName(in_path);
+    this->file.setFileName(path);
     if (this->file.exists() == false)
     {
-        qCWarning(DS_FILE) << "file" << in_path << "does not exists";
+        qCWarning(DS_FILE) << "file" << path << "does not exists";
         return false;
     }
 
@@ -112,7 +105,7 @@ Audio_file_decoding_process::run(const QString &in_path,
     this->at->reset();
     if (this->decode() == false)
     {
-        qCWarning(DS_FILE) << "can not decode" << in_path;
+        qCWarning(DS_FILE) << "can not decode" << path;
         return false;
     }
 
@@ -124,10 +117,10 @@ Audio_file_decoding_process::run(const QString &in_path,
     this->at->set_fullpath(file_info.absoluteFilePath());
 
     // Set also the music key.
-    this->at->set_music_key(in_music_key);
+    this->at->set_music_key(music_key);
 
     // Set file hash.
-    this->at->set_hash(in_file_hash);
+    this->at->set_hash(file_hash);
 
     return true;
 }
@@ -138,29 +131,29 @@ Audio_file_decoding_process::resample_track()
     if ((this->do_resample == true) && (at->get_sample_rate() != this->decoded_sample_rate))
     {
         // Copy decoded samples in a temp buffer.
-        unsigned int in_nb_samples = at->get_end_of_samples();
-        float *in_samples = new float[in_nb_samples];
-        src_short_to_float_array(at->get_samples(), in_samples, in_nb_samples);
+        unsigned int input_nb_samples = at->get_end_of_samples();
+        float *input_samples = new float[input_nb_samples];
+        src_short_to_float_array(at->get_samples(), input_samples, input_nb_samples);
 
         // Resample temp buffer.
-        int   out_nb_samples = (at->get_end_of_samples() * (float)at->get_sample_rate() / (float)this->decoded_sample_rate) + 2;
-        float *out_samples = new float[out_nb_samples];
+        int   output_nb_samples = (at->get_end_of_samples() * (float)at->get_sample_rate() / (float)this->decoded_sample_rate) + 2;
+        float *output_samples = new float[output_nb_samples];
         SRC_DATA src_data;
-        src_data.data_in       = in_samples;
-        src_data.data_out      = out_samples;
+        src_data.data_in       = input_samples;
+        src_data.data_out      = output_samples;
         src_data.end_of_input  = 0;
-        src_data.input_frames  = in_nb_samples / 2;
-        src_data.output_frames = out_nb_samples / 2;
+        src_data.input_frames  = input_nb_samples / 2;
+        src_data.output_frames = output_nb_samples / 2;
         src_data.src_ratio     = (float)at->get_sample_rate() / (float)this->decoded_sample_rate;
         src_simple(&src_data, SRC_LINEAR, 2);
 
         // Copy resampled sampler back to original table of samples.
-        src_float_to_short_array(out_samples, at->get_samples(), src_data.output_frames_gen * 2);
+        src_float_to_short_array(output_samples, at->get_samples(), src_data.output_frames_gen * 2);
         at->set_end_of_samples(src_data.output_frames_gen * 2);
 
         // Cleanup.
-        delete [] in_samples;
-        delete [] out_samples;
+        delete [] input_samples;
+        delete [] output_samples;
     }
 
     return;

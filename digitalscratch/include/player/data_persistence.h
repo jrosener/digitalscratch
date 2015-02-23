@@ -62,34 +62,34 @@ class Data_persistence : public QObject
     bool commit_transaction();
     bool rollback_transaction();
 
-    bool store_audio_track(QSharedPointer<Audio_track> &in_at);        // Insert (or update if exists) an audio track in DB.
-    bool get_audio_track(QSharedPointer<Audio_track>   &io_at);        // Get and fill the audio track specified by io_at->get_hash().
+    bool store_audio_track(const QSharedPointer<Audio_track> &at);        // Insert (or update if exists) an audio track in DB.
+    bool get_audio_track(QSharedPointer<Audio_track> &io_at);             // Get and fill the audio track specified by io_at->get_hash().
 
-    bool store_cue_point(QSharedPointer<Audio_track>   &in_at,         // Insert (or update) a cue point in DB.
-                         unsigned int                   in_number,
-                         unsigned int                   in_position_msec);
-    bool get_cue_point(QSharedPointer<Audio_track>     &in_at,         // Get the in_number cue point of an audio track.
-                       unsigned int                     in_number,
-                       unsigned int                    &out_position_msec);
-    bool delete_cue_point(QSharedPointer<Audio_track>  &in_at,         // Delete the in_number cue point of an audio track.
-                          unsigned int                  in_number);
+    bool store_cue_point(const QSharedPointer<Audio_track>   &at,         // Insert (or update) a cue point in DB.
+                         const unsigned int                  &number,
+                         const unsigned int                  &position_msec);
+    bool get_cue_point(const QSharedPointer<Audio_track>     &at,         // Get the in_number cue point of an audio track.
+                       const unsigned int                    &number,
+                       unsigned int                          &out_position_msec);
+    bool delete_cue_point(const QSharedPointer<Audio_track>  &at,         // Delete the in_number cue point of an audio track.
+                          const unsigned int                 &number);
 
-    bool store_tag(const QString &in_name);                             // Insert a new tag.
-    bool rename_tag(const QString &in_old_name,                         // Rename a tag.
-                    const QString &in_new_name);
-    bool delete_tag(const QString &in_name);                            // Delete a tag (and remove it from all tracks).
+    bool store_tag(const QString &name);                             // Insert a new tag.
+    bool rename_tag(const QString &old_name,                         // Rename a tag.
+                    const QString &new_name);
+    bool delete_tag(const QString &name);                            // Delete a tag (and remove it from all tracks).
     bool get_full_tag_list(QStringList &out_tags);                      // Get a list of existing tags.
 
-    bool add_tag_to_track(QSharedPointer<Audio_track> &in_at,           // Associate a tag to a track.
-                          const QString               &in_tag_name);
-    bool rem_tag_from_track(QSharedPointer<Audio_track> &in_at,         // Delete association between a track and a tag.
-                            const QString               &in_tag_name);
-    bool get_tags_from_track(QSharedPointer<Audio_track> &in_at,        // Get the list of tags for the specified track.
-                             QStringList                 &out_tags);
+    bool add_tag_to_track(const QSharedPointer<Audio_track> &at,           // Associate a tag to a track.
+                          const QString                     &tag_name);
+    bool rem_tag_from_track(const QSharedPointer<Audio_track> &at,         // Delete association between a track and a tag.
+                            const QString                     &tag_name);
+    bool get_tags_from_track(const QSharedPointer<Audio_track> &at,        // Get the list of tags for the specified track.
+                             QStringList                       &out_tags);
 
  private:
     bool init_db();
     bool create_db_structure();
-    bool store_track_tag(const QString &in_id_track,
-                         const QString &in_id_tag);
+    bool store_track_tag(const QString &id_track,
+                         const QString &id_tag);
 };

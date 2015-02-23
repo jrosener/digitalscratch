@@ -36,15 +36,15 @@
 #include "audio_track.h"
 #include "utils.h"
 
-Audio_track_key_process::Audio_track_key_process(QSharedPointer<Audio_track> &in_at)
+Audio_track_key_process::Audio_track_key_process(const QSharedPointer<Audio_track> &at)
 {
-    if (in_at.data() == nullptr)
+    if (at.data() == nullptr)
     {
         qCWarning(DS_MUSICKEY) << "audio track is null";
     }
     else
     {
-        this->at = in_at;
+        this->at = at;
     }
 
     return;
