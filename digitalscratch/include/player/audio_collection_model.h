@@ -121,7 +121,7 @@ class Audio_collection_model : public QAbstractItemModel
 
     QModelIndex   set_root_path(QString in_root_path);
     QString       get_root_path();
-    QModelIndex   set_playlist(Playlist *in_playlist);
+    QModelIndex   set_playlist(const Playlist &playlist);
     QModelIndex   get_root_index();
 
     QVariant      data(const QModelIndex &in_index, int in_role) const;

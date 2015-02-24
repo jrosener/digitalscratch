@@ -57,24 +57,24 @@ class Playback_parameters : public QObject
     virtual ~Playback_parameters();
 
  public:
-    bool  set_speed(float in_speed);
-    float get_speed();
-    bool  inc_speed(float in_speed);
-    bool  set_new_speed(bool in_new);
-    bool  is_new_speed();
+    bool  set_speed(const float &speed);
+    float get_speed() const;
+    bool  inc_speed(const float &speed);
+    bool  set_speed_state(const bool &is_new);
+    bool  is_new_speed() const;
 
-    bool  set_volume(float in_volume);
-    float get_volume();
-    bool  set_new_volume(bool in_new);
-    bool  is_new_volume();
+    bool  set_volume(const float &volume);
+    float get_volume() const;
+    bool  set_volume_state(const bool &is_new);
+    bool  is_new_volume() const;
 
-    bool  set_new_data(bool in_new_data);
-    bool  get_new_data();
+    bool  set_data_state(const bool &are_new);
+    bool  are_new_data() const;
 
  private:
     bool reset();
 
  signals:
-    void speed_changed(float in_speed);        // Speed.
-    void volume_changed(double in_volume);     // Volume.
+    void speed_changed(const float &speed);
+    void volume_changed(const double &volume);
 };

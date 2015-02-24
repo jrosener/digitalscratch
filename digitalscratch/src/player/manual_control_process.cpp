@@ -37,9 +37,9 @@
 #include "manual_control_process.h"
 #include "application_logging.h"
 
-Manual_control_process::Manual_control_process(QSharedPointer<Playback_parameters> &in_param)
+Manual_control_process::Manual_control_process(const QSharedPointer<Playback_parameters> &param)
 {
-    this->params = in_param;
+    this->params = param;
     this->speed  = 1.0;
 
     return;
@@ -53,18 +53,18 @@ Manual_control_process::~Manual_control_process()
 bool
 Manual_control_process::run()
 {
-    this->params->set_new_data(true);
+    this->params->set_data_state(true);
 
     this->params->set_volume(1.0); // TODO calculate volume based on speed.
-    this->params->set_new_volume(true);
+    this->params->set_volume_state(true);
 
     return true;
 }
 
 void
-Manual_control_process::inc_speed(float in_speed_inc)
+Manual_control_process::inc_speed(const float &speed_inc)
 {
-    this->params->set_speed(this->params->get_speed() + in_speed_inc);
+    this->params->set_speed(this->params->get_speed() + speed_inc);
 }
 
 void

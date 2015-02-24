@@ -56,11 +56,11 @@ Playback_parameters::reset()
 }
 
 bool
-Playback_parameters::set_speed(float in_speed)
+Playback_parameters::set_speed(const float &speed)
 {
-    if (in_speed != this->speed)
+    if (speed != this->speed)
     {
-        this->speed = in_speed;
+        this->speed = speed;
         emit speed_changed(this->speed);
     }
 
@@ -68,42 +68,42 @@ Playback_parameters::set_speed(float in_speed)
 }
 
 float
-Playback_parameters::get_speed()
+Playback_parameters::get_speed() const
 {
     return this->speed;
 }
 
 bool
-Playback_parameters::inc_speed(float in_speed)
+Playback_parameters::inc_speed(const float &speed)
 {
-    if (in_speed != 0.0)
+    if (speed != 0.0)
     {
-        this->set_speed(this->speed + in_speed);
+        this->set_speed(this->speed + speed);
     }
 
     return true;
 }
 
 bool
-Playback_parameters::set_new_speed(bool in_new)
+Playback_parameters::set_speed_state(const bool &is_new)
 {
-    this->new_speed = in_new;
+    this->new_speed = is_new;
 
     return true;
 }
 
 bool
-Playback_parameters::is_new_speed()
+Playback_parameters::is_new_speed() const
 {
     return this->new_speed;
 }
 
 bool
-Playback_parameters::set_volume(float in_volume)
+Playback_parameters::set_volume(const float &volume)
 {
-    if (in_volume != this->volume)
+    if (volume != this->volume)
     {
-        this->volume = in_volume;
+        this->volume = volume;
         emit volume_changed((double)(floorf((this->volume * 100.0) * 10.0) / 10.0));
     }
 
@@ -111,31 +111,31 @@ Playback_parameters::set_volume(float in_volume)
 }
 
 float
-Playback_parameters::get_volume()
+Playback_parameters::get_volume() const
 {
     return this->volume;
 }
 
 bool
-Playback_parameters::set_new_volume(bool in_new)
+Playback_parameters::set_volume_state(const bool &is_new)
 {
-    this->new_volume = in_new;
+    this->new_volume = is_new;
 
     return true;
 }
 
 bool
-Playback_parameters::is_new_volume()
+Playback_parameters::is_new_volume() const
 {
     return this->new_volume;
 }
 
 bool
-Playback_parameters::set_new_data(bool in_new_data)
+Playback_parameters::set_data_state(const bool &are_new)
 {
-    this->new_data = in_new_data;
+    this->new_data = are_new;
 
-    if (in_new_data == false)
+    if (are_new == false)
     {
         this->new_speed  = false;
         this->new_volume = false;
@@ -145,7 +145,7 @@ Playback_parameters::set_new_data(bool in_new_data)
 }
 
 bool
-Playback_parameters::get_new_data()
+Playback_parameters::are_new_data() const
 {
     return this->new_data;
 }

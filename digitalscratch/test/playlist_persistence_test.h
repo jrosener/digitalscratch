@@ -7,10 +7,6 @@ class Playlist_persistence_Test : public QObject
 {
     Q_OBJECT
 
- private:
-    Playlist             *playlist;
-    Playlist_persistence *playlist_persist;
-
  public:
     Playlist_persistence_Test();
 

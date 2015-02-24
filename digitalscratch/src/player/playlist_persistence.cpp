@@ -54,24 +54,20 @@ Playlist_persistence::~Playlist_persistence()
     return;
 }
 
-bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist)
+bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playlist)
 {
     // Check parameters.
-    if (io_playlist == nullptr)
-    {
-        return false;
-    }
-    if (QFile::exists(in_file_name) == false)
+    if (QFile::exists(file_name) == false)
     {
         return false;
     }
 
     // Get path of playlist file.
-    QFileInfo file_info(in_file_name);
+    QFileInfo file_info(file_name);
     QString   path(file_info.absolutePath());
 
     // Populate list of audio track.
-    QFile file(in_file_name);
+    QFile file(file_name);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
     {
         // Set current path to the one from the playlist file. Needed for relative track file path.
@@ -93,7 +89,7 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
-                    io_playlist->add_track(line_info.absoluteFilePath());
+                    io_playlist.add_track(line_info.absoluteFilePath());
                 }
                 else
                 {
@@ -106,7 +102,7 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
                         if (uri_info.exists() == true)
                         {
                             // Add track path to playlist object.
-                            io_playlist->add_track(uri_info.absoluteFilePath());
+                            io_playlist.add_track(uri_info.absoluteFilePath());
                         }
                     }
                 }
@@ -121,24 +117,20 @@ bool Playlist_persistence::read_m3u(QString in_file_name, Playlist *&io_playlist
     return true;
 }
 
-bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist)
+bool Playlist_persistence::read_pls(const QString &file_name, Playlist &io_playlist)
 {
     // Check parameters.
-    if (io_playlist == nullptr)
-    {
-        return false;
-    }
-    if (QFile::exists(in_file_name) == false)
+    if (QFile::exists(file_name) == false)
     {
         return false;
     }
 
     // Get path of playlist file.
-    QFileInfo file_info(in_file_name);
+    QFileInfo file_info(file_name);
     QString   path(file_info.absolutePath());
 
     // Populate list of audio track.
-    QFile file(in_file_name);
+    QFile file(file_name);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
     {
         // Set current path to the one from the playlist file. Needed for relative track file path.
@@ -162,7 +154,7 @@ bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
-                    io_playlist->add_track(line_info.absoluteFilePath());
+                    io_playlist.add_track(line_info.absoluteFilePath());
                 }
                 else
                 {
@@ -175,7 +167,7 @@ bool Playlist_persistence::read_pls(QString in_file_name, Playlist *&io_playlist
                         if (uri_info.exists() == true)
                         {
                             // Add track path to playlist object.
-                            io_playlist->add_track(uri_info.absoluteFilePath());
+                            io_playlist.add_track(uri_info.absoluteFilePath());
                         }
                     }
                 }

@@ -45,6 +45,6 @@ class Playlist_persistence : public QObject
     virtual ~Playlist_persistence();
 
   public:
-    bool read_m3u(QString in_file_name, Playlist *&io_playlist);
-    bool read_pls(QString in_file_name, Playlist *&io_playlist);
+    bool read_m3u(const QString &file_name, Playlist &io_playlist);
+    bool read_pls(const QString &file_name, Playlist &io_playlist);
 };

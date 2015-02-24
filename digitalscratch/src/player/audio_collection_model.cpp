@@ -290,20 +290,20 @@ QString Audio_collection_model::get_root_path()
     return this->root_path;
 }
 
-QModelIndex Audio_collection_model::set_playlist(Playlist *in_playlist)
+QModelIndex Audio_collection_model::set_playlist(const Playlist &playlist)
 {
     // Clean collection.
     this->beginResetModel();
     this->endResetModel();
 
     // Create root item which is the collection header.
-    this->create_header(in_playlist->get_basepath(), true);
+    this->create_header(playlist.get_basepath(), true);
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
 
     // Fill the model.
-    this->setup_model_data_from_tracklist(in_playlist->get_tracklist(), this->rootItem);
+    this->setup_model_data_from_tracklist(playlist.get_tracklist(), this->rootItem);
 
     return this->get_root_index();
 }

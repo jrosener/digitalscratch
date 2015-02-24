@@ -1938,7 +1938,7 @@ Gui::run_concurrent_read_collection_from_db()
 }
 
 bool
-Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
+Gui::set_file_browser_playlist_tracks(const Playlist &playlist)
 {
     if (this->watcher_parse_directory->isRunning() == false)
     {
@@ -1950,20 +1950,20 @@ Gui::set_file_browser_playlist_tracks(Playlist *in_playlist)
         this->file_system_model->stop_concurrent_analyse_audio_collection();
 
         // Show progress bar.
-        this->progress_label->setText(tr("Opening ") + in_playlist->get_name() + "...");
+        this->progress_label->setText(tr("Opening ") + playlist.get_name() + "...");
         this->progress_groupbox->show();
         this->progress_bar->setMinimum(0);
         this->progress_bar->setMaximum(0);
 
         // Set base path as title to file browser.
-        this->set_file_browser_title(in_playlist->get_name());
+        this->set_file_browser_title(playlist.get_name());
 
         // Clear file browser.
         this->file_system_model->clear();
 
         // Set list of tracks to the file browser.
         this->file_browser->setRootIndex(QModelIndex());
-        this->file_system_model->set_playlist(in_playlist);
+        this->file_system_model->set_playlist(playlist);
 
         // Reset progress.
         this->progress_bar->reset();
@@ -2152,14 +2152,14 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
         QFileInfo file_info(path);
         if (file_info.isFile() == true)
         {
-            Playlist             *playlist         = new Playlist(file_info.absolutePath(), file_info.baseName());
-            Playlist_persistence *playlist_persist = new Playlist_persistence();
+            Playlist playlist(file_info.absolutePath(), file_info.baseName());
+            Playlist_persistence playlist_persist;
 
             // It is a m3u playlist, parse it and show track list in file browser.
             if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
             {
                 // Open M3U playlist
-                if (playlist_persist->read_m3u(path, playlist) == true)
+                if (playlist_persist.read_m3u(path, playlist) == true)
                 {
                     // Populate file browser.
                     this->set_file_browser_playlist_tracks(playlist);
@@ -2172,7 +2172,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
             else if (file_info.suffix().compare(QString("pls"), Qt::CaseInsensitive) == 0)
             {
                 // Open PLS playlist
-                if (playlist_persist->read_pls(path, playlist) == true)
+                if (playlist_persist.read_pls(path, playlist) == true)
                 {
                     // Populate file browser.
                     this->set_file_browser_playlist_tracks(playlist);
@@ -2182,10 +2182,6 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
                     qCWarning(DS_FILE) << "can not open pls playlist " << qPrintable(path);
                 }
             }
-
-            // Cleanup.
-            delete playlist;
-            delete playlist_persist;
         }
         else
         {

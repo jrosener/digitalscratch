@@ -395,7 +395,7 @@ class Gui : public QObject
     void clean_bottom_status();
     void display_audio_file_collection();
     bool apply_main_window_style();
-    bool set_file_browser_playlist_tracks(Playlist *in_playlist);
+    bool set_file_browser_playlist_tracks(const Playlist &playlist);
     bool set_file_browser_base_path(QString in_path);
     bool set_folder_browser_base_path(QString in_path);
     bool set_file_browser_title(QString in_title);

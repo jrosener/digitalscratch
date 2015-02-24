@@ -35,10 +35,10 @@
 #include <QtDebug>
 #include "playlist.h"
 
-Playlist::Playlist(const QString &in_basepath, const QString &in_name)
+Playlist::Playlist(const QString &basepath, const QString &name)
 {
-    this->basepath = in_basepath;
-    this->name     = in_name;
+    this->basepath = basepath;
+    this->name     = name;
     this->tracklist.clear();
 
     return;
@@ -50,23 +50,23 @@ Playlist::~Playlist()
     return;
 }
 
-QString Playlist::get_basepath()
+QString Playlist::get_basepath() const
 {
     return this->basepath;
 }
 
-QString Playlist::get_name()
+QString Playlist::get_name() const
 {
     return this->name;
 }
 
-QStringList Playlist::get_tracklist()
+QStringList Playlist::get_tracklist() const
 {
     return this->tracklist;
 }
 
-void Playlist::add_track(const QString &in_filename)
+void Playlist::add_track(const QString &filename)
 {
-    this->tracklist.append(in_filename);
+    this->tracklist.append(filename);
     this->tracklist.removeDuplicates();
 }

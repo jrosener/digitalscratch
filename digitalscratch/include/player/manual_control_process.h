@@ -48,10 +48,10 @@ class Manual_control_process
     float speed;
 
  public:
-    Manual_control_process(QSharedPointer<Playback_parameters> &in_param);
+    Manual_control_process(const QSharedPointer<Playback_parameters> &param);
     virtual ~Manual_control_process();
 
     bool run();
-    void inc_speed(float in_speed_inc);
+    void inc_speed(const float &speed_inc);
     void reset_speed_to_100p();
 };

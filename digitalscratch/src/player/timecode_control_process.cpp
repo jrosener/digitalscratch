@@ -95,29 +95,29 @@ Timecode_control_process::run(unsigned short int  in_nb_samples,
     {
         if (are_new_params == 0)
         {
-            this->params->set_new_data(true);
+            this->params->set_data_state(true);
             if (speed != NO_NEW_SPEED_FOUND)
             {
                 this->params->set_speed(speed);
-                this->params->set_new_speed(true);
+                this->params->set_speed_state(true);
             }
             else
             {
-                this->params->set_new_speed(false);
+                this->params->set_speed_state(false);
             }
             if (volume != NO_NEW_VOLUME_FOUND)
             {
                 this->params->set_volume(volume);
-                this->params->set_new_volume(true);
+                this->params->set_volume_state(true);
             }
             else
             {
-                this->params->set_new_volume(false);
+                this->params->set_volume_state(false);
             }
         }
         else
         {
-            this->params->set_new_data(false);
+            this->params->set_data_state(false);
         }
     }
 

@@ -50,12 +50,12 @@ class Playlist : public QObject
     QStringList tracklist;
 
  public:
-    Playlist(const QString &in_basepath, const QString &in_name);
+    Playlist(const QString &basepath, const QString &name);
     virtual ~Playlist();
 
  public:
-    QString     get_basepath();
-    QString     get_name();
-    QStringList get_tracklist();
-    void        add_track(const QString &in_filename);
+    QString     get_basepath() const;
+    QString     get_name() const;
+    QStringList get_tracklist() const;
+    void        add_track(const QString &filename);
 };
