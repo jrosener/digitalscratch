@@ -101,7 +101,7 @@ Sound_driver_access_rules::use_timecode_from_file(const QString &path)
 }
 
 bool
-Sound_driver_access_rules::fill_input_buf(unsigned short int in_nb_buffer_frames, QList<float*> &io_buffers)
+Sound_driver_access_rules::fill_input_buf(unsigned short int nb_buffer_frames, QList<float*> &io_buffers)
 {
     if (this->using_fake_timecode == true)
     {
@@ -111,13 +111,13 @@ Sound_driver_access_rules::fill_input_buf(unsigned short int in_nb_buffer_frames
         {
             // Reset input buffer.
             buffer = io_buffers[i];
-            std::fill(buffer, buffer + in_nb_buffer_frames, 0);
+            std::fill(buffer, buffer + nb_buffer_frames, 0);
 
             // Fill it with prerecorded timecode.
             unsigned int tcode_index  = timecode_current_sample + (i % 2); // i%2 = 0 or 1.
             unsigned int buffer_index = 0;
             while ((tcode_index < this->timecode->get_end_of_samples()) &&
-                   (buffer_index < in_nb_buffer_frames))
+                   (buffer_index < nb_buffer_frames))
             {
                 buffer[buffer_index] = this->timecode->get_samples()[tcode_index];
                 buffer_index++;
@@ -126,7 +126,7 @@ Sound_driver_access_rules::fill_input_buf(unsigned short int in_nb_buffer_frames
         }
 
         // Move the index to the timecode data buffer for the next time.
-        timecode_current_sample += in_nb_buffer_frames * 2;
+        timecode_current_sample += nb_buffer_frames * 2;
         if (timecode_current_sample > this->timecode->get_end_of_samples())
         {
             timecode_current_sample = 0;
