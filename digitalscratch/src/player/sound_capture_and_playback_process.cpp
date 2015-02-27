@@ -37,30 +37,30 @@
 #include "application_logging.h"
 
 
-Sound_capture_and_playback_process::Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
-                                                                       QList<QSharedPointer<Manual_control_process>>       &in_manual_controls,
-                                                                       QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
-                                                                       QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
-                                                                       unsigned short int                                   in_nb_decks)
+Sound_capture_and_playback_process::Sound_capture_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
+                                                                       const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
+                                                                       const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
+                                                                       const QSharedPointer<Sound_driver_access_rules>           &sound_card,
+                                                                       const unsigned short int                                  &nb_decks)
 {
-    if (in_tcode_controls.count()  == 0 ||
-        in_playbacks.count()       == 0 ||
-        in_manual_controls.count() == 0 ||
-        in_sound_card.data()       == nullptr)
+    if (tcode_controls.count()  == 0 ||
+        playbacks.count()       == 0 ||
+        manual_controls.count() == 0 ||
+        sound_card.data()       == nullptr)
     {
         qCWarning(DS_PLAYBACK) << "bad input parameters";
         return;
     }
     else
     {
-        this->tcode_controls  = in_tcode_controls;
-        this->manual_controls = in_manual_controls;
-        this->playbacks       = in_playbacks;
-        this->sound_card      = in_sound_card;
-        this->nb_decks        = in_nb_decks;
-        for (unsigned short int i = 0; i < in_nb_decks; i++)
+        this->tcode_controls  = tcode_controls;
+        this->manual_controls = manual_controls;
+        this->playbacks       = playbacks;
+        this->sound_card      = sound_card;
+        this->nb_decks        = nb_decks;
+        for (unsigned short int i = 0; i < nb_decks; i++)
         {
-            this->modes << TIMECODE;
+            this->modes << ProcessMode::TIMECODE;
         }
     }
 
@@ -73,18 +73,18 @@ Sound_capture_and_playback_process::~Sound_capture_and_playback_process()
 }
 
 bool
-Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
+Sound_capture_and_playback_process::run(const unsigned short int &nb_buffer_frames)
 {
     QList<float *> input_buffers;
     QList<float *> output_buffers;
 
     // Get sound card buffers.
-    if(this->sound_card->get_input_buffers(in_nb_buffer_frames, input_buffers) == false)
+    if(this->sound_card->get_input_buffers(nb_buffer_frames, input_buffers) == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not get input buffers";
         return false;
     }
-    if(this->sound_card->get_output_buffers(in_nb_buffer_frames, output_buffers) == false)
+    if(this->sound_card->get_output_buffers(nb_buffer_frames, output_buffers) == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not get output buffers";
         return false;
@@ -94,10 +94,10 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
     {
         switch(this->modes[i])
         {
-            case TIMECODE:
+            case ProcessMode::TIMECODE:
             {
                 // Analyze captured data with libdigitalscratch.
-                if (this->tcode_controls[i]->run(in_nb_buffer_frames,
+                if (this->tcode_controls[i]->run(nb_buffer_frames,
                                                  input_buffers[i*2],
                                                  input_buffers[i*2 + 1]) == false)
                 {
@@ -106,7 +106,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                 }
 
                 // Play data.
-                if (this->playbacks[i]->run(in_nb_buffer_frames,
+                if (this->playbacks[i]->run(nb_buffer_frames,
                                             output_buffers[i*2],
                                             output_buffers[i*2 + 1]) == false)
                 {
@@ -116,14 +116,14 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
 
                 break;
             }
-            case THRU:
+            case ProcessMode::THRU:
             {
                 // Copy data from input sound card buffers to output ones (bypass playback).
-                memcpy(output_buffers[i*2],     input_buffers[i*2],     in_nb_buffer_frames * sizeof(float));
-                memcpy(output_buffers[i*2 + 1], input_buffers[i*2 + 1], in_nb_buffer_frames * sizeof(float));
+                memcpy(output_buffers[i*2],     input_buffers[i*2],     nb_buffer_frames * sizeof(float));
+                memcpy(output_buffers[i*2 + 1], input_buffers[i*2 + 1], nb_buffer_frames * sizeof(float));
                 break;
             }
-            case MANUAL:
+            case ProcessMode::MANUAL:
             {
                 // Get playback parameters (mainly speed) from gui buttons.
                 if (this->manual_controls[i]->run() == false)
@@ -133,7 +133,7 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
                 }
 
                 // Play data.
-                if (this->playbacks[i]->run(in_nb_buffer_frames,
+                if (this->playbacks[i]->run(nb_buffer_frames,
                                             output_buffers[i*2],
                                             output_buffers[i*2 + 1]) == false)
                 {
@@ -149,13 +149,13 @@ Sound_capture_and_playback_process::run(unsigned short int in_nb_buffer_frames)
 }
 
 void
-Sound_capture_and_playback_process::set_process_mode(ProcessMode in_mode, unsigned short int in_deck_index)
+Sound_capture_and_playback_process::set_process_mode(const ProcessMode &mode, const unsigned short int &deck_index)
 {
-    this->modes[in_deck_index] = in_mode;
+    this->modes[deck_index] = mode;
 }
 
 ProcessMode
-Sound_capture_and_playback_process::get_process_mode(unsigned short int in_deck_index)
+Sound_capture_and_playback_process::get_process_mode(const unsigned short int &deck_index) const
 {
-    return this->modes[in_deck_index];
+    return this->modes[deck_index];
 }

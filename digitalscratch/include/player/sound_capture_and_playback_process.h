@@ -41,7 +41,7 @@
 
 using namespace std;
 
-enum ProcessMode
+enum class ProcessMode
 {
     TIMECODE,
     MANUAL,
@@ -59,14 +59,14 @@ class Sound_capture_and_playback_process
     QList<ProcessMode>                                  modes;
 
  public:
-    Sound_capture_and_playback_process(QList<QSharedPointer<Timecode_control_process>>     &in_tcode_controls,
-                                       QList<QSharedPointer<Manual_control_process>>       &in_manual_controls,
-                                       QList<QSharedPointer<Audio_track_playback_process>> &in_playbacks,
-                                       QSharedPointer<Sound_driver_access_rules>           &in_sound_card,
-                                       unsigned short int                                   in_nb_decks);
+    Sound_capture_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
+                                       const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
+                                       const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
+                                       const QSharedPointer<Sound_driver_access_rules>           &sound_card,
+                                       const unsigned short int                                  &nb_decks);
     virtual ~Sound_capture_and_playback_process();
 
-    bool run(unsigned short int in_nb_buffer_frames);
-    void set_process_mode(ProcessMode in_mode, unsigned short in_deck_index);
-    ProcessMode get_process_mode(unsigned short in_deck_index);
+    bool run(const unsigned short int &nb_buffer_frames);
+    void set_process_mode(const ProcessMode &mode, const unsigned short &deck_index);
+    ProcessMode get_process_mode(const unsigned short &deck_index) const;
 };

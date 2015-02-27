@@ -1065,7 +1065,7 @@ Gui::connect_decks_area()
                              {
                                  this->decks[i]->set_speed_mode_timecode();
                                  this->decks[i]->thru_button->setChecked(false);
-                                 this->capture_and_play->set_process_mode(TIMECODE, i);
+                                 this->capture_and_play->set_process_mode(ProcessMode::TIMECODE, i);
                              }
                              else
                              {
@@ -1078,7 +1078,7 @@ Gui::connect_decks_area()
                             if (checked == true)
                             {
                                 this->decks[i]->set_speed_mode_manual();
-                                this->capture_and_play->set_process_mode(MANUAL, i);
+                                this->capture_and_play->set_process_mode(ProcessMode::MANUAL, i);
                             }
                             else
                             {
@@ -1097,7 +1097,7 @@ Gui::connect_decks_area()
         QObject::connect(this->decks[i]->speed, &SpeedQLabel::right_clicked,
                         [this, i]()
                         {
-                            if (this->capture_and_play->get_process_mode(i) == MANUAL)
+                            if (this->capture_and_play->get_process_mode(i) == ProcessMode::MANUAL)
                             {
                                 this->speed_reset_to_100p(i);
                             }
@@ -2676,11 +2676,11 @@ Gui::playback_thru(unsigned short int in_deck_index, bool in_on_off)
 {
     if (in_on_off == true)
     {
-        this->capture_and_play->set_process_mode(THRU, in_deck_index);
+        this->capture_and_play->set_process_mode(ProcessMode::THRU, in_deck_index);
     }
     else
     {
-        this->capture_and_play->set_process_mode(TIMECODE, in_deck_index);
+        this->capture_and_play->set_process_mode(ProcessMode::TIMECODE, in_deck_index);
     }
 
 }

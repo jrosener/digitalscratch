@@ -70,7 +70,7 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack()
                                                                                                                at_playbacks,
                                                                                                                sound_card,
                                                                                                                settings->get_nb_decks()));
-    capture_and_play->set_process_mode(TIMECODE, 0);
+    capture_and_play->set_process_mode(ProcessMode::TIMECODE, 0);
 
     // Start capture and playback through jack.
     QVERIFY2(sound_card->start((void*)capture_and_play.data()) == true, "start capture and playback through jack");
