@@ -106,9 +106,9 @@ Sound_capture_and_playback_process::run(const unsigned short int &nb_buffer_fram
                 }
 
                 // Play data.
-                if (this->playbacks[i]->run(nb_buffer_frames,
-                                            output_buffers[i*2],
-                                            output_buffers[i*2 + 1]) == false)
+                if (this->playbacks[i]->run(output_buffers[i*2],
+                                            output_buffers[i*2 + 1],
+                                            nb_buffer_frames) == false)
                 {
                     qCWarning(DS_PLAYBACK) << "playback process failed for deck " << i + 1;
                     return false;
@@ -133,9 +133,9 @@ Sound_capture_and_playback_process::run(const unsigned short int &nb_buffer_fram
                 }
 
                 // Play data.
-                if (this->playbacks[i]->run(nb_buffer_frames,
-                                            output_buffers[i*2],
-                                            output_buffers[i*2 + 1]) == false)
+                if (this->playbacks[i]->run(output_buffers[i*2],
+                                            output_buffers[i*2 + 1],
+                                            nb_buffer_frames) == false)
                 {
                     qCWarning(DS_PLAYBACK) << "playback process failed for deck " << i + 1;
                     return false;

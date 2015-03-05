@@ -68,10 +68,7 @@ Jack_access_rules::~Jack_access_rules()
 bool
 Jack_access_rules::start(void *in_callback_param)
 {
-    const char     **ports       = nullptr;
-    const char      *client_name = CLIENT_NAME;
-    const char      *server_name = nullptr;
-    jack_options_t   options     = JackNullOption;
+    const char     **ports = nullptr;
     jack_status_t    status;
     const char      *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
     const char      *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
@@ -80,7 +77,7 @@ Jack_access_rules::start(void *in_callback_param)
     this->running = false;
 
     // Open a client connection to the JACK server.
-    this->stream = jack_client_open(client_name, options, &status, server_name);
+    this->stream = jack_client_open(CLIENT_NAME, JackNullOption, &status);
     if (this->stream == nullptr)
     {
         qCWarning(DS_SOUNDCARD) << "jack_client_open() failed.";

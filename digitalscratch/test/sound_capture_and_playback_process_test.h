@@ -12,5 +12,6 @@ class Sound_capture_and_playback_process_Test : public QObject
     void initTestCase();
     void cleanupTestCase();
 
-    void testCaseRunWithJack();
+    void testCaseRunWithJack_1deck();
+    void testCaseRunWithJack_2decks();
 };

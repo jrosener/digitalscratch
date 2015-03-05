@@ -78,7 +78,7 @@ class Audio_track_playback_process : public QObject
 
     virtual ~Audio_track_playback_process();
 
-    bool run(const unsigned short int &nb_samples, float io_samples_1[], float io_samples_2[]);
+    bool run(float io_playback_buf_1[], float io_playback_buf_2[], const unsigned short int &buf_size);
 
     bool stop();
     bool reset();
@@ -99,10 +99,10 @@ class Audio_track_playback_process : public QObject
     bool is_sampler_loaded(const unsigned short int &sampler_index);
 
  private:
-    bool play_empty(const unsigned short int &nb_samples, QVector<float*> &io_samples);
-    bool play_audio_track(const unsigned short int &nb_samples, QVector<float*> &io_samples);
-    bool play_sampler(const unsigned short int &nb_samples, QVector<float*> &io_samples);
-    bool play_data_with_playback_parameters(const unsigned short int &nb_samples, QVector<float*> &io_samples);
+    bool play_empty(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
+    bool play_audio_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
+    bool play_sampler(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
+    bool play_data_with_playback_parameters(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
     bool change_volume(float io_samples[], const unsigned short int &size);
 
     bool update_remaining_time();
