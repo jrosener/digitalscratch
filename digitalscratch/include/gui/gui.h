@@ -377,7 +377,6 @@ class Gui : public QObject
  private:
     bool create_main_window();
     void init_header_buttons();
-    void clean_header_buttons();
     void connect_header_buttons();
     void init_decks_area();
     void clean_decks_area();
@@ -390,9 +389,7 @@ class Gui : public QObject
     void clean_file_browser_area();
     void connect_file_browser_area();
     void init_bottom_help();
-    void clean_bottom_help();
     void init_bottom_status();
-    void clean_bottom_status();
     void display_audio_file_collection();
     bool apply_main_window_style();
     bool set_file_browser_playlist_tracks(const Playlist &playlist);

@@ -169,12 +169,9 @@ Gui::~Gui()
     this->settings->set_browser_splitter_size(this->browser_splitter->saveState());
 
     // Cleanup.
-    this->clean_header_buttons();
     this->clean_decks_area();
     this->clean_samplers_area();
     this->clean_file_browser_area();
-    this->clean_bottom_help();
-    this->clean_bottom_status();
     delete this->window;
 
     return;
@@ -980,19 +977,6 @@ Gui::init_header_buttons()
 }
 
 void
-Gui::clean_header_buttons()
-{
-    delete this->config_button;
-    delete this->fullscreen_button;
-    delete this->stop_capture_button;
-    delete this->logo;
-    delete this->start_capture_button;
-    delete this->help_button;
-    delete this->quit_button;
-    delete this->header_layout;
-}
-
-void
 Gui::connect_header_buttons()
 {   
     // Open configuration window.
@@ -1424,10 +1408,7 @@ Gui::clean_file_browser_area()
     delete this->watcher_parse_directory;
     delete this->treeview_icon_provider;
     delete this->folder_system_model;
-    delete this->folder_browser;
     delete this->file_system_model;
-    delete this->file_browser;
-    delete this->file_layout;
 }
 
 void
@@ -1657,12 +1638,6 @@ Gui::init_bottom_help()
 }
 
 void
-Gui::clean_bottom_help()
-{
-    delete this->bottom_layout;
-}
-
-void
 Gui::init_bottom_status()
 {
     // Create groupbox for progress bar.
@@ -1694,12 +1669,6 @@ Gui::init_bottom_status()
     this->progress_groupbox->setLayout(progress_layout);
     this->status_layout = new QHBoxLayout;
     this->status_layout->addWidget(this->progress_groupbox);
-}
-
-void
-Gui::clean_bottom_status()
-{
-    delete this->status_layout;
 }
 
 void
@@ -2400,14 +2369,7 @@ Gui::update_speed_label(float in_speed, unsigned short int in_deck_index)
     double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
 
-    if (this->decks[in_deck_index] == nullptr)
-    {
-        cout << "ERROR: this->decks = null" << endl;
-    }
-    else
-    {
-        this->decks[in_deck_index]->speed->setText(sp); // FIXME: sometimes crashed.
-    }
+    this->decks[in_deck_index]->speed->setText(sp); // FIXME: sometimes crashed.
 }
 
 void
