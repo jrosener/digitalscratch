@@ -79,8 +79,8 @@ class SpeedQPushButton : public QPushButton
        void set_pressed(bool is_pressed) { l_pressed = is_pressed; }
 
    protected:
-       void mousePressEvent(QMouseEvent *in_mouse_event);
-       void mouseReleaseEvent(QMouseEvent *in_mouse_event);
+       void mousePressEvent(QMouseEvent *event);
+       void mouseReleaseEvent(QMouseEvent *event);
 
    public:
        SpeedQPushButton(const QString &title);
@@ -97,7 +97,7 @@ class SpeedQLabel : public QLabel
    Q_OBJECT
 
    protected:
-       void mouseReleaseEvent(QMouseEvent *in_mouse_event);
+       void mouseReleaseEvent(QMouseEvent *event);
 
    signals:
        void right_clicked();
@@ -117,11 +117,11 @@ class PlaybackQGroupBox : public QGroupBox
        void set_selected(bool is_selected) { l_selected = is_selected; }
 
    protected:
-       void mousePressEvent(QMouseEvent *in_mouse_event);
-       void enterEvent(QEvent *in_event);
-       void leaveEvent(QEvent *in_event);
-       void dragEnterEvent(QDragEnterEvent *in_event);
-       void dropEvent(QDropEvent *in_event);
+       void mousePressEvent(QMouseEvent *event);
+       void enterEvent(QEvent *event);
+       void leaveEvent(QEvent *event);
+       void dragEnterEvent(QDragEnterEvent *event);
+       void dropEvent(QDropEvent *event);
 
    public:
        PlaybackQGroupBox(const QString &title);
@@ -166,10 +166,10 @@ class Deck : public PlaybackQGroupBox
        Application_settings *settings;
 
    public:
-       Deck(const QString &title, QSharedPointer<Audio_track> &in_at);
+       Deck(const QString &title, const QSharedPointer<Audio_track> &at);
        virtual ~Deck();
        void init_display();
-       void set_key(const QString& in_key);
+       void set_key(const QString &key);
 
     public slots:
        void set_speed_mode_timecode();
@@ -181,8 +181,8 @@ class QSamplerContainerWidget : public QWidget
    Q_OBJECT
 
   protected:
-       void dragEnterEvent(QDragEnterEvent *in_event);
-       void dropEvent(QDropEvent *in_event);
+       void dragEnterEvent(QDragEnterEvent *event);
+       void dropEvent(QDropEvent *event);
 
    public:
        QSamplerContainerWidget();
@@ -209,8 +209,8 @@ class Sampler : public PlaybackQGroupBox
        Application_settings *settings;
 
    public:
-       Sampler(const QString      &in_title,
-               unsigned short int  in_nb_samplers);
+       Sampler(const QString &title,
+               const unsigned short int &nb_samplers);
        virtual ~Sampler();
        void init_display();
 };
@@ -225,8 +225,8 @@ class FileBrowserControlButtons : public QHBoxLayout
        QList<QPushButton*>  load_sample_buttons;
 
    public:
-       FileBrowserControlButtons(unsigned short int in_deck_index,
-                                 unsigned short int in_nb_samplers);
+       FileBrowserControlButtons(const unsigned short int &deck_index,
+                                 const unsigned short int &nb_samplers);
        virtual ~FileBrowserControlButtons();
        void init_display();
        void hide_load_sample_buttons();
@@ -362,16 +362,16 @@ class Gui : public QObject
     Application_settings                                      *settings;
 
  public:
-    Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
-        QList<QList<QSharedPointer<Audio_track>>>                 &in_at_samplers,
-        QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
-        QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
-        QList<QSharedPointer<Playback_parameters>>                &in_params,
-        QList<QSharedPointer<Manual_control_process>>             &in_manual_controls,
-        QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
-        QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
-        QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
-        int                                                       *in_dscratch_ids);
+    Gui(QList<QSharedPointer<Audio_track>>                        &ats,
+        QList<QList<QSharedPointer<Audio_track>>>                 &at_samplers,
+        QList<QSharedPointer<Audio_file_decoding_process>>        &decs,
+        QList<QList<QSharedPointer<Audio_file_decoding_process>>> &dec_samplers,
+        QList<QSharedPointer<Playback_parameters>>                &params,
+        QList<QSharedPointer<Manual_control_process>>             &manual_controls,
+        QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
+        QSharedPointer<Sound_driver_access_rules>                 &sound_card,
+        QSharedPointer<Sound_capture_and_playback_process>        &capture_and_playback,
+        int                                                       *dscratch_ids);
     virtual ~Gui();
 
  private:

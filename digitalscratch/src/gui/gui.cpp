@@ -89,22 +89,22 @@ extern "C"
 }
 #endif
 
-Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
-         QList<QList<QSharedPointer<Audio_track>>>                 &in_at_samplers,
-         QList<QSharedPointer<Audio_file_decoding_process>>        &in_decs,
-         QList<QList<QSharedPointer<Audio_file_decoding_process>>> &in_dec_samplers,
-         QList<QSharedPointer<Playback_parameters>>                &in_params,
-         QList<QSharedPointer<Manual_control_process>>             &in_manual_controls,
-         QList<QSharedPointer<Audio_track_playback_process>>       &in_playbacks,
-         QSharedPointer<Sound_driver_access_rules>                 &in_sound_card,
-         QSharedPointer<Sound_capture_and_playback_process>        &in_capture_and_playback,
-         int                                                       *in_dscratch_ids)
+Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
+         QList<QList<QSharedPointer<Audio_track>>>                 &at_samplers,
+         QList<QSharedPointer<Audio_file_decoding_process>>        &decs,
+         QList<QList<QSharedPointer<Audio_file_decoding_process>>> &dec_samplers,
+         QList<QSharedPointer<Playback_parameters>>                &params,
+         QList<QSharedPointer<Manual_control_process>>             &manual_controls,
+         QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
+         QSharedPointer<Sound_driver_access_rules>                 &sound_card,
+         QSharedPointer<Sound_capture_and_playback_process>        &capture_and_playback,
+         int                                                       *dscratch_ids)
 {
     // Check input parameters.
-    if (in_playbacks.count()           == 0       ||
-        in_sound_card.data()           == nullptr ||
-        in_capture_and_playback.data() == nullptr ||
-        in_dscratch_ids                == nullptr)
+    if (playbacks.count()           == 0       ||
+        sound_card.data()           == nullptr ||
+        capture_and_playback.data() == nullptr ||
+        dscratch_ids                == nullptr)
     {
         qCCritical(DS_OBJECTLIFE) << "bad input parameters";
         return;
@@ -114,18 +114,18 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &in_ats,
     this->settings = &Singleton<Application_settings>::get_instance();
 
     // Get decks/tracks and sound capture/playback engine.
-    this->ats                     = in_ats;
-    this->at_samplers             = in_at_samplers;
-    this->decs                    = in_decs;
-    this->dec_samplers            = in_dec_samplers;
-    this->params                  = in_params;
-    this->manual_controls         = in_manual_controls;
-    this->playbacks               = in_playbacks;
+    this->ats                     = ats;
+    this->at_samplers             = at_samplers;
+    this->decs                    = decs;
+    this->dec_samplers            = dec_samplers;
+    this->params                  = params;
+    this->manual_controls         = manual_controls;
+    this->playbacks               = playbacks;
     this->nb_decks                = this->settings->get_nb_decks();
     this->nb_samplers             = this->settings->get_nb_samplers();
-    this->sound_card              = in_sound_card;
-    this->capture_and_play        = in_capture_and_playback;
-    this->dscratch_ids            = in_dscratch_ids;
+    this->sound_card              = sound_card;
+    this->capture_and_play        = capture_and_playback;
+    this->dscratch_ids            = dscratch_ids;
 
     // Init pop-up dialogs.
     this->config_dialog                   = nullptr;
@@ -1034,7 +1034,7 @@ Gui::init_decks_area()
         Deck *dk = new Deck(tr("Deck ") + QString::number(i+1), this->ats[i]);
         dk->init_display();
         this->decks.push_back(dk);
-        this->decks_layout->addWidget(this->decks[i]);
+        this->decks_layout->addWidget(dk);
     }
 }
 
@@ -2335,7 +2335,7 @@ Gui::set_remaining_time(unsigned int in_remaining_time, int in_deck_index)
     }
 
     // Move slider on waveform when remaining time changed.
-    this->decks[in_deck_index]->waveform->move_slider(this->playbacks[in_deck_index]->get_position());
+    this->decks[in_deck_index]->waveform->move_slider(this->playbacks[in_deck_index]->get_position()); // FIXME: sometimes crashes inside move_slider()
 
     return;
 }
@@ -2400,7 +2400,14 @@ Gui::update_speed_label(float in_speed, unsigned short int in_deck_index)
     double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
 
-    this->decks[in_deck_index]->speed->setText(sp);
+    if (this->decks[in_deck_index] == nullptr)
+    {
+        cout << "ERROR: this->decks = null" << endl;
+    }
+    else
+    {
+        this->decks[in_deck_index]->speed->setText(sp); // FIXME: sometimes crashed.
+    }
 }
 
 void
@@ -2436,7 +2443,7 @@ void
 Gui::deck_go_to_begin()
 {
     unsigned short int deck_index = 0;
-    if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true))
+    if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true)) // FIXME: refactored every hardcoded index in this->decks[x]
     {
         deck_index = 1;
     }
@@ -2709,55 +2716,55 @@ PlaybackQGroupBox::redraw()
 }
 
 void
-PlaybackQGroupBox::mousePressEvent(QMouseEvent *in_mouse_event)
+PlaybackQGroupBox::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(in_mouse_event);
+    Q_UNUSED(event);
     emit this->selected();
 
     return;
 }
 
 void
-PlaybackQGroupBox::enterEvent(QEvent *in_event)
+PlaybackQGroupBox::enterEvent(QEvent *event)
 {
-    Q_UNUSED(in_event);
+    Q_UNUSED(event);
     emit this->hover();
 
     return;
 }
 
 void
-PlaybackQGroupBox::leaveEvent(QEvent *in_event)
+PlaybackQGroupBox::leaveEvent(QEvent *event)
 {
-    Q_UNUSED(in_event);
+    Q_UNUSED(event);
     emit this->unhover();
 
     return;
 }
 
 void
-PlaybackQGroupBox::dragEnterEvent(QDragEnterEvent *in_event)
+PlaybackQGroupBox::dragEnterEvent(QDragEnterEvent *event)
 {
     // Only accept plain text to drop in.
-    if (in_event->mimeData()->hasFormat("application/vnd.text.list"))
+    if (event->mimeData()->hasFormat("application/vnd.text.list"))
     {
-        in_event->acceptProposedAction();
+        event->acceptProposedAction();
     }
 }
 
 void
-PlaybackQGroupBox::dropEvent(QDropEvent *in_event)
+PlaybackQGroupBox::dropEvent(QDropEvent *event)
 {
     // Accept the drop action.
-    in_event->acceptProposedAction();
+    event->acceptProposedAction();
 
     // Send a signal saying that a file was dropped into the groupbox.
     emit file_dropped();
 }
 
-Deck::Deck(const QString &in_title, QSharedPointer<Audio_track> &in_at) : PlaybackQGroupBox(in_title)
+Deck::Deck(const QString &title, const QSharedPointer<Audio_track> &at) : PlaybackQGroupBox(title)
 {
-    this->at = in_at;
+    this->at = at;
     this->settings = &Singleton<Application_settings>::get_instance();
     this->setObjectName("DeckGBox");
 
@@ -2976,12 +2983,12 @@ Deck::set_speed_mode_manual()
 }
 
 void
-Deck::set_key(const QString &in_key)
+Deck::set_key(const QString &key)
 {
-    if (in_key.isEmpty() == false)
+    if (key.isEmpty() == false)
     {
         this->key->show();
-        this->key->setText("♪ " + in_key);
+        this->key->setText("♪ " + key);
     }
     else
     {
@@ -2990,12 +2997,12 @@ Deck::set_key(const QString &in_key)
     }
 }
 
-Sampler::Sampler(const QString      &in_title,
-                 unsigned short int  in_nb_samplers) : PlaybackQGroupBox(in_title)
+Sampler::Sampler(const QString &title,
+                 const unsigned short int &nb_samplers) : PlaybackQGroupBox(title)
 {
     this->settings = &Singleton<Application_settings>::get_instance();
     this->setObjectName("SamplerGBox");
-    this->nb_samplers = in_nb_samplers;
+    this->nb_samplers = nb_samplers;
 
     return;
 }
@@ -3067,14 +3074,14 @@ Sampler::init_display()
     this->setLayout(layout);
 }
 
-FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_index,
-                                                     unsigned short int in_nb_samplers) : QHBoxLayout()
+FileBrowserControlButtons::FileBrowserControlButtons(const unsigned short int &deck_index,
+                                                     const unsigned short int &nb_samplers) : QHBoxLayout()
 {
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
 
     this->load_track_on_deck_button = new QPushButton();
-    this->load_track_on_deck_button->setObjectName("Load_track_button_" + QString::number(in_deck_index + 1));
-    this->load_track_on_deck_button->setToolTip("<p>" + tr("Load selected track to deck ") + QString::number(in_deck_index + 1) + "</p><em>" + settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
+    this->load_track_on_deck_button->setObjectName("Load_track_button_" + QString::number(deck_index + 1));
+    this->load_track_on_deck_button->setToolTip("<p>" + tr("Load selected track to deck ") + QString::number(deck_index + 1) + "</p><em>" + settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK) + "</em>");
     this->load_track_on_deck_button->setFixedSize(24, 24);
     this->load_track_on_deck_button->setFocusPolicy(Qt::NoFocus);
     this->load_track_on_deck_button->setCheckable(true);
@@ -3082,7 +3089,7 @@ FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_
 
     this->show_next_key_from_deck_button = new QPushButton();
     this->show_next_key_from_deck_button->setObjectName("Show_next_key_button");
-    this->show_next_key_from_deck_button->setToolTip("<p>" + tr("Show deck ") + QString::number(in_deck_index + 1) + tr(" next potential tracks") + "</p><em>" + settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS) + "</em>");
+    this->show_next_key_from_deck_button->setToolTip("<p>" + tr("Show deck ") + QString::number(deck_index + 1) + tr(" next potential tracks") + "</p><em>" + settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS) + "</em>");
     this->show_next_key_from_deck_button->setFixedSize(24, 24);
     this->show_next_key_from_deck_button->setFocusPolicy(Qt::NoFocus);
     this->show_next_key_from_deck_button->setCheckable(true);
@@ -3091,7 +3098,7 @@ FileBrowserControlButtons::FileBrowserControlButtons(unsigned short int in_deck_
     this->addSpacing(20);
 
     QString name("A");
-    for (unsigned short int i = 0; i < in_nb_samplers; i++)
+    for (unsigned short int i = 0; i < nb_samplers; i++)
     {
         QPushButton* load_sample_button = new QPushButton();
         load_sample_button->setObjectName("Load_track_sample_button_" + name);
@@ -3174,28 +3181,28 @@ SpeedQPushButton::redraw()
 }
 
 void
-SpeedQPushButton::mousePressEvent(QMouseEvent *in_mouse_event)
+SpeedQPushButton::mousePressEvent(QMouseEvent *event)
 {
     // Force state "pressed" in style sheet even it is a right click event.
     this->setProperty("pressed", true);
     this->redraw();
 
-    QPushButton::mousePressEvent(in_mouse_event);
+    QPushButton::mousePressEvent(event);
 
     return;
 }
 
 void
-SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
+SpeedQPushButton::mouseReleaseEvent(QMouseEvent *event)
 {
     // Unpress the button.
     this->setProperty("pressed", false);
     this->redraw();
 
-    QPushButton::mouseReleaseEvent(in_mouse_event);
+    QPushButton::mouseReleaseEvent(event);
 
     // Forward the right click event.
-    if (in_mouse_event->button() == Qt::RightButton)
+    if (event->button() == Qt::RightButton)
     {
         emit this->right_clicked();
     }
@@ -3204,10 +3211,10 @@ SpeedQPushButton::mouseReleaseEvent(QMouseEvent *in_mouse_event)
 }
 
 void
-SpeedQLabel::mouseReleaseEvent(QMouseEvent *in_mouse_event)
+SpeedQLabel::mouseReleaseEvent(QMouseEvent *event)
 {
     // Forward the right click event.
-    if (in_mouse_event->button() == Qt::RightButton)
+    if (event->button() == Qt::RightButton)
     {
         emit this->right_clicked();
     }
@@ -3228,20 +3235,20 @@ QSamplerContainerWidget::~QSamplerContainerWidget()
 }
 
 void
-QSamplerContainerWidget::dragEnterEvent(QDragEnterEvent *in_event)
+QSamplerContainerWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     // Only accept plain text to drop in.
-    if (in_event->mimeData()->hasFormat("application/vnd.text.list"))
+    if (event->mimeData()->hasFormat("application/vnd.text.list"))
     {
-        in_event->acceptProposedAction();
+        event->acceptProposedAction();
     }
 }
 
 void
-QSamplerContainerWidget::dropEvent(QDropEvent *in_event)
+QSamplerContainerWidget::dropEvent(QDropEvent *event)
 {
     // Accept the drop action.
-    in_event->acceptProposedAction();
+    event->acceptProposedAction();
 
     // Send a signal saying that a file was dropped into the sampler.
     emit file_dropped_in_sampler();
