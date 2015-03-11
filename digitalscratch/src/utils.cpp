@@ -62,7 +62,7 @@ QString Utils::get_file_hash(const QString &path, const unsigned int &kbytes)
         return "";
     }
 
-    // Check number of kbytes.
+    // Check file size.
     if (kbytes == 0)
     {
         qCWarning(DS_FILE) << "nb bytes to hash is 0.";
@@ -84,7 +84,11 @@ QString Utils::get_file_hash(const QString &path, const unsigned int &kbytes)
     }
 
     // Get a hash of the first bytes of data (or the size of the file if it is less).
-    QByteArray bin  = file.read(std::min((qint64)(kbytes*1024), file.size()));
+    QByteArray bin  = file.read(std::min((qint64)(kbytes*1024), file.size())); // FIXME: file.read(kbytes * 1024) should do the job as well (and probably faster).
+                                                                               // FIXME: try to seek at the middle of the file, and use less kbytes (because at the
+                                                                               //        middle of the file, bytes are most probably different from one track to another
+                                                                               //        (indeed the beginning of the file contains music tags and could be the same for
+                                                                               //        many tracks).
     hash = QString(QCryptographicHash::hash(bin, QCryptographicHash::Md5).toHex());
 
     // Cleanup.

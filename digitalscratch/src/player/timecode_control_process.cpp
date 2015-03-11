@@ -39,11 +39,11 @@
 #include "digital_scratch_api.h"
 #include "application_logging.h"
 
-Timecode_control_process::Timecode_control_process(QSharedPointer<Playback_parameters> &in_param,
-                                                   QString                              in_vinyl_type,
-                                                   unsigned int                         in_sample_rate)
+Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
+                                                   const QString                             &vinyl_type,
+                                                   const unsigned int                        &sample_rate)
 {
-    this->params = in_param;
+    this->params = param;
 
     //
     // Initialize DigitalScratch library.
@@ -52,8 +52,8 @@ Timecode_control_process::Timecode_control_process(QSharedPointer<Playback_param
     QString turntable_name;
     turntable_name = "turntable";
     if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
-                                  (char*)in_vinyl_type.toStdString().c_str(),
-                                  in_sample_rate,
+                                  (char*)vinyl_type.toStdString().c_str(),
+                                  sample_rate,
                                   &this->dscratch_id) != 0)
     {
         qCCritical(DS_PLAYBACK) << "can not create turntable";
@@ -71,9 +71,9 @@ Timecode_control_process::~Timecode_control_process()
 }
 
 bool
-Timecode_control_process::run(unsigned short int  in_nb_samples,
-                              float              *in_samples_1,
-                              float              *in_samples_2)
+Timecode_control_process::run(const unsigned short int &nb_samples,
+                              const float              *samples_1,
+                              const float              *samples_2)
 {
     int   are_new_params = 0;
     float speed          = 0.0;
@@ -81,9 +81,9 @@ Timecode_control_process::run(unsigned short int  in_nb_samples,
 
     // Iterate over decks and analyze captured timecode.
     if (dscratch_analyze_recorded_datas(this->dscratch_id,
-                                        in_samples_1,
-                                        in_samples_2,
-                                        in_nb_samples) != 0)
+                                        samples_1,
+                                        samples_2,
+                                        nb_samples) != 0)
     {
         qCWarning(DS_PLAYBACK) << "cannot analyze captured data";
     }

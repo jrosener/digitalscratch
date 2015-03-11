@@ -122,8 +122,8 @@ DLLIMPORT int dscratch_delete_turntable(int turntable_id);
  *                of elements.
  */
 DLLIMPORT int dscratch_analyze_recorded_datas(int     turntable_id,
-                                              float *input_samples_1,
-                                              float *input_samples_2,
+                                              const float *input_samples_1,
+                                              const float *input_samples_2,
                                               int     nb_frames);
 
 

@@ -48,14 +48,14 @@ class Timecode_control_process
     int                                 dscratch_id;
 
  public:
-    Timecode_control_process(QSharedPointer<Playback_parameters> &in_param,
-                             QString                              in_vinyl_type,
-                             unsigned int                         in_sample_rate);
+    Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
+                             const QString                             &vinyl_type,
+                             const unsigned int                        &sample_rate);
     virtual ~Timecode_control_process();
 
-    bool run(unsigned short int  in_nb_samples,
-             float              *in_samples_1,
-             float              *in_samples_2);
+    bool run(const unsigned short int &nb_samples,
+             const float              *samples_1,
+             const float              *samples_2);
 
     int get_dscratch_id();
 };
