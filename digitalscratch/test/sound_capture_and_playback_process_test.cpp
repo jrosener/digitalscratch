@@ -18,6 +18,7 @@
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "b_comp_-_p_dust.mp3"
 #define TIMECODE_1   "scratchlivecontrol-vinylrip-33rpm+0.mp3"
+#define TIMECODE_2   "timecode-serato-5min-full_control.mp3"
 
 Sound_capture_and_playback_process_Test::Sound_capture_and_playback_process_Test()
 {
@@ -125,7 +126,7 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack_2decks()
 
     QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
-    QVERIFY2(sound_card->use_timecode_from_file(QString(DATA_DIR) + QString(TIMECODE_1)) == true, "set the pre-recorded timecode"); // Use a fake timecode
+    QVERIFY2(sound_card->use_timecode_from_file(QString(DATA_DIR) + QString(TIMECODE_2)) == true, "set the pre-recorded timecode"); // Use a fake timecode
 
     QSharedPointer<Sound_capture_and_playback_process> capture_and_play(new Sound_capture_and_playback_process(tcode_controls,
                                                                                                                manual_controls,
@@ -138,7 +139,7 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack_2decks()
     QVERIFY2(sound_card->start((void*)capture_and_play.data()) == true, "start capture and playback through jack");
 
     // Wait 10 sec.
-    QTest::qWait(60000); // 1 min
+    QTest::qWait(10000);
 
     // TODO: For the moment, the test is a manual test: just listen to the 10sec of music.
 
