@@ -40,7 +40,7 @@ void Audio_file_decoding_process_Test::testCaseRun()
     // Run decoding on small file.
     QFileInfo file_info = QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_1));
     QString   fullpath  = file_info.absoluteFilePath();
-    QString   hash      = Utils::get_file_hash(fullpath, FILE_HASH_SIZE);
+    QString   hash      = Utils::get_file_hash(fullpath);
     QString   key       = "A1";
     decoder.clear();
     QVERIFY2(decoder.run(fullpath, hash, key) == true,   "decode small mp3");

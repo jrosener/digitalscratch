@@ -715,7 +715,7 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         {
             // It is a file, add the item.
             Audio_collection_item *file_item = new Audio_collection_item(line,
-                                                                         Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
+                                                                         Utils::get_file_hash(file_info.absoluteFilePath()),
                                                                          file_info.absoluteFilePath(),
                                                                          false,
                                                                          in_item);
@@ -759,7 +759,7 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
                 {
                     // It is a file (mp3 or flac), add the item.
                     Audio_collection_item *file_item = new Audio_collection_item(line,
-                                                                                 Utils::get_file_hash(file_info.absoluteFilePath(), FILE_HASH_SIZE),
+                                                                                 Utils::get_file_hash(file_info.absoluteFilePath()),
                                                                                  file_info.absoluteFilePath(),
                                                                                  false,
                                                                                  in_item);

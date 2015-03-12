@@ -49,14 +49,14 @@ void Data_persistence_Test::testCaseStoreAudioTrack()
     // Store track.
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
     at->set_fullpath(fullpath);
-    at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at->set_hash(Utils::get_file_hash(fullpath));
     at->set_music_key("A1");
     QVERIFY2(data_persist->store_audio_track(at) == true, "audio track 1 store");
 
     // Store another track.
     fullpath = QString(DATA_DIR) + QString(DATA_TRACK_2);
     at->set_fullpath(fullpath);
-    at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at->set_hash(Utils::get_file_hash(fullpath));
     at->set_music_key("A2");
     QVERIFY2(data_persist->store_audio_track(at) == true, "audio track 2 store");
 
@@ -72,7 +72,7 @@ void Data_persistence_Test::testCaseGetAudioTrack()
     QSharedPointer<Audio_track> at(new Audio_track(44100));
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
     at->set_fullpath(fullpath);
-    at->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at->set_hash(Utils::get_file_hash(fullpath));
     at->set_music_key("A1");
     QVERIFY2(data_persist->store_audio_track(at) == true, "audio track store");
 
@@ -124,7 +124,7 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
                 {
                     // Prepare the audio track.
                     at_to_store->reset();
-                    hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
+                    hash = Utils::get_file_hash(i.filePath());
                     at_to_store->set_hash(hash);
                     at_to_store->set_fullpath(i.filePath());
                     at_to_store->set_music_key("A1");
@@ -158,7 +158,7 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     QSharedPointer<Audio_track> at(new Audio_track(15, 44100));
     Audio_file_decoding_process decoder(at, false);
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
-    decoder.run(fullpath, Utils::get_file_hash(fullpath, FILE_HASH_SIZE), "A1");
+    decoder.run(fullpath, Utils::get_file_hash(fullpath), "A1");
     QVERIFY2(data_persist->store_audio_track(at) == true, "store audio track");
 
     // Store cue point: wrong params.
@@ -242,13 +242,13 @@ void Data_persistence_Test::testCasePersistTag()
     QSharedPointer<Audio_track> at1(new Audio_track(44100));
     QString fullpath = QString(DATA_DIR) + QString(DATA_TRACK_1);
     at1->set_fullpath(fullpath);
-    at1->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at1->set_hash(Utils::get_file_hash(fullpath));
     at1->set_music_key("A1");
     QVERIFY2(data_persist->store_audio_track(at1) == true, "audio track 1 store");
     QSharedPointer<Audio_track> at2(new Audio_track(44100));
     fullpath = QString(DATA_DIR) + QString(DATA_TRACK_2);
     at2->set_fullpath(fullpath);
-    at2->set_hash(Utils::get_file_hash(fullpath, FILE_HASH_SIZE));
+    at2->set_hash(Utils::get_file_hash(fullpath));
     at2->set_music_key("A2");
     QVERIFY2(data_persist->store_audio_track(at2) == true, "audio track 2 store");
 

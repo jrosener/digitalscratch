@@ -2,16 +2,12 @@
 #include <utils_test.h>
 #include <iostream>
 #include <QtConcurrentMap>
+#include <QStandardPaths>
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"
 #define DATA_TRACK_2 "track_2.mp3"
 #define DATA_TRACK_3 "track_éèà@ù&_3.mp3"
-#ifdef WIN32
-    #define MUSIC_PATH   "D:/musique"
-#else
-    #define MUSIC_PATH   "/home/julien/Music/drum_n_bass"
-#endif
 
 Utils_Test::Utils_Test()
 {
@@ -28,14 +24,14 @@ void Utils_Test::cleanupTestCase()
 void Utils_Test::testCaseGetFileHash()
 {
     // Get hash of test files.
-    QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_1), FILE_HASH_SIZE)
-              == "18cc3115b3b4f43e71a4b8859d18fcc1", "track 1 hash");
+    QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_1))
+              == "10f96d453a96fd08874d1940be4fbeb1", "track 1 hash");
 
-    QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_2), FILE_HASH_SIZE)
-              == "4fb8a48432061b1defa514e73087aace", "track 2 hash");
+    QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_2))
+              == "d34d5bc6792be6d1e5a70919e053cff6", "track 2 hash");
 
-    QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_3), FILE_HASH_SIZE)
-              == "f610ccedaf72485853b3829b3b88a38c", "track 3 hash");
+    QVERIFY2(Utils::get_file_hash(QString(DATA_DIR) + QString(DATA_TRACK_3))
+              == "e5f389b7d18f81df5a6144cbaae21bb9", "track 3 hash");
 
     // Check bad input parameters.
     QVERIFY2(Utils::get_file_hash("", 200) == "", "path does not exist, no hash");
@@ -50,7 +46,7 @@ void Utils_Test::testCaseGetFileHashCharge()
     //
 
     // Iterate recursively over files in directory.
-    QDir dir(MUSIC_PATH);
+    QDir dir(QStandardPaths::locate(QStandardPaths::MusicLocation, QString(), QStandardPaths::LocateDirectory));
     if (dir.exists() == true) // Skip the test if there are no test data.
     {
         QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
@@ -67,12 +63,12 @@ void Utils_Test::testCaseGetFileHashCharge()
                 if (filename.endsWith(".mp3") == true)
                 {
                     // Get hash of this mp3.
-                    hash = Utils::get_file_hash(i.filePath(), FILE_HASH_SIZE);
+                    hash = Utils::get_file_hash(i.filePath());
 
                     // Store the hash in a map.
                     map.insertMulti(hash, i.filePath());
                 }
-          }
+            }
         }
 
         // Check if there is no duplicate hash.
