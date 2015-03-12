@@ -134,9 +134,11 @@ bool Data_persistence::create_db_structure()
                             " \"path\" VARCHAR, "
                             " \"filename\" VARCHAR);");
 
-        // FIXME: study how to speed up "SELECT track from TRACK where hash=xxx" using indexes
-        //         cf. "CREATE UNIQUE INDEX index_name on table_name (column_name);"
-
+        // Add an index on TRACK.hash which will be the main key to search a track.
+        if (result == true)
+        {
+            result = query.exec("CREATE UNIQUE INDEX IF NOT EXISTS index_TRACK_hash on TRACK (hash);");
+        }
 
         // Create TRACK_CUE_POINT table
         if (result == true)

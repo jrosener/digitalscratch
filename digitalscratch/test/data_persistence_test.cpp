@@ -10,11 +10,6 @@
 #define DATA_TRACK_1 "track_1.mp3"
 #define DATA_TRACK_2 "track_2.mp3"
 #define DATA_TRACK_3 "track_éèà@ù&_3.mp3"
-#ifdef WIN32
-    #define MUSIC_PATH   "D:/musique"
-#else
-    #define MUSIC_PATH   "/home/julien/Music/drum_n_bass"
-#endif
 
 Data_persistence_Test::Data_persistence_Test()
 {
@@ -97,7 +92,7 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
 {
     //
     // For each audio file in big directory, create an Audio Track and store it.
-    // Get it as well to check data.
+    // Then get it to check data.
     //
 
     // Init.
@@ -106,7 +101,7 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
     QSharedPointer<Audio_track> at_from_db(new Audio_track(44100));
 
     // Iterate recursively over files in directory.
-    QDir dir(MUSIC_PATH);
+    QDir dir(QStandardPaths::locate(QStandardPaths::MusicLocation, QString(), QStandardPaths::LocateDirectory));
     if (dir.exists() == true) // Skip the test if there are no test data.
     {
         QDirIterator i(dir.absolutePath(), QDirIterator::Subdirectories);
@@ -144,7 +139,7 @@ void Data_persistence_Test::testCaseStoreAndGetATCharge()
                     QVERIFY2(at_from_db->get_filename()  == at_to_store->get_filename(),  qPrintable(QString("filename from DB") + i.filePath()));
                     QVERIFY2(at_from_db->get_music_key() == at_to_store->get_music_key(), qPrintable(QString("key from DB") + i.filePath()));
                 }
-          }
+            }
         }
     }
 }
