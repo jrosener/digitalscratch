@@ -89,6 +89,7 @@ class Data_persistence : public QObject
 
  private:
     bool init_db();
+    void backup_db();
     bool create_db_structure();
     bool store_track_tag(const QString &id_track,
                          const QString &id_tag);

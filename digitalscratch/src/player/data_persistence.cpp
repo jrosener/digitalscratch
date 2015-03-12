@@ -39,6 +39,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QSqlQuery>
+#include <QDateTime>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   #include <QDesktopServices>
 #else
@@ -80,6 +81,11 @@ bool Data_persistence::init_db()
     QDir dir;
     dir.mkpath(path_info.absolutePath());
 
+#ifndef ENABLE_TEST_MODE
+    // Backup previous DB file if it exists.
+    this->backup_db();
+#endif
+
     // Open DB.
     if (this->db.open() == false)
     {
@@ -112,6 +118,39 @@ bool Data_persistence::init_db()
     this->mutex.unlock();
 
     return true;
+}
+
+void Data_persistence::backup_db()
+{
+    QFileInfo db_file(this->db.databaseName());
+    QString db_dir(db_file.absolutePath());
+    QString db_name(db_file.fileName());
+    QString timestamp(QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss"));
+    QString db_backup_dir(db_dir + QDir::separator() + "db_backup");
+    QString db_backup_name(timestamp + "-" + db_name);
+
+    if (db_file.exists() == true)
+    {
+        // Create a backup directory if it does not exists.
+        QDir dir;
+        dir.mkpath(db_backup_dir);
+
+        if (dir.cd(db_backup_dir) == true)
+        {
+            // Backup the DB file: duplicate it and prefix the name with date/time.
+            QFile::copy(db_file.absoluteFilePath(), db_backup_dir + QDir::separator() + db_backup_name);
+
+            // Remove old backups.
+            dir.setNameFilters(QStringList() << "*.sqlite");
+            dir.setFilter(QDir::Files);
+            if (dir.entryList().count() > 5)
+            {
+                dir.remove(dir.entryList().at(0));
+            }
+        }
+    }
+
+    return;
 }
 
 bool Data_persistence::create_db_structure()
