@@ -54,7 +54,6 @@
 #include "playback_parameters.h"
 #include "sound_driver_access_rules.h"
 #include "waveform.h"
-#include "remaining_time.h"
 #include "application_settings.h"
 #include "application_const.h"
 #include "audio_collection_model.h"
@@ -147,7 +146,12 @@ class Deck : public PlaybackQGroupBox
        QLabel                       *key;
        Waveform                     *waveform;
        QHBoxLayout                  *remaining_time_layout;
-       Remaining_time               *remaining_time;
+       QLabel                       *rem_time_minus;
+       QLabel                       *rem_time_min;
+       QLabel                       *rem_time_sep1;
+       QLabel                       *rem_time_sec;
+       QLabel                       *rem_time_sep2;
+       QLabel                       *rem_time_msec;
        QHBoxLayout                  *buttons_layout;
        QPushButton                  *timecode_button;
        QPushButton                  *manual_button;
@@ -443,7 +447,7 @@ class Gui : public QObject
                                       unsigned short int in_sampler_index);
     void on_sampler_button_del_click(unsigned short int in_deck_index,
                                      unsigned short int in_sampler_index);
-    void set_remaining_time(unsigned int in_remaining_time, int in_deck_index);
+    void set_remaining_time(const unsigned int &remaining_time, const unsigned short int &deck_index);
     void set_sampler_remaining_time(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);
     void set_sampler_state(int in_deck_index, int in_sampler_index, bool in_state);
     void jump_to_position(float in_position, unsigned short int in_deck_index); // 0.0 < Position < 1.0

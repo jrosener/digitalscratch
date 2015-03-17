@@ -61,7 +61,6 @@ INCLUDEPATH += . include/player include/gui include
 HEADERS += include/gui/config_dialog.h \
            include/gui/gui.h \
            include/gui/waveform.h \
-           include/gui/remaining_time.h \
            include/gui/application_settings.h \
            include/player/audio_file_decoding_process.h \
            include/player/audio_track.h \
@@ -87,7 +86,6 @@ SOURCES += src/main.cpp \
            src/gui/config_dialog.cpp \
            src/gui/gui.cpp \
            src/gui/waveform.cpp \
-           src/gui/remaining_time.cpp \
            src/gui/application_settings.cpp \
            src/player/audio_file_decoding_process.cpp \
            src/player/audio_track.cpp \

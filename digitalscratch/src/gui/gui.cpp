@@ -1116,7 +1116,7 @@ Gui::connect_decks_area()
 
         // Remaining time.
         QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::remaining_time_changed,
-                         [this, i](unsigned int remaining_time)
+                         [this, i](const unsigned int &remaining_time)
                          {
                             this->set_remaining_time(remaining_time, i);
                          });
@@ -2263,48 +2263,42 @@ Gui::run_audio_file_decoding_process()
 }
 
 void
-Gui::set_remaining_time(unsigned int in_remaining_time, int in_deck_index)
+Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short &deck_index)
 {
-    // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
-    int remaining_time_by_1000 = in_remaining_time / 1000.0;
+    //cout << "set_remaining_time(" << remaining_time << ", " << deck_index << ")" << endl;
+    // Split remaining time (which is in msec) into minutes, seconds and milliseconds. 
+    int remaining_time_by_1000 = remaining_time / 1000.0;
     div_t tmp_division;
     tmp_division = div(remaining_time_by_1000, 60);
     QString min  = QString::number(tmp_division.quot);
     QString sec  = QString::number(tmp_division.rem);
-    QString msec = QString::number(in_remaining_time).right(3);
-    Remaining_time *rem_time;
-    rem_time = this->decks[in_deck_index]->remaining_time;
+    QString msec = QString::number(remaining_time).right(2);
+
+    // Add "0" in front of remaining time.
+    if (min.size() == 1)
+    {
+        min = "0" + min;
+    }
+    if (sec.size() == 1)
+    {
+        sec = "0" + sec;
+    }
 
     // Change displayed remaining time.
-    if (min.compare(rem_time->min->text()) != 0)
+    if (min.compare(this->decks[deck_index]->rem_time_min->text()) != 0)
     {
-        if (min.size() == 1)
-        {
-            rem_time->min->setText("0" + min);
-        }
-        else
-        {
-            rem_time->min->setText(min);
-        }
+        this->decks[deck_index]->rem_time_min->setText(min);
     }
-    if (sec.compare(rem_time->sec->text()) != 0)
+    if (sec.compare(this->decks[deck_index]->rem_time_sec->text()) != 0)
     {
-        if (sec.size() == 1)
-        {
-            rem_time->sec->setText("0" + sec);
-        }
-        else
-        {
-            rem_time->sec->setText(sec);
-        }
+        this->decks[deck_index]->rem_time_sec->setText(sec);
     }
-    if (msec.compare(rem_time->msec->text()) != 0)
-    {
-        rem_time->msec->setText(msec);
-    }
+    // FIXME: it looks like when this code is activated, then there are crashes
+    //        when moving waveform slider or updating speed label.
+    this->decks[deck_index]->rem_time_msec->setText(msec);
 
     // Move slider on waveform when remaining time changed.
-    this->decks[in_deck_index]->waveform->move_slider(this->playbacks[in_deck_index]->get_position()); // FIXME: sometimes crashes inside move_slider()
+    this->decks[deck_index]->waveform->move_slider(this->playbacks[deck_index]->get_position());
 
     return;
 }
@@ -2369,7 +2363,7 @@ Gui::update_speed_label(float in_speed, unsigned short int in_deck_index)
     double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
 
-    this->decks[in_deck_index]->speed->setText(sp); // FIXME: sometimes crashed.
+    this->decks[in_deck_index]->speed->setText(sp);
 }
 
 void
@@ -2740,7 +2734,6 @@ Deck::~Deck()
     delete this->key;
     delete this->waveform;
     delete this->remaining_time_layout;
-    delete this->remaining_time;
     delete this->buttons_layout;
     delete this->speed;
     delete this->timecode_button;
@@ -2776,15 +2769,26 @@ Deck::init_display()
 
     // Create remaining time.
     this->remaining_time_layout = new QHBoxLayout;
-    this->remaining_time = new Remaining_time();
-    this->remaining_time_layout->addWidget(this->remaining_time->minus, 1, Qt::AlignBottom);
-    this->remaining_time_layout->addWidget(this->remaining_time->min,   1, Qt::AlignBottom);
-    this->remaining_time_layout->addWidget(this->remaining_time->sep1,  1, Qt::AlignBottom);
-    this->remaining_time_layout->addWidget(this->remaining_time->sec,   1, Qt::AlignBottom);
-    this->remaining_time_layout->addWidget(this->remaining_time->sep2,  1, Qt::AlignBottom);
-    this->remaining_time_layout->addWidget(this->remaining_time->msec,  1, Qt::AlignBottom);
+    this->rem_time_minus = new QLabel("-");
+    this->rem_time_min   = new QLabel("00");
+    this->rem_time_sep1  = new QLabel(":");
+    this->rem_time_sec   = new QLabel("00");
+    this->rem_time_sep2  = new QLabel(":");
+    this->rem_time_msec  = new QLabel("00");
+    this->rem_time_minus->setObjectName("RemainingTime");
+    this->rem_time_min->setObjectName("RemainingTime");
+    this->rem_time_sep1->setObjectName("RemainingTime");
+    this->rem_time_sec->setObjectName("RemainingTime");
+    this->rem_time_sep2->setObjectName("RemainingTime");
+    this->rem_time_msec->setObjectName("RemainingTimeMsec");
+    this->remaining_time_layout->addWidget(this->rem_time_minus, 1, Qt::AlignBottom);
+    this->remaining_time_layout->addWidget(this->rem_time_min,   1, Qt::AlignBottom);
+    this->remaining_time_layout->addWidget(this->rem_time_sep1,  1, Qt::AlignBottom);
+    this->remaining_time_layout->addWidget(this->rem_time_sec,   1, Qt::AlignBottom);
+    this->remaining_time_layout->addWidget(this->rem_time_sep2,  1, Qt::AlignBottom);
+    this->remaining_time_layout->addWidget(this->rem_time_msec,  1, Qt::AlignBottom);
     this->remaining_time_layout->addStretch(100);
-    this->remaining_time_layout->addWidget(this->key,                   1, Qt::AlignRight);
+    this->remaining_time_layout->addWidget(this->key,            1, Qt::AlignRight);
 
     // Create buttons area.
     this->buttons_layout = new QHBoxLayout();
