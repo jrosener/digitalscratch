@@ -430,54 +430,65 @@ class Gui : public QObject
     void accept_refresh_audio_collection_dialog_all_files();
     void accept_refresh_audio_collection_dialog_new_files();
     bool show_error_window(const QString &error_message);
-    void select_and_run_audio_file_decoding_process(unsigned short int in_deck_index);
+    void select_and_run_audio_file_decoding_process(const unsigned short int &deck_index);
     void run_audio_file_decoding_process();
     void show_hide_samplers();
-    void select_and_run_sample_decoding_process(unsigned short int in_deck_index,
-                                                unsigned short int in_sampler_index);
-    void run_sampler_decoding_process(unsigned short int in_sampler_index);
-    void run_sampler_decoding_process(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
-    void run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
-                                              unsigned short int in_sampler_index);
-    void set_sampler_text(QString in_text, unsigned short int in_deck_index, unsigned short int in_sampler_index);
-    void on_sampler_button_play_click(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
-    void on_sampler_button_stop_click(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
-    void on_sampler_button_del_click(unsigned short int in_deck_index,
-                                     unsigned short int in_sampler_index);
-    void set_remaining_time(const unsigned int &remaining_time, const unsigned short int &deck_index);
-    void set_sampler_remaining_time(unsigned int in_remaining_time, int in_deck_index, int in_sampler_index);
-    void set_sampler_state(int in_deck_index, int in_sampler_index, bool in_state);
-    void jump_to_position(float in_position, unsigned short int in_deck_index); // 0.0 < Position < 1.0
+    void select_and_run_sample_decoding_process(const unsigned short int &deck_index,
+                                                const unsigned short int &sampler_index);
+    void run_sampler_decoding_process(const unsigned short int &sampler_index);
+    void run_sampler_decoding_process(const unsigned short int &deck_index,
+                                      const unsigned short int &sampler_index);
+    void run_sampler_decoding_process_on_deck(const unsigned short int &deck_index,
+                                              const unsigned short int &sampler_index);
+    void set_sampler_text(const QString &text,
+                          const unsigned short int &deck_index,
+                          const unsigned short int &sampler_index);
+    void sampler_button_play_clicked(const unsigned short int &deck_index,
+                                     const unsigned short int &sampler_index);
+    void sampler_button_stop_clicked(const unsigned short int &deck_index,
+                                     const unsigned short int &sampler_index);
+    void sampler_button_del_clicked(const unsigned short int &deck_index,
+                                    const unsigned short int &sampler_index);
+    void set_remaining_time(const unsigned int &remaining_time,
+                            const unsigned short int &deck_index);
+    void set_sampler_remaining_time(const unsigned int &remaining_time,
+                                    const unsigned short int &deck_index,
+                                    const unsigned short int &sampler_index);
+    void set_sampler_state(const unsigned short int &deck_index,
+                           const unsigned short int &sampler_index,
+                           const bool &state);
+    void jump_to_position(const float &position,
+                          const unsigned short int &deck_index); // 0.0 < Position < 1.0
     void deck_go_to_begin();
-    void go_to_begin(unsigned short int in_deck_index);
-    void deck_set_cue_point(int in_cue_point_number);
-    void set_cue_point(unsigned short int in_deck_index, int in_cue_point_number);
-    void deck_go_to_cue_point(int in_cue_point_number);
-    void go_to_cue_point(unsigned short int in_deck_index, int in_cue_point_number);
-    void deck_del_cue_point(int in_cue_point_number);
-    void del_cue_point(unsigned short int in_deck_index, int in_cue_point_number);
+    void go_to_begin(const unsigned short int &deck_index);
+    void deck_set_cue_point(const unsigned short int &cue_point_number);
+    void set_cue_point(const unsigned short int &deck_index,
+                       const unsigned short int &cue_point_number);
+    void deck_go_to_cue_point(const unsigned short int &cue_point_number);
+    void go_to_cue_point(const unsigned short int &deck_index,
+                         const unsigned short int &cue_point_number);
+    void deck_del_cue_point(const unsigned short int &cue_point_number);
+    void del_cue_point(const unsigned short int &deck_index,
+                       const unsigned short int &cue_point_number);
     void switch_playback_selection();
-    void select_playback(int in_deck_index);
-    void hover_playback(int in_deck_index);
-    void unhover_playback(int in_deck_index);
+    void select_playback(const unsigned short int &deck_index);
+    void hover_playback(const unsigned short int &deck_index);
+    void unhover_playback(const unsigned short int &deck_index);
     void on_file_browser_expand(QModelIndex);
     void on_file_browser_double_click(QModelIndex in_model_index);
     void sync_file_browser_to_audio_collection();
     void on_finished_analyze_audio_collection();
-    void update_refresh_progress_value(int in_value);
-    void select_and_show_next_keys(unsigned short int in_deck_index);
+    void update_refresh_progress_value(const unsigned int &value);
+    void select_and_show_next_keys(const unsigned short int &deck_index);
     void show_next_keys();
-    void on_file_browser_header_click(int in_index);
+    void on_file_browser_header_click(const int &index);
     void on_progress_cancel_button_click();
     void start_control_and_playback();
     void stop_control_and_playback();
     void run_concurrent_read_collection_from_db();
-    void update_speed_label(float in_speed, unsigned short in_deck_index);
-    void speed_up_down(float in_speed_inc, unsigned short int in_deck_index);
-    void speed_reset_to_100p(unsigned short int in_deck_index);
-    void playback_thru(unsigned short int in_deck_index, bool in_on_off);
+    void update_speed_label(const float &speed, const unsigned short &deck_index);
+    void speed_up_down(const float &speed_inc, const unsigned short int &deck_index);
+    void speed_reset_to_100p(const unsigned short int &deck_index);
+    void playback_thru(const unsigned short int &deck_index, const bool &on_off);
     void can_close();
 };

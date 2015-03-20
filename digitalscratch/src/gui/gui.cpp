@@ -472,9 +472,9 @@ Gui::analyze_audio_collection(const bool &is_all_files)
 }
 
 void
-Gui::update_refresh_progress_value(int in_value)
+Gui::update_refresh_progress_value(const unsigned int &value)
 {
-    this->progress_bar->setValue(in_value);
+    this->progress_bar->setValue(value);
 
     if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
     {
@@ -1212,15 +1212,15 @@ Gui::connect_samplers_area()
         {
             // Button: play sampler.
             QObject::connect(this->samplers[i]->buttons_play[j], &QPushButton::clicked,
-                             [this, i, j](){this->on_sampler_button_play_click(i, j);});
+                             [this, i, j](){this->sampler_button_play_clicked(i, j);});
 
             // Button: stop sampler.
             QObject::connect(this->samplers[i]->buttons_stop[j], &QPushButton::clicked,
-                             [this, i, j](){this->on_sampler_button_stop_click(i, j);});
+                             [this, i, j](){this->sampler_button_stop_clicked(i, j);});
 
             // Button: del sampler.
             QObject::connect(this->samplers[i]->buttons_del[j], &QPushButton::clicked,
-                             [this, i, j](){this->on_sampler_button_del_click(i, j);});
+                             [this, i, j](){this->sampler_button_del_clicked(i, j);});
 
             // Track name.
             QObject::connect(this->at_samplers[i][j].data(), &Audio_track::name_changed,
@@ -1972,28 +1972,28 @@ Gui::set_file_browser_title(const QString &title)
 }
 
 void
-Gui::run_sampler_decoding_process(unsigned short int in_sampler_index)
+Gui::run_sampler_decoding_process(const unsigned short int &sampler_index)
 {
-    this->run_sampler_decoding_process_on_deck(this->get_selected_deck_index(), in_sampler_index);
+    this->run_sampler_decoding_process_on_deck(this->get_selected_deck_index(), sampler_index);
 
     return;
 }
 
 void
-Gui::run_sampler_decoding_process(unsigned short int in_deck_index, unsigned short int in_sampler_index)
+Gui::run_sampler_decoding_process(const unsigned short &deck_index, const unsigned short &sampler_index)
 {
-    this->select_playback(in_deck_index);
-    this->run_sampler_decoding_process(in_sampler_index);
+    this->select_playback(deck_index);
+    this->run_sampler_decoding_process(sampler_index);
 
     return;
 }
 
 void
-Gui::run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
-                                          unsigned short int in_sampler_index)
+Gui::run_sampler_decoding_process_on_deck(const unsigned short &deck_index,
+                                          const unsigned short &sampler_index)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
@@ -2002,16 +2002,16 @@ Gui::run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
     {
         // Execute decoding.
         QList<QSharedPointer<Audio_file_decoding_process>> samplers;
-        samplers = this->dec_samplers[in_deck_index];
-        if (samplers[in_sampler_index]->run(info.absoluteFilePath(), "", "") == false)
+        samplers = this->dec_samplers[deck_index];
+        if (samplers[sampler_index]->run(info.absoluteFilePath(), "", "") == false)
         {
             qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
         }
         else
         {
-            this->playbacks[in_deck_index]->reset_sampler(in_sampler_index);
-            this->set_sampler_state(in_deck_index, in_sampler_index, false);
-            this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
+            this->playbacks[deck_index]->reset_sampler(sampler_index);
+            this->set_sampler_state(deck_index, sampler_index, false);
+            this->playbacks[deck_index]->set_sampler_state(sampler_index, false);
         }
     }
 
@@ -2019,70 +2019,70 @@ Gui::run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
 }
 
 void
-Gui::select_and_run_sample_decoding_process(unsigned short int in_deck_index,
-                                            unsigned short int in_sampler_index)
+Gui::select_and_run_sample_decoding_process(const unsigned short &deck_index,
+                                            const unsigned short &sampler_index)
 {
     // Check the button.
-    this->file_browser_control_buttons[in_deck_index]->load_sample_buttons[in_sampler_index]->setEnabled(false);
-    this->file_browser_control_buttons[in_deck_index]->load_sample_buttons[in_sampler_index]->setChecked(true);
+    this->file_browser_control_buttons[deck_index]->load_sample_buttons[sampler_index]->setEnabled(false);
+    this->file_browser_control_buttons[deck_index]->load_sample_buttons[sampler_index]->setChecked(true);
 
     // Select deck and decode + play sample audio file.
-    this->run_sampler_decoding_process_on_deck(in_deck_index, in_sampler_index);
+    this->run_sampler_decoding_process_on_deck(deck_index, sampler_index);
 
     // Release the button.
-    this->file_browser_control_buttons[in_deck_index]->load_sample_buttons[in_sampler_index]->setEnabled(true);
-    this->file_browser_control_buttons[in_deck_index]->load_sample_buttons[in_sampler_index]->setChecked(false);
+    this->file_browser_control_buttons[deck_index]->load_sample_buttons[sampler_index]->setEnabled(true);
+    this->file_browser_control_buttons[deck_index]->load_sample_buttons[sampler_index]->setChecked(false);
 }
 
 void
-Gui::set_sampler_text(QString in_text, unsigned short int in_deck_index, unsigned short int in_sampler_index)
+Gui::set_sampler_text(const QString &text, const unsigned short int &deck_index, const unsigned short int &sampler_index)
 {
-    this->samplers[in_deck_index]->tracknames[in_sampler_index]->setText(in_text);
+    this->samplers[deck_index]->tracknames[sampler_index]->setText(text);
     return;
 }
 
 void
-Gui::on_sampler_button_play_click(unsigned short int in_deck_index,
-                                  unsigned short int in_sampler_index)
+Gui::sampler_button_play_clicked(const unsigned short &deck_index,
+                                 const unsigned short &sampler_index)
 {
     // First stop playback (and return to beginning of the song).
-    this->set_sampler_state(in_deck_index, in_sampler_index, false);
-    this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
+    this->set_sampler_state(deck_index, sampler_index, false);
+    this->playbacks[deck_index]->set_sampler_state(sampler_index, false);
 
     // Then start playback again.
-    this->set_sampler_state(in_deck_index, in_sampler_index, true);
-    this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, true);
+    this->set_sampler_state(deck_index, sampler_index, true);
+    this->playbacks[deck_index]->set_sampler_state(sampler_index, true);
 
     // Select playback area (if not already done).
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     return;
 }
 
 void
-Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
-                                  unsigned short int in_sampler_index)
+Gui::sampler_button_stop_clicked(const unsigned short &deck_index,
+                                 const unsigned short &sampler_index)
 {
     // Stop playback (and return to beginning of the song).
-    this->set_sampler_state(in_deck_index, in_sampler_index, false);
-    this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
+    this->set_sampler_state(deck_index, sampler_index, false);
+    this->playbacks[deck_index]->set_sampler_state(sampler_index, false);
 
     // Select playback area (if not already done).
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     return;
 }
 
 void
-Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
-                                 unsigned short int in_sampler_index)
+Gui::sampler_button_del_clicked(const unsigned short &deck_index,
+                                const unsigned short &sampler_index)
 {
     // Remove track loaded in the sampler.
-    this->playbacks[in_deck_index]->del_sampler(in_sampler_index);
-    this->set_sampler_state(in_deck_index, in_sampler_index, false);
+    this->playbacks[deck_index]->del_sampler(sampler_index);
+    this->set_sampler_state(deck_index, sampler_index, false);
 
     // Select playback area (if not already done).
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     return;
 }
@@ -2102,13 +2102,13 @@ Gui::on_file_browser_expand(QModelIndex)
 }
 
 void
-Gui::on_file_browser_header_click(int in_index)
+Gui::on_file_browser_header_click(const int &index)
 {    
     // Get the order.
     Qt::SortOrder order = this->file_browser->header()->sortIndicatorOrder();
 
     // Sort the items.
-    this->file_browser->sortByColumn(in_index, order);
+    this->file_browser->sortByColumn(index, order);
 }
 
 void
@@ -2169,21 +2169,21 @@ Gui::resize_file_browser_columns()
 }
 
 void
-Gui::select_and_run_audio_file_decoding_process(unsigned short int in_deck_index)
+Gui::select_and_run_audio_file_decoding_process(const unsigned short int &deck_index)
 {
     // Check the button.
-    this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setEnabled(false);
-    this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setChecked(true);
+    this->file_browser_control_buttons[deck_index]->load_track_on_deck_button->setEnabled(false);
+    this->file_browser_control_buttons[deck_index]->load_track_on_deck_button->setChecked(true);
 
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Decode and play selected audio file.
     this->run_audio_file_decoding_process();
 
     // Release the button.
-    this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setEnabled(true);
-    this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setChecked(false);
+    this->file_browser_control_buttons[deck_index]->load_track_on_deck_button->setEnabled(true);
+    this->file_browser_control_buttons[deck_index]->load_track_on_deck_button->setChecked(false);
 }
 
 void
@@ -2283,32 +2283,32 @@ Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short
 }
 
 void
-Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
-                                int          in_deck_index,
-                                int          in_sampler_index)
+Gui::set_sampler_remaining_time(const unsigned int   &remaining_time,
+                                const unsigned short &deck_index,
+                                const unsigned short &sampler_index)
 {
-    if (in_remaining_time == 0)
+    if (remaining_time == 0)
     {
-        this->samplers[in_deck_index]->remaining_times[in_sampler_index]->setText("- 00");
+        this->samplers[deck_index]->remaining_times[sampler_index]->setText("- 00");
     }
     else
     {
         // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
-        int remaining_time_by_1000 = in_remaining_time / 1000.0;
+        int remaining_time_by_1000 = remaining_time / 1000.0;
         div_t tmp_division;
         tmp_division = div(remaining_time_by_1000, 60);
         QString sec  = QString::number(tmp_division.rem);
 
         // Change displayed remaining time (if different than previous one).
-        if (sec.compare(this->samplers[in_deck_index]->remaining_times[in_sampler_index]->text()) != 0)
+        if (sec.compare(this->samplers[deck_index]->remaining_times[sampler_index]->text()) != 0)
         {
             if (sec.size() == 1)
             {
-                this->samplers[in_deck_index]->remaining_times[in_sampler_index]->setText("- 0" + sec);
+                this->samplers[deck_index]->remaining_times[sampler_index]->setText("- 0" + sec);
             }
             else
             {
-                this->samplers[in_deck_index]->remaining_times[in_sampler_index]->setText("- " + sec);
+                this->samplers[deck_index]->remaining_times[sampler_index]->setText("- " + sec);
             }
         }
     }
@@ -2317,59 +2317,59 @@ Gui::set_sampler_remaining_time(unsigned int in_remaining_time,
 }
 
 void
-Gui::set_sampler_state(int  in_deck_index,
-                       int  in_sampler_index,
-                       bool in_state)
+Gui::set_sampler_state(const unsigned short &deck_index,
+                       const unsigned short &sampler_index,
+                       const bool           &state)
 {
     // Change state only if a sample is loaded and playing.
-    if ((this->playbacks[in_deck_index]->is_sampler_loaded(in_sampler_index) == true) && (in_state == true))
+    if ((this->playbacks[deck_index]->is_sampler_loaded(sampler_index) == true) && (state == true))
     {
-        this->samplers[in_deck_index]->buttons_play[in_sampler_index]->setChecked(true);
-        this->samplers[in_deck_index]->buttons_stop[in_sampler_index]->setChecked(false);
+        this->samplers[deck_index]->buttons_play[sampler_index]->setChecked(true);
+        this->samplers[deck_index]->buttons_stop[sampler_index]->setChecked(false);
     }
     else // Sampler is stopping or is not loaded, make play button inactive.
     {
-        this->samplers[in_deck_index]->buttons_play[in_sampler_index]->setChecked(false);
-        this->samplers[in_deck_index]->buttons_stop[in_sampler_index]->setChecked(true);
+        this->samplers[deck_index]->buttons_play[sampler_index]->setChecked(false);
+        this->samplers[deck_index]->buttons_stop[sampler_index]->setChecked(true);
     }
 
     return;
 }
 
 void
-Gui::update_speed_label(float in_speed, unsigned short int in_deck_index)
+Gui::update_speed_label(const float &speed, const unsigned short &deck_index)
 {
-    double percent = (double)(floorf((in_speed * 100.0) * 10.0) / 10.0);
+    double percent = (double)(floorf((speed * 100.0) * 10.0) / 10.0);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
 
-    this->decks[in_deck_index]->speed->setText(sp);
+    this->decks[deck_index]->speed->setText(sp);
 }
 
 void
-Gui::speed_reset_to_100p(unsigned short int in_deck_index)
+Gui::speed_reset_to_100p(const unsigned short &deck_index)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Increment speed.
-    this->manual_controls[in_deck_index]->reset_speed_to_100p();
+    this->manual_controls[deck_index]->reset_speed_to_100p();
 }
 
 void
-Gui::speed_up_down(float in_speed_inc, unsigned short int in_deck_index)
+Gui::speed_up_down(const float &speed_inc, const unsigned short &deck_index)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Increment speed.
-    this->manual_controls[in_deck_index]->inc_speed(in_speed_inc);
+    this->manual_controls[deck_index]->inc_speed(speed_inc);
 }
 
 void
-Gui::jump_to_position(float in_position, unsigned short int in_deck_index)
+Gui::jump_to_position(const float &position, const unsigned short &deck_index)
 {
-    this->playbacks[in_deck_index]->jump_to_position(in_position);
-    this->select_playback(in_deck_index);
+    this->playbacks[deck_index]->jump_to_position(position);
+    this->select_playback(deck_index);
 
     return;
 }
@@ -2383,10 +2383,10 @@ Gui::deck_go_to_begin()
 }
 
 void
-Gui::go_to_begin(unsigned short int in_deck_index)
+Gui::go_to_begin(const unsigned short &deck_index)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Jump to the beginning of the track.
     this->deck_go_to_begin();
@@ -2395,69 +2395,69 @@ Gui::go_to_begin(unsigned short int in_deck_index)
 }
 
 void
-Gui::deck_set_cue_point(int in_cue_point_number)
+Gui::deck_set_cue_point(const unsigned short &cue_point_number)
 {
     unsigned short int deck_index = this->get_selected_deck_index();
 
-    this->decks[deck_index]->waveform->move_cue_slider(in_cue_point_number, this->playbacks[deck_index]->get_position());
-    this->playbacks[deck_index]->store_cue_point(in_cue_point_number);
-    this->decks[deck_index]->cue_point_labels[in_cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(in_cue_point_number));
+    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, this->playbacks[deck_index]->get_position());
+    this->playbacks[deck_index]->store_cue_point(cue_point_number);
+    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
 
     return;
 }
 
 void
-Gui::set_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
+Gui::set_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Set cue point.
-    this->deck_set_cue_point(in_cue_point_number);
+    this->deck_set_cue_point(cue_point_number);
 
     return;
 }
 
 void
-Gui::deck_go_to_cue_point(int in_cue_point_number)
+Gui::deck_go_to_cue_point(const unsigned short &cue_point_number)
 {
-    this->playbacks[this->get_selected_deck_index()]->jump_to_cue_point(in_cue_point_number);
+    this->playbacks[this->get_selected_deck_index()]->jump_to_cue_point(cue_point_number);
 
     return;
 }
 
 void
-Gui::go_to_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
+Gui::go_to_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Jump.
-    this->deck_go_to_cue_point(in_cue_point_number);
+    this->deck_go_to_cue_point(cue_point_number);
 
     return;
 }
 
 void
-Gui::deck_del_cue_point(int in_cue_point_number)
+Gui::deck_del_cue_point(const unsigned short &cue_point_number)
 {
     unsigned short int deck_index = this->get_selected_deck_index();
 
-    this->playbacks[deck_index]->delete_cue_point(in_cue_point_number);
-    this->decks[deck_index]->waveform->move_cue_slider(in_cue_point_number, 0.0);
-    this->decks[deck_index]->cue_point_labels[in_cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(in_cue_point_number));
+    this->playbacks[deck_index]->delete_cue_point(cue_point_number);
+    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, 0.0);
+    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
 
     return;
 }
 
 void
-Gui::del_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
+Gui::del_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
 {
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Delete point.
-    this->deck_del_cue_point(in_cue_point_number);
+    this->deck_del_cue_point(cue_point_number);
 
     return;
 }
@@ -2479,12 +2479,12 @@ Gui::switch_playback_selection()
 }
 
 void
-Gui::select_playback(int in_deck_index)
+Gui::select_playback(const unsigned short &deck_index)
 {
-    if (in_deck_index != this->selected_deck)
+    if (deck_index != this->selected_deck)
     {
-        this->selected_deck = in_deck_index;
-        this->highlight_deck_sampler_area(in_deck_index);
+        this->selected_deck = deck_index;
+        this->highlight_deck_sampler_area(deck_index);
     }
 
     return;
@@ -2521,17 +2521,17 @@ Gui::get_selected_deck_index()
 }
 
 void
-Gui::hover_playback(int in_deck_index)
+Gui::hover_playback(const unsigned short &deck_index)
 {
-    this->highlight_border_deck_sampler_area(in_deck_index, true);
+    this->highlight_border_deck_sampler_area(deck_index, true);
 
     return;
 }
 
 void
-Gui::unhover_playback(int in_deck_index)
+Gui::unhover_playback(const unsigned short &deck_index)
 {
-    this->highlight_border_deck_sampler_area(in_deck_index, false);
+    this->highlight_border_deck_sampler_area(deck_index, false);
 
     return;
 }
@@ -2552,21 +2552,21 @@ Gui::highlight_border_deck_sampler_area(const unsigned short int &deck_index,
 }
 
 void
-Gui::select_and_show_next_keys(unsigned short int in_deck_index)
+Gui::select_and_show_next_keys(const unsigned short &deck_index)
 {
     // Check the button.
-    this->file_browser_control_buttons[in_deck_index]->show_next_key_from_deck_button->setEnabled(false);
-    this->file_browser_control_buttons[in_deck_index]->show_next_key_from_deck_button->setChecked(true);
+    this->file_browser_control_buttons[deck_index]->show_next_key_from_deck_button->setEnabled(false);
+    this->file_browser_control_buttons[deck_index]->show_next_key_from_deck_button->setChecked(true);
 
     // Select deck.
-    this->select_playback(in_deck_index);
+    this->select_playback(deck_index);
 
     // Show next keys from deck.
     this->show_next_keys();
 
     // Release the button.
-    this->file_browser_control_buttons[in_deck_index]->show_next_key_from_deck_button->setEnabled(true);
-    this->file_browser_control_buttons[in_deck_index]->show_next_key_from_deck_button->setChecked(false);
+    this->file_browser_control_buttons[deck_index]->show_next_key_from_deck_button->setEnabled(true);
+    this->file_browser_control_buttons[deck_index]->show_next_key_from_deck_button->setChecked(false);
 }
 
 void
@@ -2599,15 +2599,15 @@ Gui::show_next_keys()
 }
 
 void
-Gui::playback_thru(unsigned short int in_deck_index, bool in_on_off)
+Gui::playback_thru(const unsigned short &deck_index, const bool &on_off)
 {
-    if (in_on_off == true)
+    if (on_off == true)
     {
-        this->capture_and_play->set_process_mode(ProcessMode::THRU, in_deck_index);
+        this->capture_and_play->set_process_mode(ProcessMode::THRU, deck_index);
     }
     else
     {
-        this->capture_and_play->set_process_mode(ProcessMode::TIMECODE, in_deck_index);
+        this->capture_and_play->set_process_mode(ProcessMode::TIMECODE, deck_index);
     }
 
 }
