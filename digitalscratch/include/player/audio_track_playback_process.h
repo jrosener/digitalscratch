@@ -44,7 +44,7 @@ using namespace std;
 
 #define SOUND_STRETCH_POND_MAX                 8192
 #define SOUND_STRETCH_POND_MIN                 256
-#define NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME 30
+#define NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME 20
 #define SOUND_STRETCH_MAX_BUFFER               SHRT_MAX
 
 class Audio_track_playback_process : public QObject

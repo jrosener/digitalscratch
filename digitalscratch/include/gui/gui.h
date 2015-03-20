@@ -284,6 +284,7 @@ class Gui : public QObject
     QShortcut                         **shortcut_go_to_cue_points;
     QShortcut                          *shortcut_switch_playback;
     QList<Deck*>                        decks;
+    unsigned short int                  selected_deck;
 
     // Samplers area.
     QWidget                            *samplers_container;

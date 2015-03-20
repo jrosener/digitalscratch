@@ -335,21 +335,22 @@ Audio_track_playback_process::run(float io_playback_buf_1[], float io_playback_b
     QVector<float*> playback_bufs = { io_playback_buf_1, io_playback_buf_2 };
 
     // Update samplers remaining time
-    if (this->need_update_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
-    {
-        for (unsigned short int i = 0; i < this->nb_samplers; i++)
-        {
-            if (this->is_sampler_loaded(i) == true)
-            {
-                this->update_sampler_remaining_time(i);
-            }
-        }
-        this->need_update_remaining_time = 0;
-    }
-    else
-    {
-        this->need_update_remaining_time++;
-    }
+// FIXME: refactor need_update_remaining_time into need_update_sampler_remaining_time
+//    if (this->need_update_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
+//    {
+//        for (unsigned short int i = 0; i < this->nb_samplers; i++)
+//        {
+//            if (this->is_sampler_loaded(i) == true)
+//            {
+//                this->update_sampler_remaining_time(i);
+//            }
+//        }
+//        this->need_update_remaining_time = 0;
+//    }
+//    else
+//    {
+//        this->need_update_remaining_time++;
+//    }
 
     // Track is not loaded, play empty sound.
     if ((this->at->get_end_of_samples() == 0) || (this->stopped == true))

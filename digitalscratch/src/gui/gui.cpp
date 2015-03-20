@@ -126,6 +126,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->sound_card              = sound_card;
     this->capture_and_play        = capture_and_playback;
     this->dscratch_ids            = dscratch_ids;
+    this->selected_deck           = 0;
 
     // Init pop-up dialogs.
     this->config_dialog                   = nullptr;
@@ -1981,7 +1982,7 @@ Gui::run_sampler_decoding_process(unsigned short int in_sampler_index)
 void
 Gui::run_sampler_decoding_process(unsigned short int in_deck_index, unsigned short int in_sampler_index)
 {
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
     this->run_sampler_decoding_process(in_sampler_index);
 
     return;
@@ -1992,7 +1993,7 @@ Gui::run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
                                           unsigned short int in_sampler_index)
 {
     // Select deck.
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
@@ -2053,7 +2054,7 @@ Gui::on_sampler_button_play_click(unsigned short int in_deck_index,
     this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, true);
 
     // Select playback area (if not already done).
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     return;
 }
@@ -2067,7 +2068,7 @@ Gui::on_sampler_button_stop_click(unsigned short int in_deck_index,
     this->playbacks[in_deck_index]->set_sampler_state(in_sampler_index, false);
 
     // Select playback area (if not already done).
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     return;
 }
@@ -2081,7 +2082,7 @@ Gui::on_sampler_button_del_click(unsigned short int in_deck_index,
     this->set_sampler_state(in_deck_index, in_sampler_index, false);
 
     // Select playback area (if not already done).
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     return;
 }
@@ -2175,7 +2176,7 @@ Gui::select_and_run_audio_file_decoding_process(unsigned short int in_deck_index
     this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setChecked(true);
 
     // Select deck.
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     // Decode and play selected audio file.
     this->run_audio_file_decoding_process();
@@ -2183,26 +2184,6 @@ Gui::select_and_run_audio_file_decoding_process(unsigned short int in_deck_index
     // Release the button.
     this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setEnabled(true);
     this->file_browser_control_buttons[in_deck_index]->load_track_on_deck_button->setChecked(false);
-}
-
-unsigned short int
-Gui::get_selected_deck_index()
-{
-    unsigned short int index = 0;
-    bool found = false;
-    while ((found == false) && (index < this->nb_decks))
-    {
-        if (this->decks[index]->is_selected() == true)
-        {
-            found = true;
-        }
-        else
-        {
-            index++;
-        }
-    }
-
-    return index;
 }
 
 void
@@ -2293,8 +2274,6 @@ Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short
     {
         this->decks[deck_index]->rem_time_sec->setText(sec);
     }
-    // FIXME: it looks like when this code is activated, then there are crashes
-    //        when moving waveform slider or updating speed label.
     this->decks[deck_index]->rem_time_msec->setText(msec);
 
     // Move slider on waveform when remaining time changed.
@@ -2370,7 +2349,7 @@ void
 Gui::speed_reset_to_100p(unsigned short int in_deck_index)
 {
     // Select deck.
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     // Increment speed.
     this->manual_controls[in_deck_index]->reset_speed_to_100p();
@@ -2380,7 +2359,7 @@ void
 Gui::speed_up_down(float in_speed_inc, unsigned short int in_deck_index)
 {
     // Select deck.
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     // Increment speed.
     this->manual_controls[in_deck_index]->inc_speed(in_speed_inc);
@@ -2390,7 +2369,7 @@ void
 Gui::jump_to_position(float in_position, unsigned short int in_deck_index)
 {
     this->playbacks[in_deck_index]->jump_to_position(in_position);
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     return;
 }
@@ -2398,13 +2377,7 @@ Gui::jump_to_position(float in_position, unsigned short int in_deck_index)
 void
 Gui::deck_go_to_begin()
 {
-    unsigned short int deck_index = 0;
-    if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true)) // FIXME: refactored every hardcoded index in this->decks[x]
-    {
-        deck_index = 1;
-    }
-
-    this->playbacks[deck_index]->jump_to_position(0.0);
+    this->playbacks[this->get_selected_deck_index()]->jump_to_position(0.0);
 
     return;
 }
@@ -2412,10 +2385,10 @@ Gui::deck_go_to_begin()
 void
 Gui::go_to_begin(unsigned short int in_deck_index)
 {
-    // Select deck 1.
-    this->highlight_deck_sampler_area(in_deck_index);
+    // Select deck.
+    this->select_playback(in_deck_index);
 
-    // Jump.
+    // Jump to the beginning of the track.
     this->deck_go_to_begin();
 
     return;
@@ -2424,11 +2397,7 @@ Gui::go_to_begin(unsigned short int in_deck_index)
 void
 Gui::deck_set_cue_point(int in_cue_point_number)
 {
-    unsigned short int deck_index = 0;
-    if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true))
-    {       
-        deck_index = 1;
-    }
+    unsigned short int deck_index = this->get_selected_deck_index();
 
     this->decks[deck_index]->waveform->move_cue_slider(in_cue_point_number, this->playbacks[deck_index]->get_position());
     this->playbacks[deck_index]->store_cue_point(in_cue_point_number);
@@ -2440,8 +2409,8 @@ Gui::deck_set_cue_point(int in_cue_point_number)
 void
 Gui::set_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 {
-    // Select deck 1.
-    this->highlight_deck_sampler_area(in_deck_index);
+    // Select deck.
+    this->select_playback(in_deck_index);
 
     // Set cue point.
     this->deck_set_cue_point(in_cue_point_number);
@@ -2452,13 +2421,7 @@ Gui::set_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 void
 Gui::deck_go_to_cue_point(int in_cue_point_number)
 {
-    unsigned short int deck_index = 0;
-    if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true))
-    {
-        deck_index = 1;
-    }
-
-    this->playbacks[deck_index]->jump_to_cue_point(in_cue_point_number);
+    this->playbacks[this->get_selected_deck_index()]->jump_to_cue_point(in_cue_point_number);
 
     return;
 }
@@ -2466,8 +2429,8 @@ Gui::deck_go_to_cue_point(int in_cue_point_number)
 void
 Gui::go_to_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 {
-    // Select deck 1.
-    this->highlight_deck_sampler_area(in_deck_index);
+    // Select deck.
+    this->select_playback(in_deck_index);
 
     // Jump.
     this->deck_go_to_cue_point(in_cue_point_number);
@@ -2478,11 +2441,7 @@ Gui::go_to_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 void
 Gui::deck_del_cue_point(int in_cue_point_number)
 {
-    unsigned short int deck_index = 0;
-    if ((this->nb_decks > 1) && (this->decks[1]->is_selected() == true))
-    {
-        deck_index = 1;
-    }
+    unsigned short int deck_index = this->get_selected_deck_index();
 
     this->playbacks[deck_index]->delete_cue_point(in_cue_point_number);
     this->decks[deck_index]->waveform->move_cue_slider(in_cue_point_number, 0.0);
@@ -2494,8 +2453,8 @@ Gui::deck_del_cue_point(int in_cue_point_number)
 void
 Gui::del_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 {
-    // Select deck 1.
-    this->highlight_deck_sampler_area(in_deck_index);
+    // Select deck.
+    this->select_playback(in_deck_index);
 
     // Delete point.
     this->deck_del_cue_point(in_cue_point_number);
@@ -2506,19 +2465,15 @@ Gui::del_cue_point(unsigned short int in_deck_index, int in_cue_point_number)
 void
 Gui::switch_playback_selection()
 {
-    // Find the selected deck.
-    unsigned short int sel_deck = this->get_selected_deck_index();
-
     // Highlight the next one (circular selection).
-    if (sel_deck + 1 == this->nb_decks)
+    if (this->selected_deck + 1 == this->nb_decks)
     {
-        sel_deck = 0;
+        this->select_playback(0);
     }
     else
     {
-        sel_deck++;
+        this->select_playback(this->selected_deck + 1);
     }
-    this->highlight_deck_sampler_area(sel_deck);
 
     return;
 }
@@ -2526,8 +2481,11 @@ Gui::switch_playback_selection()
 void
 Gui::select_playback(int in_deck_index)
 {
-    // Select deck and sample area.
-    this->highlight_deck_sampler_area(in_deck_index);
+    if (in_deck_index != this->selected_deck)
+    {
+        this->selected_deck = in_deck_index;
+        this->highlight_deck_sampler_area(in_deck_index);
+    }
 
     return;
 }
@@ -2554,6 +2512,12 @@ Gui::highlight_deck_sampler_area(unsigned short int in_deck_index)
     }
 
     return;
+}
+
+unsigned short int
+Gui::get_selected_deck_index()
+{
+    return this->selected_deck;
 }
 
 void
@@ -2595,7 +2559,7 @@ Gui::select_and_show_next_keys(unsigned short int in_deck_index)
     this->file_browser_control_buttons[in_deck_index]->show_next_key_from_deck_button->setChecked(true);
 
     // Select deck.
-    this->highlight_deck_sampler_area(in_deck_index);
+    this->select_playback(in_deck_index);
 
     // Show next keys from deck.
     this->show_next_keys();
