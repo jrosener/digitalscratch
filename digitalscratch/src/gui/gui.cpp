@@ -414,15 +414,15 @@ Gui::press_esc_in_search_bar()
 
 
 void
-Gui::file_search_string(QString in_text)
+Gui::file_search_string(const QString &text)
 {
-    if (in_text != "")
+    if (text != "")
     {
         // Store search text.
-        this->last_search_string = in_text;
+        this->last_search_string = text;
 
         // Search text in file browser (get a list of results).
-        QModelIndexList items = this->file_system_model->search(in_text);
+        QModelIndexList items = this->file_system_model->search(text);
 
         if (this->search_from_begin == true)
         {
@@ -458,7 +458,7 @@ Gui::file_search_string(QString in_text)
 }
 
 void
-Gui::analyze_audio_collection(bool is_all_files)
+Gui::analyze_audio_collection(const bool &is_all_files)
 {
     // Analyzis not running, show a popup asking for a full refresh or only for new files.
     this->settings->set_audio_collection_full_refresh(is_all_files);
@@ -822,13 +822,13 @@ Gui::show_about_window()
 }
 
 bool
-Gui::show_error_window(QString in_error_message)
+Gui::show_error_window(const QString &error_message)
 {
     // Prepare error window.
     QMessageBox msg_box;
     msg_box.setWindowTitle("DigitalScratch");
     msg_box.setText("<h2>" + tr("Error") + "</h2>"
-                    + "<br/>" + in_error_message
+                    + "<br/>" + error_message
                     + "<br/><br/>" + "Please fix this issue and restart DigitalScratch.");
     msg_box.setStandardButtons(QMessageBox::Close);
     msg_box.setIcon(QMessageBox::Critical);
@@ -1838,7 +1838,7 @@ Gui::apply_main_window_style()
 }
 
 bool
-Gui::set_folder_browser_base_path(QString in_path)
+Gui::set_folder_browser_base_path(const QString &path)
 {
     // Change path of the model and set file extension filters.
     this->folder_system_model->setRootPath("");
@@ -1853,14 +1853,14 @@ Gui::set_folder_browser_base_path(QString in_path)
 
     // Preselect the base path.
     this->folder_browser->collapseAll();
-    this->folder_browser->setCurrentIndex(this->folder_system_model->index(in_path));
-    this->folder_browser->setExpanded(this->folder_system_model->index(in_path), true);
+    this->folder_browser->setCurrentIndex(this->folder_system_model->index(path));
+    this->folder_browser->setExpanded(this->folder_system_model->index(path), true);
 
     return true;
 }
 
 bool
-Gui::set_file_browser_base_path(QString in_path)
+Gui::set_file_browser_base_path(const QString &path)
 {
     if (this->watcher_parse_directory->isRunning() == false)
     {
@@ -1872,19 +1872,19 @@ Gui::set_file_browser_base_path(QString in_path)
         this->file_system_model->stop_concurrent_analyse_audio_collection();
 
         // Show progress bar.
-        this->progress_label->setText(tr("Opening ") + in_path + "...");
+        this->progress_label->setText(tr("Opening ") + path + "...");
         this->progress_groupbox->show();
         this->progress_bar->setMinimum(0);
         this->progress_bar->setMaximum(0);
 
         // Set base path as title to file browser.
-        this->set_file_browser_title(in_path);
+        this->set_file_browser_title(path);
 
         // Clear file browser.
         this->file_system_model->clear();
 
         // Change root path of file browser (do it in a non blocking external thread).
-        QFuture<QModelIndex> future = QtConcurrent::run(this->file_system_model, &Audio_collection_model::set_root_path, in_path);
+        QFuture<QModelIndex> future = QtConcurrent::run(this->file_system_model, &Audio_collection_model::set_root_path, path);
         this->watcher_parse_directory->setFuture(future);
 
         // Reset progress.
@@ -1963,10 +1963,10 @@ Gui::sync_file_browser_to_audio_collection()
 }
 
 bool
-Gui::set_file_browser_title(QString in_title)
+Gui::set_file_browser_title(const QString &title)
 {
     // Change file browser title (which contains base dir for tracks).
-    this->file_browser_gbox->setTitle(tr("File browser") + " [" + in_title + "]");
+    this->file_browser_gbox->setTitle(tr("File browser") + " [" + title + "]");
 
     return true;
 }
@@ -2274,7 +2274,7 @@ Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short
     {
         this->decks[deck_index]->rem_time_sec->setText(sec);
     }
-    this->decks[deck_index]->rem_time_msec->setText(msec);
+    //this->decks[deck_index]->rem_time_msec->setText(msec);
 
     // Move slider on waveform when remaining time changed.
     this->decks[deck_index]->waveform->move_slider(this->playbacks[deck_index]->get_position());
@@ -2491,12 +2491,12 @@ Gui::select_playback(int in_deck_index)
 }
 
 void
-Gui::highlight_deck_sampler_area(unsigned short int in_deck_index)
+Gui::highlight_deck_sampler_area(const unsigned short int &deck_index)
 {
     // Select one pair deck+sampler, deselect the other.
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
-        if (i == in_deck_index)
+        if (i == deck_index)
         {
             this->decks[i]->setProperty("selected", true);
             this->samplers[i]->setProperty("selected", true);
@@ -2537,16 +2537,16 @@ Gui::unhover_playback(int in_deck_index)
 }
 
 void
-Gui::highlight_border_deck_sampler_area(unsigned short int in_deck_index,
-                                        bool               switch_on)
+Gui::highlight_border_deck_sampler_area(const unsigned short int &deck_index,
+                                        const bool               &switch_on)
 {
     // highlight pair deck+sampler.
-    this->decks[in_deck_index]->setProperty("hover", switch_on);
-    this->samplers[in_deck_index]->setProperty("hover", switch_on);
+    this->decks[deck_index]->setProperty("hover", switch_on);
+    this->samplers[deck_index]->setProperty("hover", switch_on);
 
     // Redraw widget (necessary to reparse stylesheet).
-    this->decks[in_deck_index]->redraw();
-    this->samplers[in_deck_index]->redraw();
+    this->decks[deck_index]->redraw();
+    this->samplers[deck_index]->redraw();
 
     return;
 }

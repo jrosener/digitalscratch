@@ -398,24 +398,21 @@ class Gui : public QObject
     void display_audio_file_collection();
     bool apply_main_window_style();
     bool set_file_browser_playlist_tracks(const Playlist &playlist);
-    bool set_file_browser_base_path(QString in_path);
-    bool set_folder_browser_base_path(QString in_path);
-    bool set_file_browser_title(QString in_title);
-    bool restart_sound_card(short unsigned int in_nb_channels);
+    bool set_file_browser_base_path(const QString &path);
+    bool set_folder_browser_base_path(const QString &path);
+    bool set_file_browser_title(const QString &title);
     bool apply_application_settings();
-    void highlight_deck_sampler_area(unsigned short int in_deck_index);
-    void highlight_border_deck_sampler_area(unsigned short int in_deck_index, bool switch_on);
+    void highlight_deck_sampler_area(const unsigned short int &deck_index);
+    void highlight_border_deck_sampler_area(const unsigned short int &deck_index, const bool &switch_on);
     unsigned short int get_selected_deck_index();
     void resize_file_browser_columns();
-    void analyze_audio_collection(bool is_all_files);
+    void analyze_audio_collection(const bool &is_all_files);
     void set_help_shortcut_value();
     bool can_stop_capture_and_playback();
     void hide_samplers();
     void show_samplers();
 
  public slots:
-    void run_sampler_decoding_process(unsigned short int in_deck_index,
-                                      unsigned short int in_sampler_index);
     void force_close();
 
  private slots:
@@ -425,20 +422,22 @@ class Gui : public QObject
     void set_focus_search_bar();
     void press_enter_in_search_bar();
     void press_esc_in_search_bar();
-    void file_search_string(QString in_text);
+    void file_search_string(const QString &text);
     bool show_about_window();
     bool show_refresh_audio_collection_dialog();
     void reject_refresh_audio_collection_dialog();
     void close_refresh_audio_collection_dialog();
     void accept_refresh_audio_collection_dialog_all_files();
     void accept_refresh_audio_collection_dialog_new_files();
-    bool show_error_window(QString in_error_message);
+    bool show_error_window(const QString &error_message);
     void select_and_run_audio_file_decoding_process(unsigned short int in_deck_index);
     void run_audio_file_decoding_process();
     void show_hide_samplers();
     void select_and_run_sample_decoding_process(unsigned short int in_deck_index,
                                                 unsigned short int in_sampler_index);
     void run_sampler_decoding_process(unsigned short int in_sampler_index);
+    void run_sampler_decoding_process(unsigned short int in_deck_index,
+                                      unsigned short int in_sampler_index);
     void run_sampler_decoding_process_on_deck(unsigned short int in_deck_index,
                                               unsigned short int in_sampler_index);
     void set_sampler_text(QString in_text, unsigned short int in_deck_index, unsigned short int in_sampler_index);
