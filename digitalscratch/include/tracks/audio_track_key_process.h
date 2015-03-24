@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*----------------------------------------------( audio_track_key_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,51 +26,29 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/*    Behavior class: process to compute a musical key for an audio track     */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <string>
 #include <iostream>
-#include <QObject>
-#include <QString>
+#include <QSharedPointer>
+#include <keyfinder_api.h>
 
+#include "tracks/audio_track.h"
 #include "app/application_const.h"
 
 using namespace std;
 
-class Playback_parameters : public QObject
+class Audio_track_key_process
 {
-    Q_OBJECT
-
  private:
-    float speed;        // Vinyl speed.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+    QSharedPointer<Audio_track> at;
 
  public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
+    Audio_track_key_process(const QSharedPointer<Audio_track> &at);
+    virtual ~Audio_track_key_process();
 
- public:
-    bool  set_speed(const float &speed);
-    float get_speed() const;
-    bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
-
-    bool  set_volume(const float &volume);
-    float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
-
-    bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
-
- private:
-    bool reset();
+    bool run();         // Compute music key of the track and set it to the Audio_track object.
 };

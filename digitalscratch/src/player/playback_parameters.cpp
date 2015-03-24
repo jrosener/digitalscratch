@@ -32,7 +32,8 @@
 
 #include <QtDebug>
 #include <math.h>
-#include "playback_parameters.h"
+
+#include "player/playback_parameters.h"
 
 Playback_parameters::Playback_parameters()
 {

@@ -44,11 +44,12 @@
 #include <QMessageBox>
 #include <QSizePolicy>
 #include <QButtonGroup>
-#include "config_dialog.h"
-#include <digital_scratch_api.h>
 #include <iostream>
-#include <singleton.h>
-#include <utils.h>
+#include <digital_scratch_api.h>
+
+#include "gui/config_dialog.h"
+#include "singleton.h"
+#include "utils.h"
 
 Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
 {

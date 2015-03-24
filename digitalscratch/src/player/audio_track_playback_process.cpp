@@ -34,11 +34,12 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
-#include <utils.h>
-#include <data_persistence.h>
-#include <singleton.h>
 
-#include "audio_track_playback_process.h"
+#include "utils.h"
+#include "singleton.h"
+#include "player/audio_track_playback_process.h"
+#include "tracks/data_persistence.h"
+#include "app/application_logging.h"
 
 #define SPEED_MIN_TO_GO_DOWN 0.2
 

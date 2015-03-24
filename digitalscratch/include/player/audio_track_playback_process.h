@@ -34,11 +34,11 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <samplerate.h>
 
-#include "audio_track.h"
-#include "playback_parameters.h"
-#include "samplerate.h"
-#include "application_const.h"
+#include "tracks/audio_track.h"
+#include "player/playback_parameters.h"
+#include "app/application_const.h"
 
 using namespace std;
 

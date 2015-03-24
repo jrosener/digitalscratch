@@ -39,12 +39,12 @@
 #include <QScopedPointer>
 #include <QSharedPointer>
 
-#include "audio_track.h"
-#include "audio_file_decoding_process.h"
-#include "audio_track_key_process.h"
-#include "application_settings.h"
+#include "tracks/audio_track.h"
+#include "tracks/audio_file_decoding_process.h"
+#include "tracks/audio_track_key_process.h"
+#include "app/application_settings.h"
+#include "app/application_logging.h"
 #include "singleton.h"
-#include "application_logging.h"
 
 // Global static data.
 QStringList Utils::audio_file_extensions = QStringList() << "ac3" << "flac" << "m4a" << "mp2" << "mp3" << "ogg" << "wav" << "wma";

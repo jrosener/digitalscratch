@@ -36,18 +36,18 @@
 #include <QProcess>
 #include <QThreadPool>
 
-#include "application_logging.h"
-#include "gui.h"
-#include "audio_track.h"
-#include "audio_file_decoding_process.h"
-#include "audio_track_playback_process.h"
-#include "sound_driver_access_rules.h"
-#include "jack_access_rules.h"
-#include "playback_parameters.h"
-#include "timecode_control_process.h"
-#include "sound_capture_and_playback_process.h"
+#include "app/application_logging.h"
+#include "app/application_const.h"
+#include "gui/gui.h"
+#include "tracks/audio_track.h"
+#include "tracks/audio_file_decoding_process.h"
+#include "player/audio_track_playback_process.h"
+#include "player/playback_parameters.h"
+#include "player/sound_capture_and_playback_process.h"
+#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/jack_access_rules.h"
+#include "control/timecode_control_process.h"
 #include "singleton.h"
-#include "application_const.h"
 
 int main(int argc, char *argv[])
 {

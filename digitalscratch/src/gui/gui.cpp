@@ -45,8 +45,6 @@
 #include <iostream>
 #include <QGraphicsScene>
 #include <QFileSystemModel>
-#include <samplerate.h>
-#include <jack/jack.h>
 #include <QSignalMapper>
 #include <QMessageBox>
 #include <QApplication>
@@ -60,16 +58,18 @@
 #include <QSizePolicy>
 #include <QtConcurrentRun>
 #include <math.h>
+#include <digital_scratch_api.h>
+#include <keyfinder_api.h>
+#include <samplerate.h>
+#include <jack/jack.h>
 
-#include "application_logging.h"
-#include "gui.h"
-#include "digital_scratch_api.h"
-#include "audio_collection_model.h"
+#include "app/application_logging.h"
+#include "gui/gui.h"
+#include "tracks/audio_collection_model.h"
+#include "tracks/playlist.h"
+#include "tracks/playlist_persistence.h"
 #include "utils.h"
 #include "singleton.h"
-#include "keyfinder_api.h"
-#include "playlist.h"
-#include "playlist_persistence.h"
 
 #ifdef WIN32
 extern "C"

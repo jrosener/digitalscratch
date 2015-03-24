@@ -47,18 +47,18 @@
 #include <QPushButton>
 #include <QSharedPointer>
 
-#include "config_dialog.h"
-#include "audio_track.h"
-#include "audio_file_decoding_process.h"
-#include "audio_track_playback_process.h"
-#include "playback_parameters.h"
-#include "sound_driver_access_rules.h"
-#include "waveform.h"
-#include "application_settings.h"
-#include "application_const.h"
-#include "audio_collection_model.h"
-#include "playlist.h"
-#include "sound_capture_and_playback_process.h"
+#include "gui/config_dialog.h"
+#include "gui/waveform.h"
+#include "app/application_settings.h"
+#include "app/application_const.h"
+#include "player/audio_track_playback_process.h"
+#include "player/playback_parameters.h"
+#include "player/sound_capture_and_playback_process.h"
+#include "audiodev/sound_driver_access_rules.h"
+#include "tracks/audio_track.h"
+#include "tracks/audio_file_decoding_process.h"
+#include "tracks/audio_collection_model.h"
+#include "tracks/playlist.h"
 
 using namespace std;
 

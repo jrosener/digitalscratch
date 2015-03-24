@@ -34,8 +34,7 @@
 
 #include <QString>
 
-#include "application_const.h"
-#include "audio_track.h"
+#include "app/application_const.h"
 
 using namespace std;
 

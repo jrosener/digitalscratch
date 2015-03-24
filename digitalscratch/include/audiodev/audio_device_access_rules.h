@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*----------------------------------------------( sound_device_access_rules.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,51 +26,32 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/* Behavior class: access internal sound card device (open, close, list, ...) */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <string>
 #include <iostream>
 #include <QObject>
 #include <QString>
-
+#include <QAudioDeviceInfo>
+#include "audiodev/sound_driver_access_rules.h"
 #include "app/application_const.h"
 
 using namespace std;
 
-class Playback_parameters : public QObject
+class Audio_device_access_rules : public Sound_driver_access_rules
 {
-    Q_OBJECT
-
- private:
-    float speed;        // Vinyl speed.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+ public:
+    Audio_device_access_rules(const unsigned short int &nb_channels);
+    virtual ~Audio_device_access_rules();
 
  public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
-
- public:
-    bool  set_speed(const float &speed);
-    float get_speed() const;
-    bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
-
-    bool  set_volume(const float &volume);
-    float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
-
-    bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
-
- private:
-    bool reset();
+    static QList<QString> get_device_list();
+    bool start(void *in_callback_param);
+    bool restart();
+    bool stop();
+    bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers) const;
+    bool get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers) const;
 };

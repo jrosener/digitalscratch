@@ -58,54 +58,54 @@ INCLUDEPATH += . include/player include/gui include
 
 
 # Input
-HEADERS += include/gui/config_dialog.h \
+HEADERS += include/app/application_const.h \
+           include/app/application_logging.h \
+           include/app/application_settings.h \
+           include/audiodev/sound_driver_access_rules.h \
+           include/audiodev/jack_access_rules.h \
+           include/audiodev/audio_device_access_rules.h \
+           include/control/control_process.h \
+           include/control/timecode_control_process.h \
+           include/control/manual_control_process.h \
+           include/gui/config_dialog.h \
            include/gui/gui.h \
            include/gui/waveform.h \
-           include/gui/application_settings.h \
-           include/player/audio_file_decoding_process.h \
-           include/player/audio_track.h \
            include/player/audio_track_playback_process.h \
-           include/player/sound_driver_access_rules.h \
-           include/player/jack_access_rules.h \
-           include/player/audio_device_access_rules.h \
-           include/player/control_process.h \
-           include/player/timecode_control_process.h \
-           include/player/manual_control_process.h \
            include/player/playback_parameters.h \
            include/player/sound_capture_and_playback_process.h \
-           include/player/data_persistence.h \
-           include/player/audio_collection_model.h \
-           include/player/audio_track_key_process.h \
-           include/player/playlist.h \
-           include/player/playlist_persistence.h \
+           include/tracks/data_persistence.h \
+           include/tracks/audio_collection_model.h \
+           include/tracks/audio_track_key_process.h \
+           include/tracks/playlist.h \
+           include/tracks/playlist_persistence.h \
+           include/tracks/audio_file_decoding_process.h \
+           include/tracks/audio_track.h \
            include/utils.h \
-           include/application_const.h \
-           include/singleton.h \
-           include/application_logging.h
+           include/singleton.h
            
-SOURCES += src/main.cpp \
+SOURCES += src/app/application_settings.cpp \
+           src/app/application_logging.cpp \
+           src/audiodev/sound_driver_access_rules.cpp \
+           src/audiodev/jack_access_rules.cpp \
+           src/audiodev/audio_device_access_rules.cpp \
+           src/control/control_process.cpp \
+           src/control/timecode_control_process.cpp \
+           src/control/manual_control_process.cpp \
            src/gui/config_dialog.cpp \
            src/gui/gui.cpp \
            src/gui/waveform.cpp \
-           src/gui/application_settings.cpp \
-           src/player/audio_file_decoding_process.cpp \
-           src/player/audio_track.cpp \
            src/player/audio_track_playback_process.cpp \
-           src/player/sound_driver_access_rules.cpp \
-           src/player/jack_access_rules.cpp \
-           src/player/audio_device_access_rules.cpp \
-           src/player/control_process.cpp \
-           src/player/timecode_control_process.cpp \
-           src/player/manual_control_process.cpp \
            src/player/playback_parameters.cpp \
            src/player/sound_capture_and_playback_process.cpp \
-           src/player/data_persistence.cpp \
-           src/player/audio_collection_model.cpp \
-           src/player/audio_track_key_process.cpp \
-           src/player/playlist.cpp \
-           src/player/playlist_persistence.cpp \
+           src/tracks/audio_file_decoding_process.cpp \
+           src/tracks/audio_track.cpp \
+           src/tracks/data_persistence.cpp \
+           src/tracks/audio_collection_model.cpp \
+           src/tracks/audio_track_key_process.cpp \
+           src/tracks/playlist.cpp \
+           src/tracks/playlist_persistence.cpp \
            src/utils.cpp \
-           src/application_logging.cpp
+           src/main.cpp
 
 CONFIG(test) {
     INCLUDEPATH += test

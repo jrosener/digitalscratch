@@ -33,8 +33,8 @@
 
 #include <QtDebug>
 
-#include "sound_capture_and_playback_process.h"
-#include "application_logging.h"
+#include "player/sound_capture_and_playback_process.h"
+#include "app/application_logging.h"
 
 
 Sound_capture_and_playback_process::Sound_capture_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,

@@ -33,11 +33,11 @@
 
 #pragma once
 
-#include "timecode_control_process.h"
-#include "manual_control_process.h"
-#include "audio_track_playback_process.h"
-#include "sound_driver_access_rules.h"
-#include "application_const.h"
+#include "control/timecode_control_process.h"
+#include "control/manual_control_process.h"
+#include "audiodev/sound_driver_access_rules.h"
+#include "app/application_const.h"
+#include "player/audio_track_playback_process.h"
 
 using namespace std;
 

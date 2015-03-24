@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*------------------------------------------( audio_file_decoding_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,51 +26,49 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/*    Behavior class: process to decode an audio file (mp3, flac, ogg,...)    */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <string>
 #include <iostream>
+#include <QFileInfo>
 #include <QObject>
+#include <QFile>
 #include <QString>
+#include <QSharedPointer>
 
+#include "tracks/audio_track.h"
 #include "app/application_const.h"
 
 using namespace std;
 
-class Playback_parameters : public QObject
+class Audio_file_decoding_process : public QObject
 {
     Q_OBJECT
 
  private:
-    float speed;        // Vinyl speed.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+    QSharedPointer<Audio_track> at;
+    QFile                       file;
+    bool                        do_resample;
+    unsigned int                decoded_sample_rate;
 
  public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
+    Audio_file_decoding_process(const QSharedPointer<Audio_track> &at,
+                                const bool &do_resample = true);
+    virtual ~Audio_file_decoding_process();
 
- public:
-    bool  set_speed(const float &speed);
-    float get_speed() const;
-    bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
-
-    bool  set_volume(const float &volume);
-    float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
-
-    bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
+    void clear();
+    bool run(const QString &path,
+             const QString &file_hash = "",
+             const QString &music_key = "");    // Make decoding of the audio file.
 
  private:
-    bool reset();
+    void resample_track();                    // Change sample rate of the audio track.
+    bool decode();                            // Internal audio decoding.
+
+ signals:
+    void name_changed(const QString &name);
+    void key_changed(const QString &key);
 };

@@ -37,8 +37,8 @@
 #include <iostream>
 #include <math.h>
 
-#include "waveform.h"
-#include "application_logging.h"
+#include "gui/waveform.h"
+#include "app/application_logging.h"
 
 Waveform::Waveform(const QSharedPointer<Audio_track> &at, QWidget *parent) : QLabel(parent)
 {

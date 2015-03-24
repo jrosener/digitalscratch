@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*----------------------------------------------( sound_card_access_rules.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,51 +26,61 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/*        Behavior class: access sound card (open, close, list, ...)          */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <string>
 #include <iostream>
 #include <QObject>
 #include <QString>
 
 #include "app/application_const.h"
 
+#ifdef ENABLE_TEST_MODE
+#include <tracks/audio_track.h>
+#include <QSharedPointer>
+#endif
+
 using namespace std;
 
-class Playback_parameters : public QObject
+class Sound_driver_access_rules : public QObject
 {
     Q_OBJECT
 
- private:
-    float speed;        // Vinyl speed.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+ protected:
+    unsigned short int       nb_channels;
+    void                    *callback_param;
+    bool                     running;
+    bool                     do_capture;
 
  public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
+    Sound_driver_access_rules(const unsigned short int &nb_channels);
+    virtual ~Sound_driver_access_rules();
 
  public:
-    bool  set_speed(const float &speed);
-    float get_speed() const;
-    bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
+    bool is_running();
+    void set_capture(bool in_do_capture);
+    virtual bool start(void *in_callback_param) = 0;
+    virtual bool restart() = 0;
+    virtual bool stop() = 0;
+    virtual bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers) = 0;
+    virtual bool get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers) = 0;
 
-    bool  set_volume(const float &volume);
-    float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
-
-    bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
-
+#ifdef ENABLE_TEST_MODE
  private:
-    bool reset();
+    bool using_fake_timecode;
+    unsigned int timecode_current_sample;
+    QSharedPointer<Audio_track> timecode;
+
+ public:
+    bool use_timecode_from_file(const QString &path);
+
+ protected:
+    bool fill_input_buf(unsigned short int nb_buffer_frames, QList<float*> &io_buffers);
+ #endif
+
+ signals:
+    void error_msg(QString in_error_message);
 };

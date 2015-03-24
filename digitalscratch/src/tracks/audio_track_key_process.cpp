@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*---------------------------------------------( audio_file_key_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,51 +26,63 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/*    Behavior class: process to compute a musical key for an audio track     */
 /*                                                                            */
 /*============================================================================*/
 
-#pragma once
+#include <QtDebug>
 
-#include <string>
-#include <iostream>
-#include <QObject>
-#include <QString>
+#include "tracks/audio_track_key_process.h"
+#include "tracks/audio_track.h"
+#include "app/application_logging.h"
+#include "utils.h"
 
-#include "app/application_const.h"
-
-using namespace std;
-
-class Playback_parameters : public QObject
+Audio_track_key_process::Audio_track_key_process(const QSharedPointer<Audio_track> &at)
 {
-    Q_OBJECT
+    if (at.data() == nullptr)
+    {
+        qCWarning(DS_MUSICKEY) << "audio track is null";
+    }
+    else
+    {
+        this->at = at;
+    }
 
- private:
-    float speed;        // Vinyl speed.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+    return;
+}
 
- public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
+Audio_track_key_process::~Audio_track_key_process()
+{
+    return;
+}
 
- public:
-    bool  set_speed(const float &speed);
-    float get_speed() const;
-    bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
+bool
+Audio_track_key_process::run()
+{
+    // Check if there are decoded audio data in audio track.
+    if (this->at->get_end_of_samples() == 0)
+    {
+        return false;
+    }
 
-    bool  set_volume(const float &volume);
-    float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
+    // Compute the musical key.
+    QString key = kfinder_get_key(at->get_samples(),
+                                  at->get_end_of_samples(),
+                                  at->get_sample_rate(),
+                                  2);
+    if (key != "")
+    {
+        // Transform music key to a clock number.
+        key = Utils::convert_music_key_to_clock_number(key);
 
-    bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
+        // Set music key to the audio track.
+        this->at->set_music_key(key);
+    }
+    else
+    {
+        qCWarning(DS_MUSICKEY) << "no music key found" << this->at->get_path();
+        return false;
+    }
 
- private:
-    bool reset();
-};
+    return true;
+}

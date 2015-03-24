@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------------( playback_parameters.h )-*/
+/*---------------------------------------------( timecode_control_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,51 +26,40 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*                Class defining playback parameters of a track.              */
+/* Behavior class: analyze captured timecode and determine playback           */
+/* parameters.                                                                */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <string>
 #include <iostream>
+#include <QSharedPointer>
 #include <QObject>
-#include <QString>
 
+#include "player/playback_parameters.h"
 #include "app/application_const.h"
+#include "control/control_process.h"
 
 using namespace std;
 
-class Playback_parameters : public QObject
+class Timecode_control_process : public Control_process
 {
     Q_OBJECT
 
  private:
-    float speed;        // Vinyl speed.
-    float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
+    int dscratch_id;
+    unsigned short int waitfor_emit_speed_changed; // Do not update speed (in gui) every time.
 
  public:
-    Playback_parameters();
-    virtual ~Playback_parameters();
+    Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
+                             const QString                             &vinyl_type,
+                             const unsigned int                        &sample_rate);
+    virtual ~Timecode_control_process();
 
- public:
-    bool  set_speed(const float &speed);
-    float get_speed() const;
-    bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
+    bool run(const unsigned short int &nb_samples,
+             const float              *samples_1,
+             const float              *samples_2);
 
-    bool  set_volume(const float &volume);
-    float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
-
-    bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
-
- private:
-    bool reset();
+    int get_dscratch_id();
 };
