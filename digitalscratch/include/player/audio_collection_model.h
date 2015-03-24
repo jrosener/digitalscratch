@@ -72,10 +72,10 @@ class Audio_collection_item
                                 Audio_collection_item *in_parent       = 0);
     ~Audio_collection_item();
 
-    void                           append_child(Audio_collection_item *in_item);
-    Audio_collection_item         *get_child(int in_row);
-    int                            get_child_count() const;
-    Audio_collection_item         *get_parent();
+    void                   append_child(Audio_collection_item *in_item);
+    Audio_collection_item *get_child(int in_row);
+    int                    get_child_count() const;
+    Audio_collection_item *get_parent();
 
     int                    get_row() const;
     int                    get_column_count() const;
@@ -101,8 +101,6 @@ class Audio_collection_item
 
 class Audio_collection_model : public QAbstractItemModel
 {
-    Q_OBJECT
-
  public:
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_read;
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_store;

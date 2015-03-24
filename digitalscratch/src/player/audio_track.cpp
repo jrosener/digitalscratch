@@ -170,14 +170,6 @@ Audio_track::set_name(const QString &name)
     if (name != this->name)
     {
         this->name = name;
-        if (this->name == "")
-        {
-            emit name_changed("--");
-        }
-        else
-        {
-            emit name_changed("[" + this->get_length_str() + "]  " + this->name);
-        }
     }
 
     return true;
@@ -231,7 +223,6 @@ bool
 Audio_track::set_music_key(const QString &key)
 {
     this->music_key = key;
-    emit key_changed(this->music_key);
 
     return true;
 }

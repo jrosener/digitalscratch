@@ -58,8 +58,6 @@ using namespace std;
 
 class Jack_access_rules : public Sound_driver_access_rules
 {
-    Q_OBJECT
-
  private:
     AUDIO_STREAM_TYPE stream;
 

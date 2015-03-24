@@ -37,7 +37,6 @@
 Playback_parameters::Playback_parameters()
 {
     this->reset();
-    this->waitfor_emit_speed_changed = 0;
 
     return;
 }
@@ -60,18 +59,6 @@ bool
 Playback_parameters::set_speed(const float &speed)
 {
     this->speed = speed;
-
-    // Change speed label in Gui only every 10 times.
-    if (this->waitfor_emit_speed_changed > 10)
-    {
-        emit speed_changed(this->speed);
-        this->waitfor_emit_speed_changed = 0;
-    }
-    else
-    {
-        this->waitfor_emit_speed_changed++;
-    }
-
     return true;
 }
 
@@ -112,7 +99,6 @@ Playback_parameters::set_volume(const float &volume)
     if (volume != this->volume)
     {
         this->volume = volume;
-        emit volume_changed((double)(floorf((this->volume * 100.0) * 10.0) / 10.0));
     }
 
     return true;

@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-------------------------------------------------( playlist_persistence.h )-*/
+/*------------------------------------------------------( control_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */
+/*  it under the terms of the GNU General Public License as published by      */ 
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,23 +26,31 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*         File persistence methods for a Playlist (m3u, pls,...)             */
+/* Behavior class: mother class for controlling playback.                     */
+/* Derived for timecode control, keyboard/mouse/gui control,...               */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include "playlist.h"
+#include <QObject>
+#include <QSharedPointer>
+#include "playback_parameters.h"
 
 using namespace std;
 
-class Playlist_persistence
+class Control_process : public QObject
 {
-  public:
-    Playlist_persistence();
-    virtual ~Playlist_persistence();
+    Q_OBJECT
 
-  public:
-    bool read_m3u(const QString &file_name, Playlist &io_playlist);
-    bool read_pls(const QString &file_name, Playlist &io_playlist);
+ protected:
+    QSharedPointer<Playback_parameters> params;
+
+ public:
+    Control_process(const QSharedPointer<Playback_parameters> &param);
+    virtual ~Control_process();
+
+ signals:
+    void speed_changed(const float &speed);
+    void volume_changed(const double &volume);
 };

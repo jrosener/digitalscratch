@@ -51,7 +51,6 @@ class Playback_parameters : public QObject
     bool  new_speed;    // If true: speed is updated.
     bool  new_volume;   // If true: volume is updated.
     bool  new_data;     // If true: data are updated.
-    unsigned short int waitfor_emit_speed_changed; // Do not update speed (in gui) every time.
 
  public:
     Playback_parameters();
@@ -74,8 +73,4 @@ class Playback_parameters : public QObject
 
  private:
     bool reset();
-
- signals:
-    void speed_changed(const float &speed);
-    void volume_changed(const double &volume);
 };

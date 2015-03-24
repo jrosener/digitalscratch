@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
             dec_procs,
             dec_sampler_procs,
             play_params,
+            tcode_controls,
             manual_controls,
             at_playbacks,
             sound_card,

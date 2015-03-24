@@ -43,8 +43,6 @@ using namespace std;
 
 class Audio_device_access_rules : public Sound_driver_access_rules
 {
-    Q_OBJECT
-
  public:
     Audio_device_access_rules(const unsigned short int &nb_channels);
     virtual ~Audio_device_access_rules();

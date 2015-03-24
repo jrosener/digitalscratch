@@ -27,7 +27,7 @@
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
 /* Behavior class: determine playback parametrs based on keyboard and gui     */
-/*                 buttons                                                    */
+/*                 buttons.                                                   */
 /*                                                                            */
 /*============================================================================*/
 
@@ -35,16 +35,19 @@
 
 #include <iostream>
 #include <QSharedPointer>
+#include <QObject>
 
 #include "playback_parameters.h"
 #include "application_const.h"
+#include "control_process.h"
 
 using namespace std;
 
-class Manual_control_process
+class Manual_control_process : public Control_process
 {
+    Q_OBJECT
+
  private:
-    QSharedPointer<Playback_parameters> params;
     float speed;
 
  public:

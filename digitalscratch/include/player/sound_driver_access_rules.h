@@ -70,9 +70,9 @@ class Sound_driver_access_rules : public QObject
 
 #ifdef ENABLE_TEST_MODE
  private:
-   bool using_fake_timecode;
-   unsigned int timecode_current_sample;
-   QSharedPointer<Audio_track> timecode;
+    bool using_fake_timecode;
+    unsigned int timecode_current_sample;
+    QSharedPointer<Audio_track> timecode;
 
  public:
     bool use_timecode_from_file(const QString &path);
@@ -82,5 +82,5 @@ class Sound_driver_access_rules : public QObject
  #endif
 
  signals:
-   void error_msg(QString in_error_message);
+    void error_msg(QString in_error_message);
 };

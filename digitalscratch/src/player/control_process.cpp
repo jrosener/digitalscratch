@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-------------------------------------------------------------( playlist.h )-*/
+/*----------------------------------------------------( control_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */
+/*  it under the terms of the GNU General Public License as published by      */ 
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -26,34 +26,21 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*    Class defining a playlist (basically just a list of audio file path)    */
+/* Behavior class: mother class for controlling playback.                     */
+/* Derived for timecode control, keyboard/mouse/gui control,...               */
 /*                                                                            */
 /*============================================================================*/
 
-#pragma once
+#include "control_process.h"
 
-#include <QObject>
-#include <QString>
-#include <QStringList>
-
-#include "application_const.h"
-
-using namespace std;
-
-class Playlist
+Control_process::Control_process(const QSharedPointer<Playback_parameters> &param)
 {
- private:
-    QString     basepath;
-    QString     name;
-    QStringList tracklist;
+    this->params = param;
+    return;
+}
 
- public:
-    Playlist(const QString &basepath, const QString &name);
-    virtual ~Playlist();
+Control_process::~Control_process()
+{
+    return;
+}
 
- public:
-    QString     get_basepath() const;
-    QString     get_name() const;
-    QStringList get_tracklist() const;
-    void        add_track(const QString &filename);
-};

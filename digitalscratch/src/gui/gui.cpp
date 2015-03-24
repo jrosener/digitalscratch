@@ -94,6 +94,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QSharedPointer<Audio_file_decoding_process>>        &decs,
          QList<QList<QSharedPointer<Audio_file_decoding_process>>> &dec_samplers,
          QList<QSharedPointer<Playback_parameters>>                &params,
+         QList<QSharedPointer<Timecode_control_process>>           &tcode_controls,
          QList<QSharedPointer<Manual_control_process>>             &manual_controls,
          QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
          QSharedPointer<Sound_driver_access_rules>                 &sound_card,
@@ -119,6 +120,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->decs                    = decs;
     this->dec_samplers            = dec_samplers;
     this->params                  = params;
+    this->tcode_controls          = tcode_controls;
     this->manual_controls         = manual_controls;
     this->playbacks               = playbacks;
     this->nb_decks                = this->settings->get_nb_decks();
@@ -1071,8 +1073,15 @@ Gui::connect_decks_area()
                             }
                         });
 
-        // Display speed.
-        QObject::connect(this->params[i].data(), &Playback_parameters::speed_changed,
+        // Display speed (manual controller).
+        QObject::connect(this->manual_controls[i].data(), &Manual_control_process::speed_changed,
+                        [this, i](float in_speed)
+                        {
+                            this->update_speed_label(in_speed, i);
+                        });
+
+        // Display speed (manual controller).
+        QObject::connect(this->tcode_controls[i].data(), &Timecode_control_process::speed_changed,
                         [this, i](float in_speed)
                         {
                             this->update_speed_label(in_speed, i);
@@ -1123,14 +1132,14 @@ Gui::connect_decks_area()
                          });
 
         // Name of the track.
-        QObject::connect(this->ats[i].data(), &Audio_track::name_changed, [this, i](QString name){this->decks[i]->track_name->setText(name);});
+        QObject::connect(this->decs[i].data(), &Audio_file_decoding_process::name_changed, [this, i](QString name){this->decks[i]->track_name->setText(name);});
 
         // Thru button.
         QObject::connect(this->decks[i]->thru_button, &QPushButton::clicked,
                          [this, i](bool checked) {this->playback_thru(i, checked);});
 
         // Music key of the track.
-        QObject::connect(this->ats[i].data(), &Audio_track::key_changed, [this, i](QString key){this->decks[i]->set_key(key);});
+        QObject::connect(this->decs[i].data(), &Audio_file_decoding_process::key_changed, [this, i](QString key){this->decks[i]->set_key(key);});
 
         // Move in track when slider is moved on waveform.
         QObject::connect(this->decks[i]->waveform, &Waveform::slider_position_changed, [this, i](float position){this->jump_to_position(position, i);});
@@ -1223,7 +1232,7 @@ Gui::connect_samplers_area()
                              [this, i, j](){this->sampler_button_del_clicked(i, j);});
 
             // Track name.
-            QObject::connect(this->at_samplers[i][j].data(), &Audio_track::name_changed,
+            QObject::connect(this->dec_samplers[i][j].data(), &Audio_file_decoding_process::name_changed,
                             [this, i, j](QString text)
                             {
                                 this->set_sampler_text(text, i, j);

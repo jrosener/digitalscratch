@@ -112,12 +112,21 @@ Audio_file_decoding_process::run(const QString &path,
     // Set name of the track which is for the moment the name of the file.
     QFileInfo file_info = QFileInfo(this->file);
     this->at->set_name(file_info.fileName());
+    if (this->at->get_name() == "")
+    {
+        emit name_changed("--");
+    }
+    else
+    {
+        emit name_changed("[" + this->at->get_length_str() + "]  " + this->at->get_name());
+    }
 
     // Set file path.
     this->at->set_fullpath(file_info.absoluteFilePath());
 
     // Set also the music key.
     this->at->set_music_key(music_key);
+    emit key_changed(this->at->get_music_key());
 
     // Set file hash.
     this->at->set_hash(file_hash);

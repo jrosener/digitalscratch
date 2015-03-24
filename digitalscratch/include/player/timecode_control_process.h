@@ -35,17 +35,21 @@
 
 #include <iostream>
 #include <QSharedPointer>
+#include <QObject>
 
 #include "playback_parameters.h"
 #include "application_const.h"
+#include "control_process.h"
 
 using namespace std;
 
-class Timecode_control_process
+class Timecode_control_process : public Control_process
 {
+    Q_OBJECT
+
  private:
-    QSharedPointer<Playback_parameters> params;
-    int                                 dscratch_id;
+    int dscratch_id;
+    unsigned short int waitfor_emit_speed_changed; // Do not update speed (in gui) every time.
 
  public:
     Timecode_control_process(const QSharedPointer<Playback_parameters> &param,

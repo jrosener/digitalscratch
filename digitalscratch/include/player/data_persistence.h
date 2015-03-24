@@ -42,10 +42,8 @@
 
 using namespace std;
 
-class Data_persistence : public QObject
+class Data_persistence
 {
-    Q_OBJECT
-
  public:
     Data_persistence();
     virtual ~Data_persistence();

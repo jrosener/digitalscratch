@@ -41,8 +41,6 @@ using namespace std;
 
 class Audio_track : public QObject
 {
-    Q_OBJECT
-
  private:
     unsigned int       sample_rate;               // Sample rate of decoded samples.
     short signed int  *samples;                   // Table of decoded samples.
@@ -83,8 +81,4 @@ class Audio_track : public QObject
     bool              set_music_key(const QString &key);                      // Set music key of the track.
     QString           get_music_key_tag() const;                              // Get music key of the track (from tag).
     bool              set_music_key_tag(const QString &key_tag);              // Set music key of the track (from tag).
-
- signals:
-    void name_changed(const QString &name);
-    void key_changed(const QString &key);
 };

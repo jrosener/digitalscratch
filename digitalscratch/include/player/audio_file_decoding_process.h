@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <QFileInfo>
+#include <QObject>
 #include <QFile>
 #include <QString>
 #include <QSharedPointer>
@@ -43,8 +44,10 @@
 
 using namespace std;
 
-class Audio_file_decoding_process
+class Audio_file_decoding_process : public QObject
 {
+    Q_OBJECT
+
  private:
     QSharedPointer<Audio_track> at;
     QFile                       file;
@@ -64,4 +67,8 @@ class Audio_file_decoding_process
  private:
     void resample_track();                    // Change sample rate of the audio track.
     bool decode();                            // Internal audio decoding.
+
+ signals:
+    void name_changed(const QString &name);
+    void key_changed(const QString &key);
 };

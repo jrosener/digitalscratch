@@ -41,10 +41,8 @@
 
 Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
                                                    const QString                             &vinyl_type,
-                                                   const unsigned int                        &sample_rate)
+                                                   const unsigned int                        &sample_rate) : Control_process(param)
 {
-    this->params = param;
-
     //
     // Initialize DigitalScratch library.
     //
@@ -58,6 +56,8 @@ Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback
     {
         qCCritical(DS_PLAYBACK) << "can not create turntable";
     }
+
+    this->waitfor_emit_speed_changed = 0;
 
     return;
 }
@@ -100,6 +100,17 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
             {
                 this->params->set_speed(speed);
                 this->params->set_speed_state(true);
+
+                // Change speed label in Gui only every 10 times.
+                if (this->waitfor_emit_speed_changed > 10)
+                {
+                    emit speed_changed(this->params->get_speed());
+                    this->waitfor_emit_speed_changed = 0;
+                }
+                else
+                {
+                    this->waitfor_emit_speed_changed++;
+                }
             }
             else
             {
@@ -109,6 +120,7 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
             {
                 this->params->set_volume(volume);
                 this->params->set_volume_state(true);
+                emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0));
             }
             else
             {
