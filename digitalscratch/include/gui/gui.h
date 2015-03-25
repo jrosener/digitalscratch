@@ -53,7 +53,7 @@
 #include "app/application_const.h"
 #include "player/audio_track_playback_process.h"
 #include "player/playback_parameters.h"
-#include "player/sound_capture_and_playback_process.h"
+#include "player/control_and_playback_process.h"
 #include "audiodev/sound_driver_access_rules.h"
 #include "tracks/audio_track.h"
 #include "tracks/audio_file_decoding_process.h"

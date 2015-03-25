@@ -32,7 +32,7 @@
 
 #include <QtDebug>
 
-#include "player/sound_capture_and_playback_process.h"
+#include "player/control_and_playback_process.h"
 #include "audiodev/sound_driver_access_rules.h"
 #include "audiodev/jack_access_rules.h"
 #include "app/application_settings.h"

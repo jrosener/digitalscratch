@@ -33,7 +33,7 @@
 
 #include <QtDebug>
 
-#include "player/sound_capture_and_playback_process.h"
+#include "player/control_and_playback_process.h"
 #include "app/application_logging.h"
 
 

@@ -72,7 +72,7 @@ HEADERS += include/app/application_const.h \
            include/gui/waveform.h \
            include/player/audio_track_playback_process.h \
            include/player/playback_parameters.h \
-           include/player/sound_capture_and_playback_process.h \
+           include/player/control_and_playback_process.h \
            include/tracks/data_persistence.h \
            include/tracks/audio_collection_model.h \
            include/tracks/audio_track_key_process.h \
@@ -96,7 +96,7 @@ SOURCES += src/app/application_settings.cpp \
            src/gui/waveform.cpp \
            src/player/audio_track_playback_process.cpp \
            src/player/playback_parameters.cpp \
-           src/player/sound_capture_and_playback_process.cpp \
+           src/player/control_and_playback_process.cpp \
            src/tracks/audio_file_decoding_process.cpp \
            src/tracks/audio_track.cpp \
            src/tracks/data_persistence.cpp \
