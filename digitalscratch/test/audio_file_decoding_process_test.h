@@ -1,6 +1,6 @@
 #include <QObject>
 #include <QtTest>
-#include <application_const.h>
+#include "app/application_const.h"
 
 class Audio_file_decoding_process_Test : public QObject
 {

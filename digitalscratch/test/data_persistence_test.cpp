@@ -1,10 +1,10 @@
 #include <QtTest>
-#include <data_persistence_test.h>
-#include <data_persistence.h>
-#include <singleton.h>
 #include <QDesktopServices>
-#include <utils.h>
-#include <audio_file_decoding_process.h>
+#include "data_persistence_test.h"
+#include "singleton.h"
+#include "utils.h"
+#include "tracks/audio_file_decoding_process.h"
+#include "tracks/data_persistence.h"
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"

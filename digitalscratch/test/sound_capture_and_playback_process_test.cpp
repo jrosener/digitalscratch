@@ -1,19 +1,20 @@
 #include <QtTest>
-#include <singleton.h>
 #include <QDesktopServices>
-#include <utils.h>
-#include <application_settings.h>
-#include <sound_capture_and_playback_process_test.h>
-#include <digital_scratch_api.h>
-#include <playback_parameters.h>
-#include <timecode_control_process.h>
-#include <manual_control_process.h>
-#include <audio_track_playback_process.h>
-#include <sound_driver_access_rules.h>
-#include <sound_capture_and_playback_process.h>
-#include <jack_access_rules.h>
-#include <audio_file_decoding_process.h>
 #include <qeventloop.h>
+
+#include <digital_scratch_api.h>
+#include "singleton.h"
+#include "utils.h"
+#include "app/application_settings.h"
+#include "player/playback_parameters.h"
+#include "player/audio_track_playback_process.h"
+#include "control/timecode_control_process.h"
+#include "control/manual_control_process.h"
+#include "player/sound_capture_and_playback_process.h"
+#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/jack_access_rules.h"
+#include "tracks/audio_file_decoding_process.h"
+#include "sound_capture_and_playback_process_test.h"
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "b_comp_-_p_dust.mp3"

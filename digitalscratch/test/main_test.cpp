@@ -1,11 +1,11 @@
 #include <QTextCodec>
-#include <audio_track_test.h>
-#include <audio_file_decoding_process_test.h>
-#include <utils_test.h>
-#include <data_persistence_test.h>
-#include <playlist_persistence_test.h>
-#include <audio_device_access_rules_test.h>
-#include <sound_capture_and_playback_process_test.h>
+#include "audio_track_test.h"
+#include "audio_file_decoding_process_test.h"
+#include "utils_test.h"
+#include "data_persistence_test.h"
+#include "playlist_persistence_test.h"
+#include "audio_device_access_rules_test.h"
+#include "sound_capture_and_playback_process_test.h"
 
 int main(int argc, char** argv)
 {

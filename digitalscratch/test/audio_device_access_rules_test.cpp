@@ -1,7 +1,7 @@
 #include <QString>
 #include <QtTest>
 #include "audio_device_access_rules_test.h"
-#include "audio_device_access_rules.h"
+#include "audiodev/audio_device_access_rules.h"
 
 Audio_device_access_rules_Test::Audio_device_access_rules_Test()
 {

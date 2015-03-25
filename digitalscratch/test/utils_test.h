@@ -1,7 +1,8 @@
 #include <QObject>
 #include <QtTest>
-#include <utils.h>
-#include <application_const.h>
+
+#include "utils.h"
+#include "app/application_const.h"
 
 class Utils_Test : public QObject
 {

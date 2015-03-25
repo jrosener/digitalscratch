@@ -1,8 +1,9 @@
 #include <QtTest>
-#include <utils_test.h>
 #include <iostream>
 #include <QtConcurrentMap>
 #include <QStandardPaths>
+
+#include "utils_test.h"
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "track_1.mp3"

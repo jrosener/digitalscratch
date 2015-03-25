@@ -1,6 +1,6 @@
 #include <QObject>
 #include <QtTest>
-#include <application_const.h>
+#include "app/application_const.h"
 
 class Audio_track_Test : public QObject
 {

@@ -1,6 +1,6 @@
 #include <QObject>
 #include <QtTest>
-#include <application_const.h>
+#include "app/application_const.h"
 
 class Audio_device_access_rules_Test : public QObject
 {

@@ -1,7 +1,7 @@
 #include <QObject>
 #include <QtTest>
-#include "playlist.h"
-#include "playlist_persistence.h"
+#include "tracks/playlist.h"
+#include "tracks/playlist_persistence.h"
 
 class Playlist_persistence_Test : public QObject
 {

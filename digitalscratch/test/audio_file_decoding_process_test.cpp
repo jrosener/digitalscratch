@@ -1,8 +1,8 @@
 #include <QString>
 #include <QtTest>
 #include "audio_file_decoding_process_test.h"
-#include "audio_track.h"
-#include "audio_file_decoding_process.h"
+#include "tracks/audio_track.h"
+#include "tracks/audio_file_decoding_process.h"
 #include "utils.h"
 
 #define DATA_DIR     "./test/data/"

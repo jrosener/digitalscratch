@@ -1,7 +1,7 @@
 #include <QtTest>
-#include "playlist_persistence_test.h"
-#include "playlist_persistence.h"
 #include <iostream>
+#include "playlist_persistence_test.h"
+#include "tracks/playlist_persistence.h"
 
 #define DATA_DIR          "./test/data/"
 #ifdef WIN32
