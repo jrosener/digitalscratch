@@ -144,11 +144,11 @@ int main(int argc, char *argv[])
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    QSharedPointer<Sound_capture_and_playback_process> capture_and_playback(new Sound_capture_and_playback_process(tcode_controls,
-                                                                                                                   manual_controls,
-                                                                                                                   at_playbacks,
-                                                                                                                   sound_card,
-                                                                                                                   settings->get_nb_decks()));
+    QSharedPointer<Control_and_playback_process> capture_and_playback(new Control_and_playback_process(tcode_controls,
+                                                                                                       manual_controls,
+                                                                                                       at_playbacks,
+                                                                                                       sound_card,
+                                                                                                       settings->get_nb_decks()));
 
     // Create GUI.
     Gui gui(ats,

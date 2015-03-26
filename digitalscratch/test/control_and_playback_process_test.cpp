@@ -14,27 +14,27 @@
 #include "audiodev/sound_driver_access_rules.h"
 #include "audiodev/jack_access_rules.h"
 #include "tracks/audio_file_decoding_process.h"
-#include "sound_capture_and_playback_process_test.h"
+#include "control_and_playback_process_test.h"
 
 #define DATA_DIR     "./test/data/"
 #define DATA_TRACK_1 "b_comp_-_p_dust.mp3"
 #define TIMECODE_1   "scratchlivecontrol-vinylrip-33rpm+0.mp3"
 #define TIMECODE_2   "timecode-serato-5min-full_control.mp3"
 
-Sound_capture_and_playback_process_Test::Sound_capture_and_playback_process_Test()
+Control_and_playback_process_Test::Control_and_playback_process_Test()
 {
 }
 
-void Sound_capture_and_playback_process_Test::initTestCase()
+void Control_and_playback_process_Test::initTestCase()
 {
 }
 
-void Sound_capture_and_playback_process_Test::cleanupTestCase()
+void Control_and_playback_process_Test::cleanupTestCase()
 {
     // Cleanup.
 }
 
-void Sound_capture_and_playback_process_Test::testCaseRunWithJack_1deck()
+void Control_and_playback_process_Test::testCaseRunWithJack_1deck()
 {
     // Prepare full stack for analyzing timecode captured from sound card.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
@@ -67,11 +67,11 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack_1deck()
     sound_card->set_capture(true);
     QVERIFY2(sound_card->use_timecode_from_file(QString(DATA_DIR) + QString(TIMECODE_1)) == true, "set the pre-recorded timecode"); // Use a fake timecode
 
-    QSharedPointer<Sound_capture_and_playback_process> capture_and_play(new Sound_capture_and_playback_process(tcode_controls,
-                                                                                                               manual_controls,
-                                                                                                               at_playbacks,
-                                                                                                               sound_card,
-                                                                                                               settings->get_nb_decks()));
+    QSharedPointer<Control_and_playback_process> capture_and_play(new Control_and_playback_process(tcode_controls,
+                                                                                                  manual_controls,
+                                                                                                  at_playbacks,
+                                                                                                  sound_card,
+                                                                                                  settings->get_nb_decks()));
     capture_and_play->set_process_mode(ProcessMode::TIMECODE, 0);
 
     // Start capture and playback through jack.
@@ -86,7 +86,7 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack_1deck()
     sound_card->stop();
 }
 
-void Sound_capture_and_playback_process_Test::testCaseRunWithJack_2decks()
+void Control_and_playback_process_Test::testCaseRunWithJack_2decks()
 {
     // Prepare full stack for analyzing timecode captured from sound card.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
@@ -129,11 +129,11 @@ void Sound_capture_and_playback_process_Test::testCaseRunWithJack_2decks()
     sound_card->set_capture(true);
     QVERIFY2(sound_card->use_timecode_from_file(QString(DATA_DIR) + QString(TIMECODE_2)) == true, "set the pre-recorded timecode"); // Use a fake timecode
 
-    QSharedPointer<Sound_capture_and_playback_process> capture_and_play(new Sound_capture_and_playback_process(tcode_controls,
-                                                                                                               manual_controls,
-                                                                                                               at_playbacks,
-                                                                                                               sound_card,
-                                                                                                               settings->get_nb_decks()));
+    QSharedPointer<Control_and_playback_process> capture_and_play(new Control_and_playback_process(tcode_controls,
+                                                                                                   manual_controls,
+                                                                                                   at_playbacks,
+                                                                                                   sound_card,
+                                                                                                   settings->get_nb_decks()));
     capture_and_play->set_process_mode(ProcessMode::TIMECODE, 0);
 
     // Start capture and playback through jack.

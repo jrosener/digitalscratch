@@ -5,7 +5,7 @@
 #include "data_persistence_test.h"
 #include "playlist_persistence_test.h"
 #include "audio_device_access_rules_test.h"
-#include "sound_capture_and_playback_process_test.h"
+#include "control_and_playback_process_test.h"
 
 int main(int argc, char** argv)
 {
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
       status |= QTest::qExec(&tc, argc, argv);
    }
    {
-      Sound_capture_and_playback_process_Test tc;
+      Control_and_playback_process_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
 #endif

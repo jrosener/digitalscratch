@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*---------------------------------( sound_capture_and_playback_process.cpp )-*/
+/*---------------------------------------( control_and_playback_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -37,11 +37,11 @@
 #include "app/application_logging.h"
 
 
-Sound_capture_and_playback_process::Sound_capture_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
-                                                                       const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
-                                                                       const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
-                                                                       const QSharedPointer<Sound_driver_access_rules>           &sound_card,
-                                                                       const unsigned short int                                  &nb_decks)
+Control_and_playback_process::Control_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
+                                                           const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
+                                                           const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
+                                                           const QSharedPointer<Sound_driver_access_rules>           &sound_card,
+                                                           const unsigned short int                                  &nb_decks)
 {
     if (tcode_controls.count()  == 0 ||
         playbacks.count()       == 0 ||
@@ -67,13 +67,13 @@ Sound_capture_and_playback_process::Sound_capture_and_playback_process(const QLi
     return;
 }
 
-Sound_capture_and_playback_process::~Sound_capture_and_playback_process()
+Control_and_playback_process::~Control_and_playback_process()
 {
     return;
 }
 
 bool
-Sound_capture_and_playback_process::run(const unsigned short int &nb_buffer_frames)
+Control_and_playback_process::run(const unsigned short int &nb_buffer_frames)
 {
     QList<float *> input_buffers;
     QList<float *> output_buffers;
@@ -149,13 +149,13 @@ Sound_capture_and_playback_process::run(const unsigned short int &nb_buffer_fram
 }
 
 void
-Sound_capture_and_playback_process::set_process_mode(const ProcessMode &mode, const unsigned short int &deck_index)
+Control_and_playback_process::set_process_mode(const ProcessMode &mode, const unsigned short int &deck_index)
 {
     this->modes[deck_index] = mode;
 }
 
 ProcessMode
-Sound_capture_and_playback_process::get_process_mode(const unsigned short int &deck_index) const
+Control_and_playback_process::get_process_mode(const unsigned short int &deck_index) const
 {
     return this->modes[deck_index];
 }

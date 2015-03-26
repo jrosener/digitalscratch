@@ -98,13 +98,13 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QSharedPointer<Manual_control_process>>             &manual_controls,
          QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
          QSharedPointer<Sound_driver_access_rules>                 &sound_card,
-         QSharedPointer<Sound_capture_and_playback_process>        &capture_and_playback,
+         QSharedPointer<Control_and_playback_process>              &control_and_playback,
          int                                                       *dscratch_ids)
 {
     // Check input parameters.
     if (playbacks.count()           == 0       ||
         sound_card.data()           == nullptr ||
-        capture_and_playback.data() == nullptr ||
+        control_and_playback.data() == nullptr ||
         dscratch_ids                == nullptr)
     {
         qCCritical(DS_OBJECTLIFE) << "bad input parameters";
@@ -126,7 +126,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->nb_decks                = this->settings->get_nb_decks();
     this->nb_samplers             = this->settings->get_nb_samplers();
     this->sound_card              = sound_card;
-    this->capture_and_play        = capture_and_playback;
+    this->control_and_play        = control_and_playback;
     this->dscratch_ids            = dscratch_ids;
     this->selected_deck           = 0;
 
@@ -273,7 +273,7 @@ Gui::start_control_and_playback()
 {
     // Start sound card for capture and playback.
     if ((this->sound_card->is_running() == false) &&
-        (this->sound_card->start((void*)this->capture_and_play.data()) == false))
+        (this->sound_card->start((void*)this->control_and_play.data()) == false))
     {
         qCWarning(DS_SOUNDCARD) << "can not start sound card";
         this->start_capture_button->setChecked(false);
@@ -293,7 +293,7 @@ Gui::stop_control_and_playback()
 {
     // Stop sound card for capture and playback.
     if ((this->sound_card->is_running() == true) &&
-        (this->can_stop_capture_and_playback() == true) &&
+        (this->can_stop_control_and_playback() == true) &&
         (this->sound_card->stop() == false))
     {
         qCWarning(DS_SOUNDCARD) << "can not stop sound card";
@@ -310,7 +310,7 @@ Gui::stop_control_and_playback()
 }
 
 bool
-Gui::can_stop_capture_and_playback()
+Gui::can_stop_control_and_playback()
 {
     // Show a pop-up asking to confirm to stop capture.
     QMessageBox msg_box;
@@ -1052,7 +1052,7 @@ Gui::connect_decks_area()
                              {
                                  this->decks[i]->set_speed_mode_timecode();
                                  this->decks[i]->thru_button->setChecked(false);
-                                 this->capture_and_play->set_process_mode(ProcessMode::TIMECODE, i);
+                                 this->control_and_play->set_process_mode(ProcessMode::TIMECODE, i);
                              }
                              else
                              {
@@ -1065,7 +1065,7 @@ Gui::connect_decks_area()
                             if (checked == true)
                             {
                                 this->decks[i]->set_speed_mode_manual();
-                                this->capture_and_play->set_process_mode(ProcessMode::MANUAL, i);
+                                this->control_and_play->set_process_mode(ProcessMode::MANUAL, i);
                             }
                             else
                             {
@@ -1091,7 +1091,7 @@ Gui::connect_decks_area()
         QObject::connect(this->decks[i]->speed, &SpeedQLabel::right_clicked,
                         [this, i]()
                         {
-                            if (this->capture_and_play->get_process_mode(i) == ProcessMode::MANUAL)
+                            if (this->control_and_play->get_process_mode(i) == ProcessMode::MANUAL)
                             {
                                 this->speed_reset_to_100p(i);
                             }
@@ -2612,11 +2612,11 @@ Gui::playback_thru(const unsigned short &deck_index, const bool &on_off)
 {
     if (on_off == true)
     {
-        this->capture_and_play->set_process_mode(ProcessMode::THRU, deck_index);
+        this->control_and_play->set_process_mode(ProcessMode::THRU, deck_index);
     }
     else
     {
-        this->capture_and_play->set_process_mode(ProcessMode::TIMECODE, deck_index);
+        this->control_and_play->set_process_mode(ProcessMode::TIMECODE, deck_index);
     }
 
 }

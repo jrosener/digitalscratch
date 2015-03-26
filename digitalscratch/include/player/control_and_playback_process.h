@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------( sound_capture_and_playback_process.h )-*/
+/*-----------------------------------------( control_and_playback_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -48,7 +48,7 @@ enum class ProcessMode
     THRU
 };
 
-class Sound_capture_and_playback_process
+class Control_and_playback_process
 {
  private:
     QList<QSharedPointer<Manual_control_process>>       manual_controls;
@@ -59,12 +59,12 @@ class Sound_capture_and_playback_process
     QList<ProcessMode>                                  modes;
 
  public:
-    Sound_capture_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
+    Control_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
                                        const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
                                        const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
                                        const QSharedPointer<Sound_driver_access_rules>           &sound_card,
                                        const unsigned short int                                  &nb_decks);
-    virtual ~Sound_capture_and_playback_process();
+    virtual ~Control_and_playback_process();
 
     bool run(const unsigned short int &nb_buffer_frames);
     void set_process_mode(const ProcessMode &mode, const unsigned short &deck_index);

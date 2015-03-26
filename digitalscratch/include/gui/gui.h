@@ -363,7 +363,7 @@ class Gui : public QObject
     QList<QSharedPointer<Manual_control_process>>              manual_controls;
     QList<QSharedPointer<Audio_track_playback_process>>        playbacks;
     QSharedPointer<Sound_driver_access_rules>                  sound_card;
-    QSharedPointer<Sound_capture_and_playback_process>         capture_and_play;
+    QSharedPointer<Control_and_playback_process>               control_and_play;
     int                                                       *dscratch_ids;
     Application_settings                                      *settings;
 
@@ -377,7 +377,7 @@ class Gui : public QObject
         QList<QSharedPointer<Manual_control_process>>             &manual_controls,
         QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
         QSharedPointer<Sound_driver_access_rules>                 &sound_card,
-        QSharedPointer<Sound_capture_and_playback_process>        &capture_and_playback,
+        QSharedPointer<Control_and_playback_process>              &control_and_playback,
         int                                                       *dscratch_ids);
     virtual ~Gui();
 
@@ -410,7 +410,7 @@ class Gui : public QObject
     void resize_file_browser_columns();
     void analyze_audio_collection(const bool &is_all_files);
     void set_help_shortcut_value();
-    bool can_stop_capture_and_playback();
+    bool can_stop_control_and_playback();
     void hide_samplers();
     void show_samplers();
 

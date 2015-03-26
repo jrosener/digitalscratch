@@ -43,11 +43,11 @@
 int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
                                   void                          *in_data)
 {    // Call process for consuming captured data and preparing playback ones.
-    Sound_capture_and_playback_process *capture_and_playback = static_cast<Sound_capture_and_playback_process*>(in_data);
+    Control_and_playback_process *control_and_playback = static_cast<Control_and_playback_process*>(in_data);
 
-    if (capture_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
+    if (control_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
     {
-        qCWarning(DS_SOUNDCARD) << "can not run capture and playback process";
+        qCWarning(DS_SOUNDCARD) << "can not run control and playback process";
     }
 
     return 0;

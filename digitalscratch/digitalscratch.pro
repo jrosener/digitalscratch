@@ -118,7 +118,7 @@ CONFIG(test) {
                test/data_persistence_test.h \
                test/playlist_persistence_test.h \
                test/audio_device_access_rules_test.h \
-               test/sound_capture_and_playback_process_test.h
+               test/control_and_playback_process_test.h
 
     SOURCES += test/main_test.cpp \
                test/audio_track_test.cpp \
@@ -127,7 +127,7 @@ CONFIG(test) {
                test/data_persistence_test.cpp \
                test/playlist_persistence_test.cpp \
                test/audio_device_access_rules_test.cpp \
-               test/sound_capture_and_playback_process_test.cpp
+               test/control_and_playback_process_test.cpp
 }
 
 
