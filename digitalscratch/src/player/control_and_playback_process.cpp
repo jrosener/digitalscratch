@@ -72,6 +72,32 @@ Control_and_playback_process::~Control_and_playback_process()
     return;
 }
 
+void
+Control_and_playback_process::init()
+{
+    return;
+}
+
+bool
+Control_and_playback_process::start()
+{
+    return this->sound_card->start(this);
+}
+
+bool
+Control_and_playback_process::stop()
+{
+    return this->sound_card->stop();
+}
+
+void
+Control_and_playback_process::kill()
+{
+    this->sound_card->stop();
+    emit killed();
+}
+
+
 bool
 Control_and_playback_process::run(const unsigned short int &nb_buffer_frames)
 {

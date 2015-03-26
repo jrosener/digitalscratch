@@ -39,21 +39,7 @@
 #include "app/application_logging.h"
 #include "singleton.h"
 
-// Pass-through function.
-int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  in_nb_buffer_frames,
-                                  void                          *in_data)
-{    // Call process for consuming captured data and preparing playback ones.
-    Control_and_playback_process *control_and_playback = static_cast<Control_and_playback_process*>(in_data);
-
-    if (control_and_playback->run((unsigned short int)in_nb_buffer_frames) == false)
-    {
-        qCWarning(DS_SOUNDCARD) << "can not run control and playback process";
-    }
-
-    return 0;
-}
-
-Jack_access_rules::Jack_access_rules(unsigned short int in_nb_channels) : Sound_driver_access_rules(in_nb_channels)
+Jack_access_rules::Jack_access_rules(const unsigned short int &nb_channels) : Sound_driver_access_rules(nb_channels)
 {
     return;
 }
@@ -66,139 +52,168 @@ Jack_access_rules::~Jack_access_rules()
     return;
 }
 
-bool
-Jack_access_rules::start(void *in_callback_param)
+int
+Jack_access_rules::capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  nb_buffer_frames,
+                                                 void                          *data)
 {
-    const char     **ports = nullptr;
-    jack_status_t    status;
-    const char      *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
-    const char      *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
+    // Call process for consuming captured data and preparing playback ones.
+    Control_and_playback_process *control_and_playback = static_cast<Control_and_playback_process*>(data);
 
-    // Init.
-    this->running = false;
-
-    // Open a client connection to the JACK server.
-    this->stream = jack_client_open(CLIENT_NAME, JackNullOption, &status);
-    if (this->stream == nullptr)
+    if (control_and_playback->run((unsigned short int)nb_buffer_frames) == false)
     {
-        qCWarning(DS_SOUNDCARD) << "jack_client_open() failed.";
-        if (status & JackServerFailed)
-        {
-            qCWarning(DS_SOUNDCARD) << "unable to connect to JACK server.";
-        }
-        emit error_msg(QString("Can not connect to JACK server, please configure/start Jack server properly."));
-        return false;
+        qCWarning(DS_SOUNDCARD) << "can not run control and playback process";
     }
 
-    // Tell the JACK server to call "in_callback" whenever there is work to be done.
-    jack_set_process_callback(this->stream, &capture_and_playback_callback, in_callback_param);
+    return 0;
+}
 
-    // Display the current sample rate.
-    Application_settings *settings = &Singleton<Application_settings>::get_instance();
-    if (jack_get_sample_rate(this->stream) != settings->get_sample_rate())
-    {
-        qCWarning(DS_SOUNDCARD) << "DigitalScratch is configured to support sample rate of " << qPrintable(settings->get_sample_rate());
-        emit error_msg(QString("DigitalScratch is configured to support a sample rate of " + QString::number(settings->get_sample_rate()) + "Hz, you can change it in the settings dialog."));
-        return false;
-    }
+void
+Jack_access_rules::error_callback(const char *msg)
+{
+    qCWarning(DS_SOUNDCARD) << "jack error: " << msg;
+}
 
-    // Create input ports.
-    if (this->do_capture == true)
+bool
+Jack_access_rules::start(void *callback_param)
+{
+    if (this->running == false)
     {
-        for (int i = 0; i < this->nb_channels; i++)
+        const char     **ports = nullptr;
+        jack_status_t    status;
+        const char      *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
+        const char      *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
+
+        // Init.
+        this->running = false;
+
+        // Open a client connection to the JACK server.
+        this->stream = jack_client_open(CLIENT_NAME, JackNullOption, &status);
+        if (this->stream == nullptr)
         {
-            this->input_port << jack_port_register(this->stream,
-                                                    input_port_names[i],
-                                                    JACK_DEFAULT_AUDIO_TYPE,
-                                                    JackPortIsInput,
-                                                    0);
-            if (this->input_port[i] == nullptr)
+            qCWarning(DS_SOUNDCARD) << "jack_client_open() failed.";
+            if (status & JackServerFailed)
             {
-                qCWarning(DS_SOUNDCARD) << "no more JACK input ports available";
-                emit error_msg(QString("No more Jack input ports available, please configure/start Jack server properly."));
-                return false;
+                qCWarning(DS_SOUNDCARD) << "unable to connect to JACK server.";
             }
-        }
-    }
-
-    // Create output ports.
-    for (int i = 0; i < this->nb_channels; i++)
-    {
-        this->output_port << jack_port_register(this->stream,
-                                                output_port_names[i],
-                                                JACK_DEFAULT_AUDIO_TYPE,
-                                                JackPortIsOutput,
-                                                0);
-        if (this->output_port[i] == nullptr)
-        {
-            qCWarning(DS_SOUNDCARD) << "no more JACK output ports available";
-            emit error_msg(QString("No more Jack output ports available, please configure/start Jack server properly."));
+            emit error_msg(QString("Can not connect to JACK server, please configure/start Jack server properly."));
             return false;
         }
-    }
 
-    // Tell the JACK server that we are ready to roll. Our process() callback
-    // will start running now.
-    if (jack_activate(this->stream))
-    {
-        qCWarning(DS_SOUNDCARD) << "cannot activate client";
-        emit error_msg(QString("Can not activate Jack client, please configure/start Jack server properly."));
-        return false;
-    }
+        // Tell the JACK server to call "in_callback" whenever there is work to be done.
+        jack_set_process_callback(this->stream, &capture_and_playback_callback, callback_param);
+        jack_set_error_function(&error_callback);
 
-    // Connect the ports.  You can't do this before the client is
-    // activated, because we can't make connections to clients
-    // that aren't running.  Note the confusing (but necessary)
-    // orientation of the driver backend ports: playback ports are
-    // "input" to the backend, and capture ports are "output" from
-    // it.
-    if (settings->get_auto_jack_connections() == true)
-    {
-        ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsOutput);
-        if (ports == nullptr)
+        // Display the current sample rate.
+        Application_settings *settings = &Singleton<Application_settings>::get_instance();
+        if (jack_get_sample_rate(this->stream) != settings->get_sample_rate())
         {
-            qCWarning(DS_SOUNDCARD) << "no physical capture ports";
-            emit error_msg(QString("No Jack physical capture ports available, please configure/start Jack server properly."));
+            qCWarning(DS_SOUNDCARD) << "DigitalScratch is configured to support sample rate of " << qPrintable(settings->get_sample_rate());
+            emit error_msg(QString("DigitalScratch is configured to support a sample rate of " + QString::number(settings->get_sample_rate()) + "Hz, you can change it in the settings dialog."));
             return false;
         }
-        for (int i = 0; i < this->nb_channels; i++)
-        {
-            if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
-            {
-                qCWarning(DS_SOUNDCARD) << "cannot connect input ports";
-                emit error_msg(QString("Can not connect Jack input ports, please configure/start Jack server properly."));
-                return false;
-            }
-        }
-        jack_free(ports);
 
+        // Create input ports.
         if (this->do_capture == true)
         {
-            ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsInput);
+            for (int i = 0; i < this->nb_channels; i++)
+            {
+                this->input_port << jack_port_register(this->stream,
+                                                        input_port_names[i],
+                                                        JACK_DEFAULT_AUDIO_TYPE,
+                                                        JackPortIsInput,
+                                                        0);
+                if (this->input_port[i] == nullptr)
+                {
+                    qCWarning(DS_SOUNDCARD) << "no more JACK input ports available";
+                    emit error_msg(QString("No more Jack input ports available, please configure/start Jack server properly."));
+                    return false;
+                }
+            }
+        }
+
+        // Create output ports.
+        for (int i = 0; i < this->nb_channels; i++)
+        {
+            this->output_port << jack_port_register(this->stream,
+                                                    output_port_names[i],
+                                                    JACK_DEFAULT_AUDIO_TYPE,
+                                                    JackPortIsOutput,
+                                                    0);
+            if (this->output_port[i] == nullptr)
+            {
+                qCWarning(DS_SOUNDCARD) << "no more JACK output ports available";
+                emit error_msg(QString("No more Jack output ports available, please configure/start Jack server properly."));
+                return false;
+            }
+        }
+
+        // Tell the JACK server that we are ready to roll. Our process() callback
+        // will start running now.
+        if (jack_activate(this->stream))
+        {
+            qCWarning(DS_SOUNDCARD) << "cannot activate client";
+            emit error_msg(QString("Can not activate Jack client, please configure/start Jack server properly."));
+            return false;
+        }
+
+        // Connect the ports.  You can't do this before the client is
+        // activated, because we can't make connections to clients
+        // that aren't running.  Note the confusing (but necessary)
+        // orientation of the driver backend ports: playback ports are
+        // "input" to the backend, and capture ports are "output" from
+        // it.
+        if (settings->get_auto_jack_connections() == true)
+        {
+            ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsOutput);
             if (ports == nullptr)
             {
-                qCWarning(DS_SOUNDCARD) << "no physical playback ports";
-                emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
+                qCWarning(DS_SOUNDCARD) << "no physical capture ports";
+                emit error_msg(QString("No Jack physical capture ports available, please configure/start Jack server properly."));
                 return false;
             }
             for (int i = 0; i < this->nb_channels; i++)
             {
-                if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+                if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
                 {
-                    qCWarning(DS_SOUNDCARD) << "cannot connect output ports";
-                    emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
+                    qCWarning(DS_SOUNDCARD) << "cannot connect input ports";
+                    emit error_msg(QString("Can not connect Jack input ports, please configure/start Jack server properly."));
                     return false;
                 }
             }
             jack_free(ports);
+
+            if (this->do_capture == true)
+            {
+                ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsInput);
+                if (ports == nullptr)
+                {
+                    qCWarning(DS_SOUNDCARD) << "no physical playback ports";
+                    emit error_msg(QString("No Jack physical playback ports available, please configure/start Jack server properly."));
+                    return false;
+                }
+                for (int i = 0; i < this->nb_channels; i++)
+                {
+                    if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+                    {
+                        qCWarning(DS_SOUNDCARD) << "cannot connect output ports";
+                        emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));
+                        return false;
+                    }
+                }
+                jack_free(ports);
+            }
         }
+
+        // Everything is OK, keep callback parameters.
+        this->callback_param = callback_param;
+        this->running        = true;
+
+        return true;
     }
-
-    // Everything is OK, keep callback parameters.
-    this->callback_param = in_callback_param;
-    this->running        = true;
-
-    return true;
+    else
+    {
+        return false;
+    }
 }
 
 bool
@@ -226,11 +241,8 @@ Jack_access_rules::stop()
         qCWarning(DS_SOUNDCARD) << "can not close Jack client.";
         return false;
     }
-    else
-    {
-        this->running = false;
-    }
 
+    this->running = false;
     return true;
 }
 

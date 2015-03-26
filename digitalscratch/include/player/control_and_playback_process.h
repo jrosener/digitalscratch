@@ -33,6 +33,7 @@
 
 #pragma once
 
+#include <QObject>
 #include "control/timecode_control_process.h"
 #include "control/manual_control_process.h"
 #include "audiodev/sound_driver_access_rules.h"
@@ -48,8 +49,10 @@ enum class ProcessMode
     THRU
 };
 
-class Control_and_playback_process
+class Control_and_playback_process : public QObject
 {
+    Q_OBJECT
+
  private:
     QList<QSharedPointer<Manual_control_process>>       manual_controls;
     QList<QSharedPointer<Timecode_control_process>>     tcode_controls;
@@ -69,4 +72,13 @@ class Control_and_playback_process
     bool run(const unsigned short int &nb_buffer_frames);
     void set_process_mode(const ProcessMode &mode, const unsigned short &deck_index);
     ProcessMode get_process_mode(const unsigned short &deck_index) const;
+
+ public slots:
+    void init();
+    bool start();
+    bool stop();
+    void kill();
+
+ signals:
+    void killed();
 };

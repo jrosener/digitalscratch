@@ -61,8 +61,8 @@ class Sound_driver_access_rules : public QObject
 
  public:
     bool is_running();
-    void set_capture(bool in_do_capture);
-    virtual bool start(void *in_callback_param) = 0;
+    void set_capture(const bool &do_capture);
+    virtual bool start(void *callback_param) = 0;
     virtual bool restart() = 0;
     virtual bool stop() = 0;
     virtual bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers) = 0;
@@ -78,9 +78,9 @@ class Sound_driver_access_rules : public QObject
     bool use_timecode_from_file(const QString &path);
 
  protected:
-    bool fill_input_buf(unsigned short int nb_buffer_frames, QList<float*> &io_buffers);
+    bool fill_input_buf(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers);
  #endif
 
  signals:
-    void error_msg(QString in_error_message);
+    void error_msg(const QString &error_message);
 };

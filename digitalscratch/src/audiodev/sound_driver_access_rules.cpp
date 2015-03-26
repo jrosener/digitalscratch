@@ -73,9 +73,9 @@ Sound_driver_access_rules::is_running()
 }
 
 void
-Sound_driver_access_rules::set_capture(bool in_do_capture)
+Sound_driver_access_rules::set_capture(const bool &do_capture)
 {
-    this->do_capture = in_do_capture;
+    this->do_capture = do_capture;
 }
 
 #ifdef ENABLE_TEST_MODE
@@ -101,7 +101,7 @@ Sound_driver_access_rules::use_timecode_from_file(const QString &path)
 }
 
 bool
-Sound_driver_access_rules::fill_input_buf(unsigned short int nb_buffer_frames, QList<float*> &io_buffers)
+Sound_driver_access_rules::fill_input_buf(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers)
 {
     if (this->using_fake_timecode == true)
     {

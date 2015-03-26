@@ -73,4 +73,5 @@ void
 Manual_control_process::reset_speed_to_100p()
 {
     this->params->set_speed(1.0);
+    emit speed_changed(this->params->get_speed());
 }

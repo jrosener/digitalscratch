@@ -272,8 +272,7 @@ void
 Gui::start_control_and_playback()
 {
     // Start sound card for capture and playback.
-    if ((this->sound_card->is_running() == false) &&
-        (this->sound_card->start((void*)this->control_and_play.data()) == false))
+    if (this->control_and_play->start() == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not start sound card";
         this->start_capture_button->setChecked(false);
@@ -292,9 +291,7 @@ void
 Gui::stop_control_and_playback()
 {
     // Stop sound card for capture and playback.
-    if ((this->sound_card->is_running() == true) &&
-        (this->can_stop_control_and_playback() == true) &&
-        (this->sound_card->stop() == false))
+    if (this->control_and_play->stop() == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not stop sound card";
         this->stop_capture_button->setChecked(false);
@@ -1745,7 +1742,7 @@ Gui::can_close()
     // Close request confirmed.
     if (msg_box.exec() == QMessageBox::Ok)
     {
-        this->sound_card->stop();
+        //this->sound_card->stop();
         this->window->close();
     }
 }

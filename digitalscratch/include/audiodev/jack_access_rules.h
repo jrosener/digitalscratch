@@ -60,17 +60,19 @@ class Jack_access_rules : public Sound_driver_access_rules
 {
  private:
     AUDIO_STREAM_TYPE stream;
-
- public:
     QList<jack_port_t*> input_port;
     QList<jack_port_t*> output_port;
 
  public:
-    Jack_access_rules(unsigned short int in_nb_channels);
+    Jack_access_rules(const unsigned short int &nb_channels);
     virtual ~Jack_access_rules();
 
+ private:
+    static int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE nb_buffer_frames, void *data);
+    static void error_callback(const char *msg);
+
  public:
-    bool start(void *in_callback_param);
+    bool start(void *callback_param);
     bool restart();
     bool stop();
     bool get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers);

@@ -35,6 +35,7 @@
 #include <QTextCodec>
 #include <QProcess>
 #include <QThreadPool>
+#include <QThread>
 
 #include "app/application_logging.h"
 #include "app/application_const.h"
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
     sound_card->set_capture(true);
 
     // Sound capture and playback process.
-    QSharedPointer<Control_and_playback_process> capture_and_playback(new Control_and_playback_process(tcode_controls,
+    QSharedPointer<Control_and_playback_process> control_and_playback(new Control_and_playback_process(tcode_controls,
                                                                                                        manual_controls,
                                                                                                        at_playbacks,
                                                                                                        sound_card,
@@ -160,16 +161,30 @@ int main(int argc, char *argv[])
             manual_controls,
             at_playbacks,
             sound_card,
-            capture_and_playback,
+            control_and_playback,
             dscratch_ids);
 
-    // Custom app close (especially needed to stop the audio loop if user click on 'X').
-    app.connect(&app,SIGNAL(aboutToQuit()), &gui, SLOT(force_close()));
+    // Run all control and playback processing stuff in another thread than the Gui.
+    QSharedPointer<QThread> control_and_playback_thread(new QThread());
+    sound_card->moveToThread(control_and_playback_thread.data());
+    control_and_playback->moveToThread(control_and_playback_thread.data());
+    for (auto i = 0; i < settings->get_nb_decks(); i++)
+    {
+        tcode_controls[i]->moveToThread(control_and_playback_thread.data());
+        manual_controls[i]->moveToThread(control_and_playback_thread.data());
+        at_playbacks[i]->moveToThread(control_and_playback_thread.data());
+    }
+    QObject::connect(control_and_playback_thread.data(), SIGNAL(started()), control_and_playback.data(), SLOT(init()));
+
+    // Custom app close (needed if user click on 'X').
+    app.connect(&app, SIGNAL(aboutToQuit()), control_and_playback.data(), SLOT(kill()));
 
     // Forward the quit call.
+    QObject::connect(control_and_playback.data(), SIGNAL(killed()), control_and_playback_thread.data(), SLOT(quit()));
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
 
     // Start application.
+    control_and_playback_thread->start();
     app.exec();
 
     // Cleanup.

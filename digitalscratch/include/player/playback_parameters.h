@@ -41,10 +41,8 @@
 
 using namespace std;
 
-class Playback_parameters : public QObject
+class Playback_parameters
 {
-    Q_OBJECT
-
  private:
     float speed;        // Vinyl speed.
     float volume;       // Turntable sound volume.
