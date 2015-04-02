@@ -171,7 +171,8 @@ Waveform::paintEvent(QPaintEvent *)
         this->generate_polyline();
     }
 
-    QPainter painter(this);
+    QPainter painter;
+    painter.begin(this);
 
     // Draw polyline on current area.
     painter.setPen(QColor("grey"));
@@ -188,13 +189,6 @@ Waveform::paintEvent(QPaintEvent *)
     }
 
     painter.end();
-
-    // Move sliders.
-    this->move_slider(this->slider_absolute_position);
-    for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-    {
-        this->move_cue_slider(i, this->cue_sliders_absolute_position[i]);
-    }
 
     return;
 }

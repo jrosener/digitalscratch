@@ -1071,14 +1071,14 @@ Gui::connect_decks_area()
                         });
 
         // Display speed (manual controller).
-        QObject::connect(this->manual_controls[i].data(), &Manual_control_process::speed_changed,
+        QObject::connect(this->manual_controls[i].data(), &Control_process::speed_changed,
                         [this, i](float in_speed)
                         {
                             this->update_speed_label(in_speed, i);
                         });
 
-        // Display speed (manual controller).
-        QObject::connect(this->tcode_controls[i].data(), &Timecode_control_process::speed_changed,
+        // Display speed (timecode controller).
+        QObject::connect(this->tcode_controls[i].data(), &Control_process::speed_changed,
                         [this, i](float in_speed)
                         {
                             this->update_speed_label(in_speed, i);
@@ -2252,7 +2252,6 @@ Gui::run_audio_file_decoding_process()
 void
 Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short &deck_index)
 {
-    //cout << "set_remaining_time(" << remaining_time << ", " << deck_index << ")" << endl;
     // Split remaining time (which is in msec) into minutes, seconds and milliseconds. 
     int remaining_time_by_1000 = remaining_time / 1000.0;
     div_t tmp_division;
@@ -2280,7 +2279,7 @@ Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short
     {
         this->decks[deck_index]->rem_time_sec->setText(sec);
     }
-    //this->decks[deck_index]->rem_time_msec->setText(msec);
+    this->decks[deck_index]->rem_time_msec->setText(msec);
 
     // Move slider on waveform when remaining time changed.
     this->decks[deck_index]->waveform->move_slider(this->playbacks[deck_index]->get_position());
@@ -2734,7 +2733,7 @@ Deck::init_display()
     this->key = new QLabel();
     this->key->setObjectName("KeyValue");
     this->set_key("");
-    this->waveform = new Waveform(this->at, this);
+    this->waveform = new Waveform(this->at);
     this->waveform->setObjectName("Waveform");
 
     // Create remaining time.

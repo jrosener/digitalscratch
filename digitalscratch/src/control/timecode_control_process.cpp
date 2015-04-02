@@ -104,7 +104,9 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
                 // Change speed label in Gui only every 10 times.
                 if (this->waitfor_emit_speed_changed > 10)
                 {
-                    emit speed_changed(this->params->get_speed());
+                    // FIXME: it looks like if we change regularly the speed on the gui, sometimes the app is crashing.
+                    //        so, for the moment, we do not send the signal for changing speed.
+                    //emit speed_changed(this->params->get_speed());
                     this->waitfor_emit_speed_changed = 0;
                 }
                 else

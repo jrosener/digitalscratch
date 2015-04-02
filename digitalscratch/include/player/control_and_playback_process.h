@@ -63,10 +63,10 @@ class Control_and_playback_process : public QObject
 
  public:
     Control_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
-                                       const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
-                                       const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
-                                       const QSharedPointer<Sound_driver_access_rules>           &sound_card,
-                                       const unsigned short int                                  &nb_decks);
+                                 const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
+                                 const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
+                                 const QSharedPointer<Sound_driver_access_rules>           &sound_card,
+                                 const unsigned short int                                  &nb_decks);
     virtual ~Control_and_playback_process();
 
     bool run(const unsigned short int &nb_buffer_frames);

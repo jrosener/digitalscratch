@@ -84,7 +84,7 @@ Audio_track::reset()
     this->music_key_tag  = "";
     if (this->samples != nullptr)
     {
-        std::fill(this->samples, this->samples + this->max_nb_samples + this->get_security_nb_samples(), 0);
+        memset(&this->samples[0], 0, (this->max_nb_samples + this->get_security_nb_samples()) * sizeof this->samples[0]);
     }
 
     return;

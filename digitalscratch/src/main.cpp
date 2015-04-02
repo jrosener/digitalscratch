@@ -165,23 +165,25 @@ int main(int argc, char *argv[])
             dscratch_ids);
 
     // Run all control and playback processing stuff in another thread than the Gui.
-    QSharedPointer<QThread> control_and_playback_thread(new QThread());
-    sound_card->moveToThread(control_and_playback_thread.data());
-    control_and_playback->moveToThread(control_and_playback_thread.data());
+    QThread *control_and_playback_thread = new QThread();
+    sound_card->moveToThread(control_and_playback_thread);
+    control_and_playback->moveToThread(control_and_playback_thread);
     for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
-        tcode_controls[i]->moveToThread(control_and_playback_thread.data());
-        manual_controls[i]->moveToThread(control_and_playback_thread.data());
-        at_playbacks[i]->moveToThread(control_and_playback_thread.data());
+        tcode_controls[i]->moveToThread(control_and_playback_thread);
+        manual_controls[i]->moveToThread(control_and_playback_thread);
+        at_playbacks[i]->moveToThread(control_and_playback_thread);
     }
-    QObject::connect(control_and_playback_thread.data(), SIGNAL(started()), control_and_playback.data(), SLOT(init()));
+    QObject::connect(control_and_playback_thread, SIGNAL(started()), control_and_playback.data(), SLOT(init()));
 
     // Custom app close (needed if user click on 'X').
     app.connect(&app, SIGNAL(aboutToQuit()), control_and_playback.data(), SLOT(kill()));
 
     // Forward the quit call.
-    QObject::connect(control_and_playback.data(), SIGNAL(killed()), control_and_playback_thread.data(), SLOT(quit()));
-    app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+    QObject::connect(control_and_playback_thread, SIGNAL(finished()), control_and_playback_thread, SLOT(deleteLater()));
+    QObject::connect(control_and_playback.data(), SIGNAL(killed()), control_and_playback_thread, SLOT(quit()));
+    //app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+    // FIXME: the thread deletion is not working
 
     // Start application.
     control_and_playback_thread->start();
