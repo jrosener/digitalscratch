@@ -22,28 +22,6 @@ void DigitalScratch_Test::cleanupTestCase()
 {
 }
 
-
-/**
- * Test Digital_scratch::Digital_scratch().
- *
- * Test Description:
- *      - Create a Digital_scratch object with valid parameters.
- *      - Check initialization of all public parameters.
- */
-void DigitalScratch_Test::testCase_constructor()
-{
-    // Create Digital_scratch.
-    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                    FINAL_SCRATCH_VINYL,
-                                                    44100);
-
-    // Check initilization of all public parameters.
-    // FIXME to be removed if nothing to test.
-
-    // Cleanup.
-    delete dscratch;
-}
-
 /**
 * Test Digital_scratch::analyze_recording_data().
 * This test is not dedicated to test the quality of playing parameters values

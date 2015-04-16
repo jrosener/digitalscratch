@@ -14,6 +14,5 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-    void testCase_constructor();
     void testCase_analyze_recording_data();
 };
