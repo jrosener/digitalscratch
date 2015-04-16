@@ -64,6 +64,7 @@ Audio_track_playback_process::Audio_track_playback_process(const QSharedPointer<
     for (unsigned short int i = 0; i < this->nb_samplers; i++) this->sampler_remaining_times << 0;
     for (unsigned short int i = 0; i < this->nb_samplers; i++) this->sampler_current_states  << false;
     this->need_update_remaining_time = 0;
+    this->need_update_samplers_remaining_time = 0;
 
     // Init libsamplerate.
     int error;
@@ -141,27 +142,24 @@ Audio_track_playback_process::del_sampler(const unsigned short int &sampler_inde
 }
 
 bool
-Audio_track_playback_process::play_empty(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Audio_track_playback_process::play_silence(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     // For each output samples (only for the selected deck), play silence.
     std::fill(io_playback_bufs[0], io_playback_bufs[0] + buf_size, 0);
     std::fill(io_playback_bufs[1], io_playback_bufs[1] + buf_size, 0);
 
-    // Play samplers.
-    this->play_sampler(io_playback_bufs, buf_size);
-
     return true;
 }
 
 bool
-Audio_track_playback_process::play_audio_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Audio_track_playback_process::play_main_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     // Prevent sample table overflow if going forward.
     if ((this->param->get_speed() >= 0.0) &&
        ((this->current_sample + 1) > (this->at->get_end_of_samples() - buf_size)))
     {
         qCDebug(DS_PLAYBACK) << "audio track sample table overflow";
-        this->play_empty(io_playback_bufs, buf_size);
+        this->play_silence(io_playback_bufs, buf_size);
 
         // Update remaining time to 0.
         this->update_remaining_time();
@@ -189,7 +187,7 @@ Audio_track_playback_process::play_audio_track(QVector<float*> &io_playback_bufs
     if (this->play_data_with_playback_parameters(io_playback_bufs, buf_size) == false)
     {
         qCWarning(DS_PLAYBACK) << "can not prepare data using playback parameters";
-        this->play_empty(io_playback_bufs, buf_size);
+        this->play_silence(io_playback_bufs, buf_size);
         return false;
     }
 #endif
@@ -198,44 +196,7 @@ Audio_track_playback_process::play_audio_track(QVector<float*> &io_playback_bufs
 }
 
 bool
-Audio_track_playback_process::get_sampler_state(const unsigned short int &sampler_index)
-{
-    return this->sampler_current_states[sampler_index];
-}
-
-bool
-Audio_track_playback_process::set_sampler_state(const unsigned short int &sampler_index, const bool &state)
-{
-    this->sampler_current_states[sampler_index] = state;
-
-    // In case of stopping, go back to the beginning of the sample.
-    if (state == false)
-    {
-        this->sampler_current_samples[sampler_index] = 0;
-    }
-
-    return true;
-}
-
-bool
-Audio_track_playback_process::is_sampler_loaded(const unsigned short int &sampler_index)
-{
-    bool result = false;
-
-    if (this->at_samplers[sampler_index]->get_end_of_samples() == 0)
-    {
-        result = false;
-    }
-    else
-    {
-        result = true;
-    }
-
-    return result;
-}
-
-bool
-Audio_track_playback_process::play_sampler(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Audio_track_playback_process::play_samplers(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     short signed int *sample_pointer = nullptr;
     float sample = 0.0;
@@ -281,6 +242,43 @@ Audio_track_playback_process::play_sampler(QVector<float*> &io_playback_bufs, co
 }
 
 bool
+Audio_track_playback_process::get_sampler_state(const unsigned short int &sampler_index)
+{
+    return this->sampler_current_states[sampler_index];
+}
+
+bool
+Audio_track_playback_process::set_sampler_state(const unsigned short int &sampler_index, const bool &state)
+{
+    this->sampler_current_states[sampler_index] = state;
+
+    // In case of stopping, go back to the beginning of the sample.
+    if (state == false)
+    {
+        this->sampler_current_samples[sampler_index] = 0;
+    }
+
+    return true;
+}
+
+bool
+Audio_track_playback_process::is_sampler_loaded(const unsigned short int &sampler_index)
+{
+    bool result = false;
+
+    if (this->at_samplers[sampler_index]->get_end_of_samples() == 0)
+    {
+        result = false;
+    }
+    else
+    {
+        result = true;
+    }
+
+    return result;
+}
+
+bool
 Audio_track_playback_process::update_remaining_time()
 {
     // Check if we have to update remaining time.
@@ -314,18 +312,37 @@ Audio_track_playback_process::update_remaining_time()
 }
 
 bool
-Audio_track_playback_process::update_sampler_remaining_time(const unsigned short int &sampler_index)
+Audio_track_playback_process::update_samplers_remaining_time()
 {
-    // Calculate remaining time in msec.
-    this->sampler_remaining_times[sampler_index] = (unsigned int)(1000.0 * ((float)(this->at_samplers[sampler_index]->get_end_of_samples()
-                                                                                    - this->sampler_current_samples[sampler_index]) + 1.0)
-                                                                                     / (2.0 * (float)this->at_samplers[sampler_index]->get_sample_rate()));
+    // Check if we have to update remaining time.
+    if (this->need_update_samplers_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
+    {
+        // Yes it's time to do it for every samplers.
+        for (int i = 0; i < this->nb_samplers; i++)
+        {
+            // Check if sampler is not empty.
+            if (this->at_samplers[i]->get_end_of_samples() > 0)
+            {
+                this->need_update_samplers_remaining_time = 0;
 
-    if (this->sampler_remaining_times[sampler_index] > 0)
-        this->sampler_remaining_times[sampler_index] -= 1;
+                // Calculate remaining time in msec.
+                this->sampler_remaining_times[i] = (unsigned int)(1000.0 * ((float)(this->at_samplers[i]->get_end_of_samples()
+                                                                                    - this->sampler_current_samples[i]) + 1.0)
+                                                                                    / (2.0 * (float)this->at_samplers[i]->get_sample_rate()));
 
-    // Send remaining time.
-    emit sampler_remaining_time_changed(this->sampler_remaining_times[sampler_index], sampler_index);
+                if (this->sampler_remaining_times[i] > 0)
+                    this->sampler_remaining_times[i] -= 1;
+
+                // Send remaining time.
+                emit sampler_remaining_time_changed(this->sampler_remaining_times[i], i);
+            }
+        }
+    }
+    else
+    {
+        // No, let's see next time.
+        this->need_update_samplers_remaining_time++;
+    }
 
     return true;
 }
@@ -335,33 +352,15 @@ Audio_track_playback_process::run(float io_playback_buf_1[], float io_playback_b
 {
     QVector<float*> playback_bufs = { io_playback_buf_1, io_playback_buf_2 };
 
-    // Update samplers remaining time
-// FIXME: refactor need_update_remaining_time into need_update_sampler_remaining_time
-//    if (this->need_update_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
-//    {
-//        for (unsigned short int i = 0; i < this->nb_samplers; i++)
-//        {
-//            if (this->is_sampler_loaded(i) == true)
-//            {
-//                this->update_sampler_remaining_time(i);
-//            }
-//        }
-//        this->need_update_remaining_time = 0;
-//    }
-//    else
-//    {
-//        this->need_update_remaining_time++;
-//    }
-
     // Track is not loaded, play empty sound.
     if ((this->at->get_end_of_samples() == 0) || (this->stopped == true))
     {
-        this->play_empty(playback_bufs, buf_size);
+        this->play_silence(playback_bufs, buf_size);
     }
     else
     {
         // If track is loaded, play it.
-        if (this->play_audio_track(playback_bufs, buf_size) == false)
+        if (this->play_main_track(playback_bufs, buf_size) == false)
         {
             qCDebug(DS_PLAYBACK) << "waiting for file decoding process";
         }
@@ -370,6 +369,17 @@ Audio_track_playback_process::run(float io_playback_buf_1[], float io_playback_b
             // Update remaining time.
             this->update_remaining_time();
         }
+    }
+
+    // Play samplers.
+    if (this->play_samplers(playback_bufs, buf_size) == false)
+    {
+        qCDebug(DS_PLAYBACK) << "waiting for file decoding process";
+    }
+    else
+    {
+        // Update remaining time.
+        this->update_samplers_remaining_time();
     }
 
     return true;
@@ -383,7 +393,7 @@ Audio_track_playback_process::play_data_with_playback_parameters(QVector<float*>
     // If speed is null, play empty sound.
     if (speed == 0.0)
     {
-        this->play_empty(io_playback_bufs, buf_size);
+        this->play_silence(io_playback_bufs, buf_size);
         return true;
     }
 
@@ -427,12 +437,12 @@ Audio_track_playback_process::play_data_with_playback_parameters(QVector<float*>
     }
     if (nb_input_data == 0) // No data to play.
     {
-        this->play_empty(io_playback_bufs, buf_size);
+        this->play_silence(io_playback_bufs, buf_size);
         return true;
     }
     if ((nb_input_data * 2) > SOUND_STRETCH_MAX_BUFFER)
     {
-        this->play_empty(io_playback_bufs, buf_size);
+        this->play_silence(io_playback_bufs, buf_size);
         qCWarning(DS_PLAYBACK) << "too many data to stretch";
         return false;
     }
@@ -489,9 +499,6 @@ Audio_track_playback_process::play_data_with_playback_parameters(QVector<float*>
             io_playback_bufs[1][i] = *ptr;
             ptr++;
         }
-
-        // Play samplers.
-        this->play_sampler(io_playback_bufs, buf_size);
     }
 
     return true;

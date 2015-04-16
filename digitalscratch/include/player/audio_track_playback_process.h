@@ -62,6 +62,7 @@ class Audio_track_playback_process : public QObject
     QList<unsigned int>                   sampler_remaining_times;
     QList<bool>                           sampler_current_states;         // States of sampler (true=play).
     unsigned short int                    need_update_remaining_time;
+    unsigned short int                    need_update_samplers_remaining_time;
     bool                                  stopped;                        // State (stopped = true) of audio track playback.
     unsigned short int                    nb_samplers;
     SRC_STATE                            *src_state;                      // Libsamplerate internal state.
@@ -99,14 +100,14 @@ class Audio_track_playback_process : public QObject
     bool is_sampler_loaded(const unsigned short int &sampler_index);
 
  private:
-    bool play_empty(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
-    bool play_audio_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
-    bool play_sampler(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
+    bool play_silence(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
+    bool play_main_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
+    bool play_samplers(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
     bool play_data_with_playback_parameters(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size);
     bool change_volume(float io_samples[], const unsigned short int &size);
 
     bool update_remaining_time();
-    bool update_sampler_remaining_time(const unsigned short int &sampler_index);
+    bool update_samplers_remaining_time();
 
     float sample_index_to_float(const unsigned int &sample_index);
     unsigned int sample_index_to_msec(const unsigned int &sample_index);

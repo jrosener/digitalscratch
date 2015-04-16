@@ -2086,6 +2086,7 @@ Gui::sampler_button_del_clicked(const unsigned short &deck_index,
     // Remove track loaded in the sampler.
     this->playbacks[deck_index]->del_sampler(sampler_index);
     this->set_sampler_state(deck_index, sampler_index, false);
+    this->set_sampler_text(tr("--"), deck_index, sampler_index);
 
     // Select playback area (if not already done).
     this->select_playback(deck_index);
