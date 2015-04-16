@@ -96,7 +96,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QSharedPointer<Playback_parameters>>                &params,
          QList<QSharedPointer<Timecode_control_process>>           &tcode_controls,
          QList<QSharedPointer<Manual_control_process>>             &manual_controls,
-         QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
+         QList<QSharedPointer<Deck_playback_process>>       &playbacks,
          QSharedPointer<Sound_driver_access_rules>                 &sound_card,
          QSharedPointer<Control_and_playback_process>              &control_and_playback,
          int                                                       *dscratch_ids)
@@ -1122,7 +1122,7 @@ Gui::connect_decks_area()
         QObject::connect(this->decks[i], &Deck::file_dropped, [this, i](){this->select_and_run_audio_file_decoding_process(i);});
 
         // Remaining time.
-        QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::remaining_time_changed,
+        QObject::connect(this->playbacks[i].data(), &Deck_playback_process::remaining_time_changed,
                          [this, i](const unsigned int &remaining_time)
                          {
                             this->set_remaining_time(remaining_time, i);
@@ -1244,14 +1244,14 @@ Gui::connect_samplers_area()
         }
 
         // Remaining time for samplers.
-        QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::sampler_remaining_time_changed,
+        QObject::connect(this->playbacks[i].data(), &Deck_playback_process::sampler_remaining_time_changed,
                         [this, i](unsigned int remaining_time, int sampler_index)
                         {
                             this->set_sampler_remaining_time(remaining_time, i, sampler_index);
                         });
 
         // State for samplers.
-        QObject::connect(this->playbacks[i].data(), &Audio_track_playback_process::sampler_state_changed,
+        QObject::connect(this->playbacks[i].data(), &Deck_playback_process::sampler_state_changed,
                         [this, i](int sampler_index, bool state)
                         {
                             this->set_sampler_state(i, sampler_index, state);

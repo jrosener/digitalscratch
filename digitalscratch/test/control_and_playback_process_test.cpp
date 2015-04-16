@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "app/application_settings.h"
 #include "player/playback_parameters.h"
-#include "player/audio_track_playback_process.h"
+#include "player/deck_playback_process.h"
 #include "player/control_and_playback_process.h"
 #include "control/timecode_control_process.h"
 #include "control/manual_control_process.h"
@@ -60,8 +60,8 @@ void Control_and_playback_process_Test::testCaseRunWithJack_1deck()
     QSharedPointer<Audio_track> at_s(new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate()));
     at_sampler << at_s;
 
-    QSharedPointer<Audio_track_playback_process> at_playback(new Audio_track_playback_process(at, at_sampler, play_param));
-    QList<QSharedPointer<Audio_track_playback_process>> at_playbacks = {at_playback};
+    QSharedPointer<Deck_playback_process> at_playback(new Deck_playback_process(at, at_sampler, play_param));
+    QList<QSharedPointer<Deck_playback_process>> at_playbacks = {at_playback};
 
     QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
@@ -121,9 +121,9 @@ void Control_and_playback_process_Test::testCaseRunWithJack_2decks()
     QSharedPointer<Audio_track> at_s_2(new Audio_track(MAX_MINUTES_SAMPLER, settings->get_sample_rate()));
     QList<QSharedPointer<Audio_track>> at_sampler_2 = {at_s_2};
 
-    QSharedPointer<Audio_track_playback_process> at_playback_1(new Audio_track_playback_process(at_1, at_sampler_1, play_param_1));
-    QSharedPointer<Audio_track_playback_process> at_playback_2(new Audio_track_playback_process(at_2, at_sampler_2, play_param_2));
-    QList<QSharedPointer<Audio_track_playback_process>> at_playbacks = {at_playback_1, at_playback_2};
+    QSharedPointer<Deck_playback_process> at_playback_1(new Deck_playback_process(at_1, at_sampler_1, play_param_1));
+    QSharedPointer<Deck_playback_process> at_playback_2(new Deck_playback_process(at_2, at_sampler_2, play_param_2));
+    QList<QSharedPointer<Deck_playback_process>> at_playbacks = {at_playback_1, at_playback_2};
 
     QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);

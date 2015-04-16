@@ -42,7 +42,7 @@
 #include "gui/gui.h"
 #include "tracks/audio_track.h"
 #include "tracks/audio_file_decoding_process.h"
-#include "player/audio_track_playback_process.h"
+#include "player/deck_playback_process.h"
 #include "player/playback_parameters.h"
 #include "player/control_and_playback_process.h"
 #include "audiodev/sound_driver_access_rules.h"
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Manual_control_process>>             manual_controls;
     QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
-    QList<QSharedPointer<Audio_track_playback_process>>       at_playbacks;
+    QList<QSharedPointer<Deck_playback_process>>       at_playbacks;
     int *dscratch_ids = new int[settings->get_nb_decks()];
     for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
         dec_sampler_procs << dec_sampler_proc;
 
         // Playback process for a deck.
-        QSharedPointer<Audio_track_playback_process> at_playback(new Audio_track_playback_process(at,
+        QSharedPointer<Deck_playback_process> at_playback(new Deck_playback_process(at,
                                                                                                   at_sampler,
                                                                                                   play_param));
         at_playbacks << at_playback;

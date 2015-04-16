@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------------( audio_track_playback_process.h )-*/
+/*------------------------------------------------( deck_playback_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,7 +26,8 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*  Behavior class: prepare samples of track to be sent to the sound card.    */
+/*  Behavior class: prepare samples of main track and samplers to be sent to  */
+/*                  the sound card.                                           */
 /*                                                                            */
 /*============================================================================*/
 
@@ -47,7 +48,7 @@ using namespace std;
 #define NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME 20
 #define SOUND_STRETCH_MAX_BUFFER               SHRT_MAX
 
-class Audio_track_playback_process : public QObject
+class Deck_playback_process : public QObject
 {
     Q_OBJECT
 
@@ -73,11 +74,11 @@ class Audio_track_playback_process : public QObject
     short signed int                      src_int_output_data[SOUND_STRETCH_MAX_BUFFER];
 
  public:
-    Audio_track_playback_process(const QSharedPointer<Audio_track>         &at,
-                                 const QList<QSharedPointer<Audio_track>>  &at_sampler,
-                                 const QSharedPointer<Playback_parameters> &param);
+    Deck_playback_process(const QSharedPointer<Audio_track>         &at,
+                          const QList<QSharedPointer<Audio_track>>  &at_sampler,
+                          const QSharedPointer<Playback_parameters> &param);
 
-    virtual ~Audio_track_playback_process();
+    virtual ~Deck_playback_process();
 
     bool run(float io_playback_buf_1[], float io_playback_buf_2[], const unsigned short int &buf_size);
 

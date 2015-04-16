@@ -70,7 +70,7 @@ HEADERS += include/app/application_const.h \
            include/gui/config_dialog.h \
            include/gui/gui.h \
            include/gui/waveform.h \
-           include/player/audio_track_playback_process.h \
+           include/player/deck_playback_process.h \
            include/player/playback_parameters.h \
            include/player/control_and_playback_process.h \
            include/tracks/data_persistence.h \
@@ -94,7 +94,7 @@ SOURCES += src/app/application_settings.cpp \
            src/gui/config_dialog.cpp \
            src/gui/gui.cpp \
            src/gui/waveform.cpp \
-           src/player/audio_track_playback_process.cpp \
+           src/player/deck_playback_process.cpp \
            src/player/playback_parameters.cpp \
            src/player/control_and_playback_process.cpp \
            src/tracks/audio_file_decoding_process.cpp \

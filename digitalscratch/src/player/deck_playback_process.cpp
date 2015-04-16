@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*---------------------------------------( audio_track_playback_process.cpp )-*/
+/*----------------------------------------------( deck_playback_process.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,7 +26,8 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*  Behavior class: prepare samples of track to be sent to the sound card.    */
+/*  Behavior class: prepare samples of main track and samplers to be sent to  */
+/*                  the sound card.                                           */
 /*                                                                            */
 /*============================================================================*/
 
@@ -37,15 +38,15 @@
 
 #include "utils.h"
 #include "singleton.h"
-#include "player/audio_track_playback_process.h"
+#include "player/deck_playback_process.h"
 #include "tracks/data_persistence.h"
 #include "app/application_logging.h"
 
 #define SPEED_MIN_TO_GO_DOWN 0.2
 
-Audio_track_playback_process::Audio_track_playback_process(const QSharedPointer<Audio_track>         &at,
-                                                           const QList<QSharedPointer<Audio_track>>  &at_sampler,
-                                                           const QSharedPointer<Playback_parameters> &param)
+Deck_playback_process::Deck_playback_process(const QSharedPointer<Audio_track>         &at,
+                                             const QList<QSharedPointer<Audio_track>>  &at_sampler,
+                                             const QSharedPointer<Playback_parameters> &param)
 {
     this->at          = at;
     this->at_samplers = at_sampler;
@@ -81,7 +82,7 @@ Audio_track_playback_process::Audio_track_playback_process(const QSharedPointer<
     return;
 }
 
-Audio_track_playback_process::~Audio_track_playback_process()
+Deck_playback_process::~Deck_playback_process()
 {
     // Close libsamplerate.
     if (this->src_state != nullptr)
@@ -94,7 +95,7 @@ Audio_track_playback_process::~Audio_track_playback_process()
 }
 
 bool
-Audio_track_playback_process::reset()
+Deck_playback_process::reset()
 {
     this->current_sample = 0;
     this->remaining_time = 0;
@@ -114,7 +115,7 @@ Audio_track_playback_process::reset()
 }
 
 bool
-Audio_track_playback_process::stop()
+Deck_playback_process::stop()
 {
     this->stopped = true;
 
@@ -122,7 +123,7 @@ Audio_track_playback_process::stop()
 }
 
 bool
-Audio_track_playback_process::reset_sampler(const unsigned short int &sampler_index)
+Deck_playback_process::reset_sampler(const unsigned short int &sampler_index)
 {
     this->sampler_current_samples[sampler_index] = 0;
     this->sampler_remaining_times[sampler_index] = 0;
@@ -131,7 +132,7 @@ Audio_track_playback_process::reset_sampler(const unsigned short int &sampler_in
 }
 
 void
-Audio_track_playback_process::del_sampler(const unsigned short int &sampler_index)
+Deck_playback_process::del_sampler(const unsigned short int &sampler_index)
 {
     this->reset_sampler(sampler_index);
     this->set_sampler_state(sampler_index, false);
@@ -142,7 +143,7 @@ Audio_track_playback_process::del_sampler(const unsigned short int &sampler_inde
 }
 
 bool
-Audio_track_playback_process::play_silence(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Deck_playback_process::play_silence(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     // For each output samples (only for the selected deck), play silence.
     std::fill(io_playback_bufs[0], io_playback_bufs[0] + buf_size, 0);
@@ -152,7 +153,7 @@ Audio_track_playback_process::play_silence(QVector<float*> &io_playback_bufs, co
 }
 
 bool
-Audio_track_playback_process::play_main_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Deck_playback_process::play_main_track(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     // Prevent sample table overflow if going forward.
     if ((this->param->get_speed() >= 0.0) &&
@@ -196,7 +197,7 @@ Audio_track_playback_process::play_main_track(QVector<float*> &io_playback_bufs,
 }
 
 bool
-Audio_track_playback_process::play_samplers(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Deck_playback_process::play_samplers(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     short signed int *sample_pointer = nullptr;
     float sample = 0.0;
@@ -220,9 +221,9 @@ Audio_track_playback_process::play_samplers(QVector<float*> &io_playback_bufs, c
                     sample_pointer = &((this->at_samplers[i]->get_samples())[this->sampler_current_samples[i]]);
                     for (int j = 0; j < buf_size; j++)
                     {
-                        sample                  = (float)*sample_pointer / (float)SHRT_MAX;
+                        sample                       = (float)*sample_pointer / (float)SHRT_MAX;
                         io_playback_bufs[index][j]   = io_playback_bufs[0][j] + sample - (io_playback_bufs[index][j] * sample);
-                        sample                  = (float)*(sample_pointer++) / (float)SHRT_MAX;
+                        sample                       = (float)*(sample_pointer++) / (float)SHRT_MAX;
                         io_playback_bufs[index+1][j] = io_playback_bufs[1][j] + sample - (io_playback_bufs[index+1][j] * sample);
                         sample_pointer++;
                     }
@@ -242,13 +243,13 @@ Audio_track_playback_process::play_samplers(QVector<float*> &io_playback_bufs, c
 }
 
 bool
-Audio_track_playback_process::get_sampler_state(const unsigned short int &sampler_index)
+Deck_playback_process::get_sampler_state(const unsigned short int &sampler_index)
 {
     return this->sampler_current_states[sampler_index];
 }
 
 bool
-Audio_track_playback_process::set_sampler_state(const unsigned short int &sampler_index, const bool &state)
+Deck_playback_process::set_sampler_state(const unsigned short int &sampler_index, const bool &state)
 {
     this->sampler_current_states[sampler_index] = state;
 
@@ -262,7 +263,7 @@ Audio_track_playback_process::set_sampler_state(const unsigned short int &sample
 }
 
 bool
-Audio_track_playback_process::is_sampler_loaded(const unsigned short int &sampler_index)
+Deck_playback_process::is_sampler_loaded(const unsigned short int &sampler_index)
 {
     bool result = false;
 
@@ -279,7 +280,7 @@ Audio_track_playback_process::is_sampler_loaded(const unsigned short int &sample
 }
 
 bool
-Audio_track_playback_process::update_remaining_time()
+Deck_playback_process::update_remaining_time()
 {
     // Check if we have to update remaining time.
     if (this->need_update_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
@@ -312,7 +313,7 @@ Audio_track_playback_process::update_remaining_time()
 }
 
 bool
-Audio_track_playback_process::update_samplers_remaining_time()
+Deck_playback_process::update_samplers_remaining_time()
 {
     // Check if we have to update remaining time.
     if (this->need_update_samplers_remaining_time > NB_CYCLE_WITHOUT_UPDATE_REMAINING_TIME)
@@ -348,7 +349,7 @@ Audio_track_playback_process::update_samplers_remaining_time()
 }
 
 bool
-Audio_track_playback_process::run(float io_playback_buf_1[], float io_playback_buf_2[], const unsigned short int &buf_size)
+Deck_playback_process::run(float io_playback_buf_1[], float io_playback_buf_2[], const unsigned short int &buf_size)
 {
     QVector<float*> playback_bufs = { io_playback_buf_1, io_playback_buf_2 };
 
@@ -386,7 +387,7 @@ Audio_track_playback_process::run(float io_playback_buf_1[], float io_playback_b
 }
 
 bool
-Audio_track_playback_process::play_data_with_playback_parameters(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
+Deck_playback_process::play_data_with_playback_parameters(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     float speed = this->param->get_speed();
 
@@ -505,7 +506,7 @@ Audio_track_playback_process::play_data_with_playback_parameters(QVector<float*>
 }
 
 bool
-Audio_track_playback_process::change_volume(float io_samples[], const unsigned short int &size)
+Deck_playback_process::change_volume(float io_samples[], const unsigned short int &size)
 {
     // Get current volume.
     float volume = this->param->get_volume();
@@ -524,7 +525,7 @@ Audio_track_playback_process::change_volume(float io_samples[], const unsigned s
 }
 
 bool
-Audio_track_playback_process::jump_to_position(const float &position)
+Deck_playback_process::jump_to_position(const float &position)
 {
     // Calculate position to jump (0.0 < position < 1.0).
     unsigned int new_pos = (unsigned int)((float)position * (float)this->at->get_max_nb_samples());
@@ -540,13 +541,13 @@ Audio_track_playback_process::jump_to_position(const float &position)
 }
 
 float
-Audio_track_playback_process::get_cue_point(const unsigned short int &cue_point_number)
+Deck_playback_process::get_cue_point(const unsigned short int &cue_point_number)
 {
     return this->sample_index_to_float(this->cue_points[cue_point_number]);
 }
 
 bool
-Audio_track_playback_process::read_cue_point(const unsigned short int &cue_point_number)
+Deck_playback_process::read_cue_point(const unsigned short int &cue_point_number)
 {
     // Get cue point from DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
@@ -561,7 +562,7 @@ Audio_track_playback_process::read_cue_point(const unsigned short int &cue_point
 }
 
 bool
-Audio_track_playback_process::store_cue_point(const unsigned short int &cue_point_number)
+Deck_playback_process::store_cue_point(const unsigned short int &cue_point_number)
 {
     // Store cue point.
     this->cue_points[cue_point_number] = this->current_sample;
@@ -575,7 +576,7 @@ Audio_track_playback_process::store_cue_point(const unsigned short int &cue_poin
 }
 
 bool
-Audio_track_playback_process::jump_to_cue_point(const unsigned short int &cue_point_number)
+Deck_playback_process::jump_to_cue_point(const unsigned short int &cue_point_number)
 {
     // Jump
     this->current_sample = this->cue_points[cue_point_number];
@@ -584,7 +585,7 @@ Audio_track_playback_process::jump_to_cue_point(const unsigned short int &cue_po
 }
 
 bool
-Audio_track_playback_process::delete_cue_point(const unsigned short int &cue_point_number)
+Deck_playback_process::delete_cue_point(const unsigned short int &cue_point_number)
 {
     // Delete cue point from playback process list.
     this->cue_points[cue_point_number] = 0;
@@ -595,13 +596,13 @@ Audio_track_playback_process::delete_cue_point(const unsigned short int &cue_poi
 }
 
 float
-Audio_track_playback_process::get_position()
+Deck_playback_process::get_position()
 {
     return this->sample_index_to_float(this->current_sample);
 }
 
 QString
-Audio_track_playback_process::get_cue_point_str(const unsigned short &cue_point_number) const
+Deck_playback_process::get_cue_point_str(const unsigned short &cue_point_number) const
 {
     return Utils::get_str_time_from_sample_index(this->cue_points[cue_point_number],
                                                  this->at->get_sample_rate(),
@@ -609,21 +610,21 @@ Audio_track_playback_process::get_cue_point_str(const unsigned short &cue_point_
 }
 
 float
-Audio_track_playback_process::sample_index_to_float(const unsigned int &sample_index)
+Deck_playback_process::sample_index_to_float(const unsigned int &sample_index)
 {
     // Convert a sample index to a float position (from 0.0 to 1.0).
     return (float)((float)sample_index / (float)this->at->get_max_nb_samples());
 }
 
 unsigned int
-Audio_track_playback_process::sample_index_to_msec(const unsigned int &sample_index)
+Deck_playback_process::sample_index_to_msec(const unsigned int &sample_index)
 {
     // Convert a sample index to milliseconds.
     return qRound((1000.0 * (float)sample_index) / (2.0 * (float)this->at->get_sample_rate()));
 }
 
 unsigned int
-Audio_track_playback_process::msec_to_sample_index(const unsigned int &position_msec)
+Deck_playback_process::msec_to_sample_index(const unsigned int &position_msec)
 {
     // Convert a position from msec to sample index.
     return qRound(((float)position_msec * 2.0 * (float)this->at->get_sample_rate()) / 1000.0);

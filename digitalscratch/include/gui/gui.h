@@ -51,7 +51,7 @@
 #include "gui/waveform.h"
 #include "app/application_settings.h"
 #include "app/application_const.h"
-#include "player/audio_track_playback_process.h"
+#include "player/deck_playback_process.h"
 #include "player/playback_parameters.h"
 #include "player/control_and_playback_process.h"
 #include "audiodev/sound_driver_access_rules.h"
@@ -361,7 +361,7 @@ class Gui : public QObject
     QList<QSharedPointer<Playback_parameters>>                 params;
     QList<QSharedPointer<Timecode_control_process>>            tcode_controls;
     QList<QSharedPointer<Manual_control_process>>              manual_controls;
-    QList<QSharedPointer<Audio_track_playback_process>>        playbacks;
+    QList<QSharedPointer<Deck_playback_process>>        playbacks;
     QSharedPointer<Sound_driver_access_rules>                  sound_card;
     QSharedPointer<Control_and_playback_process>               control_and_play;
     int                                                       *dscratch_ids;
@@ -375,7 +375,7 @@ class Gui : public QObject
         QList<QSharedPointer<Playback_parameters>>                &params,
         QList<QSharedPointer<Timecode_control_process>>           &tcode_controls,
         QList<QSharedPointer<Manual_control_process>>             &manual_controls,
-        QList<QSharedPointer<Audio_track_playback_process>>       &playbacks,
+        QList<QSharedPointer<Deck_playback_process>>       &playbacks,
         QSharedPointer<Sound_driver_access_rules>                 &sound_card,
         QSharedPointer<Control_and_playback_process>              &control_and_playback,
         int                                                       *dscratch_ids);

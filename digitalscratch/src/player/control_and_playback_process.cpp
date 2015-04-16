@@ -39,7 +39,7 @@
 
 Control_and_playback_process::Control_and_playback_process(const QList<QSharedPointer<Timecode_control_process>>     &tcode_controls,
                                                            const QList<QSharedPointer<Manual_control_process>>       &manual_controls,
-                                                           const QList<QSharedPointer<Audio_track_playback_process>> &playbacks,
+                                                           const QList<QSharedPointer<Deck_playback_process>> &playbacks,
                                                            const QSharedPointer<Sound_driver_access_rules>           &sound_card,
                                                            const unsigned short int                                  &nb_decks)
 {
