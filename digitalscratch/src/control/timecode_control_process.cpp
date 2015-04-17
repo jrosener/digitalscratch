@@ -34,7 +34,6 @@
 #include <QtDebug>
 #include <QString>
 #include <cmath>
-#include <digital_scratch_api.h>
 
 #include "control/timecode_control_process.h"
 #include "app/application_logging.h"
@@ -52,7 +51,7 @@ Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback
     if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
                                   (char*)vinyl_type.toStdString().c_str(),
                                   sample_rate,
-                                  &this->dscratch_id) != 0)
+                                  &this->dscratch_handle) != 0)
     {
         qCCritical(DS_PLAYBACK) << "can not create turntable";
     }
@@ -65,7 +64,7 @@ Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback
 Timecode_control_process::~Timecode_control_process()
 {
     // Delete dscratch turntable.
-    dscratch_delete_turntable(this->dscratch_id);
+    dscratch_delete_turntable(this->dscratch_handle);
 
     return;
 }
@@ -80,7 +79,7 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     float volume         = 0.0;
 
     // Iterate over decks and analyze captured timecode.
-    if (dscratch_analyze_recorded_datas(this->dscratch_id,
+    if (dscratch_analyze_recorded_datas(this->dscratch_handle,
                                         samples_1,
                                         samples_2,
                                         nb_samples) != 0)
@@ -89,7 +88,7 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     }
 
     // Update playing parameters.
-    if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_id,
+    if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_handle,
                                                           &speed,
                                                           &volume)) == 0)
     {
@@ -138,8 +137,8 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     return true;
 }
 
-int
-Timecode_control_process::get_dscratch_id()
+DSCRATCH_HANDLE
+Timecode_control_process::get_dscratch_handle()
 {
-    return this->dscratch_id;
+    return this->dscratch_handle;
 }

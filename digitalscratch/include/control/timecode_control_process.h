@@ -40,6 +40,7 @@
 #include "player/playback_parameters.h"
 #include "app/application_const.h"
 #include "control/control_process.h"
+#include <digital_scratch_api.h>
 
 using namespace std;
 
@@ -48,7 +49,7 @@ class Timecode_control_process : public Control_process
     Q_OBJECT
 
  private:
-    int dscratch_id;
+    DSCRATCH_HANDLE dscratch_handle;
     unsigned short int waitfor_emit_speed_changed; // Do not update speed (in gui) every time.
 
  public:
@@ -61,5 +62,5 @@ class Timecode_control_process : public Control_process
              const float              *samples_1,
              const float              *samples_2);
 
-    int get_dscratch_id();
+    DSCRATCH_HANDLE get_dscratch_handle();
 };

@@ -37,6 +37,8 @@
 #include <QThreadPool>
 #include <QThread>
 
+#include <digital_scratch_api.h>
+
 #include "app/application_logging.h"
 #include "app/application_const.h"
 #include "gui/gui.h"
@@ -96,7 +98,7 @@ int main(int argc, char *argv[])
     QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
     QList<QSharedPointer<Deck_playback_process>>       at_playbacks;
-    int *dscratch_ids = new int[settings->get_nb_decks()];
+    DSCRATCH_HANDLE *dscratch_ids = new int[settings->get_nb_decks()];
     for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
         // Track for a deck.
@@ -114,7 +116,7 @@ int main(int argc, char *argv[])
                                                                                             settings->get_vinyl_type(),
                                                                                             settings->get_sample_rate()));
         tcode_controls << tcode_control;
-        dscratch_ids[i] = tcode_control->get_dscratch_id();
+        dscratch_ids[i] = tcode_control->get_dscratch_handle();
 
         // Process which get playback parameters from keyboard or gui buttons.
         QSharedPointer<Manual_control_process> manual_control(new Manual_control_process(play_param));
