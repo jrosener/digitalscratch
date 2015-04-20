@@ -215,23 +215,23 @@ Gui::apply_application_settings()
     for (int i = 0; i < this->nb_decks; i++)
     {
         if (dscratch_change_vinyl_type(this->dscratch_ids[i],
-                                       (char*)this->settings->get_vinyl_type().toStdString().c_str()) != 0)
+                                       (char*)this->settings->get_vinyl_type().toStdString().c_str()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set vinyl type";
         }
-        if (dscratch_set_rpm(this->dscratch_ids[i], this->settings->get_rpm()) != 0)
+        if (dscratch_set_rpm(this->dscratch_ids[i], this->settings->get_rpm()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set turntable RPM";
         }
-        if (dscratch_set_input_amplify_coeff(this->dscratch_ids[i], this->settings->get_input_amplify_coeff()) != 0)
+        if (dscratch_set_input_amplify_coeff(this->dscratch_ids[i], this->settings->get_input_amplify_coeff()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new input amplify coeff value";
         }
-        if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_ids[i], this->settings->get_min_amplitude_for_normal_speed()) != 0)
+        if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_ids[i], this->settings->get_min_amplitude_for_normal_speed()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude for normal speed value";
         }
-        if (dscratch_set_min_amplitude(this->dscratch_ids[i], this->settings->get_min_amplitude()) != 0)
+        if (dscratch_set_min_amplitude(this->dscratch_ids[i], this->settings->get_min_amplitude()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude value";
         }

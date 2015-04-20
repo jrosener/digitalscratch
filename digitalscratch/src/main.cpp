@@ -137,8 +137,8 @@ int main(int argc, char *argv[])
 
         // Playback process for a deck.
         QSharedPointer<Deck_playback_process> at_playback(new Deck_playback_process(at,
-                                                                                                  at_sampler,
-                                                                                                  play_param));
+                                                                                    at_sampler,
+                                                                                    play_param));
         at_playbacks << at_playback;
     }
 

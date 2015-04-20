@@ -51,7 +51,7 @@ Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback
     if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
                                   (char*)vinyl_type.toStdString().c_str(),
                                   sample_rate,
-                                  &this->dscratch_handle) != 0)
+                                  &this->dscratch_handle) != DSCRATCH_SUCCESS)
     {
         qCCritical(DS_PLAYBACK) << "can not create turntable";
     }
@@ -82,7 +82,7 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     if (dscratch_analyze_recorded_datas(this->dscratch_handle,
                                         samples_1,
                                         samples_2,
-                                        nb_samples) != 0)
+                                        nb_samples) != DSCRATCH_SUCCESS)
     {
         qCWarning(DS_PLAYBACK) << "cannot analyze captured data";
     }
@@ -90,7 +90,7 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     // Update playing parameters.
     if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_handle,
                                                           &speed,
-                                                          &volume)) == 0)
+                                                          &volume)) == DSCRATCH_SUCCESS)
     {
         if (are_new_params == 0)
         {

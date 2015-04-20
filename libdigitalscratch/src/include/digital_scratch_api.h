@@ -48,6 +48,12 @@ extern "C" {
 /******************************************************************************/
 /**************************** Error codes *************************************/
 
+enum DSCRATCH_STATUS
+{
+    DSCRATCH_SUCCESS,
+    DSCRATCH_ERROR
+};
+
 /**< This is the speed value if no new value is found. */
 #define NO_NEW_SPEED_FOUND -99.0
 
@@ -87,12 +93,12 @@ typedef int DSCRATCH_HANDLE;
  * @param sample rate is the rate of the timecoded input signal.
  * @param handle is used to identify the turntable.
  *
- * @return 0 if all is OK, otherwise 1.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_create_turntable(const char         *name,
-                                        const char         *coded_vinyl_type,
-                                        const unsigned int  sample_rate,
-                                        DSCRATCH_HANDLE    *handle);
+DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
+                                                    const char         *coded_vinyl_type,
+                                                    const unsigned int  sample_rate,
+                                                    DSCRATCH_HANDLE    *handle);
 
 /**
  * Remove the specified turntable from turntable list and delete (deallocate
@@ -100,9 +106,9 @@ DLLIMPORT int dscratch_create_turntable(const char         *name,
  *
  * @param handle is used to identify the turntable.
  *
- * @return 0 if all is OK, otherwise 1.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_delete_turntable(DSCRATCH_HANDLE handle);
+DLLIMPORT DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle);
 
 /**
  * Provide samples recorded from turntable (with timecoded vinyl) and analyze
@@ -113,15 +119,15 @@ DLLIMPORT int dscratch_delete_turntable(DSCRATCH_HANDLE handle);
  * @param input_samples_2 is a table containing samples from right channel.
  * @param nb_frames is the size (number of element) of input_samples_1.
  *
- * @return 0 if all is OK, otherwise 1.
+ * @return DSCRATCH_SUCCESS if all is OK.
  *
  * @note Warning: input_samples_1 and input_samples_2 must have the same number
  *                of elements.
  */
-DLLIMPORT int dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
-                                              const float     *input_samples_1,
-                                              const float     *input_samples_2,
-                                              int              nb_frames);
+DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
+                                                          const float     *input_samples_1,
+                                                          const float     *input_samples_2,
+                                                          int              nb_frames);
 
 
 /**
@@ -143,15 +149,15 @@ DLLIMPORT int dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
  * @param nb_frames is the size (number of element) of input_samples_interleaved
  *        divided by nb_channels.
  *
- * @return 0 if all is OK, otherwise 1.
+ * @return DSCRATCH_SUCCESS if all is OK.
  *
  */
-DLLIMPORT int dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
-                                                          int              nb_channels,
-                                                          int              left_index,
-                                                          int              right_index,
-                                                          float           *input_samples_interleaved,
-                                                          int              nb_frames);
+DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
+                                                                      int              nb_channels,
+                                                                      int              left_index,
+                                                                      int              right_index,
+                                                                      float           *input_samples_interleaved,
+                                                                      int              nb_frames);
 
 /**
  * Provide playing parameters (only relevant if dscratch_analyze_recorded_datas()
@@ -176,10 +182,11 @@ DLLIMPORT int dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handl
  *        NO_NEW_VOLUME_FOUND is returned if no volume is found.
  *
  * @return 0 if playing parameters are found, otherwise 1.
+ * @return DSCRATCH_SUCCESS if playing parameters are found.
  */
-DLLIMPORT int dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
-                                              float           *speed,
-                                              float           *volume);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
+                                                          float           *speed,
+                                                          float           *volume);
 
 /**
  * Get number of turntable registered in DigitalScratch.
@@ -201,9 +208,9 @@ DLLIMPORT const char *dscratch_get_version();
  *
  * @param handle is used to identify the turntable.
  *
- * @return 0 if all is OK, otherwise 1
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_display_turntable(DSCRATCH_HANDLE handle);
+DLLIMPORT DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle);
 
 /**
  * Get name of specified turntable.
@@ -214,10 +221,10 @@ DLLIMPORT int dscratch_display_turntable(DSCRATCH_HANDLE handle);
  * @note This function will allocate (malloc) the buffer in which it will put
  *       the name, so do not forget to deallocate it (free).
  *
- * @return 0 if all is OK, otherwise 1
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
-                                          char            **turntable_name);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
+                                                      char            **turntable_name);
 
 /**
  * Get vinyl type used for specified turntable.
@@ -228,10 +235,10 @@ DLLIMPORT int dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
  * @note This function will allocate (malloc) the buffer in which it will put
  *       the vinyl type, so do not forget to deallocate it (free).
  *
- * @return 0 if all is OK, otherwise 1
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
-                                      char            **vinyl_type);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
+                                                  char            **vinyl_type);
 
 /**
  * Get default vinyl type.
@@ -245,10 +252,11 @@ DLLIMPORT const char* dscratch_get_default_vinyl_type();
  * Change vinyl type without deleting and recreating engine.
  *
  * @param handle is used to identify the turntable.
- * @return 0 if all is OK, otherwise 1.
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
-                                         char            *vinyl_type);
+DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
+                                                     char            *vinyl_type);
 
 
 
@@ -260,10 +268,10 @@ DLLIMPORT int dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
  * @param handle is used to identify the turntable.
  * @param coeff is the value to be multiplied to input samples.
  *
- * @return 0 if all is OK, otherwise 1.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handle,
-                                               int             coeff);
+DLLIMPORT DSCRATCH_STATUS dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handle,
+                                                           int             coeff);
 
 /**
  * Get the coefficient to be multiplied to input timecoded signal.
@@ -287,10 +295,10 @@ DLLIMPORT int dscratch_get_default_input_amplify_coeff();
  * @param handle is used to identify the turntable.
  * @param rpm is the number of RPM of the turntable (45 or 33).
  *
- * @return 0 if all is OK, otherwise 1.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_set_rpm(DSCRATCH_HANDLE    handle,
-                               unsigned short int rpm);
+DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
+                                           unsigned short int rpm);
 
 /**
  * Get the turntable RPM value.
@@ -311,7 +319,7 @@ DLLIMPORT unsigned short int dscratch_get_default_rpm();
 /**
   * Getter/Setter for the minimal acceptable amplitude for a normal speed.
   */
-DLLIMPORT int   dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float amplitude);
+DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float amplitude);
 DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle);
 DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed();
 DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(const char *coded_vinyl_type);
@@ -319,7 +327,7 @@ DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_t
 /**
  * Getter/Setter for the minimal detectable amplitude.
  */
-DLLIMPORT int   dscratch_set_min_amplitude(DSCRATCH_HANDLE handle, float amplitude);
+DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle, float amplitude);
 DLLIMPORT float dscratch_get_min_amplitude(DSCRATCH_HANDLE handle);
 DLLIMPORT float dscratch_get_default_min_amplitude();
 DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(const char *coded_vinyl_type);

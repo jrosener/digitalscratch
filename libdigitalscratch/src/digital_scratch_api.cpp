@@ -95,23 +95,23 @@ bool l_get_coded_vinyl(DSCRATCH_HANDLE   handle,
 
 /********************************* API functions ******************************/
 
-int dscratch_create_turntable(const char         *name,
-                              const char         *coded_vinyl_type,
-                              const unsigned int  sample_rate,
-                              DSCRATCH_HANDLE    *handle)
+DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
+                                          const char         *coded_vinyl_type,
+                                          const unsigned int  sample_rate,
+                                          DSCRATCH_HANDLE    *handle)
 {
     // Error if no name is provided.
     if (name == NULL || QString::fromUtf8(name) == "")
     {
         qCCritical(DSLIB_API) << "No turntable name provided.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Error if no name is provided.
     if (coded_vinyl_type == NULL || QString::fromUtf8(coded_vinyl_type) == "")
     {
         qCCritical(DSLIB_API) << "No coded vinyl type provided.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Create Digital_scratch object.
@@ -121,7 +121,7 @@ int dscratch_create_turntable(const char         *name,
     if (dscratch == NULL)
     {
         qCCritical(DSLIB_API) << "Digital_scratch object not created.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Go through the list of turntables and add this Digital_scratch object in
@@ -153,34 +153,34 @@ int dscratch_create_turntable(const char         *name,
     g_input_samples_1.reserve(INPUT_BUFFER_MIN_SIZE);
     g_input_samples_2.reserve(INPUT_BUFFER_MIN_SIZE);
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
-int dscratch_delete_turntable(DSCRATCH_HANDLE handle)
+DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle)
 {
     if (handle > ((int)tab_turntable.size() - 1))
     {
         qCCritical(DSLIB_API) << "Cannot remove turntable at index" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Delete Digital_scratch object from table of turntables.
     if (tab_turntable[handle] == NULL)
     {
         qCCritical(DSLIB_API) << "No turntable at index" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
     delete tab_turntable[handle];
     tab_turntable[handle] = NULL;
 
     // All is OK.
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
-int dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
-                                    const float     *input_samples_1,
-                                    const float     *input_samples_2,
-                                    int              nb_frames)
+DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
+                                                const float     *input_samples_1,
+                                                const float     *input_samples_2,
+                                                int              nb_frames)
 {
     // Copy input samples in internal tables.
     g_input_samples_1.assign(input_samples_1, input_samples_1 + nb_frames);
@@ -202,18 +202,18 @@ int dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
                                                             g_input_samples_2) == false)
     {
         qCCritical(DSLIB_API) << "Cannot analyze recorded datas.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
-int dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
-                                                int              nb_channels,
-                                                int              left_index,
-                                                int              right_index,
-                                                float           *input_samples_interleaved,
-                                                int              nb_frames)
+DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
+                                                            int              nb_channels,
+                                                            int              left_index,
+                                                            int              right_index,
+                                                            float           *input_samples_interleaved,
+                                                            int              nb_frames)
 {
 
     int j;
@@ -247,28 +247,28 @@ int dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
                                                       g_input_samples_2) == false)
     {
         qCCritical(DSLIB_API) << "Cannot analyze interleaved recorded datas.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 
-int dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
-                                    float           *speed,
-                                    float           *volume)
+DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
+                                                float           *speed,
+                                                float           *volume)
 {
     if (tab_turntable[handle]->get_playing_parameters(speed,
                                                             volume) == false)
     {
         // Playing parameters not found.
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
-int dscratch_display_turntable(DSCRATCH_HANDLE handle)
+DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
 {
     char *turntable_name = NULL;
     char *vinyl_name     = NULL;
@@ -277,14 +277,14 @@ int dscratch_display_turntable(DSCRATCH_HANDLE handle)
     if (handle > ((int)tab_turntable.size() - 1))
     {
         qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Check if turntable exists.
     if (tab_turntable[handle] == NULL)
     {
         qCCritical(DSLIB_API) << "No turntable at index" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // General informations.
@@ -318,7 +318,7 @@ int dscratch_display_turntable(DSCRATCH_HANDLE handle)
         free(vinyl_name);
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 int dscratch_get_number_of_turntables()
@@ -331,8 +331,8 @@ const char *dscratch_get_version()
     return STR(VERSION);
 }
 
-int dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
-                                char            **turntable_name)
+DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
+                                            char            **turntable_name)
 {
     char *name = NULL;
     int   size = 0;
@@ -341,21 +341,21 @@ int dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
     if (turntable_name == NULL)
     {
         qCCritical(DSLIB_API) << "Cannot get turntable name.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Check turntable id.
     if (handle > ((int)tab_turntable.size() - 1))
     {
         qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Check if turntable exists.
     if (tab_turntable[handle] == NULL)
     {
         qCCritical(DSLIB_API) << "No turntable at index " << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Get name from Controller.
@@ -377,11 +377,11 @@ int dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
     // Return turntable name
     *turntable_name = name;
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
-int dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
-                            char            **vinyl_type)
+DSCRATCH_STATUS dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
+                                        char            **vinyl_type)
 {
     char        *vinyl_name = NULL;
     int          size       = 0;
@@ -391,21 +391,21 @@ int dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
     if (vinyl_type == NULL)
     {
         qCCritical(DSLIB_API) << "Cannot get vinyl type.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Check turntable id.
     if (handle > ((int)tab_turntable.size() - 1))
     {
         qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Check if turntable exists.
     if (tab_turntable[handle] == NULL)
     {
         qCCritical(DSLIB_API) << "No turntable at index" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Get the type of Coded_vinyl pointed by Digital_scratch.
@@ -460,19 +460,19 @@ int dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
         else
         {
             qCCritical(DSLIB_API) << "Unknown timecoded vinyl type";
-            return 1;
+            return DSCRATCH_ERROR;
         }
     }
     else
     {
         qCCritical(DSLIB_API) << "Cannot access to coded vinyl.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Return vinyl type.
     *vinyl_type = vinyl_name;
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 DLLIMPORT const char* dscratch_get_default_vinyl_type()
@@ -481,8 +481,8 @@ DLLIMPORT const char* dscratch_get_default_vinyl_type()
 }
 
 
-DLLIMPORT int dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
-                                         char            *vinyl_type)
+DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
+                                                     char            *vinyl_type)
 {
     char *current_vinyl_type = NULL;
 
@@ -490,27 +490,27 @@ DLLIMPORT int dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
     if (vinyl_type == NULL)
     {
         qCCritical(DSLIB_API) << "Cannot get vinyl type.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Check turntable id.
     if (handle > ((int)tab_turntable.size() - 1))
     {
         qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(handle);
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
     // Change vinyl if necessary.
     dscratch_get_vinyl_type(handle, &current_vinyl_type);
     if (current_vinyl_type == NULL)
     {
-        return 1;
+        return DSCRATCH_ERROR;
     }
     if (strcmp(current_vinyl_type, vinyl_type) != 0)
     {
         if (tab_turntable[handle]->change_coded_vinyl(QString::fromUtf8(vinyl_type).toStdString()) == false)
         {
-            return 1;
+            return DSCRATCH_ERROR;
         }
     }
 
@@ -520,27 +520,28 @@ DLLIMPORT int dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
         free(current_vinyl_type);
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 /**** API functions: General motion detection configuration parameters ********/
-DLLIMPORT int dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handle,
-                                               int             coeff)
+DLLIMPORT DSCRATCH_STATUS dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handle,
+                                                           int             coeff)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Set input_amplify_coeff parameter to Coded_vinyl.
     if (vinyl->set_input_amplify_coeff(coeff) == false)
     {
         qCCritical(DSLIB_API) << "Cannot set input_amplify_coeff.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
+// FIXME: return an error code or the value, but not both !
 DLLIMPORT int dscratch_get_input_amplify_coeff(DSCRATCH_HANDLE handle)
 {
     // Get Coded_vinyl object.
@@ -556,29 +557,29 @@ DLLIMPORT int dscratch_get_default_input_amplify_coeff()
     return DEFAULT_INPUT_AMPLIFY_COEFF;
 }
 
-DLLIMPORT int dscratch_set_rpm(DSCRATCH_HANDLE    handle,
-                               unsigned short int rpm)
+DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
+                                           unsigned short int rpm)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Set turntable RPM.
     if (((rpm != RPM_33) && (rpm != RPM_45)) ||
        (vinyl->set_rpm(rpm) == false))
     {
         qCCritical(DSLIB_API) << "Cannot set RPM.";
-        return 1;
+        return DSCRATCH_ERROR;
     }
 
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 DLLIMPORT unsigned short int dscratch_get_rpm(DSCRATCH_HANDLE handle)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Get RPM parameter from Coded_vinyl.
     return vinyl->get_rpm();
@@ -589,23 +590,23 @@ DLLIMPORT unsigned short int dscratch_get_default_rpm()
     return DEFAULT_RPM;
 }
 
-DLLIMPORT int dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle,
-                                                          float           amplitude)
+DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle,
+                                                                      float           amplitude)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Set amplitude.
     vinyl->set_min_amplitude_for_normal_speed(amplitude);
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Get amplitude from Coded_vinyl.
     return vinyl->get_min_amplitude_for_normal_speed();
@@ -615,7 +616,7 @@ DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed()
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(0, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(0, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Get amplitude from Coded_vinyl.
     return vinyl->get_default_min_amplitude_for_normal_speed();
@@ -648,23 +649,23 @@ DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_t
     return result;
 }
 
-DLLIMPORT int dscratch_set_min_amplitude(DSCRATCH_HANDLE handle,
-                                         float           amplitude)
+DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle,
+                                                     float           amplitude)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Set amplitude.
     vinyl->set_min_amplitude(amplitude);
-    return 0;
+    return DSCRATCH_SUCCESS;
 }
 
 DLLIMPORT float dscratch_get_min_amplitude(DSCRATCH_HANDLE handle)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(handle, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(handle, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Get amplitude from Coded_vinyl.
     return vinyl->get_min_amplitude();
@@ -674,7 +675,7 @@ DLLIMPORT float dscratch_get_default_min_amplitude()
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl(0, &vinyl) == false) return 1;
+    if (l_get_coded_vinyl(0, &vinyl) == false) return DSCRATCH_ERROR;
 
     // Get amplitude from Coded_vinyl.
     return vinyl->get_default_min_amplitude();
