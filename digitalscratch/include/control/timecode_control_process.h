@@ -54,7 +54,7 @@ class Timecode_control_process : public Control_process
 
  public:
     Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
-                             const QString                             &vinyl_type,
+                             const DSCRATCH_VINYLS                     &vinyl_type,
                              const unsigned int                        &sample_rate);
     virtual ~Timecode_control_process();
 

@@ -5,7 +5,6 @@
 #include <algorithm>
 
 #include "test_utils.h"
-#include <digital_scratch_api.h>
 #include <digital_scratch_api_test.h>
 
 DigitalScratchApi_Test::DigitalScratchApi_Test()
@@ -40,19 +39,17 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_1()
     DSCRATCH_HANDLE handle_2 = -1;
 
     // Try to create a turntable with wrong parameters.
-    QVERIFY2(dscratch_create_turntable("",               FINAL_SCRATCH_VINYL, 44100, &handle_1) != 0, "empty name");
-    QVERIFY2(dscratch_create_turntable(NULL,             FINAL_SCRATCH_VINYL, 44100, &handle_1) != 0, "null name");
-    QVERIFY2(dscratch_create_turntable("left_turntable", "",                  44100, &handle_1) != 0, "empty vinyl");
-    QVERIFY2(dscratch_create_turntable("left_turntable", NULL,                44100, &handle_1) != 0, "null vinyl");
+    QVERIFY2(dscratch_create_turntable("",               FINAL_SCRATCH, 44100, &handle_1) != 0, "empty name");
+    QVERIFY2(dscratch_create_turntable(NULL,             FINAL_SCRATCH, 44100, &handle_1) != 0, "null name");
 
     // Create a turntable with correct parameters.
-    QVERIFY2(dscratch_create_turntable("left_turntable", FINAL_SCRATCH_VINYL, 44100, &handle_1) == 0, "correct params 1");
+    QVERIFY2(dscratch_create_turntable("left_turntable", FINAL_SCRATCH, 44100, &handle_1) == 0, "correct params 1");
 
     // Check handle_1.
     QVERIFY2(handle_1 != -1, "new turntable id 1");
 
     // Create again a turntable with correct parameters.
-    QVERIFY2(dscratch_create_turntable("left_turntable", FINAL_SCRATCH_VINYL, 44100, &handle_2) == 0, "correct params 2");
+    QVERIFY2(dscratch_create_turntable("left_turntable", FINAL_SCRATCH, 44100, &handle_2) == 0, "correct params 2");
 
     // Check handle_2.
     QVERIFY2(handle_2 != -1, "new turntable id 2");
@@ -90,22 +87,22 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_2()
     DSCRATCH_HANDLE handle2 = -1;
 
     // Call dscratch_create_turntable() and check if handle0=0. (0)
-    QVERIFY2(dscratch_create_turntable("turntable0", FINAL_SCRATCH_VINYL, 44100, &handle0) == 0, "create handle0");
+    QVERIFY2(dscratch_create_turntable("turntable0", FINAL_SCRATCH, 44100, &handle0) == 0, "create handle0");
     QVERIFY2(handle0 == 0, "check handle0");
 
     // Delete turntable handle0.                                (x)
     QVERIFY2(dscratch_delete_turntable(handle0) == 0, "delete handle0");
 
     // Call dscratch_create_turntable() and check if handle0=0. (0)
-    QVERIFY2(dscratch_create_turntable("turntable0", FINAL_SCRATCH_VINYL, 44100, &handle0) == 0, "create handleO again");
+    QVERIFY2(dscratch_create_turntable("turntable0", FINAL_SCRATCH, 44100, &handle0) == 0, "create handleO again");
     QVERIFY2(handle0 == 0, "check handle0 again");
 
     // Call dscratch_create_turntable() and check if handle1=1. (0,1)
-    QVERIFY2(dscratch_create_turntable("turntable1", FINAL_SCRATCH_VINYL, 44100, &handle1) == 0, "create handle1");
+    QVERIFY2(dscratch_create_turntable("turntable1", FINAL_SCRATCH, 44100, &handle1) == 0, "create handle1");
     QVERIFY2(handle1 == 1, "check handle1");
 
     // Call dscratch_create_turntable() and check if handle2=2. (0,1,2)
-    QVERIFY2(dscratch_create_turntable("turntable2", FINAL_SCRATCH_VINYL, 44100, &handle2) == 0, "create hande2");
+    QVERIFY2(dscratch_create_turntable("turntable2", FINAL_SCRATCH, 44100, &handle2) == 0, "create hande2");
     QVERIFY2(handle2 == 2, "check handle2");
 
     // Delete turntable handle0.                                (x,1,2)
@@ -115,7 +112,7 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_2()
     QVERIFY2(dscratch_delete_turntable(handle1) == 0, "delete handle1");
 
     // Call dscratch_create_turntable() and check if handle0=0. (0,x,2)
-    QVERIFY2(dscratch_create_turntable("turntable0", FINAL_SCRATCH_VINYL, 44100, &handle0) == 0, "create handle0 last time");
+    QVERIFY2(dscratch_create_turntable("turntable0", FINAL_SCRATCH, 44100, &handle0) == 0, "create handle0 last time");
     QVERIFY2(handle0 == 0, "check handle0 last time");
 
 
@@ -131,7 +128,7 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable_2()
     QVERIFY2(dscratch_delete_turntable(handle2) == 0, "cleanup handle2");
 }
 
-void DigitalScratchApi_Test::l_dscratch_analyze_timecode(const char *vinyl_type, const char *txt_timecode_file)
+void DigitalScratchApi_Test::l_dscratch_analyze_timecode(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file)
 {
     DSCRATCH_HANDLE handle = -1;
 
@@ -201,11 +198,11 @@ void DigitalScratchApi_Test::l_dscratch_analyze_timecode(const char *vinyl_type,
  */
 void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_stop_fast()
 {
-    l_dscratch_analyze_timecode(SERATO_VINYL, TIMECODE_SERATO_33RPM_STOP_FAST);
+    l_dscratch_analyze_timecode(SERATO, TIMECODE_SERATO_33RPM_STOP_FAST);
 }
 void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_noises()
 {
-    l_dscratch_analyze_timecode(SERATO_VINYL, TIMECODE_SERATO_33RPM_NOISES);
+    l_dscratch_analyze_timecode(SERATO, TIMECODE_SERATO_33RPM_NOISES);
 }
 
 /**
@@ -219,7 +216,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_noises()
  */
 void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_finalscratch()
 {
-    l_dscratch_analyze_timecode(FINAL_SCRATCH_VINYL, TIMECODE_FS_33RPM_SPEED100);
+    l_dscratch_analyze_timecode(FINAL_SCRATCH, TIMECODE_FS_33RPM_SPEED100);
 }
 
 /**
@@ -234,7 +231,7 @@ void DigitalScratchApi_Test::testCase_dscratch_display_turntable()
     DSCRATCH_HANDLE handle = -1;
 
     // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &handle) == 0, "create turntable");
+    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH, 44100, &handle) == 0, "create turntable");
 
 #if 0 // Enable if you want to check result manually.
     // Display informations about the turntable.
@@ -258,11 +255,11 @@ void DigitalScratchApi_Test::testCase_dscratch_get_turntable_name()
     DSCRATCH_HANDLE handle = -1;
 
     // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &handle) == 0, "create turntable");
+    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH, 44100, &handle) == 0, "create turntable");
 
     // Check turntable name.
     QVERIFY2(dscratch_get_turntable_name(handle, &name) == 0, "get name");
-    QVERIFY2(QString(name) == QString("turntable"),       "check name");
+    QVERIFY2(QString(name) == QString("turntable"),           "check name");
 
     // Cleanup.
     if (name != NULL)
@@ -281,19 +278,15 @@ void DigitalScratchApi_Test::testCase_dscratch_get_turntable_name()
  */
 void DigitalScratchApi_Test::testCase_dscratch_get_vinyl_type()
 {
-    char *vinyl = NULL;
+    DSCRATCH_VINYLS vinyl;
     DSCRATCH_HANDLE handle = -1;
 
     // Create a turntable
-    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH_VINYL, 44100, &handle) == 0, "create turntable");
+    QVERIFY2(dscratch_create_turntable("turntable", FINAL_SCRATCH, 44100, &handle) == 0, "create turntable");
 
-    QVERIFY2(dscratch_get_vinyl_type(handle, &vinyl) == 0,       "get name");
-    QVERIFY2(QString(vinyl) == QString(FINAL_SCRATCH_VINYL), "check name");
+    QVERIFY2(dscratch_get_turntable_vinyl_type(handle, &vinyl) == 0, "get type");
+    QVERIFY2(QString(dscratch_get_vinyl_name_from_type(vinyl)) == "final scratch standard 2.0", "check name");
 
     // Cleanup.
-    if (vinyl != NULL)
-    {
-        free(vinyl);
-    }
     QVERIFY2(dscratch_delete_turntable(handle) == 0, "cleanup turntable");
 }

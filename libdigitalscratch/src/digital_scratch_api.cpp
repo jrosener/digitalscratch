@@ -45,20 +45,23 @@ using namespace std;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
-/****************************** Magic numbers *********************************/
+/********************** Timecoded vinyl full names ****************************/
+static const char *DSCRATCH_VINYLS_NAMES[NB_DSCRATCH_VINYLS] =
+{ 
+    "final scratch standard 2.0",
+    "serato cv02",
+    "mixvibes dvs"
+};
 
+/****************************** Magic numbers *********************************/
 #define INPUT_BUFFER_MIN_SIZE 512
 
 /***************************** Global variables *******************************/
-
-/**
- * List of turntables.
- */
+// List of turntables.
+// FIXME: is it necessary to store turntables in an internal table ?
 vector<Digital_scratch*> tab_turntable;
 
-/**
- * Input datas for left and right samples.
- */
+// Input datas for left and right samples.
 vector<float> g_input_samples_1;
 vector<float> g_input_samples_2;
 
@@ -96,7 +99,7 @@ bool l_get_coded_vinyl(DSCRATCH_HANDLE   handle,
 /********************************* API functions ******************************/
 
 DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
-                                          const char         *coded_vinyl_type,
+                                          DSCRATCH_VINYLS     coded_vinyl_type,
                                           const unsigned int  sample_rate,
                                           DSCRATCH_HANDLE    *handle)
 {
@@ -107,16 +110,9 @@ DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
         return DSCRATCH_ERROR;
     }
 
-    // Error if no name is provided.
-    if (coded_vinyl_type == NULL || QString::fromUtf8(coded_vinyl_type) == "")
-    {
-        qCCritical(DSLIB_API) << "No coded vinyl type provided.";
-        return DSCRATCH_ERROR;
-    }
-
     // Create Digital_scratch object.
     Digital_scratch *dscratch = new Digital_scratch(QString::fromUtf8(name).toStdString(),
-                                                    QString::fromUtf8(coded_vinyl_type).toStdString(),
+                                                    coded_vinyl_type,
                                                     sample_rate);
     if (dscratch == NULL)
     {
@@ -271,7 +267,7 @@ DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
 DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
 {
     char *turntable_name = NULL;
-    char *vinyl_name     = NULL;
+    DSCRATCH_VINYLS vinyl;
 
     // Check turntable id.
     if (handle > ((int)tab_turntable.size() - 1))
@@ -292,30 +288,31 @@ DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
     cout << "handle: " << handle << endl;
     cout << " turntable_name            : " << turntable_name << endl;
 
-    // Specific stuff for FinalScratch vinyl.
-    dscratch_get_vinyl_type(handle, &vinyl_name);
-
-    if (strcmp(vinyl_name, FINAL_SCRATCH_VINYL) == 0)
+    // Timecoded vinyl.
+    dscratch_get_turntable_vinyl_type(handle, &vinyl);
+    switch(vinyl)
     {
-        cout << " vinyl_type: final_scratch" << endl;
-    }
-    else if (strcmp(vinyl_name, SERATO_VINYL) == 0)
-    {
-        cout << " vinyl_type: serato" << endl;
-    }
-    else if (strcmp(vinyl_name, MIXVIBES_VINYL) == 0)
-    {
-        cout << " vinyl_type: mixvibes" << endl;
+        case FINAL_SCRATCH :
+            cout << " vinyl_type: final_scratch" << endl;
+            break;
+ 
+        case SERATO :
+            cout << " vinyl_type: serato" << endl;
+            break;
+ 
+        case MIXVIBES :
+            cout << " vinyl_type: mixvibes" << endl;
+            break;
+ 
+        default :
+            cout << " vinyl_type: error, not found" << endl;
+            break;
     }
 
     // Cleanup.
     if (turntable_name != NULL)
     {
         free(turntable_name);
-    }
-    if (vinyl_name != NULL)
-    {
-        free(vinyl_name);
     }
 
     return DSCRATCH_SUCCESS;
@@ -380,19 +377,10 @@ DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
     return DSCRATCH_SUCCESS;
 }
 
-DSCRATCH_STATUS dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
-                                        char            **vinyl_type)
+DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,
+                                                  DSCRATCH_VINYLS   *vinyl_type)
 {
-    char        *vinyl_name = NULL;
-    int          size       = 0;
-    Coded_vinyl *cv         = NULL;
-
-    // Check vinyl name.
-    if (vinyl_type == NULL)
-    {
-        qCCritical(DSLIB_API) << "Cannot get vinyl type.";
-        return DSCRATCH_ERROR;
-    }
+    Coded_vinyl *cv = NULL;
 
     // Check turntable id.
     if (handle > ((int)tab_turntable.size() - 1))
@@ -414,48 +402,15 @@ DSCRATCH_STATUS dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
     {
         if (dynamic_cast<Final_scratch_vinyl*>(cv) != NULL)
         {
-            // Size of result.
-            size = strlen(FINAL_SCRATCH_VINYL)+1;
-
-            // Allocate memory for resulting string.
-            vinyl_name = (char*)malloc(sizeof(char) * size);
-
-            // Put vinyl name in resulting string.           
-            #ifdef WIN32
-                strncpy_s(vinyl_name, size, FINAL_SCRATCH_VINYL, size);
-            #else
-                strncpy(vinyl_name, FINAL_SCRATCH_VINYL, size);
-            #endif
+            *vinyl_type = FINAL_SCRATCH;
         }
         else if (dynamic_cast<Serato_vinyl*>(cv) != NULL)
         {
-            // Size of result.
-            size = strlen(SERATO_VINYL)+1;
-
-            // Allocate memory for resulting string.
-            vinyl_name = (char*)malloc(sizeof(char) * size);
-
-            // Put vinyl name in resulting string.
-            #ifdef WIN32
-                strncpy_s(vinyl_name, size, SERATO_VINYL, size);
-            #else
-                strncpy(vinyl_name, SERATO_VINYL, size);
-            #endif
+            *vinyl_type = SERATO;
         }
         else if (dynamic_cast<Mixvibes_vinyl*>(cv) != NULL)
         {
-            // Size of result.
-            size = strlen(MIXVIBES_VINYL)+1;
-
-            // Allocate memory for resulting string.
-            vinyl_name = (char*)malloc(sizeof(char) * size);
-
-            // Put vinyl name in resulting string.
-            #ifdef WIN32
-                strncpy_s(vinyl_name, size, MIXVIBES_VINYL, size);
-            #else
-                strncpy(vinyl_name, MIXVIBES_VINYL, size);
-            #endif
+            *vinyl_type = MIXVIBES;
         }
         else
         {
@@ -469,29 +424,24 @@ DSCRATCH_STATUS dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
         return DSCRATCH_ERROR;
     }
 
-    // Return vinyl type.
-    *vinyl_type = vinyl_name;
-
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT const char* dscratch_get_default_vinyl_type()
+DLLIMPORT const char* dscratch_get_vinyl_name_from_type(DSCRATCH_VINYLS vinyl_type)
 {
-    return SERATO_VINYL;
+    return DSCRATCH_VINYLS_NAMES[vinyl_type];
+}
+
+DLLIMPORT DSCRATCH_VINYLS dscratch_get_default_vinyl_type()
+{
+    return SERATO;
 }
 
 
 DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
-                                                     char            *vinyl_type)
+                                                     DSCRATCH_VINYLS  vinyl_type)
 {
-    char *current_vinyl_type = NULL;
-
-    // Check vinyl name.
-    if (vinyl_type == NULL)
-    {
-        qCCritical(DSLIB_API) << "Cannot get vinyl type.";
-        return DSCRATCH_ERROR;
-    }
+    DSCRATCH_VINYLS current_vinyl_type;
 
     // Check turntable id.
     if (handle > ((int)tab_turntable.size() - 1))
@@ -501,23 +451,13 @@ DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
     }
 
     // Change vinyl if necessary.
-    dscratch_get_vinyl_type(handle, &current_vinyl_type);
-    if (current_vinyl_type == NULL)
+    dscratch_get_turntable_vinyl_type(handle, &current_vinyl_type);
+    if (current_vinyl_type != vinyl_type)
     {
-        return DSCRATCH_ERROR;
-    }
-    if (strcmp(current_vinyl_type, vinyl_type) != 0)
-    {
-        if (tab_turntable[handle]->change_coded_vinyl(QString::fromUtf8(vinyl_type).toStdString()) == false)
+        if (tab_turntable[handle]->change_coded_vinyl(vinyl_type) == false)
         {
             return DSCRATCH_ERROR;
         }
-    }
-
-    // Cleanup.
-    if (current_vinyl_type != NULL)
-    {
-        free(current_vinyl_type);
     }
 
     return DSCRATCH_SUCCESS;
@@ -622,22 +562,27 @@ DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed()
     return vinyl->get_default_min_amplitude_for_normal_speed();
 }
 
-DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(const char *coded_vinyl_type)
+DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
 {
     float result = 0.0f;
 
     Coded_vinyl *vinyl = NULL;
-    if (strcmp(coded_vinyl_type, SERATO_VINYL) == 0)
+    switch(vinyl_type)
     {
-        vinyl = new Serato_vinyl(44100);
-    }
-    else if (strcmp(coded_vinyl_type, FINAL_SCRATCH_VINYL) == 0)
-    {
-        vinyl = new Final_scratch_vinyl(44100);
-    }
-    else if (strcmp(coded_vinyl_type, MIXVIBES_VINYL) == 0)
-    {
-        vinyl = new Mixvibes_vinyl(44100);
+        case FINAL_SCRATCH :
+            vinyl = new Final_scratch_vinyl(44100);
+            break;
+ 
+        case SERATO :
+            vinyl = new Serato_vinyl(44100);
+            break;
+ 
+        case MIXVIBES :
+            vinyl = new Mixvibes_vinyl(44100);
+            break;
+
+        default:
+            break;
     }
 
     if (vinyl != NULL)
@@ -681,22 +626,27 @@ DLLIMPORT float dscratch_get_default_min_amplitude()
     return vinyl->get_default_min_amplitude();
 }
 
-DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(const char *coded_vinyl_type)
+DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
 {
     float result = 0.0f;
 
     Coded_vinyl *vinyl = NULL;
-    if (strcmp(coded_vinyl_type, SERATO_VINYL) == 0)
+    switch(vinyl_type)
     {
-        vinyl = new Serato_vinyl(44100);
-    }
-    else if (strcmp(coded_vinyl_type, FINAL_SCRATCH_VINYL) == 0)
-    {
-        vinyl = new Final_scratch_vinyl(44100);
-    }
-    else if (strcmp(coded_vinyl_type, MIXVIBES_VINYL) == 0)
-    {
-        vinyl = new Mixvibes_vinyl(44100);
+        case FINAL_SCRATCH :
+            vinyl = new Final_scratch_vinyl(44100);
+            break;
+ 
+        case SERATO :
+            vinyl = new Serato_vinyl(44100);
+            break;
+ 
+        case MIXVIBES :
+            vinyl = new Mixvibes_vinyl(44100);
+            break;
+
+        default:
+            break;
     }
 
     if (vinyl != NULL)

@@ -42,37 +42,38 @@ using namespace std;
 #include "digital_scratch_api.h"
 #include "digital_scratch.h"
 
-Digital_scratch::Digital_scratch(string       controller_name,
-                                 string       coded_vinyl_type,
-                                 unsigned int sample_rate) : Controller(controller_name)
+Digital_scratch::Digital_scratch(string          controller_name,
+                                 DSCRATCH_VINYLS coded_vinyl_type,
+                                 unsigned int    sample_rate) : Controller(controller_name)
 {
     // Init.
     this->sample_rate = sample_rate;
     this->init(coded_vinyl_type);
 }
 
-bool Digital_scratch::init(string coded_vinyl_type)
+bool Digital_scratch::init(DSCRATCH_VINYLS coded_vinyl_type)
 {
     // Internal parameters.
     this->set_playing_parameters_ready(false);
 
     this->vinyl = NULL;
-    if (coded_vinyl_type == FINAL_SCRATCH_VINYL)
+    switch(coded_vinyl_type)
     {
-        this->vinyl = new Final_scratch_vinyl(sample_rate);
-    }
-    else if (coded_vinyl_type == SERATO_VINYL)
-    {
-       this->vinyl = new Serato_vinyl(sample_rate);
-    }
-    else if (coded_vinyl_type == MIXVIBES_VINYL)
-    {
-       this->vinyl = new Mixvibes_vinyl(sample_rate);
-    }
-    else
-    {
-        qCCritical(DSLIB_CONTROLLER) << "Cannot create Digital_scratch object with NULL vinyl.";
-        return false;
+        case FINAL_SCRATCH :
+            this->vinyl = new Final_scratch_vinyl(sample_rate);
+            break;
+ 
+        case SERATO :
+            this->vinyl = new Serato_vinyl(sample_rate);
+            break;
+ 
+        case MIXVIBES :
+            this->vinyl = new Mixvibes_vinyl(sample_rate);
+            break;
+ 
+        default :
+            qCCritical(DSLIB_CONTROLLER) << "Cannot create Digital_scratch object with NULL vinyl.";
+            return false;
     }
 
     return true;
@@ -124,7 +125,7 @@ Coded_vinyl* Digital_scratch::get_coded_vinyl()
     return this->vinyl;
 }
 
-bool Digital_scratch::change_coded_vinyl(string coded_vinyl_type)
+bool Digital_scratch::change_coded_vinyl(DSCRATCH_VINYLS coded_vinyl_type)
 {
     // First clean all in Digital_scratch object.
     this->clean();

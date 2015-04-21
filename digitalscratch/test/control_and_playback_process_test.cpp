@@ -39,7 +39,7 @@ void Control_and_playback_process_Test::testCaseRunWithJack_1deck()
     // Prepare full stack for analyzing timecode captured from sound card.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
     settings->set_sample_rate(44100);
-    settings->set_vinyl_type(SERATO_VINYL);
+    settings->set_vinyl_type(SERATO);
     settings->set_nb_decks(1);
 
     QSharedPointer<Playback_parameters> play_param(new Playback_parameters);
@@ -91,7 +91,7 @@ void Control_and_playback_process_Test::testCaseRunWithJack_2decks()
     // Prepare full stack for analyzing timecode captured from sound card.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
     settings->set_sample_rate(44100);
-    settings->set_vinyl_type(SERATO_VINYL);
+    settings->set_vinyl_type(SERATO);
     settings->set_nb_decks(2);
 
     QSharedPointer<Playback_parameters> play_param_1(new Playback_parameters);

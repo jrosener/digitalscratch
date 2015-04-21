@@ -39,7 +39,7 @@ void DigitalScratch_Test::testCase_analyze_recording_data()
 {
    // Create Digital_scratch.
    Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH_VINYL,
+                                                   FINAL_SCRATCH,
                                                    44100);
 
    // Check analyze_recording_data()

@@ -39,7 +39,7 @@
 #include "app/application_logging.h"
 
 Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
-                                                   const QString                             &vinyl_type,
+                                                   const DSCRATCH_VINYLS                     &vinyl_type,
                                                    const unsigned int                        &sample_rate) : Control_process(param)
 {
     //
@@ -49,7 +49,7 @@ Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback
     QString turntable_name;
     turntable_name = "turntable";
     if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
-                                  (char*)vinyl_type.toStdString().c_str(),
+                                  vinyl_type,
                                   sample_rate,
                                   &this->dscratch_handle) != DSCRATCH_SUCCESS)
     {

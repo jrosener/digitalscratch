@@ -92,20 +92,22 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     }
 
     // Init motion detection parameters widgets.
-    this->amplify_coeff                            = new QSlider(Qt::Horizontal, this);
-    this->amplify_coeff_value                      = new QLabel(this);
-    this->min_amplitude_for_normal_speed           = new QSlider(Qt::Horizontal, this);
-    this->min_amplitude_for_normal_speed_value     = new QLabel(this);
-    this->min_amplitude                            = new QSlider(Qt::Horizontal, this);
-    this->min_amplitude_value                      = new QLabel(this);
-    this->vinyl_type_select                        = new QComboBox(this);
-    QList<QString> available_vinyl_types           = this->settings->get_available_vinyl_types();
-    for (int i = 0; i < available_vinyl_types.size(); i++)
+    this->amplify_coeff                                  = new QSlider(Qt::Horizontal, this);
+    this->amplify_coeff_value                            = new QLabel(this);
+    this->min_amplitude_for_normal_speed                 = new QSlider(Qt::Horizontal, this);
+    this->min_amplitude_for_normal_speed_value           = new QLabel(this);
+    this->min_amplitude                                  = new QSlider(Qt::Horizontal, this);
+    this->min_amplitude_value                            = new QLabel(this);
+    this->vinyl_type_select                              = new QComboBox(this);
+    QMap<DSCRATCH_VINYLS, QString> available_vinyl_types = this->settings->get_available_vinyl_types();
+    QMapIterator<DSCRATCH_VINYLS, QString> i(available_vinyl_types);
+    while (i.hasNext())
     {
-        this->vinyl_type_select->addItem(available_vinyl_types.at(i));
+        i.next();
+        this->vinyl_type_select->addItem(i.value(), i.key());
     }
-    this->rpm_select                               = new QComboBox(this);
-    QList<unsigned short int> available_rpms       = this->settings->get_available_rpms();
+    this->rpm_select                         = new QComboBox(this);
+    QList<unsigned short int> available_rpms = this->settings->get_available_rpms();
     for (int i = 0; i < available_rpms.size(); i++)
     {
         this->rpm_select->addItem(QString::number(available_rpms.at(i)));
@@ -380,7 +382,7 @@ void Config_dialog::fill_tab_motion_detect()
 {
     this->autostart_detection_check->setChecked(this->settings->get_autostart_motion_detection());
 
-    this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findText(this->settings->get_vinyl_type()));
+    this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findData(this->settings->get_vinyl_type()));
 
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm())));
 
@@ -693,8 +695,8 @@ void Config_dialog::reset_motion_detection_params()
     this->autostart_detection_check->setChecked(this->settings->get_autostart_motion_detection_default());
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
-    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->vinyl_type_select->currentText()));
-    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(this->vinyl_type_select->currentText()));
+    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default_from_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt())));
+    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt())));
 }
 
 void Config_dialog::reset_shortcuts()
@@ -748,7 +750,7 @@ Config_dialog::accept()
     this->settings->set_autostart_motion_detection(this->autostart_detection_check->isChecked());
 
     // Set vinyl type.
-    this->settings->set_vinyl_type(this->vinyl_type_select->currentText());
+    this->settings->set_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt()));
 
     // Set RPM.
     this->settings->set_rpm(this->rpm_select->currentText().toInt());

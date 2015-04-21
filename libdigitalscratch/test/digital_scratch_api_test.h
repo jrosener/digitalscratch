@@ -1,6 +1,8 @@
 #include <QObject>
 #include <QtTest>
 #include <iostream>
+#include <digital_scratch_api.h>
+
 using namespace std;
 
 class DigitalScratchApi_Test : public QObject
@@ -8,7 +10,7 @@ class DigitalScratchApi_Test : public QObject
     Q_OBJECT
     
 private:
-    void l_dscratch_analyze_timecode(const char *vinyl_type, const char *txt_timecode_file);
+    void l_dscratch_analyze_timecode(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file);
 
 public:
     DigitalScratchApi_Test();

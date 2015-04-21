@@ -214,8 +214,7 @@ Gui::apply_application_settings()
     // Apply motion detection settings for all turntables.
     for (int i = 0; i < this->nb_decks; i++)
     {
-        if (dscratch_change_vinyl_type(this->dscratch_ids[i],
-                                       (char*)this->settings->get_vinyl_type().toStdString().c_str()) != DSCRATCH_SUCCESS)
+        if (dscratch_change_vinyl_type(this->dscratch_ids[i], this->settings->get_vinyl_type()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set vinyl type";
         }

@@ -63,14 +63,13 @@ enum DSCRATCH_STATUS
 /******************************************************************************/
 /********************* Supported timecoded vinyl type *************************/
 
-/**< Stanton Final Scratch vinyl name. */
-#define FINAL_SCRATCH_VINYL "final scratch standard 2.0"
-
-/**< Serato Scratch Live vinyl name. */
-#define SERATO_VINYL "serato cv02"
-
-/**< Mixvibes vinyl name. */
-#define MIXVIBES_VINYL "mixvibes dvs"
+enum DSCRATCH_VINYLS
+{
+    FINAL_SCRATCH = 0,
+    SERATO,
+    MIXVIBES,
+    NB_DSCRATCH_VINYLS
+};
 
 /******************************************************************************/
 /************************** Supported base RPM ********************************/
@@ -96,7 +95,7 @@ typedef int DSCRATCH_HANDLE;
  * @return DSCRATCH_SUCCESS if all is OK.
  */
 DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
-                                                    const char         *coded_vinyl_type,
+                                                    DSCRATCH_VINYLS     coded_vinyl_type,
                                                     const unsigned int  sample_rate,
                                                     DSCRATCH_HANDLE    *handle);
 
@@ -223,6 +222,7 @@ DLLIMPORT DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle);
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
+// FIXME: is it necessary to have a turntable name ?
 DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
                                                       char            **turntable_name);
 
@@ -230,33 +230,40 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
  * Get vinyl type used for specified turntable.
  *
  * @param handle is used to identify the turntable.
- * @param vinyl_type buffer in which will be putted the vinyl type.
- *
- * @note This function will allocate (malloc) the buffer in which it will put
- *       the vinyl type, so do not forget to deallocate it (free).
+ * @param vinyl_type is the vinyl type.
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_get_vinyl_type(DSCRATCH_HANDLE   handle,
-                                                  char            **vinyl_type);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,
+                                                            DSCRATCH_VINYLS   *vinyl_type);
+
+/**
+ * Transform a vinyl type to an explicit string name.
+ *
+ * @param vinyl_type is the vinyl type.
+ *
+ * @return A full string name corresponding to the type.
+ */
+DLLIMPORT const char* dscratch_get_vinyl_name_from_type(DSCRATCH_VINYLS vinyl_type);
 
 /**
  * Get default vinyl type.
  *
  * @return the default vinyl type (Serato vinyl).
  */
-DLLIMPORT const char* dscratch_get_default_vinyl_type();
+DLLIMPORT DSCRATCH_VINYLS dscratch_get_default_vinyl_type();
 
 
 /**
  * Change vinyl type without deleting and recreating engine.
  *
  * @param handle is used to identify the turntable.
+ * @param vinyl_type is the type of vinyl (@see DSCRATCH_VINYLS).
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
 DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
-                                                     char            *vinyl_type);
+                                                     DSCRATCH_VINYLS  vinyl_type);
 
 
 
@@ -322,7 +329,7 @@ DLLIMPORT unsigned short int dscratch_get_default_rpm();
 DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float amplitude);
 DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle);
 DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed();
-DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(const char *coded_vinyl_type);
+DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
 /**
  * Getter/Setter for the minimal detectable amplitude.
@@ -330,7 +337,7 @@ DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_t
 DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle, float amplitude);
 DLLIMPORT float dscratch_get_min_amplitude(DSCRATCH_HANDLE handle);
 DLLIMPORT float dscratch_get_default_min_amplitude();
-DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(const char *coded_vinyl_type);
+DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
 #ifdef __cplusplus
 }

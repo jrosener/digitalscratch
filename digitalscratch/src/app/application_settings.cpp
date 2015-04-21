@@ -34,14 +34,17 @@
 #include <QDir>
 #include <QSize>
 #include <QPoint>
-#include <digital_scratch_api.h>
 
 #include "app/application_settings.h"
 
 Application_settings::Application_settings() : settings(APPLICATION_NAME)
 {
     this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
-    this->available_vinyl_types << FINAL_SCRATCH_VINYL << SERATO_VINYL << MIXVIBES_VINYL;
+    for (int i = 0; i <= NB_DSCRATCH_VINYLS; i++)
+    {
+       this->available_vinyl_types.insert(static_cast<DSCRATCH_VINYLS>(i),
+                                          dscratch_get_vinyl_name_from_type(static_cast<DSCRATCH_VINYLS>(i)));
+    }
     this->available_rpms << RPM_33 << RPM_45;
     this->available_nb_decks << 1 << 2 << 3;
     this->available_sample_rates << 44100 << 48000 << 96000;
@@ -114,10 +117,10 @@ Application_settings::init_settings()
         this->settings.setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
     }
     if (this->settings.contains(MIN_AMPLITUDE_NORMAL_SPEED) == false) {
-        this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->settings.value(VINYL_TYPE_CFG).toString())));
+        this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->get_vinyl_type())));
     }
     if (this->settings.contains(MIN_AMPLITUDE) == false) {
-        this->settings.setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->settings.value(VINYL_TYPE_CFG).toString())));
+        this->settings.setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->get_vinyl_type())));
     }
 
     //
@@ -408,9 +411,9 @@ Application_settings::get_min_amplitude_for_normal_speed_default()
 }
 
 float
-Application_settings::get_min_amplitude_for_normal_speed_default_from_vinyl_type(const QString &type)
+Application_settings::get_min_amplitude_for_normal_speed_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
 {
-    return dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(type.toLocal8Bit().data());
+    return dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(vinyl_type);
 }
 
 void
@@ -437,9 +440,9 @@ Application_settings::get_min_amplitude_default()
 }
 
 float
-Application_settings::get_min_amplitude_default_from_vinyl_type(const QString &type)
+Application_settings::get_min_amplitude_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
 {
-    return dscratch_get_default_min_amplitude_from_vinyl_type(type.toLocal8Bit().data());
+    return dscratch_get_default_min_amplitude_from_vinyl_type(vinyl_type);
 }
 
 void
@@ -585,25 +588,25 @@ Application_settings::set_autostart_motion_detection(const bool &do_autostart)
     this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, do_autostart);
 }
 
-QString
+DSCRATCH_VINYLS
 Application_settings::get_vinyl_type()
 {
-    return this->settings.value(VINYL_TYPE_CFG).toString();
+    return static_cast<DSCRATCH_VINYLS>(this->settings.value(VINYL_TYPE_CFG).toInt());
 }
 
-QString
+DSCRATCH_VINYLS
 Application_settings::get_vinyl_type_default()
 {
     return dscratch_get_default_vinyl_type();
 }
 
 void
-Application_settings::set_vinyl_type(const QString &type)
+Application_settings::set_vinyl_type(DSCRATCH_VINYLS type)
 {
     this->settings.setValue(VINYL_TYPE_CFG, type);
 }
 
-QList<QString>
+QMap<DSCRATCH_VINYLS, QString>
 Application_settings::get_available_vinyl_types()
 {
     return this->available_vinyl_types;

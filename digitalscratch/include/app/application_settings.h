@@ -34,6 +34,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <digital_scratch_api.h>
 
 #include "audiodev/audio_device_access_rules.h"
 #include "app/application_const.h"
@@ -166,14 +167,14 @@ class Application_settings : public QObject
     Q_OBJECT
 
  private:
-    QSettings                  settings;
-    QList<QString>             available_gui_styles;
-    QList<QString>             available_vinyl_types;
-    QList<unsigned short int>  available_rpms;
-    QList<unsigned int>        available_sample_rates;
-    QList<unsigned short int>  available_nb_decks;
-    QList<QString>             available_sound_cards;
-    bool                       audio_collection_full_refresh;
+    QSettings                      settings;
+    QList<QString>                 available_gui_styles;
+    QMap<DSCRATCH_VINYLS, QString> available_vinyl_types;
+    QList<unsigned short int>      available_rpms;
+    QList<unsigned int>            available_sample_rates;
+    QList<unsigned short int>      available_nb_decks;
+    QList<QString>                 available_sound_cards;
+    bool                           audio_collection_full_refresh;
 
  public:
     Application_settings();
@@ -234,10 +235,10 @@ class Application_settings : public QObject
     bool            get_autostart_motion_detection();
     bool            get_autostart_motion_detection_default();
 
-    void            set_vinyl_type(const QString &type);
-    QString         get_vinyl_type();
-    QString         get_vinyl_type_default();
-    QList<QString>  get_available_vinyl_types();
+    void            set_vinyl_type(DSCRATCH_VINYLS vinyl_type);
+    DSCRATCH_VINYLS get_vinyl_type();
+    DSCRATCH_VINYLS get_vinyl_type_default();
+    QMap<DSCRATCH_VINYLS, QString> get_available_vinyl_types();
 
     void                   set_rpm(const unsigned short int &rpm);
     unsigned short int     get_rpm();
@@ -251,12 +252,12 @@ class Application_settings : public QObject
     void  set_min_amplitude_for_normal_speed(const float &amplitude);
     float get_min_amplitude_for_normal_speed();
     float get_min_amplitude_for_normal_speed_default();
-    float get_min_amplitude_for_normal_speed_default_from_vinyl_type(const QString &type);
+    float get_min_amplitude_for_normal_speed_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
     void  set_min_amplitude(const float &amplitude);
     float get_min_amplitude();
     float get_min_amplitude_default();
-    float get_min_amplitude_default_from_vinyl_type(const QString &type);
+    float get_min_amplitude_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
     void    set_keyboard_shortcut(const QString &kb_shortcut_path, const QString &value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);
