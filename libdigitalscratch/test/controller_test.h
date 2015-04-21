@@ -15,5 +15,4 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCaseConstructor();
-    void testControllerSetName();
 };

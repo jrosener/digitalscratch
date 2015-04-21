@@ -46,12 +46,7 @@ Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback
     // Initialize DigitalScratch library.
     //
     // Create turntable.
-    QString turntable_name;
-    turntable_name = "turntable";
-    if (dscratch_create_turntable((char*)turntable_name.toStdString().c_str(),
-                                  vinyl_type,
-                                  sample_rate,
-                                  &this->dscratch_handle) != DSCRATCH_SUCCESS)
+    if (dscratch_create_turntable(vinyl_type, sample_rate, &this->dscratch_handle) != DSCRATCH_SUCCESS)
     {
         qCCritical(DS_PLAYBACK) << "can not create turntable";
     }

@@ -36,13 +36,6 @@
 #include "playing_parameter.h"
 #include "digital_scratch_api.h"
 
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_SPEED "[Speed:" + Utils::to_string(__LINE__) \
-                                         + "]\t\t\t" + this->get_turntable_name() + " : "
-#else
-    #define TRACE_PREFIX_SPEED "[Speed]\t\t\t\t" + this->get_turntable_name() + " : "
-#endif
-
 #define DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND 1
 #define DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING  1
 
@@ -95,7 +88,7 @@ class Speed : public Playing_parameter
          * @param turntable_name is the name of the virtual turntable for which
          *        we analyze playing parameters.
          */
-        Speed(string turntable_name);
+        Speed();
 
         /**
          * Destructor

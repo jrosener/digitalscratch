@@ -39,11 +39,10 @@ using namespace std;
 #include "log.h"
 #include "controller.h"
 
-Controller::Controller(string name)
+Controller::Controller()
 {
-    this->set_name(name);
-    this->speed    = new Speed(this->name);
-    this->volume   = new Volume(this->name);
+    this->speed    = new Speed();
+    this->volume   = new Volume();
     this->set_playing_parameters_ready(false);
 }
 
@@ -51,25 +50,6 @@ Controller::~Controller()
 {
     delete this->speed;
     delete this->volume;
-}
-
-string Controller::get_name()
-{
-    return this->name;
-}
-
-bool Controller::set_name(string name)
-{
-    if (name == "")
-    {
-        qCCritical(DSLIB_CONTROLLER) << "Controller name empty.";
-        return false;
-    }
-
-    this->name = name;
-    qCDebug(DSLIB_CONTROLLER) << "New name=" << QString(this->name.c_str());
-
-    return true;
 }
 
 int Controller::get_max_nb_no_new_speed_found()

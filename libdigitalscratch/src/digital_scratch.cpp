@@ -42,9 +42,8 @@ using namespace std;
 #include "digital_scratch_api.h"
 #include "digital_scratch.h"
 
-Digital_scratch::Digital_scratch(string          controller_name,
-                                 DSCRATCH_VINYLS coded_vinyl_type,
-                                 unsigned int    sample_rate) : Controller(controller_name)
+Digital_scratch::Digital_scratch(DSCRATCH_VINYLS coded_vinyl_type,
+                                 unsigned int    sample_rate) : Controller()
 {
     // Init.
     this->sample_rate = sample_rate;

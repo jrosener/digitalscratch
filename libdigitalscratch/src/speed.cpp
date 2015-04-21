@@ -40,7 +40,7 @@ using namespace std;
 #include "dscratch_parameters.h"
 #include "speed.h"
 
-Speed::Speed(string turntable_name) : Playing_parameter(turntable_name)
+Speed::Speed() : Playing_parameter()
 {
     // Internal stuff.
     this->nb_no_new_speed_found     = 0;

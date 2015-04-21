@@ -25,6 +25,5 @@ private Q_SLOTS:
     void testCase_dscratch_analyze_timecode_serato_noises();
     void testCase_dscratch_analyze_timecode_finalscratch();
     void testCase_dscratch_display_turntable();
-    void testCase_dscratch_get_turntable_name();
     void testCase_dscratch_get_vinyl_type();
 };

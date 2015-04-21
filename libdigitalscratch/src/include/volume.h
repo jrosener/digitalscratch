@@ -35,12 +35,6 @@
 #include "dscratch_parameters.h"
 #include "playing_parameter.h"
 
-#ifdef DISPLAY_CODE_LINE
-    #define TRACE_PREFIX_VOLUME "[Volume:" + Utils::to_string(__LINE__) + "]\t\t\t" + this->get_turntable_name() + " : "
-#else
-    #define TRACE_PREFIX_VOLUME "[Volume]\t\t\t\t" + this->get_turntable_name() + " : "
-#endif
-
 /**
  * Define a Volume class.\n
  * Base class : Playing_parameter\n
@@ -58,15 +52,7 @@ class Volume : public Playing_parameter
 
     /* Constructor / Destructor */
     public:
-        /**
-         * Constructor
-         * @param turntable_name is the turntable name
-         */
-        Volume(string turntable_name);
-
-        /**
-         * Destructor
-         */
+        Volume();
         virtual ~Volume();
 
 

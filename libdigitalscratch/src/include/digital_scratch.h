@@ -72,19 +72,13 @@ class Digital_scratch : public Controller
     /* Constructor / Destructor */
     public:
         /**
-         * Constructor.
-         * @param controller_name is the name of this DigitalScratch controller.
          * @param timecoded_vinyl is the Coded_vinyl object used with
          *        Digital_scratch (e.g. Final_scratch_vinyl)
          * @param sample rate is the rate of the timecoded input signal.
          */
-        Digital_scratch(string          controller_name,
-                        DSCRATCH_VINYLS coded_vinyl_type,
+        Digital_scratch(DSCRATCH_VINYLS coded_vinyl_type,
                         unsigned int    sample_rate);
 
-        /**
-         * Destructor
-         */
         virtual ~Digital_scratch();
 
 

@@ -38,9 +38,7 @@ void DigitalScratch_Test::cleanupTestCase()
 void DigitalScratch_Test::testCase_analyze_recording_data()
 {
    // Create Digital_scratch.
-   Digital_scratch *dscratch = new Digital_scratch("left_turntable",
-                                                   FINAL_SCRATCH,
-                                                   44100);
+   Digital_scratch *dscratch = new Digital_scratch(FINAL_SCRATCH, 44100);
 
    // Check analyze_recording_data()
    vector<float> tab_1;

@@ -43,38 +43,8 @@
  */
 class Playing_parameter
 {
-    /* Attributes */
-    private:
-        /**
-         * The turntable name name corresponding to this playing parameter.
-         */
-        string turntable_name;
-
-
-    /* Constructor / Destructor */
+    // FIXME: is Playing_parameter needed ?
     public:
-        /**
-         * Constructor.
-         */
-        Playing_parameter(string turntable_name);
-
-        /**
-         * Destructor.
-         */
+        Playing_parameter();
         virtual ~Playing_parameter();
-
-    /* Methods */
-    public:
-        /**
-         * Get turntable name.
-         * @return turntable name.
-         */
-        string get_turntable_name();
-
-        /**
-         * Set turntable name.
-         * @param turntable_name is the new turntable name (can not be empty).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_turntable_name(string turntable_name);
 };

@@ -98,22 +98,12 @@ bool l_get_coded_vinyl(DSCRATCH_HANDLE   handle,
 
 /********************************* API functions ******************************/
 
-DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
-                                          DSCRATCH_VINYLS     coded_vinyl_type,
+DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
                                           const unsigned int  sample_rate,
                                           DSCRATCH_HANDLE    *handle)
 {
-    // Error if no name is provided.
-    if (name == NULL || QString::fromUtf8(name) == "")
-    {
-        qCCritical(DSLIB_API) << "No turntable name provided.";
-        return DSCRATCH_ERROR;
-    }
-
     // Create Digital_scratch object.
-    Digital_scratch *dscratch = new Digital_scratch(QString::fromUtf8(name).toStdString(),
-                                                    coded_vinyl_type,
-                                                    sample_rate);
+    Digital_scratch *dscratch = new Digital_scratch(coded_vinyl_type, sample_rate);
     if (dscratch == NULL)
     {
         qCCritical(DSLIB_API) << "Digital_scratch object not created.";
@@ -266,7 +256,6 @@ DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
 
 DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
 {
-    char *turntable_name = NULL;
     DSCRATCH_VINYLS vinyl;
 
     // Check turntable id.
@@ -284,9 +273,7 @@ DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
     }
 
     // General informations.
-    dscratch_get_turntable_name(handle, &turntable_name);
     cout << "handle: " << handle << endl;
-    cout << " turntable_name            : " << turntable_name << endl;
 
     // Timecoded vinyl.
     dscratch_get_turntable_vinyl_type(handle, &vinyl);
@@ -309,12 +296,6 @@ DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
             break;
     }
 
-    // Cleanup.
-    if (turntable_name != NULL)
-    {
-        free(turntable_name);
-    }
-
     return DSCRATCH_SUCCESS;
 }
 
@@ -326,55 +307,6 @@ int dscratch_get_number_of_turntables()
 const char *dscratch_get_version()
 {
     return STR(VERSION);
-}
-
-DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
-                                            char            **turntable_name)
-{
-    char *name = NULL;
-    int   size = 0;
-
-    // Check turntable_name.
-    if (turntable_name == NULL)
-    {
-        qCCritical(DSLIB_API) << "Cannot get turntable name.";
-        return DSCRATCH_ERROR;
-    }
-
-    // Check turntable id.
-    if (handle > ((int)tab_turntable.size() - 1))
-    {
-        qCCritical(DSLIB_API) << "Cannot access this turntable" << QString(handle);
-        return DSCRATCH_ERROR;
-    }
-
-    // Check if turntable exists.
-    if (tab_turntable[handle] == NULL)
-    {
-        qCCritical(DSLIB_API) << "No turntable at index " << QString(handle);
-        return DSCRATCH_ERROR;
-    }
-
-    // Get name from Controller.
-    string controller_name = tab_turntable[handle]->get_name();
-
-    // Size of result.
-    size = controller_name.length() + 1;
-
-    // Allocate memory for resulting string.
-    name = (char*)malloc(sizeof(char) * size);
-
-    // Put turntable name in resulting string.
-    #ifdef WIN32
-        strncpy_s(name, size, controller_name.c_str(), size);
-    #else
-        strncpy(name, controller_name.c_str(), size);
-    #endif
-
-    // Return turntable name
-    *turntable_name = name;
-
-    return DSCRATCH_SUCCESS;
 }
 
 DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,

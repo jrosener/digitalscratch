@@ -27,15 +27,13 @@ void Speed_Test::cleanupTestCase()
  * Test Speed:Speed().
  *
  * Test Description:
- *      - Create a Speed object using an harcoded turntable name.
- *      - Check if turntable name was correctly stored.
+ *      - Create a Speed object.
  *      - Check if value is correctly initialized.
  */
 void Speed_Test::testCase_Constructor()
 {
-    Speed *speed = new Speed("turntable_name");
+    Speed *speed = new Speed();
 
-    QVERIFY2(speed->get_turntable_name() == "turntable_name", "get turntable name");
     QVERIFY2(qFuzzyCompare(speed->get_value(), 0.0f)   == true, "get speed");
     QVERIFY2(speed->get_max_nb_no_new_speed_found()    == DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND, "get max nb no new speed found");
     QVERIFY2(speed->get_max_nb_cycle_before_starting() == DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING, "get max nb cycle before starting");
@@ -48,7 +46,7 @@ void Speed_Test::testCase_Constructor()
  * Test Speed::bool set_max_nb_no_new_speed_found().
  *
  * Test Description:
- *      - Create a Speed object using an harcoded turntable name.
+ *      - Create a Speed object.
  *      - Check if set_max_nb_no_new_speed_found(-1) return false and if the
  *        value is not set.
  *      - Check if set_max_nb_no_new_speed_found(0) return false and if the
@@ -58,7 +56,7 @@ void Speed_Test::testCase_Constructor()
  */
 void Speed_Test::testCase_set_max_nb_no_new_speed_found()
 {
-    Speed *speed = new Speed("turntable_name");
+    Speed *speed = new Speed();
 
     QVERIFY2(speed->set_max_nb_no_new_speed_found(-1) == false, "negative value");
     QVERIFY2(speed->get_max_nb_no_new_speed_found()   == DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND, "get default value");
@@ -75,7 +73,7 @@ void Speed_Test::testCase_set_max_nb_no_new_speed_found()
 * Test Speed::set_max_nb_cycle_before_starting().
 *
 * Test Description:
-*      - Create a Speed object using an harcoded turntable name.
+*      - Create a Speed object.
 *      - Check if set_max_nb_cycle_before_starting(-1) return false and if the
 *        value is not set.
 *      - Check if set_max_nb_cycle_before_starting(0) return false and if the
@@ -85,7 +83,7 @@ void Speed_Test::testCase_set_max_nb_no_new_speed_found()
 */
 void Speed_Test::testCase_set_max_nb_cycle_before_starting()
 {
-   Speed *speed = new Speed("turntable_name");
+   Speed *speed = new Speed();
 
    QVERIFY2(speed->set_max_nb_cycle_before_starting(-1) == false, "negative value");
    QVERIFY2(speed->get_max_nb_cycle_before_starting()   == DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING, "get default value");
@@ -102,7 +100,7 @@ void Speed_Test::testCase_set_max_nb_cycle_before_starting()
 * Test Speed::set_value().
 *
 * Test Description:
-*      - Create a Speed object using an harcoded turntable name.
+*      - Create a Speed object.
 *      - Prepare max_nb_no_new_speed_found = 3.
 *      - Check if set_value(2.5) return true and if the value is set.
 *      - Check for 3 times that if we set_value(NO_NEW_SPEED_FOUND) then
@@ -115,7 +113,7 @@ void Speed_Test::testCase_set_max_nb_cycle_before_starting()
 */
 void Speed_Test::testCase_set_value()
 {
-   Speed *speed = new Speed("turntable_name");
+   Speed *speed = new Speed();
    QVERIFY2(speed->set_max_nb_no_new_speed_found(3) == true, "set max nb no new speed");
 
    QVERIFY2(speed->set_value(2.5) == true,                   "set correct speed");

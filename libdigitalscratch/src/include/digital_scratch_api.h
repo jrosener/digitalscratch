@@ -86,7 +86,6 @@ typedef int DSCRATCH_HANDLE;
 /**
  * Create a new turntable.
  *
- * @param name is the name you want to give to the turntable.
  * @param coded_vinyl_type is the type of timecoded vinyl you want to use
  *        (e.g. FINAL_SCRATCH_VINYL, see above).
  * @param sample rate is the rate of the timecoded input signal.
@@ -94,8 +93,7 @@ typedef int DSCRATCH_HANDLE;
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(const char         *name,
-                                                    DSCRATCH_VINYLS     coded_vinyl_type,
+DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
                                                     const unsigned int  sample_rate,
                                                     DSCRATCH_HANDLE    *handle);
 
@@ -210,21 +208,6 @@ DLLIMPORT const char *dscratch_get_version();
  * @return DSCRATCH_SUCCESS if all is OK.
  */
 DLLIMPORT DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle);
-
-/**
- * Get name of specified turntable.
- *
- * @param handle is used to identify the turntable.
- * @param name buffer in which will be putted the name of the turntable.
- *
- * @note This function will allocate (malloc) the buffer in which it will put
- *       the name, so do not forget to deallocate it (free).
- *
- * @return DSCRATCH_SUCCESS if all is OK.
- */
-// FIXME: is it necessary to have a turntable name ?
-DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_name(DSCRATCH_HANDLE   handle,
-                                                      char            **turntable_name);
 
 /**
  * Get vinyl type used for specified turntable.

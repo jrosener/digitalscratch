@@ -39,30 +39,10 @@ using namespace std;
 #include "log.h"
 #include "playing_parameter.h"
 
-Playing_parameter::Playing_parameter(string turntable_name)
+Playing_parameter::Playing_parameter()
 {
-    this->set_turntable_name(turntable_name);
 }
 
 Playing_parameter::~Playing_parameter()
 {
-}
-
-string Playing_parameter::get_turntable_name()
-{
-    return this->turntable_name;
-}
-
-bool Playing_parameter::set_turntable_name(string turntable_name)
-{
-    // Turntable name can not be empty.
-    if (turntable_name == "")
-    {
-        qCCritical(DSLIB_CONTROLLER) << "Can not set turntable name";
-        return false;
-    }
-
-    this->turntable_name = turntable_name;
-
-    return true;
 }

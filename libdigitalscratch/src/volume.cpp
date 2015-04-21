@@ -37,7 +37,7 @@ using namespace std;
 #include "log.h"
 #include "volume.h"
 
-Volume::Volume(string turntable_name) : Playing_parameter(turntable_name)
+Volume::Volume() : Playing_parameter()
 {
     this->value = 0.0;
 }

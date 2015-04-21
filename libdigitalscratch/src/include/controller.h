@@ -48,14 +48,7 @@
 class Controller
 {
     /* Attributes */
-    public:
-
     protected:
-        /**
-         * Name of the Controller.
-         */
-        string name;
-
         /**
          * Speed object pointer.
          */
@@ -74,33 +67,12 @@ class Controller
 
     /* Constructor / Destructor */
     public:
-        /**
-            * Constructor.
-            * @param name is the name of this controller.
-            */
-        Controller(string name);
-
-        /**
-         * Destructor.
-         */
+        Controller();
         virtual ~Controller();
 
 
     /* Methods */
     public:
-        /**
-         * Get controller name.
-         * @return controller name.
-         */
-        string get_name();
-
-        /**
-         * Set controller name.
-         * @param name is the controller name (can not be empty).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_name(string name);
-
         /**
          * Get last detected speed, direction and volume.
          * @return TRUE if playing parameters are available, otherwise FALSE.
