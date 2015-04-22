@@ -96,16 +96,14 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QSharedPointer<Playback_parameters>>                &params,
          QList<QSharedPointer<Timecode_control_process>>           &tcode_controls,
          QList<QSharedPointer<Manual_control_process>>             &manual_controls,
-         QList<QSharedPointer<Deck_playback_process>>       &playbacks,
+         QList<QSharedPointer<Deck_playback_process>>              &playbacks,
          QSharedPointer<Sound_driver_access_rules>                 &sound_card,
-         QSharedPointer<Control_and_playback_process>              &control_and_playback,
-         int                                                       *dscratch_ids)
+         QSharedPointer<Control_and_playback_process>              &control_and_playback)
 {
     // Check input parameters.
     if (playbacks.count()           == 0       ||
         sound_card.data()           == nullptr ||
-        control_and_playback.data() == nullptr ||
-        dscratch_ids                == nullptr)
+        control_and_playback.data() == nullptr)
     {
         qCCritical(DS_OBJECTLIFE) << "bad input parameters";
         return;
@@ -127,8 +125,12 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->nb_samplers             = this->settings->get_nb_samplers();
     this->sound_card              = sound_card;
     this->control_and_play        = control_and_playback;
-    this->dscratch_ids            = dscratch_ids;
     this->selected_deck           = 0;
+    this->dscratch_handles        = new DSCRATCH_HANDLE[this->settings->get_nb_decks()];
+    for (int i = 0; i < this->settings->get_nb_decks(); i++)
+    {
+        this->dscratch_handles[i] = this->tcode_controls[i]->get_dscratch_handle();
+    }
 
     // Init pop-up dialogs.
     this->config_dialog                   = nullptr;
@@ -175,6 +177,7 @@ Gui::~Gui()
     this->clean_decks_area();
     this->clean_samplers_area();
     this->clean_file_browser_area();
+    delete[] this->dscratch_handles;
     delete this->window;
 
     return;
@@ -214,23 +217,24 @@ Gui::apply_application_settings()
     // Apply motion detection settings for all turntables.
     for (int i = 0; i < this->nb_decks; i++)
     {
-        if (dscratch_change_vinyl_type(this->dscratch_ids[i], this->settings->get_vinyl_type()) != DSCRATCH_SUCCESS)
+        // FIXME : wrap these calls into Timecode_control_process and remove the digital_scratch_api dependency (this->dscratch_handles).
+        if (dscratch_change_vinyl_type(this->dscratch_handles[i], this->settings->get_vinyl_type()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set vinyl type";
         }
-        if (dscratch_set_rpm(this->dscratch_ids[i], this->settings->get_rpm()) != DSCRATCH_SUCCESS)
+        if (dscratch_set_rpm(this->dscratch_handles[i], this->settings->get_rpm()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set turntable RPM";
         }
-        if (dscratch_set_input_amplify_coeff(this->dscratch_ids[i], this->settings->get_input_amplify_coeff()) != DSCRATCH_SUCCESS)
+        if (dscratch_set_input_amplify_coeff(this->dscratch_handles[i], this->settings->get_input_amplify_coeff()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new input amplify coeff value";
         }
-        if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_ids[i], this->settings->get_min_amplitude_for_normal_speed()) != DSCRATCH_SUCCESS)
+        if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_handles[i], this->settings->get_min_amplitude_for_normal_speed()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude for normal speed value";
         }
-        if (dscratch_set_min_amplitude(this->dscratch_ids[i], this->settings->get_min_amplitude()) != DSCRATCH_SUCCESS)
+        if (dscratch_set_min_amplitude(this->dscratch_handles[i], this->settings->get_min_amplitude()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude value";
         }

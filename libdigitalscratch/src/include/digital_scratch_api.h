@@ -50,7 +50,7 @@ extern "C" {
 
 enum DSCRATCH_STATUS
 {
-    DSCRATCH_SUCCESS,
+    DSCRATCH_SUCCESS = 0,
     DSCRATCH_ERROR
 };
 
@@ -81,7 +81,7 @@ enum DSCRATCH_VINYLS
 /************ API functions: create, delete, provide datas,... ****************/
 
 /**< Used by API functions to identify the turntable. */
-typedef int DSCRATCH_HANDLE;
+typedef void* DSCRATCH_HANDLE;
 
 /**
  * Create a new turntable.
@@ -89,13 +89,13 @@ typedef int DSCRATCH_HANDLE;
  * @param coded_vinyl_type is the type of timecoded vinyl you want to use
  *        (e.g. FINAL_SCRATCH_VINYL, see above).
  * @param sample rate is the rate of the timecoded input signal.
- * @param handle is used to identify the turntable.
+ * @param out_handle is used to identify the turntable (returned by this function).
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
 DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
                                                     const unsigned int  sample_rate,
-                                                    DSCRATCH_HANDLE    *handle);
+                                                    DSCRATCH_HANDLE    *out_handle);
 
 /**
  * Remove the specified turntable from turntable list and delete (deallocate
@@ -186,13 +186,6 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handl
                                                           float           *volume);
 
 /**
- * Get number of turntable registered in DigitalScratch.
- *
- * @return number of turntable.
- */
-DLLIMPORT int dscratch_get_number_of_turntables();
-
-/**
  * Get DigitalScratch version.
  *
  * @return a const string containing version number.
@@ -264,13 +257,16 @@ DLLIMPORT DSCRATCH_STATUS dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handl
                                                            int             coeff);
 
 /**
- * Get the coefficient to be multiplied to input timecoded signal.
+ * Get the coefficient used for input timecoded signal amplification.
  *
  * @param handle is used to identify the turntable.
+ * @param out_coeff is the coefficient used to be multiplied to input samples
+ *        (returned by this function).
  *
- * @return the coefficient used to be multiplied to input samples.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT int dscratch_get_input_amplify_coeff(DSCRATCH_HANDLE handle);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_input_amplify_coeff(DSCRATCH_HANDLE  handle,
+                                                           int             *out_coeff);
 
 /**
  * Get the default coefficient to be multiplied to input timecoded signal.
@@ -294,10 +290,13 @@ DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
  * Get the turntable RPM value.
  *
  * @param handle is used to identify the turntable.
+ * @param out_rpm is the number of RPM of the turntable (45 or 33)
+ *        (returned by this function)..
  *
- * @return the number of rpm (45 or 33).
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT unsigned short int dscratch_get_rpm(DSCRATCH_HANDLE handle);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_rpm(DSCRATCH_HANDLE     handle,
+                                           unsigned short int *out_rpm);
 
 /**
  * Get the default number of RPM.
@@ -309,17 +308,18 @@ DLLIMPORT unsigned short int dscratch_get_default_rpm();
 /**
   * Getter/Setter for the minimal acceptable amplitude for a normal speed.
   */
+// FIXME: check if these functions are used.
 DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float amplitude);
-DLLIMPORT float dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle);
-DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed();
+DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float *out_ampl);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float *out_ampl);
 DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
 /**
  * Getter/Setter for the minimal detectable amplitude.
  */
 DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle, float amplitude);
-DLLIMPORT float dscratch_get_min_amplitude(DSCRATCH_HANDLE handle);
-DLLIMPORT float dscratch_get_default_min_amplitude();
+DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude(DSCRATCH_HANDLE handle, float *out_ampl);
+DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude(DSCRATCH_HANDLE handle, float *out_ampl);
 DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
 #ifdef __cplusplus

@@ -405,12 +405,6 @@ Application_settings::get_min_amplitude_for_normal_speed()
 }
 
 float
-Application_settings::get_min_amplitude_for_normal_speed_default()
-{
-    return dscratch_get_default_min_amplitude_for_normal_speed();
-}
-
-float
 Application_settings::get_min_amplitude_for_normal_speed_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
 {
     return dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(vinyl_type);
@@ -431,12 +425,6 @@ float
 Application_settings::get_min_amplitude()
 {
     return this->settings.value(MIN_AMPLITUDE).toFloat();
-}
-
-float
-Application_settings::get_min_amplitude_default()
-{
-    return dscratch_get_default_min_amplitude();
 }
 
 float

@@ -98,7 +98,6 @@ int main(int argc, char *argv[])
     QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
     QList<QSharedPointer<Deck_playback_process>>       at_playbacks;
-    DSCRATCH_HANDLE *dscratch_ids = new int[settings->get_nb_decks()];
     for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
         // Track for a deck.
@@ -116,7 +115,6 @@ int main(int argc, char *argv[])
                                                                                             settings->get_vinyl_type(),
                                                                                             settings->get_sample_rate()));
         tcode_controls << tcode_control;
-        dscratch_ids[i] = tcode_control->get_dscratch_handle();
 
         // Process which get playback parameters from keyboard or gui buttons.
         QSharedPointer<Manual_control_process> manual_control(new Manual_control_process(play_param));
@@ -163,8 +161,7 @@ int main(int argc, char *argv[])
             manual_controls,
             at_playbacks,
             sound_card,
-            control_and_playback,
-            dscratch_ids);
+            control_and_playback);
 
     // Run all control and playback processing stuff in another thread than the Gui.
     QThread *control_and_playback_thread = new QThread();
@@ -190,9 +187,6 @@ int main(int argc, char *argv[])
     // Start application.
     control_and_playback_thread->start();
     app.exec();
-
-    // Cleanup.
-    delete[] dscratch_ids;
 
     return 0;
 }
