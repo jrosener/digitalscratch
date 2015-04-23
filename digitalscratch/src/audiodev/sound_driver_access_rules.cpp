@@ -111,7 +111,7 @@ Sound_driver_access_rules::fill_input_buf(const unsigned short int &nb_buffer_fr
         {
             // Reset input buffer.
             buffer = io_buffers[i];
-            std::fill(buffer, buffer + nb_buffer_frames, 0);
+            std::fill(buffer, buffer + nb_buffer_frames, 0.0f);
 
             // Fill it with prerecorded timecode.
             unsigned int tcode_index  = timecode_current_sample + (i % 2); // i%2 = 0 or 1.

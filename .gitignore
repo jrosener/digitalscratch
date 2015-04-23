@@ -15,6 +15,7 @@ libdigitalscratch-test
 moc_*
 digitalscratch/test/data/playlist.m3u
 digitalscratch/test/data/playlist.pls
+libdigitalscratch/digitalscratch_resource.rc
 
 # Qt user project #
 ###################
