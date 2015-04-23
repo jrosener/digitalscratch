@@ -146,8 +146,8 @@ bool
 Deck_playback_process::play_silence(QVector<float*> &io_playback_bufs, const unsigned short int &buf_size)
 {
     // For each output samples (only for the selected deck), play silence.
-    std::fill(io_playback_bufs[0], io_playback_bufs[0] + buf_size, 0);
-    std::fill(io_playback_bufs[1], io_playback_bufs[1] + buf_size, 0);
+    std::fill(io_playback_bufs[0], io_playback_bufs[0] + buf_size, 0.0f);
+    std::fill(io_playback_bufs[1], io_playback_bufs[1] + buf_size, 0.0f);
 
     return true;
 }

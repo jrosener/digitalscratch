@@ -3,7 +3,7 @@
 
 # Snapshot version number.
 win32 {
-    VERSION = 1.6.0b
+    VERSION = 1.6.0
 }
 unix {
     CURRENT_DATE = $$system(date +%Y%m%d)

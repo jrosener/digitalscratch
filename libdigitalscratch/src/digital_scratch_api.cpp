@@ -34,6 +34,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+#ifdef WIN32
+#include <functional>
+#endif
 
 using namespace std;
 
