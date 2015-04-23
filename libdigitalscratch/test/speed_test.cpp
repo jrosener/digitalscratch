@@ -22,13 +22,9 @@ void Speed_Test::cleanupTestCase()
 {
 }
 
-
 /**
- * Test Speed:Speed().
- *
- * Test Description:
- *      - Create a Speed object.
- *      - Check if value is correctly initialized.
+ * Test: 
+ *   Speed()
  */
 void Speed_Test::testCase_Constructor()
 {
@@ -43,16 +39,9 @@ void Speed_Test::testCase_Constructor()
 }
 
 /**
- * Test Speed::bool set_max_nb_no_new_speed_found().
- *
- * Test Description:
- *      - Create a Speed object.
- *      - Check if set_max_nb_no_new_speed_found(-1) return false and if the
- *        value is not set.
- *      - Check if set_max_nb_no_new_speed_found(0) return false and if the
- *        value is not set.
- *      - Check if set_max_nb_no_new_speed_found(2) return true and if the
- *        value is not set.
+ * Test: 
+ *   set_max_nb_no_new_speed_found()
+ *   get_max_nb_no_new_speed_found()
  */
 void Speed_Test::testCase_set_max_nb_no_new_speed_found()
 {
@@ -70,17 +59,10 @@ void Speed_Test::testCase_set_max_nb_no_new_speed_found()
 }
 
 /**
-* Test Speed::set_max_nb_cycle_before_starting().
-*
-* Test Description:
-*      - Create a Speed object.
-*      - Check if set_max_nb_cycle_before_starting(-1) return false and if the
-*        value is not set.
-*      - Check if set_max_nb_cycle_before_starting(0) return false and if the
-*        value is not set.
-*      - Check if set_max_nb_cycle_before_starting(2) return true and if the
-*        value is not set.
-*/
+ * Test: 
+ *   set_max_nb_cycle_before_starting()
+ *   get_max_nb_cycle_before_starting()
+ */
 void Speed_Test::testCase_set_max_nb_cycle_before_starting()
 {
    Speed *speed = new Speed();
@@ -97,20 +79,10 @@ void Speed_Test::testCase_set_max_nb_cycle_before_starting()
 }
 
 /**
-* Test Speed::set_value().
-*
-* Test Description:
-*      - Create a Speed object.
-*      - Prepare max_nb_no_new_speed_found = 3.
-*      - Check if set_value(2.5) return true and if the value is set.
-*      - Check for 3 times that if we set_value(NO_NEW_SPEED_FOUND) then
-*        NO_NEW_SPEED_FOUND is set.
-*      - Check that if we set_value(NO_NEW_SPEED_FOUND) again, then speed = 0.
-*      - Same check as before, but only 2 times and then a correct value, so
-*        speed should be correctly set.
-*      - Same check as previous one to check if internal counters are
-*        correctly initialized.
-*/
+ * Test: 
+ *   set_value()
+ *   get_value()
+ */
 void Speed_Test::testCase_set_value()
 {
    Speed *speed = new Speed();

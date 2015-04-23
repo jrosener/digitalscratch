@@ -19,8 +19,7 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-    void testCase_dscratch_create_turntable_1();
-    void testCase_dscratch_create_turntable_2();
+    void testCase_dscratch_create_turntable();
     void testCase_dscratch_analyze_timecode_serato_stop_fast();
     void testCase_dscratch_analyze_timecode_serato_noises();
     void testCase_dscratch_analyze_timecode_finalscratch();

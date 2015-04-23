@@ -23,11 +23,8 @@ void Volume_Test::cleanupTestCase()
 }
 
 /**
- * Test Volume::Volume().
- *
- * Test Description:
- *      - Create a Volume object.
- *      - Check if value is correctly initialized.
+ * Test: 
+ *   Volume()
  */
 void Volume_Test::testCase_constructor()
 {
@@ -40,13 +37,10 @@ void Volume_Test::testCase_constructor()
 }
 
 /**
-* Test Volume::set_value().
-*
-* Test Description:
-*      - Create a Volume object.
-*      - Check if set_value(-1.0) return false and if the value is not set.
-*      - Check if set_value(2.4) return true and if the value is set.
-*/
+ * Test: 
+ *   set_value()
+ *   get_value()
+ */
 void Volume_Test::testCase_set_value()
 {
    Volume *vol = new Volume();

@@ -23,18 +23,9 @@ void DigitalScratch_Test::cleanupTestCase()
 }
 
 /**
-* Test Digital_scratch::analyze_recording_data().
-* This test is not dedicated to test the quality of playing parameters values
-* but only the behavior of analyze_recording_datas() against input paramaters.
-*
-* Test Description:
-*      - Create a Digital_scratch object with valid parameters.
-*      - Check if analyze_recording_datas() with empty size return false.
-*      - Check if analyze_recording_datas() with tabs with different sizes
-         return false.
-*      - Check if analyze_recording_datas(tab_1, tab_2, 5) return true (tab_1
-*        and tab_2 well defined and nb_frames=nb_elem(tab_1 or tab_2).
-*/
+ * Test:
+ *    analyze_recording_data()
+ */
 void DigitalScratch_Test::testCase_analyze_recording_data()
 {
    // Create Digital_scratch.

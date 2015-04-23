@@ -17,18 +17,16 @@ void Controller_Test::cleanupTestCase()
 }
 
 /**
- * Test Controller::Controller().
- *
- * Test Description:
- *      - Create a Controller object using a valid name.
- *      - Check if controller name was correctly stored.
- *      - Check if speed and volume are correctly initialized.
+ * Test: 
+ *   get_playing_parameters()
+ *   get_max_nb_no_new_speed_found()
+ *   get_max_nb_cycle_before_starting()
  */
 void Controller_Test::testCaseConstructor()
 {
     Controller *ctrl = new Controller();
-    float speed    = 0.0;
-    float volume   = 0.0;
+    float speed  = 0.0;
+    float volume = 0.0;
 
     QVERIFY2(ctrl->get_playing_parameters(&speed, &volume) == false, "playing parameters");
     QVERIFY2(speed    == 0.0, "speed");

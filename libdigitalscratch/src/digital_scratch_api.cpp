@@ -269,7 +269,7 @@ DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
     cout << "handle: " << handle << endl;
 
     // Display timecoded vinyl.
-    if (dscratch_get_turntable_vinyl_type(handle, &vinyl) == false)
+    if (dscratch_get_turntable_vinyl_type(handle, &vinyl) == DSCRATCH_ERROR)
     {
         return DSCRATCH_ERROR;
     }
@@ -289,7 +289,7 @@ DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
  
         default :
             cout << " vinyl_type: error, not found" << endl;
-            break;
+            return DSCRATCH_ERROR;
     }
 
     return DSCRATCH_SUCCESS;
@@ -303,43 +303,29 @@ const char *dscratch_get_version()
 DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,
                                                   DSCRATCH_VINYLS   *vinyl_type)
 {
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
+    // Get Coded_vinyl object.
+    Coded_vinyl *vinyl = nullptr;
+    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
     {
-        return DSCRATCH_ERROR;
-    }    if (dscratch == nullptr)
-    {
-        qCCritical(DSLIB_API) << "Digital_scratch object not created.";
         return DSCRATCH_ERROR;
     }
 
-    // Get the type of Coded_vinyl pointed by Digital_scratch.
-    Coded_vinyl *cv = nullptr;
-    cv = dscratch->get_coded_vinyl();
-    if (cv != NULL)
+    // Check type of vinyl.
+    if (dynamic_cast<Final_scratch_vinyl*>(vinyl) != nullptr)
     {
-        if (dynamic_cast<Final_scratch_vinyl*>(cv) != NULL)
-        {
-            *vinyl_type = FINAL_SCRATCH;
-        }
-        else if (dynamic_cast<Serato_vinyl*>(cv) != NULL)
-        {
-            *vinyl_type = SERATO;
-        }
-        else if (dynamic_cast<Mixvibes_vinyl*>(cv) != NULL)
-        {
-            *vinyl_type = MIXVIBES;
-        }
-        else
-        {
-            qCCritical(DSLIB_API) << "Unknown timecoded vinyl type";
-            return DSCRATCH_ERROR;
-        }
+        *vinyl_type = FINAL_SCRATCH;
+    }
+    else if (dynamic_cast<Serato_vinyl*>(vinyl) != nullptr)
+    {
+        *vinyl_type = SERATO;
+    }
+    else if (dynamic_cast<Mixvibes_vinyl*>(vinyl) != nullptr)
+    {
+        *vinyl_type = MIXVIBES;
     }
     else
     {
-        qCCritical(DSLIB_API) << "Cannot access to coded vinyl.";
+        qCCritical(DSLIB_API) << "Unknown timecoded vinyl type";
         return DSCRATCH_ERROR;
     }
 
