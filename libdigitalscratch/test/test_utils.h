@@ -1,8 +1,10 @@
 #ifndef TEST_UTILS_H_
 #define TEST_UTILS_H_
 
+#include <QVector>
 #include <vector>
 using std::vector;
+
 
 // Timecode file name.
 #define TIMECODE_FS_33RPM_SPEED100      "test/data/finalscratch_-_33rpm_0pitch.txt"
@@ -22,7 +24,7 @@ void l_create_default_input_samples(vector<float> &tb_1,
  * @return 0 if everything is OK.
  */
 int l_read_text_file_to_string_list(const QString &file_name,
-                                    QStringList &string_list);
+                                    QStringList   &string_list);
 
 /**
  * @brief l_get_next_buffer_of_timecode Extract 2 tables of timecode data from the first buffer (and remove it from csv_data).
@@ -32,52 +34,9 @@ int l_read_text_file_to_string_list(const QString &file_name,
  * @param expected_speed
  * @return true if we reached the end of the csv_data.
  */
-int l_get_next_buffer_of_timecode(QStringList   &csv_data,
-                                  vector<float> &channel_1,
-                                  vector<float> &channel_2,
-                                  float         &expected_speed);
-
-/**
- * This function create 2 tables of float read from a specified file, syntax
- * of the text file must be:
- *      > 225           # ><space>buffer_size
- *      0.1234 0.5678   # sample_left<space>sample_right
- *      0.6597 0.2156
- *      0.3647 0.3265
- *      ...
- *      > 225
- *      0.6545 0.3564
- *      0.3651 0.3545
- *      ...
- *
- * @return tb_1 will contain all values corresponding to first column
- * @return tb_2 will contain all values corresponding to second column
- * @return tb_index will contain the indexes corresponding to buffer_size
- *
- * @return 0 if all is OK.
- *
- */
-
-int l_read_input_samples_from_file(const char    *file_name,
-                                   vector<float> &tb_1,
-                                   vector<float> &tb_2,
-                                   vector<int>   &tb_index);
-
-/**
- * This function create 2 tables of float containing an extract of 2 provided
- * full tables.
- *
- * @return tab_1 will contain all values corresponding to first table between
- *         start_index and end_index
- * @return tab_2 will contain all values corresponding to second table between
- *         start_index and end_index
- *
- */
-void l_select_samples(vector<float> &full_tab_1,
-                      vector<float> &full_tab_2,
-                      int            start_index,
-                      int            end_index,
-                      vector<float> &tb_1,
-                      vector<float> &tb_2);
+int l_get_next_buffer_of_timecode(QStringList    &csv_data,
+                                  QVector<float> &channel_1,
+                                  QVector<float> &channel_2,
+                                  float          &expected_speed);
 
 #endif /*TEST_UTILS_H_*/

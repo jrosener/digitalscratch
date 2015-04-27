@@ -64,8 +64,8 @@ void DigitalScratchApi_Test::l_dscratch_analyze_timecode(DSCRATCH_VINYLS vinyl_t
 
     // Provide several times next part of timecode to digital-scratch and get
     // playing parameters.
-    vector<float> channel_1;
-    vector<float> channel_2;
+    QVector<float> channel_1;
+    QVector<float> channel_2;
     bool          eof             = false;
     float         expected_speed  = 0.0;
     float         speed           = 0.0;

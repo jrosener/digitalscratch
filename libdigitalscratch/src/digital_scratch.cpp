@@ -92,6 +92,7 @@ void Digital_scratch::clean()
     }
 }
 
+// TODO: refactor all "vector" to QVector.
 bool Digital_scratch::analyze_recording_data(vector<float> &input_samples_1,
                                              vector<float> &input_samples_2)
 {
