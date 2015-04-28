@@ -22,7 +22,7 @@ Description: Motion detection for vinyl turntable
 Package: libdigitalscratch1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Motion detection for vinyl turntable
  Digital Scratch library is designed to analyze motion of a disc on a vinyl
  turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
