@@ -178,11 +178,7 @@ Audio_file_decoding_process::decode()
     short signed int *output_samples = this->at->get_samples();
 
     // Allocate a frame.
-#ifdef WIN32
     AVFrame* frame = av_frame_alloc();
-#else
-    AVFrame* frame = avcodec_alloc_frame();
-#endif
     if (!frame)
     {
         return false;
