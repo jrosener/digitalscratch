@@ -34,23 +34,12 @@
 #include <algorithm>
 
 #include <samplerate.h>
-#ifdef WIN32
 extern "C"
 {
     #include "libavcodec/avcodec.h"
     #include "libavformat/avformat.h"
+    #include "libavutil/frame.h"
 }
-#else
-extern "C"
-{
-    #ifndef INT64_C
-    #define INT64_C(c) (c ## LL)
-    #define UINT64_C(c) (c ## ULL)
-    #endif
-    #include "libavcodec/avcodec.h"
-    #include "libavformat/avformat.h"
-}
-#endif
 
 #include "app/application_logging.h"
 #include "tracks/audio_file_decoding_process.h"
