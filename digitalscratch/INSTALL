@@ -13,32 +13,33 @@
 [Compiler]
 - GCC (g++-4.x):           http://gcc.gnu.org
 or
-- MS Win SDK 7.1 (VS2010): http://www.microsoft.com/en-us/download/details.aspx?id=8279
+- MS VS 2013 Community:    https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx
 
 [Libraries]
 - Qt SDK (qt5.x):          http://www.qt.io
-- mpg123 library:          http://www.mpg123.de
-- FLAC library:            http://flac.sourceforge.net
+- LibAV:                   https://libav.org
 - Digital Scratch library: http://www.digital-scratch.org
 - Sample rate library:     http://www.mega-nerd.com/SRC/
-- JACK library:            http://jackaudio.org/
+- JACK library:            http://jackaudio.org
 - LibKeyFinder:            http://www.ibrahimshaath.co.uk/keyfinder/
 
-[Ubuntu 14.10]
+[Ubuntu 15.04]
 - build-essential
 - qt5-default
-- libmpg123-dev
+- libavformat-dev
+- libavcodec-dev
+- libavutil-dev
 - libjack-jackd2-dev
 - libsamplerate0-dev
-- libflac-dev
-- libdigitalscratch-dev
-- libkeyfinder-dev (ppa:julien-rosener/keyfinder)
+- qtmultimedia5-dev
+- libqt5multimedia5-plugins
+- libdigitalscratch-dev    (ppa:julien-rosener/keyfinder)
+- libkeyfinder-dev         (ppa:julien-rosener/keyfinder)
 
 [MS Windows]
-- Install MS Win SDK 7.1
-- Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL)
-- Build libdigitalscratch
-
+- Install MS VS 2013 Community
+- Install Qt 5.x for Windows 32-bit (MSVC 2013, OpenGL)
+- All dependencies are available as binaries in folder win-external/
 
 -- Build -----------------------------------------------------------------------
 
@@ -50,10 +51,10 @@ or
 
 [MS Windows]
 - Start Qt Creator
-- Load project digitalscratch.pro
-- Use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
-- In Project>>Build section uncheck "Shadow build" for debug and release
-- Right click on project digitalscratch, then "Run qmake", then "build"
+- Load project digitalscratch.pro:
+  - Use the build kit which uses the compiler from Visual Studio 2013 Community.
+  - Set the output directory to digitalscratch\ (Debug and Release build configuration).
+- Right click on project digitalscratch, then "Run qmake", then "Build".
 => more info: https://github.com/jrosener/digitalscratch/wiki/Build-DigitalScratch-on-Windows
 
 
@@ -78,7 +79,7 @@ or
 -- Play ------------------------------------------------------------------------
 
 [GNU/Linux]
-- qjackctl
+- qjackctl (configure the sound card)
 - digitalscratch
 => more info: https://github.com/jrosener/digitalscratch/wiki/Run-DigitalScratch-on-Ubuntu
 

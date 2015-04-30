@@ -12,20 +12,20 @@
 -- Building requirements ----------------------------------------------------------------
 
 [Compiler]
-- GCC (g++-4.x):           http://gcc.gnu.org
+- GCC (g++-4.x):        http://gcc.gnu.org
 or
-- MS Win SDK 7.1 (VS2010): http://www.microsoft.com/en-us/download/details.aspx?id=8279
+- MS VS 2013 Community: https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx
 
 [Libraries]
-- Qt SDK (qt5.x): http://www.qt.io
+- Qt SDK (qt5.x):       http://www.qt.io
 
-[Ubuntu 14.10]
+[Ubuntu 15.04]
 - build-essential
 - qt5-default
 
 [MS Windows]
-- Install MS Win SDK 7.1
-- Install Qt 5.x for Windows 32-bit (VS 2010, OpenGL)
+- Install MS VS 2013 Community
+- Install Qt 5.x for Windows 32-bit (MSVC 2013, OpenGL)
 
 
 -- Build -----------------------------------------------------------------------
@@ -39,7 +39,7 @@ or
 [MS Windows]
 - Start Qt Creator
 - Load project libdigitalscratch.pro
-- Use a build kit with Windows SDK 7.1 as compiler and click on "Configure project"
-- In Project>>Build section uncheck "Shadow build" for debug and release
-- Right click on project libdigitalscratch, then "Run qmake", then "build"
+  - Use the build kit which uses the compiler from Visual Studio 2013 Community.
+  - Set the output directory to libdigitalscratch\ (Debug and Release build configuration).
+- Right click on project libdigitalscratch, then "Run qmake", then "Build".
 => more info: https://github.com/jrosener/digitalscratch/wiki/Build-DigitalScratch-on-Windows

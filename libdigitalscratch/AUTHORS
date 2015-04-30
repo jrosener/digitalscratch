@@ -11,8 +11,11 @@
 Julien Rosener <julien.rosener@digital-scratch.org>
 
 -- Thanks ----------------------------------------------------------------------
-Thomas Petazzoni:      Debian and Ubuntu packages.
-Mixxx developers team: http://mixxx.sourceforge.net/contact.php
+Alexandre Belloni     : Novation Dicer support.
+Kader Timzorane       : Player, Website.
+Marc-Antoine Savoyat  : Digital signal analysis.
+Thomas Petazzoni      : Debian and Ubuntu packages.
+Mixxx developers team : http://mixxx.org/contact/
 
 -- Web -------------------------------------------------------------------------
 http://www.digital-scratch.org
