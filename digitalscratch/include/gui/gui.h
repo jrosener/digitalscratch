@@ -489,6 +489,7 @@ class Gui : public QObject
     void run_concurrent_read_collection_from_db();
     void update_speed_label(const float &speed, const unsigned short &deck_index);
     void speed_up_down(const float &speed_inc, const unsigned short int &deck_index);
+    void speed_accel(const float &speed_inc, const unsigned short &deck_index);
     void speed_reset_to_100p(const unsigned short int &deck_index);
     void playback_thru(const unsigned short int &deck_index, const bool &on_off);
     void can_close();

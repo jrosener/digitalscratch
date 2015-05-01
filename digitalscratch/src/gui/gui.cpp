@@ -1106,19 +1106,43 @@ Gui::connect_decks_area()
         QObject::connect(this->decks[i]->speed_down_button, &SpeedQPushButton::clicked,
                         [this, i]()
                         {
-                            speed_up_down(-0.001f, i);
+                            this->speed_up_down(-0.001f, i);
                         });
 
         // Speed up/down 1%.
         QObject::connect(this->decks[i]->speed_up_button, &SpeedQPushButton::right_clicked,
                         [this, i]()
                         {
-                            speed_up_down(0.01f, i);
+                            this->speed_up_down(0.01f, i);
                         });
         QObject::connect(this->decks[i]->speed_down_button, &SpeedQPushButton::right_clicked,
                         [this, i]()
                         {
-                            speed_up_down(-0.01f, i);
+                            this->speed_up_down(-0.01f, i);
+                        });
+
+        // Speed acceleration/deceleration 1%.
+        QObject::connect(this->decks[i]->accel_up_button, &SpeedQPushButton::clicked,
+                        [this, i]()
+                        {
+                            this->speed_accel(0.01f, i);
+                        });
+        QObject::connect(this->decks[i]->accel_down_button, &SpeedQPushButton::clicked,
+                        [this, i]()
+                        {
+                            this->speed_accel(-0.01f, i);
+                        });
+
+        // Speed acceleration/deceleration 10%.
+        QObject::connect(this->decks[i]->accel_up_button, &SpeedQPushButton::right_clicked,
+                        [this, i]()
+                        {
+                            this->speed_accel(0.1f, i);
+                        });
+        QObject::connect(this->decks[i]->accel_down_button, &SpeedQPushButton::right_clicked,
+                        [this, i]()
+                        {
+                            this->speed_accel(-0.1f, i);
                         });
 
         // Enable track file dropping.
@@ -2375,6 +2399,16 @@ Gui::speed_up_down(const float &speed_inc, const unsigned short &deck_index)
 }
 
 void
+Gui::speed_accel(const float &speed_inc, const unsigned short &deck_index)
+{
+    // Select deck.
+    this->select_playback(deck_index);
+
+    // Increment speed.
+    this->manual_controls[deck_index]->inc_temporary_speed(speed_inc, 100); // Maintain a little bit more speed during 100 cycles.
+}
+
+void
 Gui::jump_to_position(const float &position, const unsigned short &deck_index)
 {
     this->playbacks[deck_index]->jump_to_position(position);
@@ -2785,6 +2819,7 @@ Deck::init_display()
     timecode_manual_layout->addWidget(this->manual_button);
 
     timecode_speed_layout->addLayout(timecode_manual_layout);
+    timecode_speed_layout->addStretch(100);
     this->speed = new SpeedQLabel();
     this->speed->setText(tr("+000.0%"));
     this->speed->setObjectName("Speed_value");
@@ -2792,30 +2827,28 @@ Deck::init_display()
     this->buttons_layout->addLayout(timecode_speed_layout);
     QGridLayout *speed_layout = new QGridLayout();
     this->speed_up_button = new SpeedQPushButton("+");
-    this->speed_up_button->setToolTip("<p>" + tr("Speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_up_button->setToolTip("<p>" + tr("Speed up") + "</p><p><em>" + tr("left-click") + " = +0.1%</em></p><p><em>" + tr("right-click") + " = +1%</em></p>");
     this->speed_up_button->setObjectName("Speed_button");
     this->speed_up_button->setFocusPolicy(Qt::NoFocus);
     this->speed_up_button->setFixedSize(15, 15);
     speed_layout->addWidget(speed_up_button, 0, 1);
     this->speed_down_button = new SpeedQPushButton("-");
-    this->speed_down_button->setToolTip("<p>" + tr("Slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->speed_down_button->setToolTip("<p>" + tr("Slow down") + "</p><p><em>" + tr("left-click") + " = -0.1%</em></p><p><em>" + tr("right-click") + " = -1%</em></p>");
     this->speed_down_button->setObjectName("Speed_button");
     this->speed_down_button->setFocusPolicy(Qt::NoFocus);
     this->speed_down_button->setFixedSize(15, 15);
     speed_layout->addWidget(speed_down_button, 1, 1);
     this->accel_up_button = new SpeedQPushButton("↷");
-    this->accel_up_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->accel_up_button->setToolTip("<p>" + tr("Temporarily speed up") + "</p><p><em>" + tr("left-click") + " = +1%</em></p><p><em>" + tr("right-click") + " = +10%</em></p>");
     this->accel_up_button->setObjectName("Speed_button");
     this->accel_up_button->setFocusPolicy(Qt::NoFocus);
     this->accel_up_button->setFixedSize(15, 15);
-    this->accel_up_button->setEnabled(false); // TODO; enable it when implementation is done.
     speed_layout->addWidget(accel_up_button, 0, 2);
     this->accel_down_button = new SpeedQPushButton("↶");
-    this->accel_down_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><em>" + this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK) + "</em>");
+    this->accel_down_button->setToolTip("<p>" + tr("Temporarily slow down") + "</p><p><em>" + tr("left-click") + " = -1%</em></p><p><em>" + tr("right-click") + " = -10%</em></p>");
     this->accel_down_button->setObjectName("Speed_button");
     this->accel_down_button->setFocusPolicy(Qt::NoFocus);
     this->accel_down_button->setFixedSize(15, 15);
-    this->accel_down_button->setEnabled(false); // TODO; enable it when implementation is done.
     speed_layout->addWidget(accel_down_button, 1, 2);
     this->buttons_layout->addLayout(speed_layout);
     this->buttons_layout->addStretch(1000);
@@ -2863,6 +2896,7 @@ Deck::init_display()
         this->cue_point_labels[i] = new QLabel("__:__:___");
         this->cue_point_labels[i]->setObjectName("Cue_point_label");
         this->cue_point_labels[i]->setAlignment(Qt::AlignCenter);
+        this->cue_point_labels[i]->setFixedHeight(15);
 
         QHBoxLayout *cue_buttons_layout = new QHBoxLayout();
         cue_buttons_layout->addWidget(this->cue_set_buttons[i],  1, Qt::AlignRight);
@@ -2907,6 +2941,7 @@ Deck::set_speed_mode_timecode()
     this->accel_up_button->hide();
     this->accel_down_button->hide();
     this->thru_button->show();
+    this->speed->hide(); // FIXME: this is a test to validate that updating at a high frame rate this label will cause the app crash.
 }
 
 void
@@ -2919,6 +2954,7 @@ Deck::set_speed_mode_manual()
     this->accel_up_button->show();
     this->accel_down_button->show();
     this->thru_button->hide();
+    this->speed->show(); // FIXME: this is a test to validate that updating at a high frame rate this label will cause the app crash.
 }
 
 void

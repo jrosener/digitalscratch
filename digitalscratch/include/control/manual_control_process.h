@@ -49,6 +49,9 @@ class Manual_control_process : public Control_process
 
  private:
     float speed;
+    bool  do_temp_inc_speed;                      // True if we are in a temporary speed acceleration phase.
+    float previous_speed;                         // Store speed before starting a temporary acceleration phase.
+    unsigned short int nb_temp_speed_inc_cycles;  // Nb cycles used for the temporary speed acceleration.
 
  public:
     Manual_control_process(const QSharedPointer<Playback_parameters> &param);
@@ -57,4 +60,8 @@ class Manual_control_process : public Control_process
     bool run();
     void inc_speed(const float &speed_inc);
     void reset_speed_to_100p();
+    void inc_temporary_speed(const float &temp_speed_inc, const unsigned short int &nb_cycles);
+
+ private:
+    void set_new_speed(const float &speed);
 };

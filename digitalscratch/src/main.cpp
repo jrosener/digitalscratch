@@ -54,15 +54,15 @@
 
 int main(int argc, char *argv[])
 {
+    // Create application.
+    QApplication app(argc, argv);
+
     // Logging settings.
     qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
     QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
                                                     ds.file.debug=true\n \
                                                     *.warning=true\n \
                                                     *.critical=true\n"));
-
-    // Create application.
-    QApplication app(argc, argv);
 
     // Set max number of simultaneous new threads.
 #ifdef WIN32

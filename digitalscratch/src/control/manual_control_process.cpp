@@ -26,7 +26,7 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/* Behavior class: determine playback parametrs based on keyboard and gui     */
+/* Behavior class: determine playback parameters based on keyboard and gui    */
 /*                 buttons                                                    */
 /*                                                                            */
 /*============================================================================*/
@@ -41,6 +41,8 @@ Manual_control_process::Manual_control_process(const QSharedPointer<Playback_par
 {
     this->params = param;
     this->speed  = 1.0;
+    this->do_temp_inc_speed = false;
+    this->previous_speed = 0.0;
 
     return;
 }
@@ -53,8 +55,27 @@ Manual_control_process::~Manual_control_process()
 bool
 Manual_control_process::run()
 {
+    // New playback speed/volume are available.
     this->params->set_data_state(true);
 
+    // If using temporary speed acceleration then set the accelerated speed. At the end of the acceleration, reset to
+    // previous speed.
+    if (this->do_temp_inc_speed == true)
+    {
+        if (this->nb_temp_speed_inc_cycles > 0)
+        {
+            // Temporary acceleration is still running.
+            this->nb_temp_speed_inc_cycles--;
+        }
+        else
+        {
+            // Temporary acceleration is done. Switch back to the previous speed.
+            this->do_temp_inc_speed = false;
+            this->set_new_speed(this->previous_speed);
+        }
+    }
+
+    // Calculate volume based on speed.
     this->params->set_volume(1.0); // TODO calculate volume based on speed.
     this->params->set_volume_state(true);
     emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0));
@@ -65,13 +86,34 @@ Manual_control_process::run()
 void
 Manual_control_process::inc_speed(const float &speed_inc)
 {
-    this->params->set_speed(this->params->get_speed() + speed_inc);
-    emit speed_changed(this->params->get_speed());
+    this->set_new_speed(this->params->get_speed() + speed_inc);
+}
+
+void
+Manual_control_process::inc_temporary_speed(const float              &temp_speed_inc,
+                                            const unsigned short int &nb_cycles)
+{
+    if (this->do_temp_inc_speed == false)
+    {
+        // We are not already in a acceleration phase, so store the current speed.
+        this->previous_speed = this->params->get_speed();   
+    }
+
+    // Accelerate speed.
+    this->nb_temp_speed_inc_cycles = nb_cycles;
+    this->do_temp_inc_speed = true;
+    this->inc_speed(temp_speed_inc);
 }
 
 void
 Manual_control_process::reset_speed_to_100p()
 {
-    this->params->set_speed(1.0);
+    this->set_new_speed(1.0);
+}
+
+void
+Manual_control_process::set_new_speed(const float &speed)
+{
+    this->params->set_speed(speed);
     emit speed_changed(this->params->get_speed());
 }
