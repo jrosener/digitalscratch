@@ -265,18 +265,6 @@ class Gui : public QObject
     Q_OBJECT
 
  private:
-    // Header area.
-    QPushButton                        *config_button;
-    QPushButton                        *fullscreen_button;
-    QPushButton                        *stop_capture_button;
-    QPushButton                        *logo;
-    QPushButton                        *start_capture_button;
-    QPushButton                        *help_button;
-    QPushButton                        *quit_button;
-    QHBoxLayout                        *header_layout;
-    QShortcut                          *shortcut_fullscreen;
-    QShortcut                          *shortcut_help;
-
     // Decks area.
     QHBoxLayout                        *decks_layout;
     QShortcut                          *shortcut_go_to_begin;
@@ -325,8 +313,14 @@ class Gui : public QObject
     unsigned int                        file_browser_selected_index;
     QString                             last_search_string;
 
-    // Button menu (bottom right).
-
+    // Menu (bottom right).
+    QPushButton                        *config_button;
+    QPushButton                        *fullscreen_button;
+    QPushButton                        *logo;
+    QPushButton                        *help_button;
+    QPushButton                        *quit_button;
+    QShortcut                          *shortcut_fullscreen;
+    QShortcut                          *shortcut_help;
 
     // Action menu.
     QPushButton                        *refresh_file_browser; // FIXME: rename into get_audio_keys
@@ -397,8 +391,6 @@ class Gui : public QObject
 
  private:
     bool create_main_window();
-    void init_header_buttons();
-    void connect_header_buttons();
     void init_decks_area();
     void clean_decks_area();
     void connect_decks_area();
@@ -429,7 +421,6 @@ class Gui : public QObject
     void resize_file_browser_columns();
     void analyze_audio_collection(const bool &is_all_files);
     void set_help_shortcut_value();
-    bool can_stop_control_and_playback();
     void hide_samplers();
     void show_samplers();
     void add_track_path_to_tracklist(const unsigned short int &deck_index);
@@ -506,8 +497,6 @@ class Gui : public QObject
     void show_next_keys();
     void on_file_browser_header_click(const int &index);
     void on_progress_cancel_button_click();
-    void start_control_and_playback();
-    void stop_control_and_playback();
     void run_concurrent_read_collection_from_db();
     void update_speed_label(const float &speed, const unsigned short &deck_index);
     void speed_up_down(const float &speed_inc, const unsigned short int &deck_index);

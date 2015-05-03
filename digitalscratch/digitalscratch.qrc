@@ -69,6 +69,14 @@
     <file>pixmaps/dark-show_next_key_white.png</file>
     <file>pixmaps/dark-collapse_off.png</file>
     <file>pixmaps/dark-collapse_on.png</file>
+    <file>pixmaps/dark-clear_tracklist.png</file>
+    <file>pixmaps/dark-clear_tracklist_white.png</file>
+    <file>pixmaps/dark-save_tracklist.png</file>
+    <file>pixmaps/dark-save_tracklist_white.png</file>
+    <file>pixmaps/dark-scan_keys.png</file>
+    <file>pixmaps/dark-scan_keys_white.png</file>
+    <file>pixmaps/dark-about_logo.png</file>
+    <file>pixmaps/dark-about_logo_white.png</file>
     <file>pixmaps/digitalscratch-icon_2decks.png</file>
     <file>pixmaps/digitalscratch-icon.png</file>
     <file>pixmaps/digitalscratch-logo.png</file>

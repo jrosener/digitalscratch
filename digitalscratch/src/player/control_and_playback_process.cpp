@@ -90,6 +90,12 @@ Control_and_playback_process::stop()
     return this->sound_card->stop();
 }
 
+bool
+Control_and_playback_process::is_running()
+{
+    return this->sound_card->is_running();
+}
+
 void
 Control_and_playback_process::kill()
 {

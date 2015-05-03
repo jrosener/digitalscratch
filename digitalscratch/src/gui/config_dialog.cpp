@@ -380,8 +380,6 @@ QWidget *Config_dialog::init_tab_motion_detect()
 
 void Config_dialog::fill_tab_motion_detect()
 {
-    this->autostart_detection_check->setChecked(this->settings->get_autostart_motion_detection());
-
     this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findData(this->settings->get_vinyl_type()));
 
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm())));
@@ -692,7 +690,6 @@ Config_dialog::show_browse_extern_prog_window()
 void Config_dialog::reset_motion_detection_params()
 {
     // Reset all motion detection parameters to their default values.
-    this->autostart_detection_check->setChecked(this->settings->get_autostart_motion_detection_default());
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
     this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default_from_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt())));
@@ -745,9 +742,6 @@ Config_dialog::accept()
 
     // External prog run at startup.
     this->settings->set_extern_prog(this->extern_prog->text());
-
-    // Set autostart motion detection at startup.
-    this->settings->set_autostart_motion_detection(this->autostart_detection_check->isChecked());
 
     // Set vinyl type.
     this->settings->set_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt()));

@@ -34,156 +34,6 @@ QPushButton:pressed
    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #737373, stop: 1 #b2b2b2);
 }
 
-QPushButton#Logo
-{
-   border:           0px;
-   background-color: transparent;
-}
-QPushButton#Logo:hover
-{
-   border:           1px solid orange;
-   border-radius:    13px;
-}
-QPushButton#Logo:pressed
-{
-   background-color: lightGray;
-}
-
-QPushButton#Configuration_button
-{
-   color:            black;
-   background-color: gray;
-   padding:          5px;
-   border:           none;
-   border-radius:    0px;
-   image:            url(:/pixmaps/dark-settings.png);
-   image-position:   left;
-   height:           25px;
-   min-width:        100px;
-}
-QPushButton#Configuration_button:hover
-{
-   background-color: transparent;
-   border:           1px solid orange;
-   color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-settings_white.png);
-}
-QPushButton#Configuration_button:pressed
-{
-   color:            black;
-   background-color: lightGray;
-   image:            url(:/pixmaps/dark-settings.png);
-}
-
-QPushButton#Fullscreen_button
-{
-   color:            black;
-   background-color: gray;
-   padding:          5px;
-   border:           none;
-   border-radius:    0px;
-   image:            url(:/pixmaps/dark-fullscreen.png);
-   image-position:   left;
-   height:           25px;
-   min-width:        100px;
-}
-QPushButton#Fullscreen_button:hover
-{
-   background-color: transparent;
-   border:           1px solid orange;
-   color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-fullscreen_white.png);
-}
-QPushButton#Fullscreen_button:pressed
-{
-   color:            black;
-   background-color: lightGray;
-   image:            url(:/pixmaps/dark-fullscreen.png);
-}
-
-QPushButton#Capture_buttons
-{
-   color:            black;
-   border-style:     outset;
-   border-width:     1px;
-   border-color:     gray;
-   border-radius:    0px;
-   background-color: gray;
-   padding:          5px;
-   height:           12px;
-   min-width:        40px;
-}
-QPushButton#Capture_buttons:hover
-{
-   border:           1px solid orange;
-   color:            #f2f2ed;
-}
-QPushButton#Capture_buttons:pressed
-{
-   color:            black;
-   background-color: lightGray;
-}
-QPushButton#Capture_buttons:checked
-{
-   color:            black;
-   background-color: orange;
-   border-style:     inset;
-   border-width:     2px;
-   border-color:     gray;
-}
-
-QPushButton#Help_button
-{
-   color:            black;
-   background-color: gray;
-   padding:          5px;
-   border:           none;
-   border-radius:    0px;
-   image:            url(:/pixmaps/dark-help.png);
-   image-position:   left;
-   height:           25px;
-   min-width:        100px;
-}
-QPushButton#Help_button:hover
-{
-   background-color: transparent;
-   border:           1px solid orange;
-   color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-help_white.png);
-}
-QPushButton#Help_button:pressed
-{
-   color:            black;
-   background-color: lightGray;
-   image:            url(:/pixmaps/dark-help.png);
-}
-
-QPushButton#Quit_button
-{
-   color:            black;
-   background-color: gray;
-   padding:          5px;
-   border:           none;
-   border-radius:    0px;
-   image:            url(:/pixmaps/dark-exit.png);
-   image-position:   left;
-   height:           25px;
-   min-width:        100px;
-}
-QPushButton#Quit_button:hover
-{
-   background-color: transparent;
-   border:           1px solid orange;
-   color:            #f2f2ed;
-   image:            url(:/pixmaps/dark-exit_white.png);
-}
-QPushButton#Quit_button:pressed
-{
-   color:            black;
-   background-color: lightGray;
-   image:            url(:/pixmaps/dark-exit.png);
-}
-
 QGroupBox
 {
    border:        2px solid gray;
@@ -398,7 +248,12 @@ QProgressBar#Progress::chunk
    background-color: grey;
 }
 
-QPushButton#Right_vertic_button_samplers
+QLabel#Menu_title
+{
+    color:            gray;
+}
+
+QPushButton#Scan_keys_button
 {
    font:             7pt;
    background-color: gray;
@@ -407,26 +262,25 @@ QPushButton#Right_vertic_button_samplers
    border:           none;
    border-radius:    0px;
    padding:          2px;
-   image:            url(:/pixmaps/dark-file_browser_update.png);
+   image:            url(:/pixmaps/dark-scan_keys.png);
    image-position:   left;
    color:            black;
 }
-QPushButton#Right_vertic_button_samplers:hover
+QPushButton#Scan_keys_button:hover
 {
    background-color: black;
    border:           1px solid orange;
    color:            white;
-   image:            url(:/pixmaps/dark-file_browser_update_white.png);
+   image:            url(:/pixmaps/dark-scan_keys_white.png);
 }
-QPushButton#Right_vertic_button_samplers:checked
+QPushButton#Scan_keys_button:pressed
 {
-   background-color: gray;
-   image:            url(:/pixmaps/dark-file_browser_update_white.png);
-   image-position:   left;
-   color:            white;
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-scan_keys.png);
 }
 
-QPushButton#Right_vertic_button_scan_files
+QPushButton#Show_hide_samplers_button
 {
    font:             7pt;
    background-color: gray;
@@ -439,21 +293,229 @@ QPushButton#Right_vertic_button_scan_files
    image-position:   left;
    color:            black;
 }
-QPushButton#Right_vertic_button_scan_files:hover
+QPushButton#Show_hide_samplers_button:hover
 {
    background-color: black;
    border:           1px solid orange;
    color:            white;
    image:            url(:/pixmaps/dark-audio_file_white.png);
 }
-QPushButton#Right_vertic_button_scan_files:checked
+QPushButton#Show_hide_samplers_button:checked
 {
    background-color: gray;
    image:            url(:/pixmaps/dark-audio_file_white.png);
    image-position:   left;
    color:            white;
 }
+QPushButton#Show_hide_samplers_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-audio_file.png);
+}
 
+QPushButton#Clear_tracklist_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-clear_tracklist.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Clear_tracklist_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-clear_tracklist_white.png);
+}
+QPushButton#Clear_tracklist_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-clear_tracklist.png);
+}
+
+QPushButton#Save_tracklist_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-save_tracklist.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Save_tracklist_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-save_tracklist_white.png);
+}
+QPushButton#Save_tracklist_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-save_tracklist.png);
+}
+
+QPushButton#Help_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-help.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Help_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-help_white.png);
+}
+QPushButton#Help_button:checked
+{
+   background-color: gray;
+   image:            url(:/pixmaps/dark-help_white.png);
+   image-position:   left;
+   color:            white;
+}
+QPushButton#Help_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-help.png);
+}
+
+QPushButton#Fullscreen_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-fullscreen.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Fullscreen_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-fullscreen_white.png);
+}
+QPushButton#Fullscreen_button:checked
+{
+   background-color: gray;
+   image:            url(:/pixmaps/dark-fullscreen_white.png);
+   image-position:   left;
+   color:            white;
+}
+QPushButton#Fullscreen_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-fullscreen.png);
+}
+
+QPushButton#Configuration_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-settings.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Configuration_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-settings_white.png);
+}
+QPushButton#Configuration_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-settings.png);
+}
+
+QPushButton#Logo
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-about_logo.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Logo:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-about_logo_white.png);
+}
+QPushButton#Logo:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-about_logo.png);
+}
+
+QPushButton#Quit_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-exit.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Quit_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-exit_white.png);
+}
+QPushButton#Quit_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-exit.png);
+}
 
 QPushButton#Sampler_play_buttons
 {

@@ -72,6 +72,7 @@ class Control_and_playback_process : public QObject
     bool run(const unsigned short int &nb_buffer_frames);
     void set_process_mode(const ProcessMode &mode, const unsigned short &deck_index);
     ProcessMode get_process_mode(const unsigned short &deck_index) const;
+    bool is_running();
 
  public slots:
     void init();

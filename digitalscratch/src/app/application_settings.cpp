@@ -107,9 +107,6 @@ Application_settings::init_settings()
     //
     // Timecode signal detection parameters.
     //
-    if (this->settings.contains(AUTOSTART_MOTION_DETECTION_CFG) == false) {
-        this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, this->get_autostart_motion_detection_default());
-    }
     if (this->settings.contains(VINYL_TYPE_CFG) == false) {
         this->settings.setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
     }
@@ -556,24 +553,6 @@ QList<QString>
 Application_settings::get_available_internal_sound_cards()
 {
     return this->available_sound_cards;
-}
-
-bool
-Application_settings::get_autostart_motion_detection()
-{
-    return this->settings.value(AUTOSTART_MOTION_DETECTION_CFG).toBool();
-}
-
-bool
-Application_settings::get_autostart_motion_detection_default()
-{
-    return AUTOSTART_MOTION_DETECTION_DEFAULT;
-}
-
-void
-Application_settings::set_autostart_motion_detection(const bool &do_autostart)
-{
-    this->settings.setValue(AUTOSTART_MOTION_DETECTION_CFG, do_autostart);
 }
 
 DSCRATCH_VINYLS

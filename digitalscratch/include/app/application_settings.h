@@ -84,8 +84,6 @@ using namespace std;
 #define SOUND_CARD_DEFAULT                  "0"
 
 // Motion detection.
-#define AUTOSTART_MOTION_DETECTION_CFG      "motion_detection/auto_start_motion_detection"
-#define AUTOSTART_MOTION_DETECTION_DEFAULT  0
 #define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
 #define RPM_CFG                             "motion_detection/rpm"
 #define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
