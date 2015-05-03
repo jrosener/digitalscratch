@@ -869,6 +869,7 @@ Gui::create_main_window()
     this->init_header_buttons();
     this->init_decks_area();
     this->init_samplers_area();
+    this->init_file_control_area();
     this->init_file_browser_area();
     this->init_bottom_help();
     this->init_bottom_status();
@@ -902,6 +903,7 @@ Gui::create_main_window()
     main_layout->addLayout(this->header_layout,      5);
     main_layout->addLayout(this->decks_layout,       30);
     main_layout->addWidget(this->samplers_container, 5);
+    main_layout->addLayout(this->file_control_buttons_layout);
     main_layout->addLayout(this->file_layout,        65);
     main_layout->addLayout(this->bottom_layout,      0);
     main_layout->addLayout(this->status_layout,      0);
@@ -1321,6 +1323,31 @@ Gui::connect_decks_and_samplers_selection()
 }
 
 void
+Gui::init_file_control_area()
+{
+    // Create the set of buttons used to load a track on a deck or a sample (per deck).
+    this->file_control_buttons_layout = new QHBoxLayout();
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        // Add a set of control button for one deck/samplers.
+        FileBrowserControlButtons *deck_control_buttons_layout = new FileBrowserControlButtons(i, this->nb_samplers);
+        this->file_browser_control_buttons << deck_control_buttons_layout;
+        this->file_control_buttons_layout->addLayout(deck_control_buttons_layout);
+
+        // Add a vertical separator.
+        if (i < this->nb_decks-1)
+        {
+            QFrame* line = new QFrame();
+            line->setFrameShape(QFrame::VLine);
+            line->setObjectName("Separator_line");
+            this->file_control_buttons_layout->addWidget(line, 1);
+        }
+    }
+
+    return;
+}
+
+void
 Gui::init_file_browser_area()
 {
     // Create the folder browser.
@@ -1364,32 +1391,6 @@ Gui::init_file_browser_area()
     this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
     this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
     this->refresh_file_browser->setCheckable(true);
-
-    // File browser buttons.
-    QWidget *file_browser_buttons_widget = new QWidget();
-    QHBoxLayout *file_browser_buttons_layout = new QHBoxLayout(file_browser_buttons_widget);
-    for (unsigned short int i = 0; i < this->nb_decks; i++)
-    {
-        // Add a set of control button for one deck/samplers.
-        FileBrowserControlButtons *control_buttons_layout = new FileBrowserControlButtons(i, this->nb_samplers);
-        this->file_browser_control_buttons << control_buttons_layout;
-        file_browser_buttons_layout->addLayout(control_buttons_layout);
-
-        // Add a vertical separator.
-        if (i < this->nb_decks-1)
-        {
-            QFrame* line = new QFrame();
-            line->setFrameShape(QFrame::VLine);
-            line->setObjectName("Separator_line");
-            file_browser_buttons_layout->addWidget(line, 1);
-        }
-    }
-    file_browser_buttons_widget->setFixedHeight(37);
-
-    // Horizontal separator (between load buttons and file browser area).
-    QFrame* horiz_line = new QFrame();
-    horiz_line->setFrameShape(QFrame::HLine);
-    horiz_line->setObjectName("Separator_line");
 
     // Build file browser and search area.
     QVBoxLayout *browser_search_layout = new QVBoxLayout();
@@ -1443,8 +1444,6 @@ Gui::init_file_browser_area()
 
     // Main layout and group box.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
-    file_browser_layout->addWidget(file_browser_buttons_widget, 1);
-    file_browser_layout->addWidget(horiz_line, 1);
     file_browser_layout->addWidget(bottom_container_widget, 100);
     this->file_browser_gbox = new QGroupBox();
     this->file_browser_gbox->setLayout(file_browser_layout);

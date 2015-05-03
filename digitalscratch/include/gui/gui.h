@@ -291,11 +291,14 @@ class Gui : public QObject
     QHBoxLayout                        *samplers_layout;
     QList<Sampler*>                     samplers;
 
+    // File control buttons area.
+    QHBoxLayout                        *file_control_buttons_layout;
+    QList<FileBrowserControlButtons*>   file_browser_control_buttons;
+
     // File and folder browser area.
     QHBoxLayout                        *file_layout;
     QSplitter                          *browser_splitter;
     QGroupBox                          *file_browser_gbox;
-    QList<FileBrowserControlButtons*>   file_browser_control_buttons;
     QFutureWatcher<void>               *watcher_parse_directory;
 
     // Folder browser.
@@ -398,6 +401,7 @@ class Gui : public QObject
     void clean_samplers_area();
     void connect_samplers_area();
     void connect_decks_and_samplers_selection();
+    void init_file_control_area();
     void init_file_browser_area();
     void clean_file_browser_area();
     void connect_file_browser_area();
