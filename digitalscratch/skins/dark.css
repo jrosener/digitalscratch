@@ -472,7 +472,7 @@ QPushButton#Logo
    border:           none;
    border-radius:    0px;
    padding:          2px;
-   image:            url(:/pixmaps/dark-about_logo.png);
+   image:            url(:/pixmaps/digitalscratch-icon.png);
    image-position:   left;
    color:            black;
 }
@@ -481,13 +481,13 @@ QPushButton#Logo:hover
    background-color: black;
    border:           1px solid orange;
    color:            white;
-   image:            url(:/pixmaps/dark-about_logo_white.png);
+   image:            url(:/pixmaps/digitalscratch-icon.png);
 }
 QPushButton#Logo:pressed
 {
    color:            black;
    background-color: lightGray;
-   image:            url(:/pixmaps/dark-about_logo.png);
+   image:            url(:/pixmaps/digitalscratch-icon.png);
 }
 
 QPushButton#Quit_button
