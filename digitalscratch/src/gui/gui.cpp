@@ -57,6 +57,9 @@
 #include <QMimeData>
 #include <QSizePolicy>
 #include <QtConcurrentRun>
+#include <QDesktopServices>
+#include <QDateTime>
+#include <QFileDialog>
 #include <math.h>
 #include <digital_scratch_api.h>
 #include <keyfinder_api.h>
@@ -79,7 +82,7 @@ extern "C"
 }
 #else
 extern "C"
-{
+{ // FIXME: is all these include/extern necessary ?
     #ifndef INT64_C
     #define INT64_C(c) (c ## LL)
     #define UINT64_C(c) (c ## ULL)
@@ -135,6 +138,10 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     // Init pop-up dialogs.
     this->config_dialog                   = nullptr;
     this->refresh_audio_collection_dialog = nullptr;
+
+    // Init tracklist recording.
+    this->tracklist = QSharedPointer<Playlist>(new Playlist(QStandardPaths::writableLocation(QStandardPaths::TempLocation),
+                                                            QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss") + "-tracklist"));
 
     // Create and show the main window.
     if (this->create_main_window() != true)
@@ -1404,7 +1411,7 @@ Gui::init_file_browser_area()
     vertic_line->setFrameShape(QFrame::VLine);
     vertic_line->setObjectName("Separator_line");
 
-    // Vertical set of buttons on the right: refresh file borwser (calculate music key).
+    // Vertical set of buttons on the right: refresh file browser (calculate music key).
     QVBoxLayout *action_buttons_layout = new QVBoxLayout();
     action_buttons_layout->addWidget(this->refresh_file_browser, 1, Qt::AlignTop);
 
@@ -1414,7 +1421,18 @@ Gui::init_file_browser_area()
     this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
     this->show_hide_samplers_button->setCheckable(true);
     this->show_hide_samplers_button->setChecked(true);
-    action_buttons_layout->addWidget(this->show_hide_samplers_button, 100, Qt::AlignTop);
+    action_buttons_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignTop);
+
+    // Vertical set of buttons on the right: reset and save tracklist.
+    this->clear_tracklist_button = new QPushButton(tr("CLEAR"));
+    this->clear_tracklist_button->setObjectName("Right_vertic_button_samplers");
+    this->clear_tracklist_button->setToolTip(tr("Clear tracklist"));
+    action_buttons_layout->addWidget(this->clear_tracklist_button, 1, Qt::AlignTop);
+    this->save_tracklist_button = new QPushButton(tr("SAVE AS"));
+    this->save_tracklist_button->setObjectName("Right_vertic_button_samplers");
+    this->save_tracklist_button->setToolTip(tr("Save tracklist as M3U"));
+    action_buttons_layout->addWidget(this->save_tracklist_button, 1, Qt::AlignTop);
+    action_buttons_layout->addStretch(100);
 
     // Layout of the bottom part of the file browser (folder browser, file browser, set of buttons).
     QWidget *bottom_container_widget = new QWidget();
@@ -1558,6 +1576,11 @@ Gui::connect_file_browser_area()
     // Parse directory thread.
     this->watcher_parse_directory = new QFutureWatcher<void>;
     QObject::connect(this->watcher_parse_directory, &QFutureWatcher<void>::finished, [this](){this->run_concurrent_read_collection_from_db();});
+
+    // Tracklist management.
+    QObject::connect(this->clear_tracklist_button, &QPushButton::clicked, [this](){this->show_clear_tracklist_dialog();});
+    QObject::connect(this->save_tracklist_button, &QPushButton::clicked, [this](){this->show_save_tracklist_dialog();});
+
 }
 
 void
@@ -1708,7 +1731,7 @@ Gui::init_bottom_status()
 void
 Gui::display_audio_file_collection()
 {
-    QCoreApplication::processEvents();
+    QCoreApplication::processEvents(); // FIXME: needed ?
     this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
     this->is_window_rendered = true;
 }
@@ -1815,6 +1838,7 @@ Gui::apply_main_window_style()
         }
         this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));        
         this->progress_cancel_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
+        this->clear_tracklist_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
 
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
         if (icon_prov != nullptr)
@@ -1850,6 +1874,7 @@ Gui::apply_main_window_style()
             }
         }
         this->progress_cancel_button->setIcon(QIcon());
+        this->clear_tracklist_button->setIcon(QIcon());
 
         // Set icon for file browser QTreeview (can not be done nicely in CSS).
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
@@ -2224,7 +2249,7 @@ void
 Gui::run_audio_file_decoding_process()
 {
     // Force processing events to refresh main window before running decoding.
-    QApplication::processEvents();
+    QApplication::processEvents(); // FIXME: needed ?
 
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
@@ -2254,6 +2279,11 @@ Gui::run_audio_file_decoding_process()
             {
                 qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
             }
+            else
+            {
+                // Track is decoded, record the name in the tracklist.
+                this->add_track_path_to_tracklist(deck_index);
+            }
         }
 
         // Force waveform computation.
@@ -2272,6 +2302,87 @@ Gui::run_audio_file_decoding_process()
 
         // Update waveform.
         deck_waveform->update();
+    }
+
+    return;
+}
+
+void
+Gui::add_track_path_to_tracklist(const unsigned short int &deck_index)
+{
+    // Add full path to the tracklist.
+    QString track_path(this->ats[deck_index]->get_fullpath());
+    if (track_path != "")
+    {
+        if (this->nb_decks == 1)
+        {
+            // Always add the track to tracklist if there is only 1 deck.
+            this->tracklist->add_track_no_duplicate(track_path);
+        }
+        else
+        {
+            // Add only the last track to tracklist if there are 2 or more decks.
+            this->tracklist->add_track_from_deck(track_path, deck_index);
+        }
+
+        // Auto save into file in case there is a crash.
+        this->write_tracklist();
+    }
+
+    return;
+}
+
+void
+Gui::write_tracklist()
+{
+    Playlist_persistence pls_persist;
+    pls_persist.write_m3u(this->tracklist);
+
+    return;
+}
+
+void Gui::show_clear_tracklist_dialog()
+{
+    // Show a pop-up asking to confirm to clear the current tracklist.
+    QMessageBox msg_box;
+    msg_box.setWindowTitle("DigitalScratch");
+    msg_box.setText(tr("Do you really want to clear the tracklist ?"));
+    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setIcon(QMessageBox::Question);
+    msg_box.setDefaultButton(QMessageBox::Cancel);
+    msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
+    {
+        msg_box.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        msg_box.setWindowIcon(QIcon(ICON));
+    }
+
+    // Close request confirmed.
+    if (msg_box.exec() == QMessageBox::Ok)
+    {
+        this->tracklist->clear();
+    }
+}
+
+void
+Gui::show_save_tracklist_dialog()
+{
+    // Show file selection window.
+    QString file_path = QFileDialog::getSaveFileName(this->window,
+                                                     tr("Save tracklist as..."),
+                                                     QDir::homePath(),
+                                                     tr("Playlist files (*.m3u)"));
+
+    // Change the name of the current tracklist and write it.
+    if (file_path != nullptr)
+    {
+        QFileInfo file_info(file_path);
+        this->tracklist->set_basepath(file_info.absolutePath());
+        this->tracklist->set_name(file_info.baseName());
+        this->write_tracklist();
     }
 
     return;

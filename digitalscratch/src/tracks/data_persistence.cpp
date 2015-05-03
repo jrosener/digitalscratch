@@ -36,6 +36,7 @@
 #include <QDir>
 #include <QSqlQuery>
 #include <QDateTime>
+// FIXME: remove this checks since we do not build for Qt4.x anymore.
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   #include <QDesktopServices>
 #else

@@ -75,6 +75,7 @@ class Audio_track : public QObject
     bool              set_name(const QString &name);                          // Set name of the track (basically artist+track).
     QString           get_path() const;                                       // Get path of the track.
     bool              set_fullpath(const QString &fullpath);                  // Set full path of the track.
+    QString           get_fullpath() const;                                   // Get full path of the track.
     QString           get_filename() const;                                   // Get name of the file.
     QString           get_hash() const;                                       // Get hash of the file.
     bool              set_hash(const QString &hash);                          // Set hash of the file.

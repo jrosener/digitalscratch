@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include <QSharedPointer>
 #include "tracks/playlist.h"
 
 using namespace std;
@@ -44,5 +45,6 @@ class Playlist_persistence
 
   public:
     bool read_m3u(const QString &file_name, Playlist &io_playlist);
+    bool write_m3u(QSharedPointer<Playlist> &playlist);
     bool read_pls(const QString &file_name, Playlist &io_playlist);
 };

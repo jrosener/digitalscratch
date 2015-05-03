@@ -89,7 +89,7 @@ bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playl
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
-                    io_playlist.add_track(line_info.absoluteFilePath());
+                    io_playlist.add_track_no_duplicate(line_info.absoluteFilePath());
                 }
                 else
                 {
@@ -102,7 +102,7 @@ bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playl
                         if (uri_info.exists() == true)
                         {
                             // Add track path to playlist object.
-                            io_playlist.add_track(uri_info.absoluteFilePath());
+                            io_playlist.add_track_no_duplicate(uri_info.absoluteFilePath());
                         }
                     }
                 }
@@ -112,6 +112,28 @@ bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playl
         // Put back the current path;
         QDir::setCurrent(old_path);
     }
+    file.close();
+
+    return true;
+}
+
+bool Playlist_persistence::write_m3u(QSharedPointer<Playlist> &playlist)
+{
+    // Open the playlist file.
+    QFile file(playlist->get_fullpath() + ".m3u");
+
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    // Map it with a text stream.
+    QTextStream stream(&file);
+
+    // Write each line of the tracklist.
+    foreach (QString str, playlist->get_tracklist())
+    {
+        stream << "file://" << str << endl;
+    }
+
+    // Done.
     file.close();
 
     return true;
@@ -154,7 +176,7 @@ bool Playlist_persistence::read_pls(const QString &file_name, Playlist &io_playl
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
-                    io_playlist.add_track(line_info.absoluteFilePath());
+                    io_playlist.add_track_no_duplicate(line_info.absoluteFilePath());
                 }
                 else
                 {
@@ -167,7 +189,7 @@ bool Playlist_persistence::read_pls(const QString &file_name, Playlist &io_playl
                         if (uri_info.exists() == true)
                         {
                             // Add track path to playlist object.
-                            io_playlist.add_track(uri_info.absoluteFilePath());
+                            io_playlist.add_track_no_duplicate(uri_info.absoluteFilePath());
                         }
                     }
                 }

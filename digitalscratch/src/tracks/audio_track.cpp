@@ -194,6 +194,19 @@ Audio_track::set_fullpath(const QString &fullpath)
 }
 
 QString
+Audio_track::get_fullpath() const
+{
+    if ((this->get_path() != "") && (this->get_filename() != ""))
+    {
+        return this->get_path() + QDir::separator() + this->get_filename();
+    }
+    else
+    {
+        return "";
+    }
+}
+
+QString
 Audio_track::get_filename() const
 {
     return this->filename;

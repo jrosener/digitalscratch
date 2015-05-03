@@ -289,14 +289,12 @@ class Gui : public QObject
     // Samplers area.
     QWidget                            *samplers_container;
     QHBoxLayout                        *samplers_layout;
-    QPushButton                        *show_hide_samplers_button;
     QList<Sampler*>                     samplers;
 
     // File and folder browser area.
     QHBoxLayout                        *file_layout;
     QSplitter                          *browser_splitter;
     QGroupBox                          *file_browser_gbox;
-    QPushButton                        *refresh_file_browser;
     QList<FileBrowserControlButtons*>   file_browser_control_buttons;
     QFutureWatcher<void>               *watcher_parse_directory;
 
@@ -321,6 +319,12 @@ class Gui : public QObject
     bool                                search_from_begin;
     unsigned int                        file_browser_selected_index;
     QString                             last_search_string;
+
+    // Action menu.
+    QPushButton                        *refresh_file_browser; // FIXME: rename into get_audio_keys
+    QPushButton                        *show_hide_samplers_button;
+    QPushButton                        *clear_tracklist_button;
+    QPushButton                        *save_tracklist_button;
 
     // Bottom help area.
     QHBoxLayout                        *bottom_layout;
@@ -351,6 +355,9 @@ class Gui : public QObject
     // Pop dialogs.
     Config_dialog                      *config_dialog;
     QDialog                            *refresh_audio_collection_dialog;
+
+    // Tracklist.
+    QSharedPointer<Playlist>           tracklist;
 
     // Main processing elements.
     QList<QSharedPointer<Audio_track>>                         ats;
@@ -412,6 +419,8 @@ class Gui : public QObject
     bool can_stop_control_and_playback();
     void hide_samplers();
     void show_samplers();
+    void add_track_path_to_tracklist(const unsigned short int &deck_index);
+    void write_tracklist();
 
  public slots:
     void force_close();
@@ -493,4 +502,6 @@ class Gui : public QObject
     void speed_reset_to_100p(const unsigned short int &deck_index);
     void playback_thru(const unsigned short int &deck_index, const bool &on_off);
     void can_close();
+    void show_save_tracklist_dialog();
+    void show_clear_tracklist_dialog();
 };
