@@ -871,6 +871,7 @@ Gui::create_main_window()
     this->init_samplers_area();
     this->init_file_control_area();
     this->init_file_browser_area();
+    this->init_menu_area();
     this->init_bottom_help();
     this->init_bottom_status();
 
@@ -880,6 +881,8 @@ Gui::create_main_window()
     this->connect_samplers_area();
     this->connect_decks_and_samplers_selection();
     this->connect_file_browser_area();
+    this->connect_file_control_area();
+    this->connect_menu_area();
 
     // Create main window.
     this->window->setWindowTitle(tr("DigitalScratch") + " " + QString(STR(VERSION)));
@@ -900,13 +903,13 @@ Gui::create_main_window()
     this->window->setLayout(main_layout);
 
     // Put every components in main layout.
-    main_layout->addLayout(this->header_layout,      5);
-    main_layout->addLayout(this->decks_layout,       30);
-    main_layout->addWidget(this->samplers_container, 5);
-    main_layout->addLayout(this->file_control_buttons_layout);
-    main_layout->addLayout(this->file_layout,        65);
-    main_layout->addLayout(this->bottom_layout,      0);
-    main_layout->addLayout(this->status_layout,      0);
+    main_layout->addLayout(this->header_layout,               5);
+    main_layout->addLayout(this->decks_layout,                30);
+    main_layout->addWidget(this->samplers_container,          5);
+    main_layout->addLayout(this->file_control_buttons_layout, 0);
+    main_layout->addLayout(this->file_and_menu_layout,        65);
+    main_layout->addLayout(this->bottom_layout,               0);
+    main_layout->addLayout(this->status_layout,               0);
 
     // Display main window.
     this->window->show();
@@ -1245,9 +1248,6 @@ Gui::clean_samplers_area()
 void
 Gui::connect_samplers_area()
 {
-    // Show/hide samplers.
-    QObject::connect(this->show_hide_samplers_button, &QPushButton::clicked, [this](){this->show_hide_samplers();});
-
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
         for (unsigned short int j = 0; j < this->nb_samplers; j++)
@@ -1348,6 +1348,30 @@ Gui::init_file_control_area()
 }
 
 void
+Gui::connect_file_control_area()
+{
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        // Load track on deck.
+        QObject::connect(this->file_browser_control_buttons[i]->load_track_on_deck_button, &QPushButton::clicked,
+                         [this, i](){this->select_and_run_audio_file_decoding_process(i);});
+
+        // Show next tracks (based on music key).
+        QObject::connect(this->file_browser_control_buttons[i]->show_next_key_from_deck_button, &QPushButton::clicked,
+                         [this, i](){this->select_and_show_next_keys(i);});
+
+        // Load track in samplers.
+        for (unsigned short int j = 0; j < this->nb_samplers; j++)
+        {
+            QObject::connect(this->file_browser_control_buttons[i]->load_sample_buttons[j], &QPushButton::clicked,
+                             [this, i, j](){this->select_and_run_sample_decoding_process(i, j);});
+        }
+    }
+
+    return;
+}
+
+void
 Gui::init_file_browser_area()
 {
     // Create the folder browser.
@@ -1385,13 +1409,6 @@ Gui::init_file_browser_area()
     this->file_search->setPlaceholderText(tr("Search..."));
     this->file_browser_selected_index = 0;    
 
-    // Create function buttons for file browser.
-    this->refresh_file_browser = new QPushButton(tr("SCAN FILES"));
-    this->refresh_file_browser->setObjectName("Right_vertic_button_scan_files");
-    this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
-    this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
-    this->refresh_file_browser->setCheckable(true);
-
     // Build file browser and search area.
     QVBoxLayout *browser_search_layout = new QVBoxLayout();
     browser_search_layout->addWidget(this->file_browser);
@@ -1407,40 +1424,10 @@ Gui::init_file_browser_area()
     this->browser_splitter->setStretchFactor(0, 1);
     this->browser_splitter->setStretchFactor(1, 4);
 
-    // Vertical separator.
-    QFrame* vertic_line = new QFrame();
-    vertic_line->setFrameShape(QFrame::VLine);
-    vertic_line->setObjectName("Separator_line");
-
-    // Vertical set of buttons on the right: refresh file browser (calculate music key).
-    QVBoxLayout *action_buttons_layout = new QVBoxLayout();
-    action_buttons_layout->addWidget(this->refresh_file_browser, 1, Qt::AlignTop);
-
-    // Vertical set of buttons on the right: show/hide the sampler area.
-    this->show_hide_samplers_button = new QPushButton(tr("SAMPLERS"));
-    this->show_hide_samplers_button->setObjectName("Right_vertic_button_samplers");
-    this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
-    this->show_hide_samplers_button->setCheckable(true);
-    this->show_hide_samplers_button->setChecked(true);
-    action_buttons_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignTop);
-
-    // Vertical set of buttons on the right: reset and save tracklist.
-    this->clear_tracklist_button = new QPushButton(tr("CLEAR"));
-    this->clear_tracklist_button->setObjectName("Right_vertic_button_samplers");
-    this->clear_tracklist_button->setToolTip(tr("Clear tracklist"));
-    action_buttons_layout->addWidget(this->clear_tracklist_button, 1, Qt::AlignTop);
-    this->save_tracklist_button = new QPushButton(tr("SAVE AS"));
-    this->save_tracklist_button->setObjectName("Right_vertic_button_samplers");
-    this->save_tracklist_button->setToolTip(tr("Save tracklist as M3U"));
-    action_buttons_layout->addWidget(this->save_tracklist_button, 1, Qt::AlignTop);
-    action_buttons_layout->addStretch(100);
-
     // Layout of the bottom part of the file browser (folder browser, file browser, set of buttons).
     QWidget *bottom_container_widget = new QWidget();
     QHBoxLayout *bottom_container = new QHBoxLayout(bottom_container_widget);
     bottom_container->addWidget(this->browser_splitter, 100);
-    bottom_container->addWidget(vertic_line, 1);
-    bottom_container->addLayout(action_buttons_layout);
 
     // Main layout and group box.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
@@ -1449,8 +1436,8 @@ Gui::init_file_browser_area()
     this->file_browser_gbox->setLayout(file_browser_layout);
     this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
 
-    this->file_layout = new QHBoxLayout();
-    this->file_layout->addWidget(this->file_browser_gbox, 50);
+    this->file_and_menu_layout = new QHBoxLayout();
+    this->file_and_menu_layout->addWidget(this->file_browser_gbox, 50);
 }
 
 void
@@ -1465,27 +1452,6 @@ Gui::clean_file_browser_area()
 void
 Gui::connect_file_browser_area()
 {
-    // Refresh track browser.
-    QObject::connect(this->refresh_file_browser, &QPushButton::clicked, [this](){this->show_refresh_audio_collection_dialog();});
-
-    for (unsigned short int i = 0; i < this->nb_decks; i++)
-    {
-        // Load track on deck.
-        QObject::connect(this->file_browser_control_buttons[i]->load_track_on_deck_button, &QPushButton::clicked,
-                         [this, i](){this->select_and_run_audio_file_decoding_process(i);});
-
-        // Show next tracks (based on music key).
-        QObject::connect(this->file_browser_control_buttons[i]->show_next_key_from_deck_button, &QPushButton::clicked,
-                         [this, i](){this->select_and_show_next_keys(i);});
-
-        // Load track in samplers.
-        for (unsigned short int j = 0; j < this->nb_samplers; j++)
-        {
-            QObject::connect(this->file_browser_control_buttons[i]->load_sample_buttons[j], &QPushButton::clicked,
-                             [this, i, j](){this->select_and_run_sample_decoding_process(i, j);});
-        }
-    }
-
     // Open folder or playlist from file browser on double click.
     QObject::connect(this->folder_browser, &QTreeView::doubleClicked, [this](const QModelIndex &index){this->on_file_browser_double_click(index);});
 
@@ -1576,10 +1542,105 @@ Gui::connect_file_browser_area()
     this->watcher_parse_directory = new QFutureWatcher<void>;
     QObject::connect(this->watcher_parse_directory, &QFutureWatcher<void>::finished, [this](){this->run_concurrent_read_collection_from_db();});
 
+    return;
+}
+
+QHBoxLayout *Gui::get_menu_area_title(const QString &title)
+{
+    QHBoxLayout *title_layout = new QHBoxLayout();
+
+    // Left line.
+    QFrame* line_left = new QFrame();
+    line_left->setFrameShape(QFrame::HLine);
+    line_left->setObjectName("Separator_line");
+    title_layout->addWidget(line_left);
+
+    // Title.
+    QLabel *title_label = new QLabel(title);
+    title_label->setObjectName("Menu_title");
+    title_layout->addWidget(title_label);
+
+    // Right line.
+    QFrame* line_right = new QFrame();
+    line_right->setFrameShape(QFrame::HLine);
+    line_right->setObjectName("Separator_line");
+    title_layout->addWidget(line_right);
+
+    return title_layout;
+}
+
+void
+Gui::init_menu_area()
+{
+    // Main vertical layout for menu buttons.
+    QVBoxLayout *action_buttons_layout = new QVBoxLayout();
+
+    //
+    // Menu: Files.
+    //
+
+    // Title.
+    action_buttons_layout->addLayout(this->get_menu_area_title(tr("Files")));
+
+    // Refresh file browser (calculate music key).
+    this->refresh_file_browser = new QPushButton(tr("SCAN KEYS"));
+    this->refresh_file_browser->setObjectName("Right_vertic_button_scan_files");
+    this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
+    this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
+    this->refresh_file_browser->setCheckable(true);
+    action_buttons_layout->addWidget(this->refresh_file_browser, 1, Qt::AlignTop);
+
+    //
+    // Menu: Tracklist.
+    //
+
+    // Title.
+    action_buttons_layout->addStretch(100);
+    action_buttons_layout->addLayout(this->get_menu_area_title(tr("Tracklist")));
+
+    // Reset and save tracklist.
+    this->clear_tracklist_button = new QPushButton(tr("CLEAR"));
+    this->clear_tracklist_button->setObjectName("Right_vertic_button_samplers");
+    this->clear_tracklist_button->setToolTip(tr("Clear tracklist"));
+    action_buttons_layout->addWidget(this->clear_tracklist_button, 1, Qt::AlignTop);
+    this->save_tracklist_button = new QPushButton(tr("SAVE AS"));
+    this->save_tracklist_button->setObjectName("Right_vertic_button_samplers");
+    this->save_tracklist_button->setToolTip(tr("Save tracklist as M3U"));
+    action_buttons_layout->addWidget(this->save_tracklist_button, 1, Qt::AlignTop);
+
+    //
+    // Menu: View.
+    //
+
+    // Title.
+    action_buttons_layout->addStretch(100);
+    action_buttons_layout->addLayout(this->get_menu_area_title(tr("View")));
+
+    // Show/hide the sampler area.
+    this->show_hide_samplers_button = new QPushButton(tr("SAMPLERS"));
+    this->show_hide_samplers_button->setObjectName("Right_vertic_button_samplers");
+    this->show_hide_samplers_button->setToolTip(tr("Show/hide samplers"));
+    this->show_hide_samplers_button->setCheckable(true);
+    this->show_hide_samplers_button->setChecked(true);
+    action_buttons_layout->addWidget(this->show_hide_samplers_button, 1, Qt::AlignTop);
+
+
+    // Add to main layout.
+    this->file_and_menu_layout->addLayout(action_buttons_layout);
+}
+
+void
+Gui::connect_menu_area()
+{
+    // Refresh track browser.
+    QObject::connect(this->refresh_file_browser, &QPushButton::clicked, [this](){this->show_refresh_audio_collection_dialog();});
+
+    // Show/hide samplers.
+    QObject::connect(this->show_hide_samplers_button, &QPushButton::clicked, [this](){this->show_hide_samplers();});
+
     // Tracklist management.
     QObject::connect(this->clear_tracklist_button, &QPushButton::clicked, [this](){this->show_clear_tracklist_dialog();});
     QObject::connect(this->save_tracklist_button, &QPushButton::clicked, [this](){this->show_save_tracklist_dialog();});
-
 }
 
 void

@@ -295,8 +295,10 @@ class Gui : public QObject
     QHBoxLayout                        *file_control_buttons_layout;
     QList<FileBrowserControlButtons*>   file_browser_control_buttons;
 
-    // File and folder browser area.
-    QHBoxLayout                        *file_layout;
+    // File and menu (bottom right) area.
+    QHBoxLayout                        *file_and_menu_layout;
+
+    // File browser.
     QSplitter                          *browser_splitter;
     QGroupBox                          *file_browser_gbox;
     QFutureWatcher<void>               *watcher_parse_directory;
@@ -322,6 +324,9 @@ class Gui : public QObject
     bool                                search_from_begin;
     unsigned int                        file_browser_selected_index;
     QString                             last_search_string;
+
+    // Button menu (bottom right).
+
 
     // Action menu.
     QPushButton                        *refresh_file_browser; // FIXME: rename into get_audio_keys
@@ -402,9 +407,13 @@ class Gui : public QObject
     void connect_samplers_area();
     void connect_decks_and_samplers_selection();
     void init_file_control_area();
+    void connect_file_control_area();
     void init_file_browser_area();
     void clean_file_browser_area();
     void connect_file_browser_area();
+    void init_menu_area();
+    QHBoxLayout *get_menu_area_title(const QString &title);
+    void connect_menu_area();
     void init_bottom_help();
     void init_bottom_status();
     void display_audio_file_collection();
