@@ -323,7 +323,7 @@ class Gui : public QObject
     QShortcut                          *shortcut_help;
 
     // Action menu.
-    QPushButton                        *refresh_file_browser; // FIXME: rename into get_audio_keys
+    QPushButton                        *scan_audio_keys_button; // FIXME: rename into get_audio_keys
     QPushButton                        *show_hide_samplers_button;
     QPushButton                        *clear_tracklist_button;
     QPushButton                        *save_tracklist_button;

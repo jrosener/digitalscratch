@@ -430,15 +430,15 @@ Gui::on_finished_analyze_audio_collection()
 
     // Refresh file browser.
     this->file_browser->setRootIndex(this->file_system_model->get_root_index());
-    this->refresh_file_browser->setEnabled(true);
-    this->refresh_file_browser->setChecked(false);
+    this->scan_audio_keys_button->setEnabled(true);
+    this->scan_audio_keys_button->setChecked(false);
 }
 
 void
 Gui::reject_refresh_audio_collection_dialog()
 {
-    this->refresh_file_browser->setEnabled(true);
-    this->refresh_file_browser->setChecked(false);
+    this->scan_audio_keys_button->setEnabled(true);
+    this->scan_audio_keys_button->setChecked(false);
 
     return;
 }
@@ -1413,11 +1413,11 @@ Gui::init_menu_area()
     action_buttons_layout->addLayout(this->get_menu_area_title(tr("Files")));
 
     // Refresh file browser (calculate music key).
-    this->refresh_file_browser = new QPushButton(tr("SCAN KEYS"));
-    this->refresh_file_browser->setObjectName("Scan_keys_button");
-    this->refresh_file_browser->setToolTip(tr("Analyze audio collection (get musical key)"));
-    this->refresh_file_browser->setFocusPolicy(Qt::NoFocus);
-    action_buttons_layout->addWidget(this->refresh_file_browser, 1);
+    this->scan_audio_keys_button = new QPushButton(tr("SCAN KEYS"));
+    this->scan_audio_keys_button->setObjectName("Scan_keys_button");
+    this->scan_audio_keys_button->setToolTip(tr("Analyze audio collection (get musical key)"));
+    this->scan_audio_keys_button->setFocusPolicy(Qt::NoFocus);
+    action_buttons_layout->addWidget(this->scan_audio_keys_button, 1);
 
     //
     // Menu: Tracklist.
@@ -1507,7 +1507,7 @@ void
 Gui::connect_menu_area()
 {
     // Refresh track browser.
-    QObject::connect(this->refresh_file_browser, &QPushButton::clicked, [this](){this->show_refresh_audio_collection_dialog();});
+    QObject::connect(this->scan_audio_keys_button, &QPushButton::clicked, [this](){this->show_refresh_audio_collection_dialog();});
 
     // Show/hide samplers.
     QObject::connect(this->show_hide_samplers_button, &QPushButton::clicked, [this](){this->show_hide_samplers();});
@@ -1789,7 +1789,7 @@ Gui::apply_main_window_style()
             }
 
         }
-        this->refresh_file_browser->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));        
+        this->scan_audio_keys_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));        
         this->progress_cancel_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
         this->clear_tracklist_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
 
@@ -1826,7 +1826,7 @@ Gui::apply_main_window_style()
                 this->file_browser_control_buttons[i]->load_sample_buttons[j]->setIcon(QIcon());
             }
         }
-        this->refresh_file_browser->setIcon(QIcon());
+        this->scan_audio_keys_button->setIcon(QIcon());
         this->progress_cancel_button->setIcon(QIcon());
         this->clear_tracklist_button->setIcon(QIcon());
 
