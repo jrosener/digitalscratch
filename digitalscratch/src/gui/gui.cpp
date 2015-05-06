@@ -1668,7 +1668,6 @@ Gui::init_bottom_status()
 void
 Gui::display_audio_file_collection()
 {
-    QCoreApplication::processEvents(); // FIXME: needed ?
     this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
     this->is_window_rendered = true;
 }
@@ -2200,9 +2199,6 @@ Gui::select_and_run_audio_file_decoding_process(const unsigned short int &deck_i
 void
 Gui::run_audio_file_decoding_process()
 {
-    // Force processing events to refresh main window before running decoding.
-    QApplication::processEvents(); // FIXME: needed ?
-
     // Get selected file path.
     Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
     QFileInfo info(item->get_full_path());
@@ -3010,7 +3006,7 @@ Deck::set_speed_mode_timecode()
     this->accel_up_button->hide();
     this->accel_down_button->hide();
     this->thru_button->show();
-    this->speed->hide(); // FIXME: this is a test to validate that updating at a high frame rate this label will cause the app crash.
+    this->speed->hide();
 }
 
 void
@@ -3023,7 +3019,7 @@ Deck::set_speed_mode_manual()
     this->accel_up_button->show();
     this->accel_down_button->show();
     this->thru_button->hide();
-    this->speed->show(); // FIXME: this is a test to validate that updating at a high frame rate this label will cause the app crash.
+    this->speed->show();
 }
 
 void
