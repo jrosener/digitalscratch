@@ -33,7 +33,6 @@
 #pragma once
 
 #include "dscratch_parameters.h"
-#include "playing_parameter.h"
 #include "digital_scratch_api.h"
 
 #define DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND 1
@@ -41,11 +40,10 @@
 
 /**
  * Define a Speed class.\n
- * Base class : Playing_parameter\n
  * Define the playing music speed concept
  * @author Julien Rosener
  */
-class Speed : public Playing_parameter
+class Speed
 {
     /* Attributes */
     private:

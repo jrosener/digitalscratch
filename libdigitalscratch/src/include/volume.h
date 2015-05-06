@@ -33,15 +33,13 @@
 #pragma once
 
 #include "dscratch_parameters.h"
-#include "playing_parameter.h"
 
 /**
  * Define a Volume class.\n
- * Base class : Playing_parameter\n
  * Define the music volume concept.
  * @author Julien Rosener
  */
-class Volume : public Playing_parameter
+class Volume
 {
     /* Attributes */
     private:

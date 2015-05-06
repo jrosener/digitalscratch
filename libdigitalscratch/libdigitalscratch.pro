@@ -46,7 +46,6 @@ SOURCES += \
     src/volume.cpp \
     src/speed.cpp \
     src/serato_vinyl.cpp \
-    src/playing_parameter.cpp \
     src/final_scratch_vinyl.cpp \
     src/digital_scratch_api.cpp \
     src/digital_scratch.cpp \
@@ -59,7 +58,6 @@ HEADERS += \
     src/include/volume.h \
     src/include/speed.h \
     src/include/serato_vinyl.h \
-    src/include/playing_parameter.h \
     src/include/final_scratch_vinyl.h \
     src/include/dscratch_parameters.h \
     src/include/digital_scratch_api.h \

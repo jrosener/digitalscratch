@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <iostream>
 #ifdef WIN32
 #include <functional>
 #endif

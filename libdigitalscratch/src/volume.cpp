@@ -37,7 +37,7 @@ using namespace std;
 #include "log.h"
 #include "volume.h"
 
-Volume::Volume() : Playing_parameter()
+Volume::Volume()
 {
     this->value = 0.0;
 }
