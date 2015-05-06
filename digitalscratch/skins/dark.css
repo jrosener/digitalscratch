@@ -5,9 +5,16 @@
    font:             8pt;
 }
 
+QDialog
+{
+    border-bottom: 1px solid #737373;
+    border-left:   1px solid #737373;
+    border-right:  1px solid #737373;
+}
+
 QLabel
 {
-   background: transparent;
+    background: transparent;
 }
 
 QPushButton

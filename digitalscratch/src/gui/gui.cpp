@@ -120,8 +120,8 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     }
 
     // Init pop-up dialogs.
-    this->config_dialog                   = nullptr;
-    this->refresh_audio_collection_dialog = nullptr;
+    this->config_dialog          = nullptr;
+    this->scan_audio_keys_dialog = nullptr;
 
     // Init tracklist recording.
     this->tracklist = QSharedPointer<Playlist>(new Playlist(QStandardPaths::writableLocation(QStandardPaths::TempLocation),
@@ -430,9 +430,9 @@ Gui::reject_refresh_audio_collection_dialog()
 void
 Gui::close_refresh_audio_collection_dialog()
 {
-    if (this->refresh_audio_collection_dialog != nullptr)
+    if (this->scan_audio_keys_dialog != nullptr)
     {
-        this->refresh_audio_collection_dialog->done(QDialog::Rejected);
+        this->scan_audio_keys_dialog->done(QDialog::Rejected);
     }
 
     return;
@@ -444,9 +444,9 @@ Gui::accept_refresh_audio_collection_dialog_all_files()
     // Analyze all files of audio collection.
     this->analyze_audio_collection(true);
 
-    if (this->refresh_audio_collection_dialog != nullptr)
+    if (this->scan_audio_keys_dialog != nullptr)
     {
-        this->refresh_audio_collection_dialog->done(QDialog::Accepted);
+        this->scan_audio_keys_dialog->done(QDialog::Accepted);
     }
 
     return;
@@ -458,55 +458,55 @@ Gui::accept_refresh_audio_collection_dialog_new_files()
     // Analyze all files of audio collection.
     this->analyze_audio_collection(false);
 
-    if (this->refresh_audio_collection_dialog != nullptr)
+    if (this->scan_audio_keys_dialog != nullptr)
     {
-        this->refresh_audio_collection_dialog->done(QDialog::Accepted);
+        this->scan_audio_keys_dialog->done(QDialog::Accepted);
     }
 
     return;
 }
 
 bool
-Gui::show_refresh_audio_collection_dialog()
+Gui::show_scan_audio_keys_dialog()
 {
     // Show dialog only if there is no other analyzis process running.
     if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
     {
         // Create the dialog object.
-        if (this->refresh_audio_collection_dialog != nullptr)
+        if (this->scan_audio_keys_dialog != nullptr)
         {
-            delete this->refresh_audio_collection_dialog;
+            delete this->scan_audio_keys_dialog;
         }
-        this->refresh_audio_collection_dialog = new QDialog(this->window);
+        this->scan_audio_keys_dialog = new QDialog(this->window);
 
         // Set properties : title, icon.
-        this->refresh_audio_collection_dialog->setWindowTitle(tr("Refresh audio collection"));
+        this->scan_audio_keys_dialog->setWindowTitle(tr("Refresh audio collection"));
         if (this->nb_decks > 1)
         {
-            this->refresh_audio_collection_dialog->setWindowIcon(QIcon(ICON_2));
+            this->scan_audio_keys_dialog->setWindowIcon(QIcon(ICON_2));
         }
         else
         {
-            this->refresh_audio_collection_dialog->setWindowIcon(QIcon(ICON));
+            this->scan_audio_keys_dialog->setWindowIcon(QIcon(ICON));
         }
 
         // Main question.
         QLabel *main_question = new QLabel("<h3>" + tr("There are 2 possibilities to analyze the audio collection.") + "</h3>"
                                            + "<p>" + tr("Click the choice you would like") + "</p>",
-                                           this->refresh_audio_collection_dialog);
+                                           this->scan_audio_keys_dialog);
 
 
         // Choice 1: => All files.
         QCommandLinkButton *choice_all_files_button = new QCommandLinkButton(tr("All files."),
                                                                              tr("Analyze full audio collection") + " (" + QString::number(this->file_system_model->get_nb_items()) + " " + tr("elements") + ")",
-                                                                             this->refresh_audio_collection_dialog);
+                                                                             this->scan_audio_keys_dialog);
         QObject::connect(choice_all_files_button, &QCommandLinkButton::clicked,
                          [this](){this->accept_refresh_audio_collection_dialog_all_files();});
 
         // Choice 2: => New files.
         QCommandLinkButton *choice_new_files_button = new QCommandLinkButton(tr("New files."),
                                                                              tr("Analyze only files with missing data") + " (" + QString::number(this->file_system_model->get_nb_new_items()) + " " + tr("elements") + ")",
-                                                                             this->refresh_audio_collection_dialog);
+                                                                             this->scan_audio_keys_dialog);
         QObject::connect(choice_new_files_button, &QCommandLinkButton::clicked,
                          [this](){this->accept_refresh_audio_collection_dialog_new_files();});
 
@@ -514,28 +514,28 @@ Gui::show_refresh_audio_collection_dialog()
         QDialogButtonBox *cancel_button = new QDialogButtonBox(QDialogButtonBox::Cancel);
         QObject::connect(cancel_button, &QDialogButtonBox::rejected,
                          [this](){this->close_refresh_audio_collection_dialog();});
-        QObject::connect(refresh_audio_collection_dialog, &QDialog::rejected,
+        QObject::connect(scan_audio_keys_dialog, &QDialog::rejected,
                          [this](){this->reject_refresh_audio_collection_dialog();});
 
         // Full dialog layout.
-        QVBoxLayout *layout = new QVBoxLayout(this->refresh_audio_collection_dialog);
+        QVBoxLayout *layout = new QVBoxLayout(this->scan_audio_keys_dialog);
         layout->addWidget(main_question);
         layout->addWidget(choice_all_files_button);
         layout->addWidget(choice_new_files_button);
         layout->addWidget(cancel_button);
 
         // Put layout in dialog.
-        this->refresh_audio_collection_dialog->setLayout(layout);
+        this->scan_audio_keys_dialog->setLayout(layout);
         layout->setSizeConstraint(QLayout::SetFixedSize);
 
         // Show dialog.
-        this->refresh_audio_collection_dialog->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        this->refresh_audio_collection_dialog->adjustSize();
-        this->refresh_audio_collection_dialog->exec();
+        this->scan_audio_keys_dialog->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        this->scan_audio_keys_dialog->adjustSize();
+        this->scan_audio_keys_dialog->exec();
 
         // Cleanup.
-        delete this->refresh_audio_collection_dialog;
-        this->refresh_audio_collection_dialog = nullptr;
+        delete this->scan_audio_keys_dialog;
+        this->scan_audio_keys_dialog = nullptr;
     }
     else
     {
@@ -1491,7 +1491,7 @@ void
 Gui::connect_menu_area()
 {
     // Refresh track browser.
-    QObject::connect(this->scan_audio_keys_button, &QPushButton::clicked, [this](){this->show_refresh_audio_collection_dialog();});
+    QObject::connect(this->scan_audio_keys_button, &QPushButton::clicked, [this](){this->show_scan_audio_keys_dialog();});
 
     // Show/hide samplers.
     QObject::connect(this->show_hide_samplers_button, &QPushButton::clicked, [this](){this->show_hide_samplers();});
