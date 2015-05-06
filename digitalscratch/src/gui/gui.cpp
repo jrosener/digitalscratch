@@ -65,6 +65,8 @@
 #include <keyfinder_api.h>
 #include <samplerate.h>
 #include <jack/jack.h>
+#include "libavcodec/version.h"
+#include "libavformat/version.h"
 
 #include "app/application_logging.h"
 #include "gui/gui.h"
@@ -73,24 +75,6 @@
 #include "tracks/playlist_persistence.h"
 #include "utils.h"
 #include "singleton.h"
-
-#ifdef WIN32
-extern "C"
-{
-    #include "libavcodec/version.h"
-    #include "libavformat/version.h"
-}
-#else
-extern "C"
-{ // FIXME: is all these include/extern necessary ?
-    #ifndef INT64_C
-    #define INT64_C(c) (c ## LL)
-    #define UINT64_C(c) (c ## ULL)
-    #endif
-    #include "libavcodec/version.h"
-    #include "libavformat/version.h"
-}
-#endif
 
 Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QList<QSharedPointer<Audio_track>>>                 &at_samplers,
