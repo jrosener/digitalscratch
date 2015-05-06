@@ -308,7 +308,6 @@ DLLIMPORT unsigned short int dscratch_get_default_rpm();
 /**
   * Getter/Setter for the minimal acceptable amplitude for a normal speed.
   */
-// FIXME: check if these functions are used.
 DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float amplitude);
 DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float *out_ampl);
 DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float *out_ampl);

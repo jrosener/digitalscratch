@@ -60,10 +60,6 @@ static const char *DSCRATCH_VINYLS_NAMES[NB_DSCRATCH_VINYLS] =
 #define INPUT_BUFFER_MIN_SIZE 512
 
 /***************************** Global variables *******************************/
-// List of turntables.
-// FIXME: is it necessary to store turntables in an internal table ?
-vector<Digital_scratch*> tab_turntable;
-
 // Input datas for left and right samples.
 // FIXME: use one pair for each turntables to support reentrency.
 vector<float> g_input_samples_1;
@@ -498,7 +494,7 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_H
     }
     *out_ampl = vinyl->get_min_amplitude_for_normal_speed();
 
-    return DSCRATCH_SUCCESS;    
+    return DSCRATCH_SUCCESS;
 }
 
 DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude_for_normal_speed(DSCRATCH_HANDLE  handle,
