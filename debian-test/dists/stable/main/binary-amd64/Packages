@@ -1,68 +1,3 @@
-Package: digitalscratch
-Version: 1.4.0+1.5.0SNAPSHOT20140206-1
-Architecture: amd64
-Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 921
-Depends: libavcodec53 (>= 6:0.8.3-1~) | libavcodec-extra-53 (>= 6:0.8.6), libavformat53 (>= 6:0.8.3-1~), libavutil51 (>= 6:0.8.3-1~), libc6 (>= 2.2.5), libdigitalscratch1, libgcc1 (>= 1:4.1.1), libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.4.0)
-Homepage: http://www.digital-scratch.org
-Priority: extra
-Section: sound
-Filename: pool/main/d/digitalscratch/digitalscratch_1.4.0+1.5.0SNAPSHOT20140206-1_amd64.deb
-Size: 541810
-SHA256: eda7009a3e7b38227a93be98c17c0948b589b5469cde35cc0c2e558180eae23d
-SHA1: f1f79016e6f0bd5de18b7132940e75883dfdae61
-MD5sum: 62e72fd6c8991a45a004d1928b66977b
-Description: Audio file player driven by vinyl turntable
- DigitalScratch player is an audio file player driven by a vinyl turntable
- playing a timecoded vinyl disc.
- .
- Requirements:
- - A timecoded vinyl (FinalScratch, Serato or Mixvibes disc).
- - The Jack Audio Connection Kit (JACK) as audio server.
-
-Package: libdigitalscratch-dev
-Source: libdigitalscratch
-Version: 1.4.0+1.5.0SNAPSHOT20140206-1
-Architecture: amd64
-Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 52
-Depends: libdigitalscratch1 (= 1.4.0+1.5.0SNAPSHOT20140206-1)
-Homepage: http://www.digital-scratch.org
-Priority: extra
-Section: libdevel
-Filename: pool/main/libd/libdigitalscratch/libdigitalscratch-dev_1.4.0+1.5.0SNAPSHOT20140206-1_amd64.deb
-Size: 6626
-SHA256: f5e45f15048d936bc998ea20d5d23a8f9c0c326aef020d57531027767f670ba1
-SHA1: 32af22c599b593e2c06c13cdfc2a3c6f1b78c7ae
-MD5sum: 3c48c2677dfde803929fef69f27cb0a2
-Description: Motion detection for vinyl turntable
- DigitalScratch library is designed to analyze motion of a disc on a vinyl
- turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
- Serato or Mixvibes disc.
- .
- This package contains the header file and library needed by software which
- uses DigitalScratch library.
-
-Package: libdigitalscratch1
-Source: libdigitalscratch
-Version: 1.4.0+1.5.0SNAPSHOT20140206-1
-Architecture: amd64
-Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 152
-Depends: libc6 (>= 2.2.5), libgcc1 (>= 1:4.1.1), libqtcore4 (>= 4:4.5.3), libstdc++6 (>= 4.4.0)
-Homepage: http://www.digital-scratch.org
-Priority: extra
-Section: libs
-Filename: pool/main/libd/libdigitalscratch/libdigitalscratch1_1.4.0+1.5.0SNAPSHOT20140206-1_amd64.deb
-Size: 49328
-SHA256: deab516c518ae41976099afd654200cb34c914d88cf5b3ec3c3932b7211db789
-SHA1: 9d44467a1e3b1b19448a063dff213103e6cb0c25
-MD5sum: cfb3f240160b3258830216d567ac89cf
-Description: Motion detection for vinyl turntable
- Digital Scratch library is designed to analyze motion of a disc on a vinyl
- turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
- Serato or Mixvibes disc.
-
 Package: libkeyfinder-dev
 Source: libkeyfinder
 Version: 0.11.0-1
@@ -74,10 +9,10 @@ Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libdevel
 Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_amd64.deb
-Size: 3334
-SHA256: 09ea8514d750457b340923136242318d05b235589bacf17a1d85e7059c5e338d
-SHA1: 96825c1cae2098c7c1001487c0f498f2350bc65f
-MD5sum: 357ab09c51c1e44b7e0f448e8b1e6640
+Size: 3376
+SHA256: 9d7cfa6db82ed9d3919195e561c5a13fe2ffded6e3358e92b8d4ebd4844b2a8b
+SHA1: caa9df51f7fdff42e78fcd3cd57cade8c6ad9e77
+MD5sum: 71c94babbdf945c2c7f726998ba7fdf7
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
  .
@@ -89,16 +24,16 @@ Source: libkeyfinder
 Version: 0.11.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 184
-Depends: libfftw3-3, libboost-system1.49.0 (>= 1.49.0-1), libboost-thread1.49.0 (>= 1.49.0-1), libc6 (>= 2.2.5), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
+Installed-Size: 182
+Depends: libfftw3-3, libboost-system1.49.0, libboost-thread1.49.0, libboost-system1.55.0, libboost-thread1.55.0, libc6 (>= 2.2.5), libfftw3-double3, libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
 Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libs
 Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_amd64.deb
-Size: 64312
-SHA256: 29b2c6e40d7e5988f82af9f11938f6d7088deb25cfff178e8d8606774e949f3d
-SHA1: 5fbc6e35c6eb6b14abda152be95b81872ca8590f
-MD5sum: 25d0d5b46c50a6fadd46228ba374f24c
+Size: 52946
+SHA256: be4158d5f1166fdfc0402ea86900e18fa4641efc8b9fb9c69efa614cb8e1d734
+SHA1: 6e73505ac59b03e790a9671e10eb42987514b9e6
+MD5sum: b6e8c4e140fab373ff895c3f3fa18652
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
 
