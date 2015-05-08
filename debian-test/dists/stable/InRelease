@@ -4,13 +4,13 @@ Hash: SHA256
 Origin: Julien Rosener
 Label: DigitalScratch-DEV Debian APT repository
 Codename: stable
-Date: Fri, 08 May 2015 21:51:58 UTC
+Date: Fri, 08 May 2015 22:34:44 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch-DEV Debian APT repository
 MD5Sum:
- 7c711f6e499511f28846118fc9c21fcd 1569 main/binary-amd64/Packages
- daa15b97d313b0729edae837706b3764 712 main/binary-amd64/Packages.gz
+ 40a0b4be25393f8b05f949e36beea611 1569 main/binary-amd64/Packages
+ ef3aa606b810a1f702b413f3f0617c10 714 main/binary-amd64/Packages.gz
  3619162bfda94f84596b43a72860cfda 161 main/binary-amd64/Release
  d41d8cd98f00b204e9800998ecf8427e 0 main/binary-i386/Packages
  7029066c27ac6f5ef18d660d5741979a 20 main/binary-i386/Packages.gz
@@ -19,8 +19,8 @@ MD5Sum:
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  8fa041b18f48cb9591b5f864f576ddc4 162 main/source/Release
 SHA1:
- 43d72a23b31fb15b1ea8e78ef2d8056a9dfef38f 1569 main/binary-amd64/Packages
- 39c47faba1e94b7d63fcfeb1f3b29e73647c83dd 712 main/binary-amd64/Packages.gz
+ 2735ad71c88337b9c86cf120bc6b072ed8684a8e 1569 main/binary-amd64/Packages
+ 2340ff763953cd100a8405c34f3e0574cfef8f14 714 main/binary-amd64/Packages.gz
  cc66fb0d04ce20fff154483cedaf6ef510d82727 161 main/binary-amd64/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/binary-i386/Packages
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/binary-i386/Packages.gz
@@ -29,8 +29,8 @@ SHA1:
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  5ee9d35d3e9e52be269094ff28ffe527aa5cd365 162 main/source/Release
 SHA256:
- af42a171c541c1df57f9cd07a9fbc877959f7fec25c41227b7471aea1153c683 1569 main/binary-amd64/Packages
- bd3c672c9c45e0c71ab53350683eaad905e8d46247845203a658bcf0d1a2280e 712 main/binary-amd64/Packages.gz
+ 55abe03061acc46d81aa2a38025a1a1457c72a21492a2b4836ce40d5638d9610 1569 main/binary-amd64/Packages
+ 2703d9216b58d527cd0f69b32126ecebfd303397495345cb5a4c461aa23eb447 714 main/binary-amd64/Packages.gz
  279879d487b1f221636e535943b50f941290b891dbb83fa2d4c639f48a605716 161 main/binary-amd64/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/binary-i386/Packages
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/binary-i386/Packages.gz
@@ -41,11 +41,11 @@ SHA256:
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVTS/+AAoJEJ1a+q4YMfpRNdAH/3N0LRUpIPofQ0lznp2lhYHi
-LhtputoEaN26b4NVy1TR/ZYU1Lmr2KX7wU/muAH6uUrqjw0BmIqhJgUQCRyfByBL
-F7UhCveE2MlDaaWRt0xmriMXjuV8zDwiecKk8AwZenMt527XZBT4uPqSMW9G1567
-AiUScZbny1ivqxCs8nci9fyzh+akVKP0yClDo2o0Uzfxqjxh14m91ms3V7I7KYpV
-JxBM9XDSB3bth0WBKc1ZaugY+SD3P7bvZeqXfptW0XaWrj08EFwVJCZMSv2deTnm
-xjfQifyk6CDlAKjup90QtkWzgWBuu2cLjt7fCUtHC9ijA+ykf9hK+ef1nCnZLRc=
-=MAhl
+iQEcBAEBCAAGBQJVTToEAAoJEJ1a+q4YMfpRLfAIAIuLq8/zWNgHMXg7Rnf8JZL/
+dAokNUiFAJessKIlIwbuIg0xNVURp1T2Ks8qDQVuzthevGYZZgXPdLbl47LDOtFL
+5In7vk+vEfYTLI2dTskDJTYbik/Fs+ICFCgZlWoEq92WwMUErWiid6eHCFf9CJtK
+6N64W2ABW9nmphT4h7Sco1rfc6bt8yjmTxVt05J0Sio3qtEH0VbWC+4IPo1Khf75
+LLaCr5awp+Nen4cewwIi5AM5EgARxs3lG+1HTTAnTfs+v1C2y2Od2aep8NYEkk4u
+2yReGtU1kPOZ4xSwGMs9dPDot0tlxK1hNUzzgkq83NXPgK8zbgCrxFV1owcYXC8=
+=xmfj
 -----END PGP SIGNATURE-----
