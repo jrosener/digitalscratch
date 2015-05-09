@@ -43,7 +43,7 @@ Install
     sudo apt-get update
     sudo apt-get install digitalscratch
 
-### Debian
+### Debian 8
     wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
     sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
     sudo apt-get update
@@ -62,11 +62,11 @@ Build
     sudo apt-get update
     sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev qtmultimedia5-dev libqt5multimedia5-plugins
     
-#### Install build tools (Debian 7.2)
+#### Install build tools (Debian 8 - Jessie)
     wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
     sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
     sudo apt-get update
-    sudo apt-get install build-essential qt-sdk libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev
+    sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev qtmultimedia5-dev libavformat-dev libavcodec-dev libavutil-dev
 
 #### Compile and install _libdigitalscratch_
     cd libdigitalscratch
