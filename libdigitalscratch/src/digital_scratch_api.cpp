@@ -49,7 +49,6 @@ using namespace std;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
-/********************** Timecoded vinyl full names ****************************/
 static const char *DSCRATCH_VINYLS_NAMES[NB_DSCRATCH_VINYLS] =
 { 
     "final scratch standard 2.0",
@@ -57,14 +56,16 @@ static const char *DSCRATCH_VINYLS_NAMES[NB_DSCRATCH_VINYLS] =
     "mixvibes dvs"
 };
 
-/****************************** Magic numbers *********************************/
 #define INPUT_BUFFER_MIN_SIZE 512
 
-/***************************** Global variables *******************************/
-// Input datas for left and right samples.
-// FIXME: use one pair for each turntables to support reentrency.
-vector<float> g_input_samples_1;
-vector<float> g_input_samples_2;
+typedef struct handle_struct
+{
+    vector<float>   *samples_1;
+    vector<float>   *samples_2;
+    Digital_scratch *dscratch;
+} dscratch_handle_struct;
+
+
 
 /******************************** Internal functions *************************/
 
@@ -77,7 +78,33 @@ bool l_get_dscratch_from_handle(DSCRATCH_HANDLE   handle,
         return false;
     }
  
-    *dscratch = static_cast<Digital_scratch*>(handle);
+    *dscratch = static_cast<dscratch_handle_struct*>(handle)->dscratch;
+    return true;
+}
+
+bool l_get_samples1_vector_from_handle(DSCRATCH_HANDLE   handle,
+                                       vector<float>   **samples)
+{
+    if (handle == nullptr)
+    {
+        qCCritical(DSLIB_API) << "Cannot get samples1 vector from handle.";
+        return false;
+    }
+
+    *samples = static_cast<dscratch_handle_struct*>(handle)->samples_1;
+    return true;
+}
+
+bool l_get_samples2_vector_from_handle(DSCRATCH_HANDLE   handle,
+                                       vector<float>   **samples)
+{
+    if (handle == nullptr)
+    {
+        qCCritical(DSLIB_API) << "Cannot get samples2 vector from handle.";
+        return false;
+    }
+
+    *samples = static_cast<dscratch_handle_struct*>(handle)->samples_2;
     return true;
 }
 
@@ -108,6 +135,16 @@ DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
                                           const unsigned int  sample_rate,
                                           DSCRATCH_HANDLE    *out_handle)
 {
+    // Check input pointer on handle.
+    if (out_handle == nullptr)
+    {
+        qCCritical(DSLIB_API) << "out_handle is null";
+        return DSCRATCH_ERROR;
+    }
+
+    // Create the handle.
+    dscratch_handle_struct *hdl = new dscratch_handle_struct;
+
     // Create Digital_scratch object.
     Digital_scratch *dscratch = new Digital_scratch(coded_vinyl_type, sample_rate);
     if (dscratch == nullptr)
@@ -115,18 +152,14 @@ DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
         qCCritical(DSLIB_API) << "Digital_scratch object not created.";
         return DSCRATCH_ERROR;
     }
+    hdl->dscratch = dscratch;
 
     // Prepare global tables of samples to be able to handle at least 512 samples.
-    g_input_samples_1.reserve(INPUT_BUFFER_MIN_SIZE);
-    g_input_samples_2.reserve(INPUT_BUFFER_MIN_SIZE);
+    hdl->samples_1 = new vector<float>(INPUT_BUFFER_MIN_SIZE);
+    hdl->samples_2 = new vector<float>(INPUT_BUFFER_MIN_SIZE);
 
     // Return a handle on the Digital_scratch instance.
-    if (out_handle == nullptr)
-    {
-        qCCritical(DSLIB_API) << "out_handle is null";
-        return DSCRATCH_ERROR;
-    }
-    *out_handle = static_cast<DSCRATCH_HANDLE>(dscratch);
+    *out_handle = static_cast<dscratch_handle_struct*>(hdl);
 
     return DSCRATCH_SUCCESS;
 }
@@ -142,7 +175,22 @@ DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle)
 
     // Delete Digital_scratch instance.
     delete dscratch;
-    handle = nullptr;
+
+    // Delete samples vectors.
+    vector<float> *samples_1;
+    vector<float> *samples_2;
+    if (l_get_samples1_vector_from_handle(handle, &samples_1) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+    if (l_get_samples2_vector_from_handle(handle, &samples_2) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+    delete samples_1;
+    delete samples_2;
+
+    delete static_cast<dscratch_handle_struct*>(handle);
 
     return DSCRATCH_SUCCESS;
 }
@@ -160,8 +208,18 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
     }
 
     // Copy input samples in internal tables.
-    g_input_samples_1.assign(input_samples_1, input_samples_1 + nb_frames);
-    g_input_samples_2.assign(input_samples_2, input_samples_2 + nb_frames);
+    vector<float> *samples_1;
+    vector<float> *samples_2;
+    if (l_get_samples1_vector_from_handle(handle, &samples_1) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+    if (l_get_samples2_vector_from_handle(handle, &samples_2) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+    samples_1->assign(input_samples_1, input_samples_1 + nb_frames);
+    samples_2->assign(input_samples_2, input_samples_2 + nb_frames);
 
     // Amplify samples if needed.
     int ampl_coeff = 1;
@@ -171,16 +229,16 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
     }
     else if (ampl_coeff > 1)
     {
-        std::transform(g_input_samples_1.begin(), g_input_samples_1.end(),
-                       g_input_samples_1.begin(),
+        std::transform(samples_1->begin(), samples_1->end(),
+                       samples_1->begin(),
                        std::bind1st(std::multiplies<float>(), ampl_coeff));
-        std::transform(g_input_samples_2.begin(), g_input_samples_2.end(),
-                       g_input_samples_2.begin(),
+        std::transform(samples_2->begin(), samples_2->end(),
+                       samples_2->begin(),
                        std::bind1st(std::multiplies<float>(), ampl_coeff));
     }
 
     // Analyze new samples.
-    if (dscratch->analyze_recording_data(g_input_samples_1, g_input_samples_2) == false)
+    if (dscratch->analyze_recording_data(*samples_1, *samples_2) == false)
     {
         qCCritical(DSLIB_API) << "Cannot analyze recorded datas.";
         return DSCRATCH_ERROR;
@@ -208,14 +266,24 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  han
     }
 
     // Clean internal tables of samples.
-    g_input_samples_1.clear();
-    g_input_samples_2.clear();
+    vector<float> *samples_1;
+    vector<float> *samples_2;
+    if (l_get_samples1_vector_from_handle(handle, &samples_1) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+    if (l_get_samples2_vector_from_handle(handle, &samples_2) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+    samples_1->clear();
+    samples_1->clear();
 
     // If internal tables of samples are not enough large, enlarge them.
-    if (g_input_samples_1.capacity() < (unsigned int)nb_frames)
+    if (samples_1->capacity() < (unsigned int)nb_frames)
     {
-        g_input_samples_1.reserve(nb_frames);
-        g_input_samples_2.reserve(nb_frames);
+        samples_1->reserve(nb_frames);
+        samples_2->reserve(nb_frames);
     }
 
     // Uninterleaved datas, extract them in 2 tables.
@@ -223,15 +291,15 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  han
     k = right_index;
     for (int i = 0; i < nb_frames; i++)
     {
-        g_input_samples_1.push_back(input_samples_interleaved[j]);
-        g_input_samples_2.push_back(input_samples_interleaved[k]);
+        samples_1->push_back(input_samples_interleaved[j]);
+        samples_2->push_back(input_samples_interleaved[k]);
 
         j = j + nb_channels;
         k = k + nb_channels;
     }
 
     // Analyze datas from uninterleaved tables.
-    if (dscratch->analyze_recording_data(g_input_samples_1, g_input_samples_2) == false)
+    if (dscratch->analyze_recording_data(*samples_1, *samples_2) == false)
     {
         qCCritical(DSLIB_API) << "Cannot analyze interleaved recorded datas.";
         return DSCRATCH_ERROR;
