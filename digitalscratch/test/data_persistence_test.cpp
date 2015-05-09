@@ -18,11 +18,7 @@ Data_persistence_Test::Data_persistence_Test()
 void Data_persistence_Test::initTestCase()
 {
     // Remove database file.
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QFile::remove(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/digitalscratch.sqlite");
-#else
     QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
-#endif
 
     // Get/create a data persistence static instance.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();

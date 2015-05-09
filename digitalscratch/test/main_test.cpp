@@ -12,12 +12,6 @@ int main(int argc, char** argv)
     // Necessary to have an event loop needed by some tests.
     QCoreApplication app(argc, argv);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-   QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-   QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-#endif
-
    // Logging settings.
    qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
    QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \

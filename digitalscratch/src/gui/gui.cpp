@@ -1211,11 +1211,7 @@ Gui::init_file_browser_area()
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->file_browser->header()->setSortIndicatorShown(true);
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    this->file_browser->header()->setClickable(true);
-#else
     this->file_browser->header()->setSectionsClickable(true);
-#endif
 
     // Create the track search bar.
     this->file_search                 = new QLineEdit();
