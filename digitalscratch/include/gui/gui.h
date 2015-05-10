@@ -475,13 +475,10 @@ class Gui : public QObject
                           const unsigned short int &deck_index); // 0.0 < Position < 1.0
     void deck_go_to_begin();
     void go_to_begin(const unsigned short int &deck_index);
-    void deck_set_cue_point(const unsigned short int &cue_point_number);
     void set_cue_point(const unsigned short int &deck_index,
                        const unsigned short int &cue_point_number);
-    void deck_go_to_cue_point(const unsigned short int &cue_point_number);
     void go_to_cue_point(const unsigned short int &deck_index,
                          const unsigned short int &cue_point_number);
-    void deck_del_cue_point(const unsigned short int &cue_point_number);
     void del_cue_point(const unsigned short int &deck_index,
                        const unsigned short int &cue_point_number);
     void switch_playback_selection();

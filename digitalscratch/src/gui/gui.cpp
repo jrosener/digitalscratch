@@ -1022,11 +1022,13 @@ Gui::connect_decks_area()
     {
         // Shortcut: set cue point.
         this->shortcut_set_cue_points[j] = new QShortcut(this->window);
-        QObject::connect(this->shortcut_set_cue_points[j],   &QShortcut::activated, [this, j](){this->deck_set_cue_point(j);});
+        QObject::connect(this->shortcut_set_cue_points[j], &QShortcut::activated,
+                         [this, j](){this->set_cue_point(this->get_selected_deck_index(), j);});
 
         // Shortcut: go to cue point.
         this->shortcut_go_to_cue_points[j] = new QShortcut(this->window);
-        QObject::connect(this->shortcut_go_to_cue_points[j], &QShortcut::activated, [this, j](){this->deck_go_to_cue_point(j);});
+        QObject::connect(this->shortcut_go_to_cue_points[j], &QShortcut::activated,
+                         [this, j](){this->go_to_cue_point(this->get_selected_deck_index(), j);});
     }
 }
 
@@ -2499,33 +2501,15 @@ Gui::go_to_begin(const unsigned short &deck_index)
 }
 
 void
-Gui::deck_set_cue_point(const unsigned short &cue_point_number)
-{
-    unsigned short int deck_index = this->get_selected_deck_index();
-
-    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, this->playbacks[deck_index]->get_position());
-    this->playbacks[deck_index]->store_cue_point(cue_point_number);
-    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
-
-    return;
-}
-
-void
 Gui::set_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
 {
     // Select deck.
     this->select_playback(deck_index);
 
     // Set cue point.
-    this->deck_set_cue_point(cue_point_number);
-
-    return;
-}
-
-void
-Gui::deck_go_to_cue_point(const unsigned short &cue_point_number)
-{
-    this->playbacks[this->get_selected_deck_index()]->jump_to_cue_point(cue_point_number);
+    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, this->playbacks[deck_index]->get_position());
+    this->playbacks[deck_index]->store_cue_point(cue_point_number);
+    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
 
     return;
 }
@@ -2537,19 +2521,7 @@ Gui::go_to_cue_point(const unsigned short &deck_index, const unsigned short &cue
     this->select_playback(deck_index);
 
     // Jump.
-    this->deck_go_to_cue_point(cue_point_number);
-
-    return;
-}
-
-void
-Gui::deck_del_cue_point(const unsigned short &cue_point_number)
-{
-    unsigned short int deck_index = this->get_selected_deck_index();
-
-    this->playbacks[deck_index]->delete_cue_point(cue_point_number);
-    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, 0.0);
-    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
+    this->playbacks[deck_index]->jump_to_cue_point(cue_point_number);
 
     return;
 }
@@ -2561,7 +2533,9 @@ Gui::del_cue_point(const unsigned short &deck_index, const unsigned short &cue_p
     this->select_playback(deck_index);
 
     // Delete point.
-    this->deck_del_cue_point(cue_point_number);
+    this->playbacks[deck_index]->delete_cue_point(cue_point_number);
+    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, 0.0);
+    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
 
     return;
 }
