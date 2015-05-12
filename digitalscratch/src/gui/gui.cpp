@@ -83,6 +83,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QSharedPointer<Playback_parameters>>                &params,
          QList<QSharedPointer<Timecode_control_process>>           &tcode_controls,
          QList<QSharedPointer<Manual_control_process>>             &manual_controls,
+         QSharedPointer<Dicer_control_process>                     &dicer_control,
          QList<QSharedPointer<Deck_playback_process>>              &playbacks,
          QSharedPointer<Sound_driver_access_rules>                 &sound_card,
          QSharedPointer<Control_and_playback_process>              &control_and_playback)
@@ -141,6 +142,14 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
         return;
     }
 
+    // Run the external controler Novation Dicer.
+    this->dicer_control = dicer_control;
+    this->connect_dicer_actions();
+    if (this->dicer_control->start() != true)
+    {
+        qCWarning(DS_DICER) << "can not start Dicer";
+    }
+
     // Display audio file collection (takes time, that's why we are first showing the main window).
     this->display_audio_file_collection();
 
@@ -149,6 +158,9 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
 
 Gui::~Gui()
 {
+    // Stop external controller Novation Dicer.
+    this->dicer_control->stop();
+
     // Store size/position of the main window (first go back from fullscreen or maximized mode).
     if (this->window->isFullScreen() == true)
     {
@@ -1664,6 +1676,56 @@ Gui::init_bottom_status()
 }
 
 void
+Gui::connect_dicer_actions()
+{
+    // Do actions when a button is pressed on Dicer.
+    QObject::connect(this->dicer_control.data(), &Dicer_control_process::button_pressed,
+                     [this](const dicer_t        &dicer_index,
+                            const dicer_mode_t   &mode,
+                            const dicer_button_t &button_index)
+                     {
+                        unsigned short int deck_index;
+                        if (this->get_deck_index_from_dicer_index(dicer_index, deck_index) == true)
+                        {
+                            // Dicer can be mapped to a deck.
+                            unsigned short int cue_point_number;
+                            switch (mode)
+                            {
+                                case HOT_CUE: // Register/Play cue point.
+                                    if (this->get_cue_point_number_from_dicer_button(button_index, cue_point_number) == true)
+                                    {
+                                        // Dicer's button can be mapped to a cue point GUI button.
+                                        if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == false)
+                                        {
+                                            // Register cue point.
+                                            emit this->decks[deck_index]->cue_set_buttons[cue_point_number]->clicked();
+                                        }
+                                        else
+                                        {
+                                            // Cue point is already defined, play it.
+                                            emit this->decks[deck_index]->cue_play_buttons[cue_point_number]->clicked();
+                                        }
+                                    }
+                                    break;
+                                case CLEAR_CUE: // Delete a registered cue point.
+                                    if (this->get_cue_point_number_from_dicer_button(button_index, cue_point_number) == true)
+                                    {
+                                        // Dicer's button can be mapped to a delete cue point GUI button.
+                                        emit this->decks[deck_index]->cue_del_buttons[cue_point_number]->clicked();
+                                    }
+                                    break;
+                                case LOOP_ROLL: // Modes not handled for the moment.
+                                case AUTO_LOOP:
+                                case USER_MODE_1:
+                                case USER_MODE_2:
+                                    break;
+                            }
+                        } 
+                     });
+}
+
+
+void
 Gui::display_audio_file_collection()
 {
     this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
@@ -2239,11 +2301,23 @@ Gui::run_audio_file_decoding_process()
         this->playbacks[deck_index]->reset();
         deck_waveform->move_slider(0.0);
 
-        // Reset cue point.
+        // Reset cue points on Dicer.
+        dicer_t dicer_index;
+        this->get_dicer_index_from_deck_index(deck_index, dicer_index);
+        this->dicer_control->clear_dicer(dicer_index);
+
+        // Load cue points.
         for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
         {
+            // On GUI buttons and wavform.
             deck_waveform->move_cue_slider(i, this->playbacks[deck_index]->get_cue_point(i));
             deck_cue_point[i]->setText(this->playbacks[deck_index]->get_cue_point_str(i));
+
+            // On Dicer.
+            if (this->playbacks[deck_index]->is_cue_point_defined(i) == true)
+            {
+                this->lit_dicer_button_cue_point(deck_index, i);
+            }
         }
 
         // Update waveform.
@@ -2500,18 +2574,151 @@ Gui::go_to_begin(const unsigned short &deck_index)
     return;
 }
 
+bool
+Gui::get_dicer_index_from_deck_index(const unsigned short &deck_index, dicer_t &out_dicer_index)
+{
+    switch (deck_index)
+    {
+        case 0:
+            out_dicer_index = DICER_LEFT;
+            break;
+        case 1:
+            out_dicer_index = DICER_RIGHT;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+bool
+Gui::get_dicer_button_from_cue_point_number(const unsigned short &cue_point_number, dicer_button_t &out_dicer_button)
+{
+    switch (cue_point_number)
+    {
+        case 0:
+            out_dicer_button = BUTTON_1;
+            break;
+        case 1:
+            out_dicer_button = BUTTON_2;
+            break;
+        case 2:
+            out_dicer_button = BUTTON_3;
+            break;
+        case 3:
+            out_dicer_button = BUTTON_4;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+bool
+Gui::get_deck_index_from_dicer_index(const dicer_t &dicer_index, unsigned short int &out_deck_index)
+{
+    switch (dicer_index)
+    {
+        case DICER_LEFT:
+            out_deck_index = 0;
+            break;
+        case DICER_RIGHT:
+            if (this->nb_decks >= 2)
+                out_deck_index = 1;
+            else
+                return false;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+bool
+Gui::get_cue_point_number_from_dicer_button(const dicer_button_t &button_index, unsigned short int &out_cue_point_number)
+{
+    switch (button_index)
+    {
+        case BUTTON_1:
+            out_cue_point_number = 0;
+            break;
+        case BUTTON_2:
+            out_cue_point_number = 1;
+            break;
+        case BUTTON_3:
+            out_cue_point_number = 2;
+            break;
+        case BUTTON_4:
+            out_cue_point_number = 3;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
 void
+Gui::lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
+{
+    dicer_t dicer_index;
+    dicer_button_t dicer_button;
+
+    if ((this->get_dicer_index_from_deck_index(deck_index, dicer_index) == true) &&
+        (this->get_dicer_button_from_cue_point_number(cue_point_number, dicer_button) == true))
+    {
+        // Lit the pad button in HOT_CUE and CLEAR_CUE mode.
+        this->dicer_control->set_button_state(dicer_index, HOT_CUE,   dicer_button, LIT);
+        this->dicer_control->set_button_state(dicer_index, CLEAR_CUE, dicer_button, LIT);
+    }
+}
+
+void
+Gui::unlit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
+{
+    dicer_t dicer_index;
+    dicer_button_t dicer_button;
+
+    if ((this->get_dicer_index_from_deck_index(deck_index, dicer_index) == true) &&
+        (this->get_dicer_button_from_cue_point_number(cue_point_number, dicer_button) == true))
+    {
+        // Unlit the pad button in HOT_CUE and CLEAR_CUE mode.
+        this->dicer_control->set_button_state(dicer_index, HOT_CUE,   dicer_button, UNLIT);
+        this->dicer_control->set_button_state(dicer_index, CLEAR_CUE, dicer_button, UNLIT);
+    }
+}
+
+bool
 Gui::set_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
 {
     // Select deck.
     this->select_playback(deck_index);
 
     // Set cue point.
-    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, this->playbacks[deck_index]->get_position());
-    this->playbacks[deck_index]->store_cue_point(cue_point_number);
-    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
+    if (this->playbacks[deck_index]->is_track_loaded() == true)
+    {
+        if (cue_point_number < MAX_NB_CUE_POINTS)
+        {
+            // Store cue point in DB.
+            this->playbacks[deck_index]->store_cue_point(cue_point_number);
 
-    return;
+            // Display cue point on waveform and on label.
+            this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, this->playbacks[deck_index]->get_position());
+            this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
+
+            // Highlight cue buttons on Dicer.
+            this->lit_dicer_button_cue_point(deck_index, cue_point_number);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void
@@ -2521,23 +2728,42 @@ Gui::go_to_cue_point(const unsigned short &deck_index, const unsigned short &cue
     this->select_playback(deck_index);
 
     // Jump.
-    this->playbacks[deck_index]->jump_to_cue_point(cue_point_number);
+    if (this->playbacks[deck_index]->is_track_loaded() == true)
+    {
+        this->playbacks[deck_index]->jump_to_cue_point(cue_point_number);
+    }
 
     return;
 }
 
-void
+bool
 Gui::del_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number)
 {
     // Select deck.
     this->select_playback(deck_index);
 
     // Delete point.
-    this->playbacks[deck_index]->delete_cue_point(cue_point_number);
-    this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, 0.0);
-    this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
+    if (this->playbacks[deck_index]->is_track_loaded() == true)
+    {
+        if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == true)
+        {
+            // Delete cue point from DB.
+            this->playbacks[deck_index]->delete_cue_point(cue_point_number);
 
-    return;
+            // Delete cue point from waveform and label.
+            this->decks[deck_index]->waveform->move_cue_slider(cue_point_number, 0.0);
+            this->decks[deck_index]->cue_point_labels[cue_point_number]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_number));
+
+            // Remove highlighting on Dicer's button
+            this->unlit_dicer_button_cue_point(deck_index, cue_point_number);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void

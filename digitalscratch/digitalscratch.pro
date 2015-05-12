@@ -73,6 +73,7 @@ HEADERS += include/app/application_const.h \
            include/player/deck_playback_process.h \
            include/player/playback_parameters.h \
            include/player/control_and_playback_process.h \
+           include/control/dicer_control_process.h \
            include/tracks/data_persistence.h \
            include/tracks/audio_collection_model.h \
            include/tracks/audio_track_key_process.h \
@@ -82,7 +83,7 @@ HEADERS += include/app/application_const.h \
            include/tracks/audio_track.h \
            include/utils.h \
            include/singleton.h
-           
+      
 SOURCES += src/app/application_settings.cpp \
            src/app/application_logging.cpp \
            src/audiodev/sound_driver_access_rules.cpp \
@@ -91,6 +92,7 @@ SOURCES += src/app/application_settings.cpp \
            src/control/control_process.cpp \
            src/control/timecode_control_process.cpp \
            src/control/manual_control_process.cpp \
+           src/control/dicer_control_process.cpp \
            src/gui/config_dialog.cpp \
            src/gui/gui.cpp \
            src/gui/waveform.cpp \
@@ -190,6 +192,13 @@ win32 {
 unix {
     LIBS += -lkeyfinder
 }
+
+#############################
+# lib Alsa (for MIDI)
+unix {
+    LIBS += -lasound
+}
+
 
 #############################
 # Enable for release and debug mode.

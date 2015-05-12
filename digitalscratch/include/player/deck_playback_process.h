@@ -86,7 +86,9 @@ class Deck_playback_process : public QObject
     bool reset();
     bool jump_to_position(const float &position);
     float get_position(); // 0.0 < position < 1.0
+    bool is_track_loaded();
 
+    bool is_cue_point_defined(const unsigned short int &cue_point_number);
     float get_cue_point(const unsigned short int &cue_point_number);
     bool read_cue_point(const unsigned short int &cue_point_number);
     bool store_cue_point(const unsigned short int &cue_point_number);

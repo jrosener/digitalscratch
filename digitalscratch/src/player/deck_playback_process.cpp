@@ -354,7 +354,7 @@ Deck_playback_process::run(float io_playback_buf_1[], float io_playback_buf_2[],
     QVector<float*> playback_bufs = { io_playback_buf_1, io_playback_buf_2 };
 
     // Track is not loaded, play empty sound.
-    if ((this->at->get_end_of_samples() == 0) || (this->stopped == true))
+    if ((this->is_track_loaded() == false) || (this->stopped == true))
     {
         this->play_silence(playback_bufs, buf_size);
     }
@@ -384,6 +384,23 @@ Deck_playback_process::run(float io_playback_buf_1[], float io_playback_buf_2[],
     }
 
     return true;
+}
+
+bool
+Deck_playback_process::is_track_loaded()
+{
+    bool result = false;
+
+    if (this->at->get_end_of_samples() == 0)
+    {
+        result = false;
+    }
+    else
+    {
+        result = true;
+    }
+
+    return result;
 }
 
 bool
@@ -538,6 +555,19 @@ Deck_playback_process::jump_to_position(const float &position)
     this->current_sample = new_pos;
 
     return true;
+}
+
+bool
+Deck_playback_process::is_cue_point_defined(const unsigned short int &cue_point_number)
+{
+    if (this->cue_points[cue_point_number] == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 float

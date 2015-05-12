@@ -50,6 +50,7 @@
 #include "audiodev/sound_driver_access_rules.h"
 #include "audiodev/jack_access_rules.h"
 #include "control/timecode_control_process.h"
+#include "control/dicer_control_process.h"
 #include "singleton.h"
 
 int main(int argc, char *argv[])
@@ -151,6 +152,9 @@ int main(int argc, char *argv[])
                                                                                                        sound_card,
                                                                                                        settings->get_nb_decks()));
 
+    // Novation Dicer external controller.
+    QSharedPointer<Dicer_control_process> dicer_control(new Dicer_control_process());
+
     // Create GUI.
     Gui gui(ats,
             at_samplers,
@@ -159,6 +163,7 @@ int main(int argc, char *argv[])
             play_params,
             tcode_controls,
             manual_controls,
+            dicer_control,
             at_playbacks,
             sound_card,
             control_and_playback);

@@ -59,6 +59,7 @@
 #include "tracks/audio_file_decoding_process.h"
 #include "tracks/audio_collection_model.h"
 #include "tracks/playlist.h"
+#include "control/dicer_control_process.h"
 
 using namespace std;
 
@@ -376,6 +377,9 @@ class Gui : public QObject
     DSCRATCH_HANDLE                                           *dscratch_handles;
     Application_settings                                      *settings;
 
+    // External controller.
+    QSharedPointer<Dicer_control_process>                      dicer_control;
+
  public:
     Gui(QList<QSharedPointer<Audio_track>>                        &ats,
         QList<QList<QSharedPointer<Audio_track>>>                 &at_samplers,
@@ -384,6 +388,7 @@ class Gui : public QObject
         QList<QSharedPointer<Playback_parameters>>                &params,
         QList<QSharedPointer<Timecode_control_process>>           &tcode_controls,
         QList<QSharedPointer<Manual_control_process>>             &manual_controls,
+        QSharedPointer<Dicer_control_process>                     &dicer_control,
         QList<QSharedPointer<Deck_playback_process>>              &playbacks,
         QSharedPointer<Sound_driver_access_rules>                 &sound_card,
         QSharedPointer<Control_and_playback_process>              &control_and_playback);
@@ -425,6 +430,13 @@ class Gui : public QObject
     void show_samplers();
     void add_track_path_to_tracklist(const unsigned short int &deck_index);
     void write_tracklist();
+    void connect_dicer_actions();
+    bool get_dicer_index_from_deck_index(const unsigned short &deck_index, dicer_t &out_dicer_index);
+    bool get_dicer_button_from_cue_point_number(const unsigned short &cue_point_number, dicer_button_t &out_dicer_button);
+    bool get_deck_index_from_dicer_index(const dicer_t &dicer_index, unsigned short int &out_deck_index);
+    bool get_cue_point_number_from_dicer_button(const dicer_button_t &button_index, unsigned short int &out_cue_point_number);
+    void lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number);
+    void unlit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number);
 
  public slots:
     void force_close();
@@ -475,11 +487,11 @@ class Gui : public QObject
                           const unsigned short int &deck_index); // 0.0 < Position < 1.0
     void deck_go_to_begin();
     void go_to_begin(const unsigned short int &deck_index);
-    void set_cue_point(const unsigned short int &deck_index,
-                       const unsigned short int &cue_point_number);
+    bool set_cue_point(const unsigned short int &deck_index,
+                       const unsigned short int &cue_point_number); // FIXME: refactor to cue_point_index
     void go_to_cue_point(const unsigned short int &deck_index,
                          const unsigned short int &cue_point_number);
-    void del_cue_point(const unsigned short int &deck_index,
+    bool del_cue_point(const unsigned short int &deck_index,
                        const unsigned short int &cue_point_number);
     void switch_playback_selection();
     void select_playback(const unsigned short int &deck_index);
