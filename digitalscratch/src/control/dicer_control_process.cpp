@@ -57,7 +57,7 @@ Dicer_control_process::~Dicer_control_process()
     return;
 }
 
-bool Dicer_control_process::extract_midi_buffer(const char              buf[],
+bool Dicer_control_process::extract_midi_buffer(const unsigned char              buf[],
                                                 dicer_t                &out_dicer_index,
                                                 dicer_mode_t           &out_mode,
                                                 dicer_button_t         &out_button_index,
@@ -178,7 +178,7 @@ void Dicer_control_process::build_midi_buffer(const dicer_t               &dicer
                                               const dicer_mode_t          &mode,
                                               const dicer_button_t        &button_index,
                                               const dicer_button_state_t  &button_state,
-                                              char                       (&io_buf)[3])
+                                              unsigned char               (&io_buf)[3])
 {
     // Set Dicer index and button mode.
     //   Info is in buf[0].
@@ -311,7 +311,7 @@ bool Dicer_control_process::start()
 
 void Dicer_control_process::exec_midi_commands_reader_process()
 {
-    char midi_buf[3] = {0x00, 0x00, 0x00};
+    unsigned char midi_buf[3] = {0x00, 0x00, 0x00};
     dicer_t                dicer_index;
     dicer_mode_t           mode;
     dicer_button_t         button_index;
@@ -427,7 +427,7 @@ bool Dicer_control_process::set_button_state(const dicer_t              &dicer_i
 {
     if (this->is_open == true)
     {
-        char midi_buf[3] = {0x0, 0x0, 0x0};
+        unsigned char midi_buf[3] = {0x0, 0x0, 0x0};
 
         // Build the MIDI command which changes the state of a button on the Dicer.
         this->build_midi_buffer(dicer_index, mode, button_index, state, midi_buf);
