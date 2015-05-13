@@ -5,7 +5,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:beineri/opt-qt532
   - sudo apt-get update -qq
   - sudo apt-get install -qq qt53base qt53multimedia
-  - sudo apt-get install -qq build-essential libkeyfinder-dev libjack-jackd2-dev libsamplerate0-dev libavformat-dev libavcodec-dev libavutil-dev
+  - sudo apt-get install -qq build-essential libkeyfinder-dev libjack-jackd2-dev libsamplerate0-dev libavformat-dev libavcodec-dev libavutil-dev libasound2-dev
 script:
   - source /opt/qt53/bin/qt53-env.sh
   - qmake --version
