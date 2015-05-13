@@ -311,6 +311,10 @@ bool Dicer_control_process::start()
 
 void Dicer_control_process::exec_midi_commands_reader_process()
 {
+#ifdef WIN32
+        // TODO: add Dicer support for Windows.
+        return;
+#else
     unsigned char midi_buf[3] = {0x00, 0x00, 0x00};
     dicer_t                dicer_index;
     dicer_mode_t           mode;
@@ -321,16 +325,11 @@ void Dicer_control_process::exec_midi_commands_reader_process()
     for (;;)
     {
         // Read MIDI command from DICER (blocking).
-#ifdef WIN32
-        // TODO: add Dicer support for Windows.
-        return;
-#else
         int err = 0;
         if ((err = snd_rawmidi_read(this->midi_in, midi_buf, sizeof(midi_buf))) < 0)
         {
             qCWarning(DS_DICER) << "can not read MIDI command on Dicer: " << snd_strerror(err);
         }
-#endif
         else
         {
 #if 0
@@ -372,7 +371,7 @@ void Dicer_control_process::exec_midi_commands_reader_process()
     }
 
     //QThread::currentThread()->quit();
-
+#endif
     return;
 }
 
