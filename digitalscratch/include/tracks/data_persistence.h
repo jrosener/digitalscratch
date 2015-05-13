@@ -56,8 +56,6 @@ class Data_persistence
     QMutex       mutex;
 
  public:
-    bool begin_transaction();
-    bool commit_transaction();
     bool rollback_transaction();
 
     bool store_audio_track(const QSharedPointer<Audio_track> &at);        // Insert (or update if exists) an audio track in DB.
@@ -87,8 +85,10 @@ class Data_persistence
 
  private:
     bool init_db();
-    void backup_db();
     bool create_db_structure();
     bool store_track_tag(const QString &id_track,
                          const QString &id_tag);
+#ifndef ENABLE_TEST_MODE
+    void backup_db();
+#endif
 };

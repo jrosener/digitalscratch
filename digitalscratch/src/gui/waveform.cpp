@@ -121,21 +121,19 @@ Waveform::generate_polyline()
 {
     // Get audio track table of samples.
     unsigned int j = 0;
-    short signed int *samples        = this->at->get_samples();
-    short signed int  current_sample = 0;
+    short signed int *samples = this->at->get_samples();
 
     // For each points take a sample (every 100 samples) and convert it to be
     // displayed in painting area.
-    float x = 0.0;
-    float y = 0.0;
     this->end_of_waveform = 0;
     for (unsigned int i = 0; i < POINTS_MAX_SIZE; i++)
     {
         // Get sample.
-        current_sample = samples[j];
+        short signed int current_sample = samples[j];
 
         // Adapt value to paiting area.
-        x = (float)(this->area_width * i) / (float)POINTS_MAX_SIZE;
+        float x = (float)(this->area_width * i) / (float)POINTS_MAX_SIZE;
+        float y = 0.0;
         if (j <= this->at->get_end_of_samples())
         {
             y = (float)(((float)(current_sample - SHRT_MAX) * this->area_height) / (float)(SHRT_MAX * -1 * 2));
@@ -181,10 +179,9 @@ Waveform::paintEvent(QPaintEvent *)
     // Draw minute separators.
     painter.setPen(QColor(0, 102, 0)); // kind of green
     painter.drawRect(0, 0, this->area_width, this->area_height);
-    float x = 0.0;
     for (int i = 0; i < MAX_MINUTES_TRACK; i++)
     {
-        x = i * (float)this->area_width / (float)MAX_MINUTES_TRACK;
+        float x = i * (float)this->area_width / (float)MAX_MINUTES_TRACK;
         painter.drawLine(qRound(x), 0, qRound(x), this->area_height);
     }
 

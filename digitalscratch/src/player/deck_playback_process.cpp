@@ -581,9 +581,9 @@ Deck_playback_process::read_cue_point(const unsigned short int &cue_point_number
 {
     // Get cue point from DB.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-    unsigned int position = 0;
     if (this->at->get_hash() != "")
     {
+        unsigned int position = 0;
         data_persist->get_cue_point(this->at, cue_point_number, position);
         this->cue_points[cue_point_number] = this->msec_to_sample_index(position);
     }

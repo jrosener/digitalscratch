@@ -1839,7 +1839,7 @@ Gui::apply_main_window_style()
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
         if (icon_prov != nullptr)
         {
-            ((TreeViewIconProvider*)icon_prov)->set_default_icons();
+            static_cast<TreeViewIconProvider*>(icon_prov)->set_default_icons();
         }
         this->file_system_model->set_icons((QApplication::style()->standardIcon(QStyle::SP_FileIcon).pixmap(10, 10)),
                                            (QApplication::style()->standardIcon(QStyle::SP_DirIcon).pixmap(10, 10)));
@@ -1877,10 +1877,10 @@ Gui::apply_main_window_style()
         QFileIconProvider *icon_prov = this->folder_system_model->iconProvider();
         if (icon_prov != nullptr)
         {
-            ((TreeViewIconProvider*)icon_prov)->set_icons(QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_DRIVE_SUFFIX).scaledToWidth(10,      Qt::SmoothTransformation)),
-                                                          QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10,     Qt::SmoothTransformation)),
-                                                          QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation)),
-                                                          QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FILE_SUFFIX).scaledToWidth(10,       Qt::SmoothTransformation)));
+            static_cast<TreeViewIconProvider*>(icon_prov)->set_icons(QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_DRIVE_SUFFIX).scaledToWidth(10,      Qt::SmoothTransformation)),
+                                                                     QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10,     Qt::SmoothTransformation)),
+                                                                     QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation)),
+                                                                     QIcon(QPixmap(PIXMAPS_PATH + this->window_style + ICON_FILE_SUFFIX).scaledToWidth(10,       Qt::SmoothTransformation)));
         }
         this->file_system_model->set_icons(QPixmap(PIXMAPS_PATH + this->window_style + ICON_AUDIO_FILE_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation),
                                            QPixmap(PIXMAPS_PATH + this->window_style + ICON_FOLDER_SUFFIX).scaledToWidth(10, Qt::SmoothTransformation));
@@ -2986,9 +2986,34 @@ PlaybackQGroupBox::dropEvent(QDropEvent *event)
     emit file_dropped();
 }
 
-Deck::Deck(const QString &title, const QSharedPointer<Audio_track> &at) : PlaybackQGroupBox(title)
+
+Deck::Deck(const QString &title, const QSharedPointer<Audio_track> &at) : PlaybackQGroupBox(title),
+                                                                          at(at),
+                                                                          track_name            {nullptr},
+                                                                          thru_button           {nullptr},
+                                                                          key                   {nullptr},
+                                                                          waveform              {nullptr},
+                                                                          remaining_time_layout {nullptr},
+                                                                          rem_time_minus        {nullptr},
+                                                                          rem_time_min          {nullptr},
+                                                                          rem_time_sep1         {nullptr},
+                                                                          rem_time_sec          {nullptr},
+                                                                          rem_time_sep2         {nullptr},
+                                                                          rem_time_msec         {nullptr},
+                                                                          buttons_layout        {nullptr},
+                                                                          timecode_button       {nullptr},
+                                                                          manual_button         {nullptr},
+                                                                          speed                 {nullptr},
+                                                                          speed_up_button       {nullptr},
+                                                                          speed_down_button     {nullptr},
+                                                                          accel_up_button       {nullptr},
+                                                                          accel_down_button     {nullptr},
+                                                                          restart_button        {nullptr},
+                                                                          cue_set_buttons       {nullptr},
+                                                                          cue_play_buttons      {nullptr},
+                                                                          cue_del_buttons       {nullptr},
+                                                                          cue_point_labels      {nullptr}
 {
-    this->at = at;
     this->settings = &Singleton<Application_settings>::get_instance();
     this->setObjectName("DeckGBox");
 
@@ -3398,6 +3423,7 @@ SpeedQPushButton::SpeedQPushButton(const QString &title) : QPushButton(title)
     // Init.
     this->setProperty("right_clicked", false);
     this->setProperty("pressed", false);
+    this->l_pressed = false;
 
     return;
 }

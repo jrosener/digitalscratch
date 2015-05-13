@@ -43,6 +43,7 @@ Manual_control_process::Manual_control_process(const QSharedPointer<Playback_par
     this->speed  = 1.0;
     this->do_temp_inc_speed = false;
     this->previous_speed = 0.0;
+    this->nb_temp_speed_inc_cycles = 0;
 
     return;
 }

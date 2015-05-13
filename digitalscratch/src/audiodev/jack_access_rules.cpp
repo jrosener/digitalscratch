@@ -41,6 +41,7 @@
 
 Jack_access_rules::Jack_access_rules(const unsigned short int &nb_channels) : Sound_driver_access_rules(nb_channels)
 {
+    this->stream = nullptr;
     return;
 }
 
@@ -78,10 +79,7 @@ Jack_access_rules::start(void *callback_param)
 {
     if (this->running == false)
     {
-        const char     **ports = nullptr;
-        jack_status_t    status;
-        const char      *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
-        const char      *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
+        jack_status_t status;
 
         // Init.
         this->running = false;
@@ -117,6 +115,7 @@ Jack_access_rules::start(void *callback_param)
         {
             for (int i = 0; i < this->nb_channels; i++)
             {
+                const char *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
                 this->input_port << jack_port_register(this->stream,
                                                         input_port_names[i],
                                                         JACK_DEFAULT_AUDIO_TYPE,
@@ -134,6 +133,7 @@ Jack_access_rules::start(void *callback_param)
         // Create output ports.
         for (int i = 0; i < this->nb_channels; i++)
         {
+            const char *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
             this->output_port << jack_port_register(this->stream,
                                                     output_port_names[i],
                                                     JACK_DEFAULT_AUDIO_TYPE,
@@ -164,6 +164,8 @@ Jack_access_rules::start(void *callback_param)
         // it.
         if (settings->get_auto_jack_connections() == true)
         {
+            const char **ports = nullptr;
+
             ports = jack_get_ports(this->stream, nullptr, nullptr, JackPortIsPhysical|JackPortIsOutput);
             if (ports == nullptr)
             {
@@ -259,11 +261,11 @@ Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames,
             out_buffers << (float *)jack_port_get_buffer(this->input_port[i], nb_buffer_frames);
         }
 
-        result = true;
-
 #ifdef ENABLE_TEST_MODE
         // Fill buffer with pre-recorded timecode buffer (circular buffer).
         result = this->fill_input_buf(nb_buffer_frames, out_buffers);
+#else
+        result = true;
 #endif
     }
     else

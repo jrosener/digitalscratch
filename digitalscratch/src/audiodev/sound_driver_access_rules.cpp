@@ -56,6 +56,7 @@ Sound_driver_access_rules::Sound_driver_access_rules(const unsigned short int &n
 
 #ifdef ENABLE_TEST_MODE
     this->using_fake_timecode = false;
+    this->timecode_current_sample = 0;
 #endif
 
     return;
@@ -82,13 +83,11 @@ Sound_driver_access_rules::set_capture(const bool &do_capture)
 bool
 Sound_driver_access_rules::use_timecode_from_file(const QString &path)
 {
-    bool result = true;
-
     // Decode timecode file.    
     this->timecode = QSharedPointer<Audio_track>(new Audio_track(15, 44100));
     Audio_file_decoding_process decoder(timecode, false);
     QFileInfo file_info = QFileInfo(path);
-    result = decoder.run(file_info.absoluteFilePath());
+    bool result = decoder.run(file_info.absoluteFilePath());
 
     if (result == true)
     {
@@ -106,11 +105,10 @@ Sound_driver_access_rules::fill_input_buf(const unsigned short int &nb_buffer_fr
     if (this->using_fake_timecode == true)
     {
         // Overwrite buffer with pre-recorded timecode buffer (circular buffer).
-        float *buffer = nullptr;
         for (unsigned short int i = 0; i < io_buffers.size(); i++)
         {
             // Reset input buffer.
-            buffer = io_buffers[i];
+            float *buffer = io_buffers[i];
             std::fill(buffer, buffer + nb_buffer_frames, 0.0f);
 
             // Fill it with prerecorded timecode.

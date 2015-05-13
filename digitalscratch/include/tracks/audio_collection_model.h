@@ -134,8 +134,6 @@ class Audio_collection_model : public QAbstractItemModel
     QStringList   mimeTypes() const;
     QMimeData    *mimeData(const QModelIndexList &in_indexes) const;
 
-    void begin_db_change();                                     // Begin a DB transaction.
-    void commit_db_change();                                    // Commit a DB transaction.
     void concurrent_read_collection_from_db();                  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
     void stop_concurrent_read_collection_from_db();             // Stop concurrent_read_collection_from_db().
     void concurrent_analyse_audio_collection();                 // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.

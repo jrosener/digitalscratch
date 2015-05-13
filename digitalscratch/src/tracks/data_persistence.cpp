@@ -113,6 +113,7 @@ bool Data_persistence::init_db()
     return true;
 }
 
+#ifndef ENABLE_TEST_MODE
 void Data_persistence::backup_db()
 {
     QFileInfo db_file(this->db.databaseName());
@@ -145,6 +146,7 @@ void Data_persistence::backup_db()
 
     return;
 }
+#endif
 
 bool Data_persistence::create_db_structure()
 {
@@ -210,16 +212,6 @@ bool Data_persistence::create_db_structure()
     }
 
     return result;
-}
-
-bool Data_persistence::begin_transaction()
-{
-    return this->db.transaction();
-}
-
-bool Data_persistence::commit_transaction()
-{
-    return this->db.commit();
 }
 
 bool Data_persistence::rollback_transaction()

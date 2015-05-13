@@ -67,7 +67,6 @@ class Playback_parameters
     bool  is_new_volume() const;
 
     bool  set_data_state(const bool &are_new);
-    bool  are_new_data() const;
 
  private:
     bool reset();

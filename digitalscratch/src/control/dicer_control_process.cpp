@@ -275,13 +275,12 @@ void Dicer_control_process::build_midi_buffer(const dicer_t               &dicer
 
 bool Dicer_control_process::start()
 {
-    int err = 0;
-
     // Open the Dicer (RAW MIDI interface).
 #ifdef WIN32
     // TODO: add Dicer support for Windows.
     return false;
 #else
+    int err;
     if ((err = snd_rawmidi_open(&this->midi_in, &this->midi_out, DEVICE_ID, 0)) < 0) // Open in blocking mode (for the read function).
     {
         qCWarning(DS_DICER) << "can not open MIDI interface on Dicer: " << snd_strerror(err);
@@ -312,7 +311,6 @@ bool Dicer_control_process::start()
 
 void Dicer_control_process::exec_midi_commands_reader_process()
 {
-    int err = 0;
     char midi_buf[3] = {0x00, 0x00, 0x00};
     dicer_t                dicer_index;
     dicer_mode_t           mode;
@@ -327,6 +325,7 @@ void Dicer_control_process::exec_midi_commands_reader_process()
         // TODO: add Dicer support for Windows.
         return;
 #else
+        int err = 0;
         if ((err = snd_rawmidi_read(this->midi_in, midi_buf, sizeof(midi_buf))) < 0)
         {
             qCWarning(DS_DICER) << "can not read MIDI command on Dicer: " << snd_strerror(err);
@@ -379,8 +378,6 @@ void Dicer_control_process::exec_midi_commands_reader_process()
 
 bool Dicer_control_process::stop()
 {
-    int err = 0;
-
     if (this->is_open == true)
     {
         // Clear all buttons for both Dicer.
@@ -400,6 +397,7 @@ bool Dicer_control_process::stop()
         // TODO: add Dicer support for Windows.
         return false;
 #else
+        int err = 0;
         if ((err = snd_rawmidi_close(this->midi_in)) < 0)
         {
             qCWarning(DS_DICER) << "can not close MIDI IN on Dicer: " << snd_strerror(err);
@@ -427,11 +425,10 @@ bool Dicer_control_process::set_button_state(const dicer_t              &dicer_i
                                              const dicer_button_t       &button_index,
                                              const dicer_button_state_t &state)
 {
-    int err = 0;
-    char midi_buf[3] = {0x0, 0x0, 0x0};
-
     if (this->is_open == true)
     {
+        char midi_buf[3] = {0x0, 0x0, 0x0};
+
         // Build the MIDI command which changes the state of a button on the Dicer.
         this->build_midi_buffer(dicer_index, mode, button_index, state, midi_buf);
     #if 0
@@ -446,6 +443,7 @@ bool Dicer_control_process::set_button_state(const dicer_t              &dicer_i
         // TODO: add Dicer support for Windows.
         return false;
 #else
+        int err = 0;
         if ((err = snd_rawmidi_write(this->midi_out, midi_buf, sizeof(midi_buf))) < 0)
         {
             qCWarning(DS_DICER) << "can not set button state to Dicer: " << snd_strerror(err);
