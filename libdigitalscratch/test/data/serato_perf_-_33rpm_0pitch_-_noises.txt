@@ -1,5 +1,5 @@
 buffer_size;speed
-128;0.0
+128;TODO
 channel 1;channel 2
 0.647064;0.0192871
 0.648804;-0.072937
@@ -130,7 +130,7 @@ channel 1;channel 2
 0.345245;0.290039
 0.40155;0.246185
 buffer_size;speed
-128;0.9985
+128;TODO
 channel 1;channel 2
 0.450317;0.193268
 0.492584;0.135315
@@ -523,7 +523,7 @@ channel 1;channel 2
 -0.0722656;-0.243835
 -0.0295715;-0.183533
 buffer_size;speed
-128;1.0153
+128;TODO
 channel 1;channel 2
 0.0204468;-0.129181
 0.0778198;-0.0802307
@@ -2750,7 +2750,7 @@ channel 1;channel 2
 0.192078;0.423889
 0.196228;0.35318
 buffer_size;speed
-128;0.9810
+128;TODO
 channel 1;channel 2
 0.189575;0.282593
 0.1716;0.212982

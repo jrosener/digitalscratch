@@ -18,22 +18,22 @@ int main(int argc, char** argv)
       DigitalScratchApi_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
-//   {
-//      Controller_Test tc;
-//      status |= QTest::qExec(&tc, argc, argv);
-//   }
-//   {
-//      Speed_Test tc;
-//      status |= QTest::qExec(&tc, argc, argv);
-//   }
-//   {
-//      DigitalScratch_Test tc;
-//      status |= QTest::qExec(&tc, argc, argv);
-//   }
-//   {
-//      Volume_Test tc;
-//      status |= QTest::qExec(&tc, argc, argv);
-//   }
+   {
+      Controller_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
+   {
+      Speed_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
+   {
+      DigitalScratch_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
+   {
+      Volume_Test tc;
+      status |= QTest::qExec(&tc, argc, argv);
+   }
 
    return status;
 }
