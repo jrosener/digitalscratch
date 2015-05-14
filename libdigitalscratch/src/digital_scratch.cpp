@@ -108,12 +108,9 @@ bool Digital_scratch::analyze_recording_data(vector<float> &input_samples_1,
     // values to control the player.
     this->set_playing_parameters_ready(false);
 
-    // Add timecoded data to vinyl internals.
-    this->vinyl->add_sound_data(input_samples_1, input_samples_2);
-
-    // Calculate speed (and direction) and volume.
-    this->calculate_speed();
-    this->calculate_volume();
+    this->vinyl->run_recording_data_analysis(input_samples_1, input_samples_2);
+    this->speed->set_value(this->vinyl->get_speed());
+    this->volume->set_value(this->vinyl->get_volume());
 
     this->set_playing_parameters_ready(true);
 

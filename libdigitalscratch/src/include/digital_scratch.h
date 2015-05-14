@@ -62,12 +62,8 @@ class Digital_scratch : public Controller
 {
     /* Attributes */
     private:
-        /**
-         * Coded vinyl object pointer.
-         */
-        Coded_vinyl *vinyl;
-
-        unsigned int sample_rate;
+        Coded_vinyl  *vinyl;
+        unsigned int  sample_rate;
 
     /* Constructor / Destructor */
     public:

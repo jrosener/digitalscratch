@@ -91,7 +91,6 @@ using namespace std;
 #define MAX_BUFFER_COEFF_CFG                "motion_detection/max_buffer_coeff"
 #define LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG "motion_detection/low_pass_filter_max_speed_usage"
 #define INPUT_AMPLIFY_COEFF                 "motion_detection/input_amplify_coeff"
-#define MIN_AMPLITUDE_NORMAL_SPEED          "motion_detection/min_amplitude_normal_speed"
 #define MIN_AMPLITUDE                       "motion_detection/min_amplitude"
 
 // Playback parameters.
@@ -246,10 +245,6 @@ class Application_settings : public QObject
     void  set_input_amplify_coeff(int in_coeff);
     int   get_input_amplify_coeff();
     int   get_input_amplify_coeff_default();
-
-    void  set_min_amplitude_for_normal_speed(const float &amplitude);
-    float get_min_amplitude_for_normal_speed();
-    float get_min_amplitude_for_normal_speed_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
 
     void  set_min_amplitude(const float &amplitude);
     float get_min_amplitude();

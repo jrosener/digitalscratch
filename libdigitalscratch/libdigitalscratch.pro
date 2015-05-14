@@ -52,7 +52,10 @@ SOURCES += \
     src/controller.cpp \
     src/coded_vinyl.cpp \
     src/mixvibes_vinyl.cpp \
-    src/log.cpp
+    src/log.cpp \
+    src/FIR.cpp \
+    src/Unwrap.cpp \
+    src/IIR.cpp
 
 HEADERS += \ 
     src/include/volume.h \
@@ -65,7 +68,10 @@ HEADERS += \
     src/include/controller.h \
     src/include/coded_vinyl.h \
     src/include/mixvibes_vinyl.h \
-    src/include/log.h
+    src/include/log.h \
+    src/include/FIR.h \
+    src/include/Unwrap.h \
+    src/include/IIR.h
 
 CONFIG(test) {
     INCLUDEPATH += test

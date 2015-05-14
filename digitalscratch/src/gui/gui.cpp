@@ -227,10 +227,6 @@ Gui::apply_application_settings()
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new input amplify coeff value";
         }
-        if (dscratch_set_min_amplitude_for_normal_speed(this->dscratch_handles[i], this->settings->get_min_amplitude_for_normal_speed()) != DSCRATCH_SUCCESS)
-        {
-            qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude for normal speed value";
-        }
         if (dscratch_set_min_amplitude(this->dscratch_handles[i], this->settings->get_min_amplitude()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude value";

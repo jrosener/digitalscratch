@@ -306,14 +306,6 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_rpm(DSCRATCH_HANDLE     handle,
 DLLIMPORT unsigned short int dscratch_get_default_rpm();
 
 /**
-  * Getter/Setter for the minimal acceptable amplitude for a normal speed.
-  */
-DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float amplitude);
-DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float *out_ampl);
-DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude_for_normal_speed(DSCRATCH_HANDLE handle, float *out_ampl);
-DLLIMPORT float dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
-
-/**
  * Getter/Setter for the minimal detectable amplitude.
  */
 DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle, float amplitude);

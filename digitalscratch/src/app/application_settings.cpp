@@ -113,9 +113,6 @@ Application_settings::init_settings()
     if (this->settings.contains(INPUT_AMPLIFY_COEFF) == false) {
         this->settings.setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
     }
-    if (this->settings.contains(MIN_AMPLITUDE_NORMAL_SPEED) == false) {
-        this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, (new QString)->setNum(this->get_min_amplitude_for_normal_speed_default_from_vinyl_type(this->get_vinyl_type())));
-    }
     if (this->settings.contains(MIN_AMPLITUDE) == false) {
         this->settings.setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->get_vinyl_type())));
     }
@@ -392,29 +389,6 @@ Application_settings::set_input_amplify_coeff(int in_coeff)
     if (in_coeff > 0 && in_coeff < 1000) // Range: ]0,1000[
     {
         this->settings.setValue(INPUT_AMPLIFY_COEFF, value);
-    }
-}
-
-float
-Application_settings::get_min_amplitude_for_normal_speed()
-{
-    return this->settings.value(MIN_AMPLITUDE_NORMAL_SPEED).toFloat();
-}
-
-float
-Application_settings::get_min_amplitude_for_normal_speed_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
-{
-    return dscratch_get_default_min_amplitude_for_normal_speed_from_vinyl_type(vinyl_type);
-}
-
-void
-Application_settings::set_min_amplitude_for_normal_speed(const float &amplitude)
-{
-    QString value;
-    value.setNum(amplitude);
-    if (amplitude > 0.0 && amplitude < 1.0) // Range: ]0,1[
-    {
-        this->settings.setValue(MIN_AMPLITUDE_NORMAL_SPEED, value);
     }
 }
 

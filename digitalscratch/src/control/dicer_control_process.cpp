@@ -57,7 +57,7 @@ Dicer_control_process::~Dicer_control_process()
     return;
 }
 
-bool Dicer_control_process::extract_midi_buffer(const unsigned char              buf[],
+bool Dicer_control_process::extract_midi_buffer(const unsigned char     buf[],
                                                 dicer_t                &out_dicer_index,
                                                 dicer_mode_t           &out_mode,
                                                 dicer_button_t         &out_button_index,

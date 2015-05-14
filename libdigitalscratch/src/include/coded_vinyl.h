@@ -37,6 +37,9 @@
 
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
+#include "FIR.h"
+#include "Unwrap.h"
+#include "IIR.h"
 
 #define MAX_SIN_WAV_AREA_FACTOR      100
 #define SPEED_FOR_VOLUME_CUT         0.90
@@ -55,31 +58,20 @@ class Coded_vinyl
 {
     /* Attributes */
     protected:
-        float min_amplitude_for_normal_speed;
         float min_amplitude;
 
     private:
-        // Signal.
         int sample_rate;
         unsigned short int rpm;
         int input_amplify_coeff;
-        vector<float> samples_channel_1;
-        vector<float> samples_channel_2;
-
-        // Speed analysis.
-        vector< pair<bool, unsigned int> > zero_cross_list_1;
-        vector< pair<bool, unsigned int> > zero_cross_list_2;
-        float old_speed;
-        float current_speed;
-        float sin_wave_area_size;
-        unsigned int no_new_speed_found_counter;
-        unsigned int too_diff_new_speed_counter;
-        bool last_signal_was_centered;
-        unsigned int last_zero_cross_list_size;
-        bool validating_turntable_started;
-        bool validating_changing_direction;
-        void smoothly_change_speed(float &speed);
         bool is_reverse_direction;
+
+        FIR          *diffFIR;
+        Unwrap       *unwrap;
+        IIR          *speedIIR;
+        IIR          *amplitudeIIR;
+        double filteredFreqInst;
+        double filteredAmplitudeInst;
 
     /* Constructor / Destructor */
     public:
@@ -95,25 +87,6 @@ class Coded_vinyl
 
 
     /* Methods */
-
-    private:
-        void      calculate_sin_wave_area_size();
-        void      fill_zero_cross_list(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
-        float     calculate_speed();
-        float     calculate_average_speed_one_channel(vector< pair<bool, unsigned int> > &zero_cross_list);
-        short int calculate_direction();
-        bool      validate_and_adjust_speed_against_amplitude(float &speed);
-        void      validate_and_ajust_speed_when_starting(float &speed);
-        void      validate_and_ajust_speed_when_changing_direction(float &speed);
-        void      keep_unused_samples();
-        void      remove_used_samples(vector< pair<bool, unsigned int> > &zero_cross_list, vector<float> &samples);
-        void      align_samples();
-        float     get_signal_average_amplitude(vector<float> &samples);
-        float     get_signal_amplitude(vector<float> &samples);
-        void      amplify_and_clip_signal(float symetric_amp, vector<float> &samples);
-        void      center_signal(vector<float> &samples);
-        void      store_and_return_speed(float &speed);
-
     public:
         /**
          * Get the current speed value.
@@ -130,15 +103,15 @@ class Coded_vinyl
         float get_volume();
 
         /**
-         * Add and analyze channels recording datas.
+         * Analyze channels recording datas.
          * @param input_samples_1 are the samples of channel 1.
          * @param input_samples_2 are the samples of channel 2.
          *
          * @note input_samples_1 and input_samples_2 must have the same number
          *       of element.
          */
-        void add_sound_data(vector<float> &input_samples_1,
-                            vector<float> &input_samples_2);
+        void run_recording_data_analysis(vector<float> &input_samples_1,
+                                         vector<float> &input_samples_2);
 
         /**
          * Set the sample rate used to record timecoded vinyl.
@@ -183,13 +156,6 @@ class Coded_vinyl
          * Get the sinusoidal frequency
          */
         virtual int get_sinusoidal_frequency() = 0;
-
-        /**
-         * @brief Getter/Setter for the minimal acceptable amplitude for a normal speed.
-         */
-        void  set_min_amplitude_for_normal_speed(float amplitude);
-        float get_min_amplitude_for_normal_speed();
-        virtual float get_default_min_amplitude_for_normal_speed() = 0;
 
         /**
          * @brief Getter/Setter for the minimal detectable amplitude.

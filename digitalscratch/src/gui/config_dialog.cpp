@@ -94,8 +94,6 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     // Init motion detection parameters widgets.
     this->amplify_coeff                                  = new QSlider(Qt::Horizontal, this);
     this->amplify_coeff_value                            = new QLabel(this);
-    this->min_amplitude_for_normal_speed                 = new QSlider(Qt::Horizontal, this);
-    this->min_amplitude_for_normal_speed_value           = new QLabel(this);
     this->min_amplitude                                  = new QSlider(Qt::Horizontal, this);
     this->min_amplitude_value                            = new QLabel(this);
     this->vinyl_type_select                              = new QComboBox(this);
@@ -344,15 +342,6 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(this->amplify_coeff_value, 3, 2);
     QObject::connect(this->amplify_coeff, &QSlider::valueChanged, [this](int value){this->set_amplify_coeff_value(value);});
 
-    QLabel *min_amplitude_for_normal_speed_label = new QLabel(tr("Minimal signal amplitude @ speed = 100%:"), this);
-    this->min_amplitude_for_normal_speed->setMinimum(1);
-    this->min_amplitude_for_normal_speed->setMaximum(99);
-    this->min_amplitude_for_normal_speed->setSingleStep(1);
-    motion_detect_layout->addWidget(min_amplitude_for_normal_speed_label, 4, 0);
-    motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed, 4, 1);
-    motion_detect_layout->addWidget(this->min_amplitude_for_normal_speed_value, 4, 2);
-    QObject::connect(this->min_amplitude_for_normal_speed, &QSlider::valueChanged, [this](int value){this->set_min_amplitude_for_normal_speed_value(value);});
-
     QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
     this->min_amplitude->setMinimum(1);
     this->min_amplitude->setMaximum(999);
@@ -387,9 +376,6 @@ void Config_dialog::fill_tab_motion_detect()
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff());
     this->set_amplify_coeff_value(this->amplify_coeff->value());
 
-    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed());
-    this->set_min_amplitude_for_normal_speed_value(this->min_amplitude_for_normal_speed->value());
-
     this->set_min_amplitude_slider(this->settings->get_min_amplitude());
     this->set_min_amplitude_value(this->min_amplitude->value());
 }
@@ -409,23 +395,6 @@ Config_dialog::set_amplify_coeff_value(const int &value)
 {
     Q_UNUSED(value);
     this->amplify_coeff_value->setText(QString::number(this->get_amplify_coeff_slider()));
-}
-
-void Config_dialog::set_min_amplitude_for_normal_speed_slider(const float &value)
-{
-    this->min_amplitude_for_normal_speed->setValue(qRound(value * 100.0));
-}
-
-float Config_dialog::get_min_amplitude_for_normal_speed_slider()
-{
-   return this->min_amplitude_for_normal_speed->value() / 100.0;
-}
-
-void
-Config_dialog::set_min_amplitude_for_normal_speed_value(const int &value)
-{
-    Q_UNUSED(value);
-    this->min_amplitude_for_normal_speed_value->setText(QString::number(this->get_min_amplitude_for_normal_speed_slider()));
 }
 
 void Config_dialog::set_min_amplitude_slider(const float &value)
@@ -692,7 +661,6 @@ void Config_dialog::reset_motion_detection_params()
     // Reset all motion detection parameters to their default values.
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
     this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
-    this->set_min_amplitude_for_normal_speed_slider(this->settings->get_min_amplitude_for_normal_speed_default_from_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt())));
     this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt())));
 }
 
@@ -764,7 +732,6 @@ Config_dialog::accept()
 
     // Set motion detection settings.
     this->settings->set_input_amplify_coeff(this->get_amplify_coeff_slider());
-    this->settings->set_min_amplitude_for_normal_speed(this->get_min_amplitude_for_normal_speed_slider());
     this->settings->set_min_amplitude(this->get_min_amplitude_slider());
 
     // Set keyboard shortcuts.

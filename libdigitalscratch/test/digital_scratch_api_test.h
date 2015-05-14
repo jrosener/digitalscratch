@@ -11,6 +11,7 @@ class DigitalScratchApi_Test : public QObject
     
 private:
     void l_dscratch_analyze_timecode(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file);
+    void l_dscratch_analyze_timecode_V2(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file);
 
 public:
     DigitalScratchApi_Test();
@@ -21,6 +22,7 @@ private Q_SLOTS:
 
     void testCase_dscratch_create_turntable();
     void testCase_dscratch_analyze_timecode_serato_stop_fast();
+    void testCase_dscratch_analyze_timecode_serato_stop_fast_V2();
     void testCase_dscratch_analyze_timecode_serato_noises();
     void testCase_dscratch_analyze_timecode_finalscratch();
     void testCase_dscratch_display_turntable();

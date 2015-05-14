@@ -45,8 +45,7 @@ using namespace std;
 
 Serato_vinyl::Serato_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
-    this->min_amplitude_for_normal_speed = DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
-    this->min_amplitude                  = DEFAULT_SERATO_MIN_AMPLITUDE;
+    this->min_amplitude = DEFAULT_SERATO_MIN_AMPLITUDE;
 }
 
 Serato_vinyl::~Serato_vinyl()
