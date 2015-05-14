@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <QVector>
 
 using namespace std;
 
@@ -32,8 +33,8 @@ void DigitalScratch_Test::testCase_analyze_recording_data()
    Digital_scratch *dscratch = new Digital_scratch(FINAL_SCRATCH, 44100);
 
    // Check analyze_recording_data()
-   vector<float> tab_1;
-   vector<float> tab_2;
+   QVector<float> tab_1;
+   QVector<float> tab_2;
    QVERIFY2(dscratch->analyze_recording_data(tab_1, tab_2) == false, "empty tables");
 
    tab_1.push_back(10); tab_1.push_back(20);

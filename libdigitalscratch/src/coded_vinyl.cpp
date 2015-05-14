@@ -33,7 +33,6 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
-#include <vector>
 #include <cmath>
 #include <iterator>
 #include <QtGlobal>
@@ -78,13 +77,13 @@ Coded_vinyl::~Coded_vinyl()
 {
 }
 
-void Coded_vinyl::run_recording_data_analysis(vector<float> &input_samples_1,
-                                              vector<float> &input_samples_2)
+void Coded_vinyl::run_recording_data_analysis(const QVector<float> &input_samples_1,
+                                              const QVector<float> &input_samples_2)
 {
     qCDebug(DSLIB_ANALYZEVINYL) << "Adding timecode data to internal buffers...";
 
     // Processing loop: One sample per iteration
-    for (unsigned int i = 0; i < input_samples_1.size(); i++)
+    for (int i = 0; i < input_samples_1.size(); i++)
     {
         // Read one Right/Left sample
         double leftSample = input_samples_1[i];

@@ -2,9 +2,6 @@
 #define TEST_UTILS_H_
 
 #include <QVector>
-#include <vector>
-using std::vector;
-
 
 // Timecode file name.
 #define TIMECODE_FS_33RPM_SPEED100      "test/data/finalscratch_-_33rpm_0pitch.txt"
@@ -14,8 +11,8 @@ using std::vector;
 /**
  * This function create 2 tables of float with 5 parameters.
  */
-void l_create_default_input_samples(vector<float> &tb_1,
-                                    vector<float> &tb_2);
+void l_create_default_input_samples(QVector<float> &tb_1,
+                                    QVector<float> &tb_2);
 
 /**
  * @brief l_read_text_file_to_string_list read a file line by line and put result in string_list.

@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <iostream>
+#include <QVector>
 #ifdef WIN32
 #include <functional>
 #endif
@@ -60,8 +61,8 @@ static const char *dscratch_vinyl_names[NB_DSCRATCH_VINYLS] =
 
 typedef struct handle_struct
 {
-    vector<float>   *samples_1;
-    vector<float>   *samples_2;
+    QVector<float>   samples_1;
+    QVector<float>   samples_2;
     Digital_scratch *dscratch;
 } dscratch_handle_t_struct;
 
@@ -69,65 +70,19 @@ typedef struct handle_struct
 
 /******************************** Internal functions *************************/
 
-bool l_get_dscratch_from_handle(dscratch_handle_t   handle,
-                                Digital_scratch   **dscratch)
+bool l_get_typed_handle(dscratch_handle_t           handle,
+                        dscratch_handle_t_struct  **out_typed_handle)
 {
     if (handle == nullptr)
     {
-        qCCritical(DSLIB_API) << "Cannot get Digital_scratch object from handle.";
+        qCCritical(DSLIB_API) << "Handler is null.";
         return false;
     }
  
-    *dscratch = static_cast<dscratch_handle_t_struct*>(handle)->dscratch;
+    *out_typed_handle = static_cast<dscratch_handle_t_struct*>(handle);
     return true;
 }
 
-bool l_get_samples1_vector_from_handle(dscratch_handle_t   handle,
-                                       vector<float>     **samples)
-{
-    if (handle == nullptr)
-    {
-        qCCritical(DSLIB_API) << "Cannot get samples1 vector from handle.";
-        return false;
-    }
-
-    *samples = static_cast<dscratch_handle_t_struct*>(handle)->samples_1;
-    return true;
-}
-
-bool l_get_samples2_vector_from_handle(dscratch_handle_t   handle,
-                                       vector<float>     **samples)
-{
-    if (handle == nullptr)
-    {
-        qCCritical(DSLIB_API) << "Cannot get samples2 vector from handle.";
-        return false;
-    }
-
-    *samples = static_cast<dscratch_handle_t_struct*>(handle)->samples_2;
-    return true;
-}
-
-bool l_get_coded_vinyl_from_handle(dscratch_handle_t   handle,
-                                   Coded_vinyl       **vinyl)
-{
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
-    {
-        return false;
-    }
-
-    // Get the corresponding Coded_vinyl object.
-    *vinyl = dscratch->get_coded_vinyl();
-    if (*vinyl == nullptr)
-    {
-        qCCritical(DSLIB_API) << "Cannot get Coded_vinyl object.";
-        return false;
-    }
-
-    return true;
-}
 
 /********************************* API functions ******************************/
 
@@ -155,8 +110,8 @@ dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_vinyl_type
     hdl->dscratch = dscratch;
 
     // Prepare global tables of samples to be able to handle at least 512 samples.
-    hdl->samples_1 = new vector<float>(INPUT_BUFFER_MIN_SIZE);
-    hdl->samples_2 = new vector<float>(INPUT_BUFFER_MIN_SIZE);
+    hdl->samples_1.reserve(INPUT_BUFFER_MIN_SIZE);
+    hdl->samples_2.reserve(INPUT_BUFFER_MIN_SIZE);
 
     // Return a handle on the Digital_scratch instance.
     *out_handle = static_cast<dscratch_handle_t_struct*>(hdl);
@@ -166,31 +121,18 @@ dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_vinyl_type
 
 dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle)
 {
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
 
     // Delete Digital_scratch instance.
-    delete dscratch;
+    delete handle_typed->dscratch;
 
-    // Delete samples vectors.
-    vector<float> *samples_1;
-    vector<float> *samples_2;
-    if (l_get_samples1_vector_from_handle(handle, &samples_1) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-    if (l_get_samples2_vector_from_handle(handle, &samples_2) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-    delete samples_1;
-    delete samples_2;
-
-    delete static_cast<dscratch_handle_t_struct*>(handle);
+    // Delete the full handle.
+    delete handle_typed;
 
     return DSCRATCH_SUCCESS;
 }
@@ -200,29 +142,21 @@ dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
                                                   const float       *right_samples,
                                                   int                samples_table_size)
 {
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
 
     // Copy input samples in internal tables.
-    vector<float> *samples_1;
-    vector<float> *samples_2;
-    if (l_get_samples1_vector_from_handle(handle, &samples_1) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-    if (l_get_samples2_vector_from_handle(handle, &samples_2) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-    samples_1->assign(left_samples, left_samples + samples_table_size);
-    samples_2->assign(right_samples, right_samples + samples_table_size);
+    handle_typed->samples_1.clear();
+    std::copy(left_samples, left_samples + samples_table_size, std::back_inserter(handle_typed->samples_1));
+    handle_typed->samples_2.clear();
+    std::copy(right_samples, right_samples + samples_table_size, std::back_inserter(handle_typed->samples_2));
 
     // Analyze new samples.
-    if (dscratch->analyze_recording_data(*samples_1, *samples_2) == false)
+    if (handle_typed->dscratch->analyze_recording_data(handle_typed->samples_1, handle_typed->samples_2) == false)
     {
         qCCritical(DSLIB_API) << "Cannot analyze recorded datas.";
         return DSCRATCH_ERROR;
@@ -235,15 +169,15 @@ dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
                                                   float             *speed,
                                                   float             *volume)
 {
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
 
     // Get current speed and volume.
-    if (dscratch->get_playing_parameters(speed, volume) == false)
+    if (handle_typed->dscratch->get_playing_parameters(speed, volume) == false)
     {
         return DSCRATCH_ERROR;
     }
@@ -293,29 +227,37 @@ const char *dscratch_get_version()
 dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t  handle,
                                                     dscratch_vinyls_t *vinyl_type)
 {
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = nullptr;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
 
     // Check type of vinyl.
-    if (dynamic_cast<Final_scratch_vinyl*>(vinyl) != nullptr)
-    {
-        *vinyl_type = FINAL_SCRATCH;
-    }
-    else if (dynamic_cast<Serato_vinyl*>(vinyl) != nullptr)
-    {
-        *vinyl_type = SERATO;
-    }
-    else if (dynamic_cast<Mixvibes_vinyl*>(vinyl) != nullptr)
-    {
-        *vinyl_type = MIXVIBES;
+    Coded_vinyl *vinyl = handle_typed->dscratch->get_coded_vinyl();
+    if (vinyl != nullptr)
+    {    
+        if (dynamic_cast<Final_scratch_vinyl*>(vinyl) != nullptr)
+        {
+            *vinyl_type = FINAL_SCRATCH;
+        }
+        else if (dynamic_cast<Serato_vinyl*>(vinyl) != nullptr)
+        {
+            *vinyl_type = SERATO;
+        }
+        else if (dynamic_cast<Mixvibes_vinyl*>(vinyl) != nullptr)
+        {
+            *vinyl_type = MIXVIBES;
+        }
+        else
+        {
+            qCCritical(DSLIB_API) << "Unknown timecoded vinyl type";
+            return DSCRATCH_ERROR;
+        }
     }
     else
     {
-        qCCritical(DSLIB_API) << "Unknown timecoded vinyl type";
         return DSCRATCH_ERROR;
     }
 
@@ -335,9 +277,9 @@ DLLIMPORT dscratch_vinyls_t dscratch_get_default_vinyl_type()
 DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
                                                        dscratch_vinyls_t vinyl_type)
 {
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
@@ -347,7 +289,7 @@ DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
     dscratch_get_turntable_vinyl_type(handle, &current_vinyl_type);
     if (current_vinyl_type != vinyl_type)
     {
-        if (dscratch->change_coded_vinyl(vinyl_type) == false)
+        if (handle_typed->dscratch->change_coded_vinyl(vinyl_type) == false)
         {
             return DSCRATCH_ERROR;
         }
@@ -359,16 +301,16 @@ DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
 DLLIMPORT dscratch_status_t dscratch_set_rpm(dscratch_handle_t    handle,
                                              dscratch_vinyl_rpm_t rpm)
 {
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = nullptr;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
 
     // Set turntable RPM.
     if (((rpm != RPM_33) && (rpm != RPM_45)) ||
-       (vinyl->set_rpm(rpm) == false))
+       (handle_typed->dscratch->get_coded_vinyl()->set_rpm(rpm) == false))
     {
         qCCritical(DSLIB_API) << "Cannot set RPM.";
         return DSCRATCH_ERROR;
@@ -380,9 +322,9 @@ DLLIMPORT dscratch_status_t dscratch_set_rpm(dscratch_handle_t    handle,
 DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
                                              dscratch_vinyl_rpm_t *out_rpm)
 {
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = nullptr;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
@@ -393,7 +335,7 @@ DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
         qCCritical(DSLIB_API) << "out_rpm is null.";
         return DSCRATCH_ERROR;
     }
-    *out_rpm = vinyl->get_rpm();
+    *out_rpm = handle_typed->dscratch->get_coded_vinyl()->get_rpm();
 
     return DSCRATCH_SUCCESS;
 }
@@ -406,15 +348,15 @@ DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm()
 DLLIMPORT dscratch_status_t dscratch_set_min_amplitude(dscratch_handle_t handle,
                                                        float             amplitude)
 {
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = nullptr;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
 
     // Set amplitude.
-    vinyl->set_min_amplitude(amplitude);
+    handle_typed->dscratch->get_coded_vinyl()->set_min_amplitude(amplitude);
 
     return DSCRATCH_SUCCESS;
 }
@@ -422,9 +364,9 @@ DLLIMPORT dscratch_status_t dscratch_set_min_amplitude(dscratch_handle_t handle,
 DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t  handle,
                                                        float             *out_ampl)
 {
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
@@ -435,7 +377,7 @@ DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t  handle
         qCCritical(DSLIB_API) << "out_ampl is null.";
         return DSCRATCH_ERROR;
     }
-    *out_ampl = vinyl->get_min_amplitude();
+    *out_ampl = handle_typed->dscratch->get_coded_vinyl()->get_min_amplitude();
 
     return DSCRATCH_SUCCESS;
 }
@@ -443,9 +385,9 @@ DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t  handle
 DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t  handle,
                                                                float             *out_ampl)
 {
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = NULL;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
@@ -456,7 +398,7 @@ DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t
         qCCritical(DSLIB_API) << "out_ampl is null.";
         return DSCRATCH_ERROR;
     }
-    *out_ampl = vinyl->get_default_min_amplitude();
+    *out_ampl = handle_typed->dscratch->get_coded_vinyl()->get_default_min_amplitude();
 
     return DSCRATCH_SUCCESS;
 }

@@ -33,6 +33,7 @@
 #pragma once
 
 #include <string>
+#include <QVector>
 
 #include "dscratch_parameters.h"
 #include "controller.h"
@@ -90,8 +91,8 @@ class Digital_scratch : public Controller
          * @note input_samples_1 and input_samples_2 must have the same number
          *       of elements.
          */
-        bool analyze_recording_data(vector<float> &input_samples_1,
-                                    vector<float> &input_samples_2);
+        bool analyze_recording_data(const QVector<float> &input_samples_1,
+                                    const QVector<float> &input_samples_2);
 
         /**
          * Get Coded_vinyl object.

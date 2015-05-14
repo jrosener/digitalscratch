@@ -33,7 +33,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include "dscratch_parameters.h"
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"

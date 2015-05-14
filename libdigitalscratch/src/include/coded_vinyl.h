@@ -33,7 +33,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <QVector>
 
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
@@ -103,8 +103,8 @@ class Coded_vinyl
          * @note input_samples_1 and input_samples_2 must have the same number
          *       of element.
          */
-        void run_recording_data_analysis(vector<float> &input_samples_1,
-                                         vector<float> &input_samples_2);
+        void run_recording_data_analysis(const QVector<float> &input_samples_1,
+                                         const QVector<float> &input_samples_2);
 
         /**
          * Set the sample rate used to record timecoded vinyl.

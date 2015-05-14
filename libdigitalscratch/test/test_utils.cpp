@@ -10,8 +10,8 @@ using namespace std;
 
 #include "test_utils.h"
 
-void l_create_default_input_samples(vector<float> &tb_1,
-                                    vector<float> &tb_2)
+void l_create_default_input_samples(QVector<float> &tb_1,
+                                    QVector<float> &tb_2)
 {
     // Reserve enough memory for tb_1 and tb_2.
     tb_1.reserve(5);
@@ -28,7 +28,7 @@ void l_create_default_input_samples(vector<float> &tb_1,
 }
 
 int l_read_text_file_to_string_list(const QString &file_name,
-                                    QStringList &string_list)
+                                    QStringList   &string_list)
 {
     QFile text_file(file_name);
     if (text_file.open(QIODevice::ReadOnly | QIODevice::Text) == true)
