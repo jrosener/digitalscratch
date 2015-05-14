@@ -52,36 +52,6 @@ Controller::~Controller()
     delete this->volume;
 }
 
-int Controller::get_max_nb_no_new_speed_found()
-{
-    return this->speed->get_max_nb_no_new_speed_found();
-}
-
-bool Controller::set_max_nb_no_new_speed_found(int nb)
-{
-    if (this->speed->set_max_nb_no_new_speed_found(nb) == false)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-int Controller::get_max_nb_cycle_before_starting()
-{
-    return this->speed->get_max_nb_cycle_before_starting();
-}
-
-bool Controller::set_max_nb_cycle_before_starting(int nb)
-{
-    if (this->speed->set_max_nb_cycle_before_starting(nb) == false)
-    {
-        return false;
-    }
-
-    return true;
-}
-
 bool Controller::get_playing_parameters(float *speed,
                                         float *volume)
 {

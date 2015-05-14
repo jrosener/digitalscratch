@@ -35,7 +35,6 @@
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
 
-#define DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND 1
 #define DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING  1
 
 /**
@@ -51,33 +50,6 @@ class Speed
          * Speed value
          */
         float value;
-
-        /**
-         * This is the number of consecutive no new speed found.
-         */
-        short int nb_no_new_speed_found;
-
-        /**
-         * Number of cycle at speed equal to zero before starting playback.
-         */
-        short int wait_cycle_for_starting;
-
-        /**
-         * This is the maximum number of consecutive no new speed found.
-         */
-        int max_nb_no_new_speed_found;
-
-        /**
-         * Maximum number of cycle at speed equal to zero before starting
-         * playback.
-         */
-        int max_nb_cycle_before_starting;
-
-        /**
-         * Old speed value.
-         */
-        float old_value;
-
 
     /* Constructor / Destructor */
     public:
@@ -104,37 +76,8 @@ class Speed
 
         /**
          * Set a new speed value.
-         * If the speed is NO_NEW_SPEED_FOUND for max_nb_no_new_speed_found, we
-         * consider that speed = 0.0.
          * @param speed_value is the playing speed value.
          * @return TRUE if all is OK, otherwise false.
          */
         bool set_value(float speed_value);
-
-        /**
-         * Get maximum number of time we allow NO_NEW_SPEED_FOUND.
-         * @return the max_nb_no_new_speed_found value.
-         */
-        int get_max_nb_no_new_speed_found();
-
-        /**
-         * Set maximum number of time we allow NO_NEW_SPEED_FOUND.
-         * @param nb is the max_nb_no_new_speed_found value (must be > 0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_nb_no_new_speed_found(int nb);
-
-        /**
-         * Set number of time that we will wait for new speed before starting.
-         * @return the nb_cycle_before_starting value.
-         */
-        int get_max_nb_cycle_before_starting();
-
-        /**
-         * Set number of time that we will wait for new speed before starting.
-         * @param nb is the nb_cycle_before_starting value (must be > 0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_nb_cycle_before_starting(int nb);
-
 };

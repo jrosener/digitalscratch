@@ -80,32 +80,6 @@ class Controller
         bool get_playing_parameters(float *speed,
                                     float *volume);
 
-        /**
-         * Get maximum number of time we allow NO_NEW_SPEED_FOUND.
-         * @return the max_nb_no_new_speed_found value.
-         */
-        int get_max_nb_no_new_speed_found();
-
-        /**
-         * Set maximum number of time we allow NO_NEW_SPEED_FOUND.
-         * @param nb is the max_nb_no_new_speed_found value (must be > 0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_nb_no_new_speed_found(int nb);
-
-        /**
-         * Set number of time that we will wait for new speed before starting.
-         * @return the nb_cycle_before_starting value.
-         */
-        int get_max_nb_cycle_before_starting();
-
-        /**
-         * Set number of time that we will wait for new speed before starting.
-         * @param nb is the nb_cycle_before_starting value (must be > 0).
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_max_nb_cycle_before_starting(int nb);
-
     protected:
         /**
          * Set flag to true if Controller is able to give playin parameters.

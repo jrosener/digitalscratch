@@ -31,8 +31,6 @@ void Controller_Test::testCaseConstructor()
     QVERIFY2(ctrl->get_playing_parameters(&speed, &volume) == false, "playing parameters");
     QVERIFY2(speed    == 0.0, "speed");
     QVERIFY2(volume   == 0.0, "volume");
-    QVERIFY2(ctrl->get_max_nb_no_new_speed_found()    == 1, "max nb no new speed found");
-    QVERIFY2(ctrl->get_max_nb_cycle_before_starting() == 1, "max nb cycle before starting");
 
     // Cleanup
     delete ctrl;

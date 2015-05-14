@@ -43,7 +43,6 @@
 
 #define MAX_SIN_WAV_AREA_FACTOR      100
 #define SPEED_FOR_VOLUME_CUT         0.90
-#define MAX_NO_NEW_SPEED_FOUND       3
 #define UNKNOWN_SAMPLE_VALUE         -99.0f
 
 #define DEFAULT_INPUT_AMPLIFY_COEFF  1
@@ -91,14 +90,14 @@ class Coded_vinyl
         /**
          * Get the current speed value.
          * Define the pure virtual method in base class (Coded_vinyl)
-         * @return the speed value or NO_NEW_SPEED_FOUND if nothing is found
+         * @return the speed value.
          */
         float get_speed();
 
         /**
          * Get the current volume value.
          * Define the pure virtual method in base class (Coded_vinyl)
-         * @return the volume value or NO_NEW_VOLUME_FOUND if nothing is found
+         * @return the volume value.
          */
         float get_volume();
 

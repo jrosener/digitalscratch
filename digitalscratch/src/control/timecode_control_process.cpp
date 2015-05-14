@@ -89,39 +89,26 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     {
         if (are_new_params == 0)
         {
-            this->params->set_data_state(true);
-            if (speed != NO_NEW_SPEED_FOUND)
-            {
-                this->params->set_speed(speed);
-                this->params->set_speed_state(true);
+            this->params->set_data_state(true); // FIXME:  still needed ?
+            this->params->set_speed(speed);
+            this->params->set_speed_state(true);// FIXME:  still needed ?
 
-                // Change speed label in Gui only every 10 times.
-                if (this->waitfor_emit_speed_changed > 10)
-                {
-                    // FIXME: it looks like if we change regularly the speed on the gui, sometimes the app is crashing.
-                    //        so, for the moment, we do not send the signal for changing speed.
-                    emit speed_changed(this->params->get_speed());
-                    this->waitfor_emit_speed_changed = 0;
-                }
-                else
-                {
-                    this->waitfor_emit_speed_changed++;
-                }
+            // Change speed label in Gui only every 10 times.
+            if (this->waitfor_emit_speed_changed > 10)
+            {
+                // FIXME: it looks like if we change regularly the speed on the gui, sometimes the app is crashing.
+                //        so, for the moment, we do not send the signal for changing speed.
+                emit speed_changed(this->params->get_speed());
+                this->waitfor_emit_speed_changed = 0;
             }
             else
             {
-                this->params->set_speed_state(false);
+                this->waitfor_emit_speed_changed++;
             }
-            if (volume != NO_NEW_VOLUME_FOUND)
-            {
-                this->params->set_volume(volume);
-                this->params->set_volume_state(true);
-                emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0));
-            }
-            else
-            {
-                this->params->set_volume_state(false);
-            }
+
+            this->params->set_volume(volume);
+            this->params->set_volume_state(true); // FIXME:  still needed ?
+            emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0));
         }
         else
         {

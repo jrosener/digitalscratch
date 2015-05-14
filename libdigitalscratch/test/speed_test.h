@@ -15,7 +15,5 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testCase_Constructor();
-    void testCase_set_max_nb_no_new_speed_found();
-    void testCase_set_max_nb_cycle_before_starting();
     void testCase_set_value();
 };

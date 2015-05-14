@@ -42,14 +42,7 @@ using namespace std;
 
 Speed::Speed()
 {
-    // Internal stuff.
-    this->nb_no_new_speed_found     = 0;
-    this->value                     = 0.0;
-    this->wait_cycle_for_starting   = 0;
-
-    // Default values used for speed calculation.
-    this->set_max_nb_no_new_speed_found(DEFAULT_MAX_NB_NO_NEW_SPEED_FOUND);
-    this->set_max_nb_cycle_before_starting(DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING);
+    this->value = 0.0;
 }
 
 Speed::~Speed()
@@ -63,84 +56,9 @@ float Speed::get_value()
 
 bool Speed::set_value(float speed_value)
 {
-    this->old_value = this->value;
-
-    //
-    // Try to check if we can not find new signal.
-    //
-    if (speed_value == NO_NEW_SPEED_FOUND) // No new speed found.
-    {
-        this->nb_no_new_speed_found++;
-
-        // No new speed for 3 times (for example), speed = 0.
-        if (this->nb_no_new_speed_found > this->max_nb_no_new_speed_found)
-        {
-            qCDebug(DSLIB_SPEED) << "No new speed found for"
-                                 << QString(this->max_nb_no_new_speed_found)
-                                 << "times, speed = 0";
-            this->value = 0.0;
-            this->nb_no_new_speed_found = 0;
-        }
-        else
-        {
-            qCDebug(DSLIB_SPEED) << "No new speed found, don't change speed.";
-            this->value = NO_NEW_SPEED_FOUND;
-        }
-    }
-    else // New speed found.
-    {
-        this->nb_no_new_speed_found = 0;
-
-        this->value = speed_value;
-
-        // Debugging message for new speed value.
-        #ifdef TRACE_OBJECT_ATTRIBUTS_CHANGE
-            if (this->value == NO_NEW_SPEED_FOUND)
-            {
-                qCDebug(DSLIB_SPEED) << "Changing speed value to NO_NEW_SPEED_FOUND";
-            }
-            else
-            {
-                qCDebug(DSLIB_SPEED) << "Changing speed value to " << QString(this->value);
-            }
-        #endif
-    }
+    this->value = speed_value;
+    qCDebug(DSLIB_SPEED) << "Changing speed value to " << QString::number(this->value);
 
     return true;
 }
 
-int Speed::get_max_nb_no_new_speed_found()
-{
-    return this->max_nb_no_new_speed_found;
-}
-
-bool Speed::set_max_nb_no_new_speed_found(int nb)
-{
-    if (nb <= 0)
-    {
-        qCCritical(DSLIB_SPEED) << "max_nb_no_new_speed_found must be > 0.";
-        return false;
-    }
-
-    this->max_nb_no_new_speed_found = nb;
-
-    return true;
-}
-
-int Speed::get_max_nb_cycle_before_starting()
-{
-    return this->max_nb_cycle_before_starting;
-}
-
-bool Speed::set_max_nb_cycle_before_starting(int nb)
-{
-    if (nb <= 0)
-    {
-        qCCritical(DSLIB_SPEED) << "max_nb_cycle_before_starting must be > 0.";
-        return false;
-    }
-
-    this->max_nb_cycle_before_starting = nb;
-
-    return true;
-}

@@ -45,24 +45,14 @@
 extern "C" {
 #endif
 
-/******************************************************************************/
-/**************************** Error codes *************************************/
-
+// Error codes.
 enum DSCRATCH_STATUS
 {
     DSCRATCH_SUCCESS = 0,
     DSCRATCH_ERROR
 };
 
-/**< This is the speed value if no new value is found. */
-#define NO_NEW_SPEED_FOUND -99.0
-
-/**< This is the volume value if no new value is found. */
-#define NO_NEW_VOLUME_FOUND -99.0
-
-/******************************************************************************/
-/********************* Supported timecoded vinyl type *************************/
-
+// Supported timecoded vinyl type
 enum DSCRATCH_VINYLS
 {
     FINAL_SCRATCH = 0,
@@ -71,16 +61,15 @@ enum DSCRATCH_VINYLS
     NB_DSCRATCH_VINYLS
 };
 
-/******************************************************************************/
-/************************** Supported base RPM ********************************/
-
+// Supported turntable speed.
 #define RPM_33 33
 #define RPM_45 45
 
-/******************************************************************************/
-/************ API functions: create, delete, provide datas,... ****************/
 
-/**< Used by API functions to identify the turntable. */
+/******************************************************************************/
+/*********************************** API **************************************/
+
+/**< Handle type used by API functions to identify the turntable. */
 typedef void* DSCRATCH_HANDLE;
 
 /**
@@ -168,15 +157,11 @@ DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_H
  *        1.0 should be mapped to 0.0% of your real turntable.
  *        If the speed is a negative value, it means that vinyl is playing
  *        backward.
- *        NO_NEW_SPEED_FOUND is returned if no speed is found.
  *
  * @param volume will be returned, this is the volume of the sound you want to
  *        play. Indeed, the volume of the sound is dependant of the speed, so
  *        the more is the speed the more will be the volume.
- *        0.0 correspond to mute. 1.0 should be mapped to 80% of the maximum of
- *        the volume for example, in fact DigitalScratch can return for example
- *        a volume equal to 1.26.
- *        NO_NEW_VOLUME_FOUND is returned if no volume is found.
+ *        0.0 = mute. 1.0 = 100% volume.
  *
  * @return 0 if playing parameters are found, otherwise 1.
  * @return DSCRATCH_SUCCESS if playing parameters are found.
