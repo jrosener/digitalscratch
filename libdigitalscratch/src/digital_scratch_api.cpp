@@ -196,9 +196,9 @@ dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle)
 }
 
 dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
-                                                  const float       *input_samples_1,
-                                                  const float       *input_samples_2,
-                                                  int                nb_frames)
+                                                  const float       *left_samples,
+                                                  const float       *right_samples,
+                                                  int                samples_table_size)
 {
     // Get Digital_scratch instance from handle.
     Digital_scratch *dscratch = nullptr;
@@ -218,8 +218,8 @@ dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
     {
         return DSCRATCH_ERROR;
     }
-    samples_1->assign(input_samples_1, input_samples_1 + nb_frames);
-    samples_2->assign(input_samples_2, input_samples_2 + nb_frames);
+    samples_1->assign(left_samples, left_samples + samples_table_size);
+    samples_2->assign(right_samples, right_samples + samples_table_size);
 
     // Analyze new samples.
     if (dscratch->analyze_recording_data(*samples_1, *samples_2) == false)
@@ -356,7 +356,6 @@ DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
     return DSCRATCH_SUCCESS;
 }
 
-/**** API functions: General motion detection configuration parameters ********/
 DLLIMPORT dscratch_status_t dscratch_set_rpm(dscratch_handle_t    handle,
                                              dscratch_vinyl_rpm_t rpm)
 {

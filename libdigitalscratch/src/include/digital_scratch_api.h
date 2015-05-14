@@ -52,7 +52,7 @@ enum dscratch_status_t
     DSCRATCH_ERROR
 };
 
-// Supported timecoded vinyl type
+// Supported timecoded vinyl.
 enum dscratch_vinyls_t
 {
     FINAL_SCRATCH = 0,
@@ -68,19 +68,15 @@ enum dscratch_vinyl_rpm_t
     RPM_45 = 45
 };
 
-/******************************************************************************/
-/*********************************** API **************************************/
-
-/**< Handle type used by API functions to identify the turntable. */
+// Handle used by API functions to identify the turntable.
 typedef void* dscratch_handle_t;
 
 /**
  * Create a new turntable.
  *
- * @param coded_vinyl_type is the type of timecoded vinyl you want to use
- *        (e.g. FINAL_SCRATCH_VINYL, see above).
- * @param sample rate is the rate of the timecoded input signal.
- * @param out_handle is used to identify the turntable (returned by this function).
+ * @param coded_vinyl_type is the type of timecoded vinyl you want to use (e.g. FINAL_SCRATCH_VINYL, see above).
+ * @param sample rate is the rate of the recorded input signal.
+ * @param out_handle is used to identify the turntable (allocated and returned by this function).
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
@@ -89,8 +85,7 @@ DLLIMPORT dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_
                                                       dscratch_handle_t  *out_handle);
 
 /**
- * Remove the specified turntable from turntable list and delete (deallocate
- * memory) it.
+ * Delete the turntable created by dscratch_create_turntable() (free the handle).
  *
  * @param handle is used to identify the turntable.
  *
@@ -99,43 +94,40 @@ DLLIMPORT dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_
 DLLIMPORT dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle);
 
 /**
- * Provide samples recorded from turntable (with timecoded vinyl) and analyze
- * them.
+ * Analyze the recorded samples (coming from a timecoded vinyl). After this call, you can
+ * call dscratch_get_playing_parameters() to retrieve the speed, volume,...
  *
  * @param handle is used to identify the turntable.
- * @param input_samples_1 is a table containing samples from left channel.
- * @param input_samples_2 is a table containing samples from right channel.
- * @param nb_frames is the size (number of element) of input_samples_1.
+ * @param left_samples is a table containing samples from the left channel.
+ * @param right_samples is a table containing samples from the right channel.
+ * @param samples_table_size is the size (number of elements) of left_samples or right_samples.
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  *
- * @note Warning: input_samples_1 and input_samples_2 must have the same number
- *                of elements.
+ * @note Warning: left_samples and right_samples must have the same number
+ *                of elements (nb_frames elements).
  */
 DLLIMPORT dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
-                                                            const float       *input_samples_1,
-                                                            const float       *input_samples_2,
-                                                            int                nb_frames);
+                                                            const float       *left_samples,
+                                                            const float       *right_samples,
+                                                            int                samples_table_size);
 
 /**
- * Provide playing parameters (only relevant if dscratch_analyze_recorded_datas()
+ * Returns playing parameters (only relevant if dscratch_analyze_recorded_datas()
  * was called). Playing parameters are:
  *      - speed of the vinyl disc (sign is the direction).
  *      - volume of the sound (dependant of the speed).
  *
-* @param handle is used to identify the turntable.
- *
+ * @param handle is used to identify the turntable.
  * @param speed will be returned, this is the speed of the vinyl disc.
  *        1.0 should be mapped to 0.0% of your real turntable.
  *        If the speed is a negative value, it means that vinyl is playing
  *        backward.
- *
  * @param volume will be returned, this is the volume of the sound you want to
  *        play. Indeed, the volume of the sound is dependant of the speed, so
  *        the more is the speed the more will be the volume.
  *        0.0 = mute. 1.0 = 100% volume.
  *
- * @return 0 if playing parameters are found, otherwise 1.
  * @return DSCRATCH_SUCCESS if playing parameters are found.
  */
 DLLIMPORT dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
@@ -145,7 +137,7 @@ DLLIMPORT dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  h
 /**
  * Get DigitalScratch version.
  *
- * @return a const string containing version number.
+ * @return a const string containing the version number.
  *
  */
 DLLIMPORT const char *dscratch_get_version();
@@ -171,7 +163,7 @@ DLLIMPORT dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t 
                                                               dscratch_vinyls_t *vinyl_type);
 
 /**
- * Transform a vinyl type to an explicit string name.
+ * Transform a vinyl type into an explicit string name.
  *
  * @param vinyl_type is the vinyl type.
  *
@@ -180,9 +172,9 @@ DLLIMPORT dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t 
 DLLIMPORT const char* dscratch_get_vinyl_name_from_type(dscratch_vinyls_t vinyl_type);
 
 /**
- * Get default vinyl type.
+ * Get the default vinyl type.
  *
- * @return the default vinyl type (Serato vinyl).
+ * @return the default vinyl type (=> Serato vinyl).
  */
 DLLIMPORT dscratch_vinyls_t dscratch_get_default_vinyl_type();
 
@@ -198,13 +190,8 @@ DLLIMPORT dscratch_vinyls_t dscratch_get_default_vinyl_type();
 DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
                                                        dscratch_vinyls_t vinyl_type);
 
-
-
-/******************************************************************************/
-/***************   Motion detection configuration parameters   ****************/
-
 /**
- * Set the number of RPM.
+ * Set the number of RPM used to play the timecoded vinyl on the turntable.
  *
  * @param handle is used to identify the turntable.
  * @param rpm is the number of RPM of the turntable (45 or 33).
@@ -229,7 +216,7 @@ DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
 /**
  * Get the default number of RPM.
  *
- * @return the default number of rpm (45 or 33).
+ * @return the default number of rpm (=> 33).
  */
 DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm();
 
