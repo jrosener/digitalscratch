@@ -48,9 +48,8 @@ using namespace std;
 
 Coded_vinyl::Coded_vinyl(unsigned int sample_rate)
 {
-    this->rpm                 = RPM_33;
-    this->sample_rate         = sample_rate;
-    this->input_amplify_coeff = DEFAULT_INPUT_AMPLIFY_COEFF;
+    this->rpm = DEFAULT_RPM;
+    this->sample_rate = sample_rate;
 
     this->set_reverse_direction(false);
 
@@ -116,7 +115,7 @@ float Coded_vinyl::get_speed()
     qCDebug(DSLIB_ANALYZEVINYL) << "Searching new speed...";
 
     float speed = 0.0;
-    //if (filteredAmplitudeInst > 0.00005) // for left turntable // FIXME: use get_min_amplitude
+    //if (filteredAmplitudeInst > 0.00005) // for left turntable // FIXME: use get_min_amplitude => should be defined per turntable and not per vinyl type.
     if (this->filteredAmplitudeInst > 0.00030) // for right turntable
     {
         speed = this->filteredFreqInst;
@@ -177,25 +176,6 @@ bool Coded_vinyl::set_sample_rate(int sample_rate)
 int Coded_vinyl::get_sample_rate()
 {
     return this->sample_rate;
-}
-
-bool Coded_vinyl::set_input_amplify_coeff(int coeff)
-{
-    if (coeff <= 0)
-    {
-        qCCritical(DSLIB_ANALYZEVINYL) << "input amplify coeff cannot be <= 0";
-
-        return false;
-    }
-
-    this->input_amplify_coeff = coeff;
-
-    return true;
-}
-
-int Coded_vinyl::get_input_amplify_coeff()
-{
-    return this->input_amplify_coeff;
 }
 
 bool Coded_vinyl::set_rpm(unsigned short int rpm)

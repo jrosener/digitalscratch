@@ -115,36 +115,6 @@ DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handl
                                                           const float     *input_samples_2,
                                                           int              nb_frames);
 
-
-/**
- * Same as dscratch_analyze_recorded_datas() but with interleaved datas.
- * E.g. 0.12 0.98 -0.38 0.68 ...
- *      l[0] r[0] l[1]  r[1] ... (l=left, r=right)
- *
- * @param handle is used to identify the turntable.
- * @param nb_channels is the number of channels used for interleaved datas (for
- *                    a stereo input it is 2, for a bi-stereo input it is 4,...).
- * @param left_index is the index of the first left channel you want to use (it
- *                   is 0 if you want to use the first stereo input, 2 for the
- *                   second one,...).
- * @param right_index is the index of the first right channel you want to use (it
- *                    is 1 if you want to use the first stereo input, 3 for the
- *                    second one,...).
- * @param input_samples_interleaved is a table containing interleaved samples
- *        from left and right channels.
- * @param nb_frames is the size (number of element) of input_samples_interleaved
- *        divided by nb_channels.
- *
- * @return DSCRATCH_SUCCESS if all is OK.
- *
- */
-DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
-                                                                      int              nb_channels,
-                                                                      int              left_index,
-                                                                      int              right_index,
-                                                                      float           *input_samples_interleaved,
-                                                                      int              nb_frames);
-
 /**
  * Provide playing parameters (only relevant if dscratch_analyze_recorded_datas()
  * was called). Playing parameters are:
@@ -229,29 +199,7 @@ DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
 
 
 /******************************************************************************/
-/**** API functions: General motion detection configuration parameters ********/
-/**
- * Set the coefficient to be multiplied to input timecoded signal.
- *
- * @param handle is used to identify the turntable.
- * @param coeff is the value to be multiplied to input samples.
- *
- * @return DSCRATCH_SUCCESS if all is OK.
- */
-DLLIMPORT DSCRATCH_STATUS dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handle,
-                                                           int             coeff);
-
-/**
- * Get the coefficient used for input timecoded signal amplification.
- *
- * @param handle is used to identify the turntable.
- * @param out_coeff is the coefficient used to be multiplied to input samples
- *        (returned by this function).
- *
- * @return DSCRATCH_SUCCESS if all is OK.
- */
-DLLIMPORT DSCRATCH_STATUS dscratch_get_input_amplify_coeff(DSCRATCH_HANDLE  handle,
-                                                           int             *out_coeff);
+/***************   Motion detection configuration parameters   ****************/
 
 /**
  * Get the default coefficient to be multiplied to input timecoded signal.

@@ -41,12 +41,7 @@
 #include "Unwrap.h"
 #include "IIR.h"
 
-#define MAX_SIN_WAV_AREA_FACTOR      100
-#define SPEED_FOR_VOLUME_CUT         0.90
-#define UNKNOWN_SAMPLE_VALUE         -99.0f
-
-#define DEFAULT_INPUT_AMPLIFY_COEFF  1
-#define DEFAULT_RPM                  RPM_33
+#define DEFAULT_RPM RPM_33
 
 /**
  * Define a Coded_vinyl class.\n
@@ -62,7 +57,6 @@ class Coded_vinyl
     private:
         int sample_rate;
         unsigned short int rpm;
-        int input_amplify_coeff;
         bool is_reverse_direction;
 
         FIR          *diffFIR;
@@ -124,19 +118,6 @@ class Coded_vinyl
          * @return the value to get.
          */
         int get_sample_rate();
-
-        /**
-         * Set coeff to be multiplied to input samples (amplification).
-         * @param coeff is the value to set.
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_input_amplify_coeff(int coeff);
-
-        /**
-         * Get coeff to be multiplied to input samples.
-         * @return the value to get.
-         */
-        int get_input_amplify_coeff();
 
         /**
          * Set number of RPM of the turntable.

@@ -39,7 +39,7 @@
  * Define the music volume concept.
  * @author Julien Rosener
  */
-class Volume
+class Volume // FIXME: still necessary ?
 {
     /* Attributes */
     private:

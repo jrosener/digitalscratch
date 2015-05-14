@@ -45,7 +45,7 @@
  * @author Julien Rosener
  */
 
-class Controller
+class Controller // FIXME: still necessary ?
 {
     /* Attributes */
     protected:

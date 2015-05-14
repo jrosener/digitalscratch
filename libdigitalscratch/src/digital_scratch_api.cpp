@@ -221,22 +221,6 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
     samples_1->assign(input_samples_1, input_samples_1 + nb_frames);
     samples_2->assign(input_samples_2, input_samples_2 + nb_frames);
 
-    // Amplify samples if needed.
-    int ampl_coeff = 1;
-    if (dscratch_get_input_amplify_coeff(handle, &ampl_coeff) == DSCRATCH_ERROR)
-    {
-        return DSCRATCH_ERROR;
-    }
-    else if (ampl_coeff > 1)
-    {
-        std::transform(samples_1->begin(), samples_1->end(),
-                       samples_1->begin(),
-                       std::bind1st(std::multiplies<float>(), ampl_coeff));
-        std::transform(samples_2->begin(), samples_2->end(),
-                       samples_2->begin(),
-                       std::bind1st(std::multiplies<float>(), ampl_coeff));
-    }
-
     // Analyze new samples.
     if (dscratch->analyze_recording_data(*samples_1, *samples_2) == false)
     {
@@ -246,68 +230,6 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
 
     return DSCRATCH_SUCCESS;
 }
-
-DSCRATCH_STATUS dscratch_analyze_recorded_datas_interleaved(DSCRATCH_HANDLE  handle,
-                                                            int              nb_channels,
-                                                            int              left_index,
-                                                            int              right_index,
-                                                            float           *input_samples_interleaved,
-                                                            int              nb_frames)
-{
-
-    int j;
-    int k;
-
-    // Get Digital_scratch instance from handle.
-    Digital_scratch *dscratch = nullptr;
-    if (l_get_dscratch_from_handle(handle, &dscratch) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-
-    // Clean internal tables of samples.
-    vector<float> *samples_1;
-    vector<float> *samples_2;
-    if (l_get_samples1_vector_from_handle(handle, &samples_1) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-    if (l_get_samples2_vector_from_handle(handle, &samples_2) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-    samples_1->clear();
-    samples_1->clear();
-
-    // If internal tables of samples are not enough large, enlarge them.
-    if (samples_1->capacity() < (unsigned int)nb_frames)
-    {
-        samples_1->reserve(nb_frames);
-        samples_2->reserve(nb_frames);
-    }
-
-    // Uninterleaved datas, extract them in 2 tables.
-    j = left_index;
-    k = right_index;
-    for (int i = 0; i < nb_frames; i++)
-    {
-        samples_1->push_back(input_samples_interleaved[j]);
-        samples_2->push_back(input_samples_interleaved[k]);
-
-        j = j + nb_channels;
-        k = k + nb_channels;
-    }
-
-    // Analyze datas from uninterleaved tables.
-    if (dscratch->analyze_recording_data(*samples_1, *samples_2) == false)
-    {
-        qCCritical(DSLIB_API) << "Cannot analyze interleaved recorded datas.";
-        return DSCRATCH_ERROR;
-    }
-
-    return DSCRATCH_SUCCESS;
-}
-
 
 DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
                                                 float           *speed,
@@ -435,53 +357,6 @@ DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
 }
 
 /**** API functions: General motion detection configuration parameters ********/
-DLLIMPORT DSCRATCH_STATUS dscratch_set_input_amplify_coeff(DSCRATCH_HANDLE handle,
-                                                           int             coeff)
-{
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = nullptr;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-
-    // Set input_amplify_coeff parameter to Coded_vinyl.
-    if (vinyl->set_input_amplify_coeff(coeff) == false)
-    {
-        qCCritical(DSLIB_API) << "Cannot set input_amplify_coeff.";
-        return DSCRATCH_ERROR;
-    }
-
-    return DSCRATCH_SUCCESS;
-}
-
-DLLIMPORT DSCRATCH_STATUS dscratch_get_input_amplify_coeff(DSCRATCH_HANDLE  handle,
-                                                           int             *out_coeff)
-{
-    // Get Coded_vinyl object.
-    Coded_vinyl *vinyl = nullptr;
-    if (l_get_coded_vinyl_from_handle(handle, &vinyl) == false)
-    {
-        return DSCRATCH_ERROR;
-    }
-
-    // Get input_amplify_coeff parameter from Coded_vinyl.
-    if (out_coeff == nullptr)
-    {
-        qCCritical(DSLIB_API) << "out_coeff is null.";
-        return DSCRATCH_ERROR;
-    }
-
-    *out_coeff = vinyl->get_input_amplify_coeff();
-
-    return DSCRATCH_SUCCESS;
-}
-
-DLLIMPORT int dscratch_get_default_input_amplify_coeff()
-{
-    return DEFAULT_INPUT_AMPLIFY_COEFF;
-}
-
 DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
                                            unsigned short int rpm)
 {

@@ -35,14 +35,12 @@
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
 
-#define DEFAULT_MAX_NB_CYCLE_BEFORE_STARTING  1
-
 /**
  * Define a Speed class.\n
  * Define the playing music speed concept
  * @author Julien Rosener
  */
-class Speed
+class Speed // FIXME: still necessary ?
 {
     /* Attributes */
     private:
