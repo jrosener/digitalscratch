@@ -90,7 +90,6 @@ using namespace std;
 #define MAX_NB_BUFFER_CFG                   "motion_detection/max_nb_buffer"
 #define MAX_BUFFER_COEFF_CFG                "motion_detection/max_buffer_coeff"
 #define LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG "motion_detection/low_pass_filter_max_speed_usage"
-#define INPUT_AMPLIFY_COEFF                 "motion_detection/input_amplify_coeff"
 #define MIN_AMPLITUDE                       "motion_detection/min_amplitude"
 
 // Playback parameters.
@@ -164,14 +163,14 @@ class Application_settings : public QObject
     Q_OBJECT
 
  private:
-    QSettings                      settings;
-    QList<QString>                 available_gui_styles;
-    QMap<DSCRATCH_VINYLS, QString> available_vinyl_types;
-    QList<unsigned short int>      available_rpms;
-    QList<unsigned int>            available_sample_rates;
-    QList<unsigned short int>      available_nb_decks;
-    QList<QString>                 available_sound_cards;
-    bool                           audio_collection_full_refresh;
+    QSettings                        settings;
+    QList<QString>                   available_gui_styles;
+    QMap<dscratch_vinyls_t, QString> available_vinyl_types;
+    QList<unsigned short int>        available_rpms;
+    QList<unsigned int>              available_sample_rates;
+    QList<unsigned short int>        available_nb_decks;
+    QList<QString>                   available_sound_cards;
+    bool                             audio_collection_full_refresh;
 
  public:
     Application_settings();
@@ -232,23 +231,19 @@ class Application_settings : public QObject
     bool            get_autostart_motion_detection();
     bool            get_autostart_motion_detection_default();
 
-    void            set_vinyl_type(DSCRATCH_VINYLS vinyl_type);
-    DSCRATCH_VINYLS get_vinyl_type();
-    DSCRATCH_VINYLS get_vinyl_type_default();
-    QMap<DSCRATCH_VINYLS, QString> get_available_vinyl_types();
+    void            set_vinyl_type(dscratch_vinyls_t vinyl_type);
+    dscratch_vinyls_t get_vinyl_type();
+    dscratch_vinyls_t get_vinyl_type_default();
+    QMap<dscratch_vinyls_t, QString> get_available_vinyl_types();
 
-    void                   set_rpm(const unsigned short int &rpm);
-    unsigned short int     get_rpm();
-    unsigned short int     get_rpm_default();
+    void                   set_rpm(const dscratch_vinyl_rpm_t &rpm);
+    dscratch_vinyl_rpm_t   get_rpm();
+    dscratch_vinyl_rpm_t   get_rpm_default();
     QList<unsigned short>  get_available_rpms();
-
-    void  set_input_amplify_coeff(int in_coeff);
-    int   get_input_amplify_coeff();
-    int   get_input_amplify_coeff_default();
 
     void  set_min_amplitude(const float &amplitude);
     float get_min_amplitude();
-    float get_min_amplitude_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
+    float get_min_amplitude_default_from_vinyl_type(dscratch_vinyls_t vinyl_type);
 
     void    set_keyboard_shortcut(const QString &kb_shortcut_path, const QString &value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);

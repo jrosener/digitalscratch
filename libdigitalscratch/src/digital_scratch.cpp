@@ -42,7 +42,7 @@ using namespace std;
 #include "digital_scratch_api.h"
 #include "digital_scratch.h"
 
-Digital_scratch::Digital_scratch(DSCRATCH_VINYLS coded_vinyl_type,
+Digital_scratch::Digital_scratch(dscratch_vinyls_t coded_vinyl_type,
                                  unsigned int    sample_rate) : Controller()
 {
     // Init.
@@ -50,7 +50,7 @@ Digital_scratch::Digital_scratch(DSCRATCH_VINYLS coded_vinyl_type,
     this->init(coded_vinyl_type);
 }
 
-bool Digital_scratch::init(DSCRATCH_VINYLS coded_vinyl_type)
+bool Digital_scratch::init(dscratch_vinyls_t coded_vinyl_type)
 {
     // Internal parameters.
     this->set_playing_parameters_ready(false);
@@ -122,7 +122,7 @@ Coded_vinyl* Digital_scratch::get_coded_vinyl()
     return this->vinyl;
 }
 
-bool Digital_scratch::change_coded_vinyl(DSCRATCH_VINYLS coded_vinyl_type)
+bool Digital_scratch::change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type)
 {
     // First clean all in Digital_scratch object.
     this->clean();

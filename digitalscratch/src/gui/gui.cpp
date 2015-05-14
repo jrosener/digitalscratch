@@ -114,10 +114,11 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->sound_card              = sound_card;
     this->control_and_play        = control_and_playback;
     this->selected_deck           = 0;
-    this->dscratch_handles        = new DSCRATCH_HANDLE[this->settings->get_nb_decks()];
+    this->dscratch_handles        = new dscratch_handle_t[this->settings->get_nb_decks()];
     for (int i = 0; i < this->settings->get_nb_decks(); i++)
     {
-        this->dscratch_handles[i] = this->tcode_controls[i]->get_dscratch_handle();
+        this->dscratch_handles[i] = this->tcode_controls[i]->get_dscratch_handle(); // FIXME: refactor: do not use an array but call a getter function each time
+                                                                                    //        the handler is needed (this->get_dscratch_handle())
     }
 
     // Init pop-up dialogs.
@@ -222,10 +223,6 @@ Gui::apply_application_settings()
         if (dscratch_set_rpm(this->dscratch_handles[i], this->settings->get_rpm()) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set turntable RPM";
-        }
-        if (dscratch_set_input_amplify_coeff(this->dscratch_handles[i], this->settings->get_input_amplify_coeff()) != DSCRATCH_SUCCESS)
-        {
-            qCWarning(DS_APPSETTINGS) << "cannot set new input amplify coeff value";
         }
         if (dscratch_set_min_amplitude(this->dscratch_handles[i], this->settings->get_min_amplitude()) != DSCRATCH_SUCCESS)
         {

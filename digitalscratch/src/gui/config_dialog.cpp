@@ -92,13 +92,11 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     }
 
     // Init motion detection parameters widgets.
-    this->amplify_coeff                                  = new QSlider(Qt::Horizontal, this);
-    this->amplify_coeff_value                            = new QLabel(this);
-    this->min_amplitude                                  = new QSlider(Qt::Horizontal, this);
-    this->min_amplitude_value                            = new QLabel(this);
-    this->vinyl_type_select                              = new QComboBox(this);
-    QMap<DSCRATCH_VINYLS, QString> available_vinyl_types = this->settings->get_available_vinyl_types();
-    QMapIterator<DSCRATCH_VINYLS, QString> i(available_vinyl_types);
+    this->min_amplitude       = new QSlider(Qt::Horizontal, this);
+    this->min_amplitude_value = new QLabel(this);
+    this->vinyl_type_select   = new QComboBox(this);
+    QMap<dscratch_vinyls_t, QString> available_vinyl_types = this->settings->get_available_vinyl_types();
+    QMapIterator<dscratch_vinyls_t, QString> i(available_vinyl_types);
     while (i.hasNext())
     {
         i.next();
@@ -333,15 +331,6 @@ QWidget *Config_dialog::init_tab_motion_detect()
     motion_detect_layout->addWidget(rpm_label,        2, 0);
     motion_detect_layout->addWidget(this->rpm_select, 2, 1);
 
-    QLabel *amplify_coeff_label = new QLabel(tr("Amplification factor for input signal:"), this);
-    this->amplify_coeff->setMinimum(1);
-    this->amplify_coeff->setMaximum(20);
-    this->amplify_coeff->setSingleStep(1);
-    motion_detect_layout->addWidget(amplify_coeff_label, 3, 0);
-    motion_detect_layout->addWidget(this->amplify_coeff, 3, 1);
-    motion_detect_layout->addWidget(this->amplify_coeff_value, 3, 2);
-    QObject::connect(this->amplify_coeff, &QSlider::valueChanged, [this](int value){this->set_amplify_coeff_value(value);});
-
     QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
     this->min_amplitude->setMinimum(1);
     this->min_amplitude->setMaximum(999);
@@ -373,28 +362,8 @@ void Config_dialog::fill_tab_motion_detect()
 
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm())));
 
-    this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff());
-    this->set_amplify_coeff_value(this->amplify_coeff->value());
-
     this->set_min_amplitude_slider(this->settings->get_min_amplitude());
     this->set_min_amplitude_value(this->min_amplitude->value());
-}
-
-void Config_dialog::set_amplify_coeff_slider(const int &value)
-{
-    this->amplify_coeff->setValue(value);
-}
-
-int Config_dialog::get_amplify_coeff_slider()
-{
-   return this->amplify_coeff->value();
-}
-
-void
-Config_dialog::set_amplify_coeff_value(const int &value)
-{
-    Q_UNUSED(value);
-    this->amplify_coeff_value->setText(QString::number(this->get_amplify_coeff_slider()));
 }
 
 void Config_dialog::set_min_amplitude_slider(const float &value)
@@ -660,8 +629,7 @@ void Config_dialog::reset_motion_detection_params()
 {
     // Reset all motion detection parameters to their default values.
     this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
-    this->set_amplify_coeff_slider(this->settings->get_input_amplify_coeff_default());
-    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt())));
+    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(static_cast<dscratch_vinyls_t>(this->vinyl_type_select->currentData().toInt())));
 }
 
 void Config_dialog::reset_shortcuts()
@@ -712,10 +680,10 @@ Config_dialog::accept()
     this->settings->set_extern_prog(this->extern_prog->text());
 
     // Set vinyl type.
-    this->settings->set_vinyl_type(static_cast<DSCRATCH_VINYLS>(this->vinyl_type_select->currentData().toInt()));
+    this->settings->set_vinyl_type(static_cast<dscratch_vinyls_t>(this->vinyl_type_select->currentData().toInt()));
 
     // Set RPM.
-    this->settings->set_rpm(this->rpm_select->currentText().toInt());
+    this->settings->set_rpm(static_cast<dscratch_vinyl_rpm_t>(this->rpm_select->currentText().toInt()));
 
     // Set sound card settings.
     this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
@@ -731,7 +699,6 @@ Config_dialog::accept()
     this->settings->set_auto_jack_connections(this->auto_jack_connections_check->isChecked());
 
     // Set motion detection settings.
-    this->settings->set_input_amplify_coeff(this->get_amplify_coeff_slider());
     this->settings->set_min_amplitude(this->get_min_amplitude_slider());
 
     // Set keyboard shortcuts.

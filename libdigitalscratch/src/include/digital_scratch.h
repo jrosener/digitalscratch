@@ -72,7 +72,7 @@ class Digital_scratch : public Controller
          *        Digital_scratch (e.g. Final_scratch_vinyl)
          * @param sample rate is the rate of the timecoded input signal.
          */
-        Digital_scratch(DSCRATCH_VINYLS coded_vinyl_type,
+        Digital_scratch(dscratch_vinyls_t coded_vinyl_type,
                         unsigned int    sample_rate);
 
         virtual ~Digital_scratch();
@@ -101,10 +101,10 @@ class Digital_scratch : public Controller
         /**
          * Set Coded_vinyl object.
          */
-        bool change_coded_vinyl(DSCRATCH_VINYLS coded_vinyl_type);
+        bool change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type);
 
     private:
-        bool init(DSCRATCH_VINYLS coded_vinyl_type);
+        bool init(dscratch_vinyls_t coded_vinyl_type);
         void clean();
 
         void  calculate_speed();

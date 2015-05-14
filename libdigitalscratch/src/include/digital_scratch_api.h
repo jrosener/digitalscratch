@@ -46,14 +46,14 @@ extern "C" {
 #endif
 
 // Error codes.
-enum DSCRATCH_STATUS
+enum dscratch_status_t
 {
     DSCRATCH_SUCCESS = 0,
     DSCRATCH_ERROR
 };
 
 // Supported timecoded vinyl type
-enum DSCRATCH_VINYLS
+enum dscratch_vinyls_t
 {
     FINAL_SCRATCH = 0,
     SERATO,
@@ -62,15 +62,17 @@ enum DSCRATCH_VINYLS
 };
 
 // Supported turntable speed.
-#define RPM_33 33
-#define RPM_45 45
-
+enum dscratch_vinyl_rpm_t
+{
+    RPM_33 = 33,
+    RPM_45 = 45
+};
 
 /******************************************************************************/
 /*********************************** API **************************************/
 
 /**< Handle type used by API functions to identify the turntable. */
-typedef void* DSCRATCH_HANDLE;
+typedef void* dscratch_handle_t;
 
 /**
  * Create a new turntable.
@@ -82,9 +84,9 @@ typedef void* DSCRATCH_HANDLE;
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
-                                                    const unsigned int  sample_rate,
-                                                    DSCRATCH_HANDLE    *out_handle);
+DLLIMPORT dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_vinyl_type,
+                                                      const unsigned int  sample_rate,
+                                                      dscratch_handle_t  *out_handle);
 
 /**
  * Remove the specified turntable from turntable list and delete (deallocate
@@ -94,7 +96,7 @@ DLLIMPORT DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vi
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle);
+DLLIMPORT dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle);
 
 /**
  * Provide samples recorded from turntable (with timecoded vinyl) and analyze
@@ -110,10 +112,10 @@ DLLIMPORT DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle);
  * @note Warning: input_samples_1 and input_samples_2 must have the same number
  *                of elements.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
-                                                          const float     *input_samples_1,
-                                                          const float     *input_samples_2,
-                                                          int              nb_frames);
+DLLIMPORT dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
+                                                            const float       *input_samples_1,
+                                                            const float       *input_samples_2,
+                                                            int                nb_frames);
 
 /**
  * Provide playing parameters (only relevant if dscratch_analyze_recorded_datas()
@@ -136,9 +138,9 @@ DLLIMPORT DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handl
  * @return 0 if playing parameters are found, otherwise 1.
  * @return DSCRATCH_SUCCESS if playing parameters are found.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
-                                                          float           *speed,
-                                                          float           *volume);
+DLLIMPORT dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
+                                                            float             *speed,
+                                                            float             *volume);
 
 /**
  * Get DigitalScratch version.
@@ -155,7 +157,7 @@ DLLIMPORT const char *dscratch_get_version();
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle);
+DLLIMPORT dscratch_status_t dscratch_display_turntable(dscratch_handle_t handle);
 
 /**
  * Get vinyl type used for specified turntable.
@@ -165,8 +167,8 @@ DLLIMPORT DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle);
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,
-                                                            DSCRATCH_VINYLS   *vinyl_type);
+DLLIMPORT dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t  handle,
+                                                              dscratch_vinyls_t *vinyl_type);
 
 /**
  * Transform a vinyl type to an explicit string name.
@@ -175,38 +177,31 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   ha
  *
  * @return A full string name corresponding to the type.
  */
-DLLIMPORT const char* dscratch_get_vinyl_name_from_type(DSCRATCH_VINYLS vinyl_type);
+DLLIMPORT const char* dscratch_get_vinyl_name_from_type(dscratch_vinyls_t vinyl_type);
 
 /**
  * Get default vinyl type.
  *
  * @return the default vinyl type (Serato vinyl).
  */
-DLLIMPORT DSCRATCH_VINYLS dscratch_get_default_vinyl_type();
+DLLIMPORT dscratch_vinyls_t dscratch_get_default_vinyl_type();
 
 
 /**
  * Change vinyl type without deleting and recreating engine.
  *
  * @param handle is used to identify the turntable.
- * @param vinyl_type is the type of vinyl (@see DSCRATCH_VINYLS).
+ * @param vinyl_type is the type of vinyl (@see dscratch_vinyls_t).
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
-                                                     DSCRATCH_VINYLS  vinyl_type);
+DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
+                                                       dscratch_vinyls_t vinyl_type);
 
 
 
 /******************************************************************************/
 /***************   Motion detection configuration parameters   ****************/
-
-/**
- * Get the default coefficient to be multiplied to input timecoded signal.
- *
- * @return the coefficient used to be multiplied to input samples.
- */
-DLLIMPORT int dscratch_get_default_input_amplify_coeff();
 
 /**
  * Set the number of RPM.
@@ -216,8 +211,8 @@ DLLIMPORT int dscratch_get_default_input_amplify_coeff();
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
-                                           unsigned short int rpm);
+DLLIMPORT dscratch_status_t dscratch_set_rpm(dscratch_handle_t    handle,
+                                             dscratch_vinyl_rpm_t rpm);
 
 /**
  * Get the turntable RPM value.
@@ -228,23 +223,23 @@ DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
  *
  * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_get_rpm(DSCRATCH_HANDLE     handle,
-                                           unsigned short int *out_rpm);
+DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
+                                             dscratch_vinyl_rpm_t *out_rpm);
 
 /**
  * Get the default number of RPM.
  *
  * @return the default number of rpm (45 or 33).
  */
-DLLIMPORT unsigned short int dscratch_get_default_rpm();
+DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm();
 
 /**
  * Getter/Setter for the minimal detectable amplitude.
  */
-DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle, float amplitude);
-DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude(DSCRATCH_HANDLE handle, float *out_ampl);
-DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude(DSCRATCH_HANDLE handle, float *out_ampl);
-DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(DSCRATCH_VINYLS vinyl_type);
+DLLIMPORT dscratch_status_t dscratch_set_min_amplitude(dscratch_handle_t handle, float amplitude);
+DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t handle, float *out_ampl);
+DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t handle, float *out_ampl);
+DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(dscratch_vinyls_t vinyl_type);
 
 #ifdef __cplusplus
 }

@@ -39,7 +39,7 @@
 #include "app/application_logging.h"
 
 Timecode_control_process::Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
-                                                   const DSCRATCH_VINYLS                     &vinyl_type,
+                                                   const dscratch_vinyls_t                   &vinyl_type,
                                                    const unsigned int                        &sample_rate) : Control_process(param)
 {
     //
@@ -64,10 +64,9 @@ Timecode_control_process::~Timecode_control_process()
     return;
 }
 
-bool
-Timecode_control_process::run(const unsigned short int &nb_samples,
-                              const float              *samples_1,
-                              const float              *samples_2)
+bool Timecode_control_process::run(const unsigned short int &nb_samples,
+                                   const float              *samples_1,
+                                   const float              *samples_2)
 {
     int   are_new_params = 0;
     float speed          = 0.0;
@@ -119,8 +118,7 @@ Timecode_control_process::run(const unsigned short int &nb_samples,
     return true;
 }
 
-DSCRATCH_HANDLE
-Timecode_control_process::get_dscratch_handle()
+dscratch_handle_t Timecode_control_process::get_dscratch_handle()
 {
     return this->dscratch_handle;
 }

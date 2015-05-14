@@ -10,8 +10,7 @@ class DigitalScratchApi_Test : public QObject
     Q_OBJECT
     
 private:
-    void l_dscratch_analyze_timecode(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file);
-    void l_dscratch_analyze_timecode_V2(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file);
+    void l_dscratch_analyze_timecode(dscratch_vinyls_t vinyl_type, const char *txt_timecode_file);
 
 public:
     DigitalScratchApi_Test();

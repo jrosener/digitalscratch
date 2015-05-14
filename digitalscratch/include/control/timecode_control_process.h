@@ -49,12 +49,12 @@ class Timecode_control_process : public Control_process
     Q_OBJECT
 
  private:
-    DSCRATCH_HANDLE dscratch_handle;
+    dscratch_handle_t dscratch_handle;
     unsigned short int waitfor_emit_speed_changed; // Do not update speed (in gui) every time.
 
  public:
     Timecode_control_process(const QSharedPointer<Playback_parameters> &param,
-                             const DSCRATCH_VINYLS                     &vinyl_type,
+                             const dscratch_vinyls_t                   &vinyl_type,
                              const unsigned int                        &sample_rate);
     virtual ~Timecode_control_process();
 
@@ -62,5 +62,5 @@ class Timecode_control_process : public Control_process
              const float              *samples_1,
              const float              *samples_2);
 
-    DSCRATCH_HANDLE get_dscratch_handle();
+    dscratch_handle_t get_dscratch_handle();
 };

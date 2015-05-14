@@ -56,7 +56,7 @@ class Coded_vinyl
 
     private:
         int sample_rate;
-        unsigned short int rpm;
+        dscratch_vinyl_rpm_t rpm;
         bool is_reverse_direction;
 
         FIR          *diffFIR;
@@ -124,13 +124,13 @@ class Coded_vinyl
          * @param rpm is the value to set.
          * @return TRUE if all is OK, otherwise FALSE.
          */
-        bool set_rpm(unsigned short int rpm);
+        bool set_rpm(dscratch_vinyl_rpm_t rpm);
 
         /**
          * Get number of RPM of the turntable.
          * @return the value to get.
          */
-        unsigned short int get_rpm();
+        dscratch_vinyl_rpm_t get_rpm();
 
         /**
          * Get the sinusoidal frequency

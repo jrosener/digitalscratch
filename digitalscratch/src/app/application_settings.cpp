@@ -42,8 +42,8 @@ Application_settings::Application_settings() : settings(APPLICATION_NAME)
     this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
     for (int i = 0; i <= NB_DSCRATCH_VINYLS; i++)
     {
-       this->available_vinyl_types.insert(static_cast<DSCRATCH_VINYLS>(i),
-                                          dscratch_get_vinyl_name_from_type(static_cast<DSCRATCH_VINYLS>(i)));
+       this->available_vinyl_types.insert(static_cast<dscratch_vinyls_t>(i),
+                                          dscratch_get_vinyl_name_from_type(static_cast<dscratch_vinyls_t>(i)));
     }
     this->available_rpms << RPM_33 << RPM_45;
     this->available_nb_decks << 1 << 2 << 3;
@@ -109,9 +109,6 @@ Application_settings::init_settings()
     //
     if (this->settings.contains(VINYL_TYPE_CFG) == false) {
         this->settings.setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
-    }
-    if (this->settings.contains(INPUT_AMPLIFY_COEFF) == false) {
-        this->settings.setValue(INPUT_AMPLIFY_COEFF, (new QString)->setNum(this->get_input_amplify_coeff_default()));
     }
     if (this->settings.contains(MIN_AMPLITUDE) == false) {
         this->settings.setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->get_vinyl_type())));
@@ -369,29 +366,6 @@ Application_settings::set_nb_samplers(const unsigned short int &nb_samplers)
 // Timecode signal detection settings.
 //
 
-int
-Application_settings::get_input_amplify_coeff()
-{
-    return this->settings.value(INPUT_AMPLIFY_COEFF).toInt();
-}
-
-int
-Application_settings::get_input_amplify_coeff_default()
-{
-    return dscratch_get_default_input_amplify_coeff();
-}
-
-void
-Application_settings::set_input_amplify_coeff(int in_coeff)
-{
-    QString value;
-    value.setNum(in_coeff);
-    if (in_coeff > 0 && in_coeff < 1000) // Range: ]0,1000[
-    {
-        this->settings.setValue(INPUT_AMPLIFY_COEFF, value);
-    }
-}
-
 float
 Application_settings::get_min_amplitude()
 {
@@ -399,7 +373,7 @@ Application_settings::get_min_amplitude()
 }
 
 float
-Application_settings::get_min_amplitude_default_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
+Application_settings::get_min_amplitude_default_from_vinyl_type(dscratch_vinyls_t vinyl_type)
 {
     return dscratch_get_default_min_amplitude_from_vinyl_type(vinyl_type);
 }
@@ -529,51 +503,51 @@ Application_settings::get_available_internal_sound_cards()
     return this->available_sound_cards;
 }
 
-DSCRATCH_VINYLS
+dscratch_vinyls_t
 Application_settings::get_vinyl_type()
 {
-    return static_cast<DSCRATCH_VINYLS>(this->settings.value(VINYL_TYPE_CFG).toInt());
+    return static_cast<dscratch_vinyls_t>(this->settings.value(VINYL_TYPE_CFG).toInt());
 }
 
-DSCRATCH_VINYLS
+dscratch_vinyls_t
 Application_settings::get_vinyl_type_default()
 {
     return dscratch_get_default_vinyl_type();
 }
 
 void
-Application_settings::set_vinyl_type(DSCRATCH_VINYLS type)
+Application_settings::set_vinyl_type(dscratch_vinyls_t type)
 {
     this->settings.setValue(VINYL_TYPE_CFG, type);
 }
 
-QMap<DSCRATCH_VINYLS, QString>
+QMap<dscratch_vinyls_t, QString>
 Application_settings::get_available_vinyl_types()
 {
     return this->available_vinyl_types;
 }
 
 void
-Application_settings::set_rpm(const unsigned short int &rpm)
+Application_settings::set_rpm(const dscratch_vinyl_rpm_t &rpm)
 {
     QString value;
     value.setNum(rpm);
-    if (rpm == 33 || rpm == 45) // Supported speeds are 33 and 45 rpm, nothing else.
+    if (rpm == RPM_33 || rpm == RPM_45) // Supported speeds are 33 and 45 rpm, nothing else.
     {
         this->settings.setValue(RPM_CFG, value);
     }
 }
 
-unsigned short int
+dscratch_vinyl_rpm_t
 Application_settings::get_rpm()
 {
-    if (this->settings.value(RPM_CFG).toInt() == 45)
-        return 45;
+    if (this->settings.value(RPM_CFG).toInt() == RPM_45)
+        return RPM_45;
     else
-        return 33;
+        return RPM_33;
 }
 
-unsigned short int
+dscratch_vinyl_rpm_t
 Application_settings::get_rpm_default()
 {
     return dscratch_get_default_rpm();

@@ -96,8 +96,6 @@ class Config_dialog : public QDialog
     QCheckBox            *autostart_detection_check;
     QComboBox            *vinyl_type_select;
     QComboBox            *rpm_select;
-    QSlider              *amplify_coeff;
-    QLabel               *amplify_coeff_value;
     QSlider              *min_amplitude;
     QLabel               *min_amplitude_value;
     ShortcutQLabel       *kb_switch_playback;
@@ -138,8 +136,6 @@ class Config_dialog : public QDialog
     void     fill_tab_sound_card();
     void     fill_tab_motion_detect();
     void     fill_tab_shortcuts();
-    void     set_amplify_coeff_slider(const int &value);
-    int      get_amplify_coeff_slider();
     void     set_min_amplitude_slider(const float &value);
     float    get_min_amplitude_slider();
     bool     is_duplicate_shortcut(const QString &value);
@@ -149,7 +145,6 @@ class Config_dialog : public QDialog
     bool show_browse_extern_prog_window();
     void reset_shortcuts();
     void reset_motion_detection_params();
-    void set_amplify_coeff_value(const int &value);
     void set_min_amplitude_value(const int &value);
     void validate_and_set_shortcut(const QString &value, ShortcutQLabel *label);
 };

@@ -49,7 +49,7 @@ using namespace std;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 
-static const char *DSCRATCH_VINYLS_NAMES[NB_DSCRATCH_VINYLS] =
+static const char *dscratch_vinyl_names[NB_DSCRATCH_VINYLS] =
 { 
     "final scratch standard 2.0",
     "serato cv02",
@@ -63,14 +63,14 @@ typedef struct handle_struct
     vector<float>   *samples_1;
     vector<float>   *samples_2;
     Digital_scratch *dscratch;
-} dscratch_handle_struct;
+} dscratch_handle_t_struct;
 
 
 
 /******************************** Internal functions *************************/
 
-bool l_get_dscratch_from_handle(DSCRATCH_HANDLE   handle,
-                                Digital_scratch **dscratch)
+bool l_get_dscratch_from_handle(dscratch_handle_t   handle,
+                                Digital_scratch   **dscratch)
 {
     if (handle == nullptr)
     {
@@ -78,12 +78,12 @@ bool l_get_dscratch_from_handle(DSCRATCH_HANDLE   handle,
         return false;
     }
  
-    *dscratch = static_cast<dscratch_handle_struct*>(handle)->dscratch;
+    *dscratch = static_cast<dscratch_handle_t_struct*>(handle)->dscratch;
     return true;
 }
 
-bool l_get_samples1_vector_from_handle(DSCRATCH_HANDLE   handle,
-                                       vector<float>   **samples)
+bool l_get_samples1_vector_from_handle(dscratch_handle_t   handle,
+                                       vector<float>     **samples)
 {
     if (handle == nullptr)
     {
@@ -91,12 +91,12 @@ bool l_get_samples1_vector_from_handle(DSCRATCH_HANDLE   handle,
         return false;
     }
 
-    *samples = static_cast<dscratch_handle_struct*>(handle)->samples_1;
+    *samples = static_cast<dscratch_handle_t_struct*>(handle)->samples_1;
     return true;
 }
 
-bool l_get_samples2_vector_from_handle(DSCRATCH_HANDLE   handle,
-                                       vector<float>   **samples)
+bool l_get_samples2_vector_from_handle(dscratch_handle_t   handle,
+                                       vector<float>     **samples)
 {
     if (handle == nullptr)
     {
@@ -104,12 +104,12 @@ bool l_get_samples2_vector_from_handle(DSCRATCH_HANDLE   handle,
         return false;
     }
 
-    *samples = static_cast<dscratch_handle_struct*>(handle)->samples_2;
+    *samples = static_cast<dscratch_handle_t_struct*>(handle)->samples_2;
     return true;
 }
 
-bool l_get_coded_vinyl_from_handle(DSCRATCH_HANDLE   handle,
-                                   Coded_vinyl     **vinyl)
+bool l_get_coded_vinyl_from_handle(dscratch_handle_t   handle,
+                                   Coded_vinyl       **vinyl)
 {
     // Get Digital_scratch instance from handle.
     Digital_scratch *dscratch = nullptr;
@@ -131,9 +131,9 @@ bool l_get_coded_vinyl_from_handle(DSCRATCH_HANDLE   handle,
 
 /********************************* API functions ******************************/
 
-DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
-                                          const unsigned int  sample_rate,
-                                          DSCRATCH_HANDLE    *out_handle)
+dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_vinyl_type,
+                                            const unsigned int  sample_rate,
+                                            dscratch_handle_t  *out_handle)
 {
     // Check input pointer on handle.
     if (out_handle == nullptr)
@@ -143,7 +143,7 @@ DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
     }
 
     // Create the handle.
-    dscratch_handle_struct *hdl = new dscratch_handle_struct;
+    dscratch_handle_t_struct *hdl = new dscratch_handle_t_struct;
 
     // Create Digital_scratch object.
     Digital_scratch *dscratch = new Digital_scratch(coded_vinyl_type, sample_rate);
@@ -159,12 +159,12 @@ DSCRATCH_STATUS dscratch_create_turntable(DSCRATCH_VINYLS     coded_vinyl_type,
     hdl->samples_2 = new vector<float>(INPUT_BUFFER_MIN_SIZE);
 
     // Return a handle on the Digital_scratch instance.
-    *out_handle = static_cast<dscratch_handle_struct*>(hdl);
+    *out_handle = static_cast<dscratch_handle_t_struct*>(hdl);
 
     return DSCRATCH_SUCCESS;
 }
 
-DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle)
+dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle)
 {
     // Get Digital_scratch instance from handle.
     Digital_scratch *dscratch = nullptr;
@@ -190,15 +190,15 @@ DSCRATCH_STATUS dscratch_delete_turntable(DSCRATCH_HANDLE handle)
     delete samples_1;
     delete samples_2;
 
-    delete static_cast<dscratch_handle_struct*>(handle);
+    delete static_cast<dscratch_handle_t_struct*>(handle);
 
     return DSCRATCH_SUCCESS;
 }
 
-DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
-                                                const float     *input_samples_1,
-                                                const float     *input_samples_2,
-                                                int              nb_frames)
+dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
+                                                  const float       *input_samples_1,
+                                                  const float       *input_samples_2,
+                                                  int                nb_frames)
 {
     // Get Digital_scratch instance from handle.
     Digital_scratch *dscratch = nullptr;
@@ -231,9 +231,9 @@ DSCRATCH_STATUS dscratch_analyze_recorded_datas(DSCRATCH_HANDLE  handle,
     return DSCRATCH_SUCCESS;
 }
 
-DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
-                                                float           *speed,
-                                                float           *volume)
+dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
+                                                  float             *speed,
+                                                  float             *volume)
 {
     // Get Digital_scratch instance from handle.
     Digital_scratch *dscratch = nullptr;
@@ -251,9 +251,9 @@ DSCRATCH_STATUS dscratch_get_playing_parameters(DSCRATCH_HANDLE  handle,
     return DSCRATCH_SUCCESS;
 }
 
-DSCRATCH_STATUS dscratch_display_turntable(DSCRATCH_HANDLE handle)
+dscratch_status_t dscratch_display_turntable(dscratch_handle_t handle)
 {
-    DSCRATCH_VINYLS vinyl;
+    dscratch_vinyls_t vinyl;
 
     // Show handle (pointer).
     cout << "handle: " << handle << endl;
@@ -290,8 +290,8 @@ const char *dscratch_get_version()
     return STR(VERSION);
 }
 
-DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,
-                                                  DSCRATCH_VINYLS   *vinyl_type)
+dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t  handle,
+                                                    dscratch_vinyls_t *vinyl_type)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = nullptr;
@@ -322,18 +322,18 @@ DSCRATCH_STATUS dscratch_get_turntable_vinyl_type(DSCRATCH_HANDLE   handle,
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT const char* dscratch_get_vinyl_name_from_type(DSCRATCH_VINYLS vinyl_type)
+DLLIMPORT const char* dscratch_get_vinyl_name_from_type(dscratch_vinyls_t vinyl_type)
 {
-    return DSCRATCH_VINYLS_NAMES[vinyl_type];
+    return dscratch_vinyl_names[vinyl_type];
 }
 
-DLLIMPORT DSCRATCH_VINYLS dscratch_get_default_vinyl_type()
+DLLIMPORT dscratch_vinyls_t dscratch_get_default_vinyl_type()
 {
     return SERATO;
 }
 
-DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
-                                                     DSCRATCH_VINYLS  vinyl_type)
+DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
+                                                       dscratch_vinyls_t vinyl_type)
 {
     // Get Digital_scratch instance from handle.
     Digital_scratch *dscratch = nullptr;
@@ -343,7 +343,7 @@ DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
     }
 
     // Change vinyl if necessary.
-    DSCRATCH_VINYLS current_vinyl_type;
+    dscratch_vinyls_t current_vinyl_type;
     dscratch_get_turntable_vinyl_type(handle, &current_vinyl_type);
     if (current_vinyl_type != vinyl_type)
     {
@@ -357,8 +357,8 @@ DLLIMPORT DSCRATCH_STATUS dscratch_change_vinyl_type(DSCRATCH_HANDLE  handle,
 }
 
 /**** API functions: General motion detection configuration parameters ********/
-DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
-                                           unsigned short int rpm)
+DLLIMPORT dscratch_status_t dscratch_set_rpm(dscratch_handle_t    handle,
+                                             dscratch_vinyl_rpm_t rpm)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = nullptr;
@@ -378,8 +378,8 @@ DLLIMPORT DSCRATCH_STATUS dscratch_set_rpm(DSCRATCH_HANDLE    handle,
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT DSCRATCH_STATUS dscratch_get_rpm(DSCRATCH_HANDLE     handle,
-                                           unsigned short int *out_rpm)
+DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
+                                             dscratch_vinyl_rpm_t *out_rpm)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = nullptr;
@@ -399,13 +399,13 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_rpm(DSCRATCH_HANDLE     handle,
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT unsigned short int dscratch_get_default_rpm()
+DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm()
 {
     return DEFAULT_RPM;
 }
 
-DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle,
-                                                     float           amplitude)
+DLLIMPORT dscratch_status_t dscratch_set_min_amplitude(dscratch_handle_t handle,
+                                                       float             amplitude)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = nullptr;
@@ -420,8 +420,8 @@ DLLIMPORT DSCRATCH_STATUS dscratch_set_min_amplitude(DSCRATCH_HANDLE handle,
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude(DSCRATCH_HANDLE  handle,
-                                                     float           *out_ampl)
+DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t  handle,
+                                                       float             *out_ampl)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
@@ -441,8 +441,8 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_min_amplitude(DSCRATCH_HANDLE  handle,
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude(DSCRATCH_HANDLE  handle,
-                                                            float           *out_ampl)
+DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t  handle,
+                                                               float             *out_ampl)
 {
     // Get Coded_vinyl object.
     Coded_vinyl *vinyl = NULL;
@@ -462,7 +462,7 @@ DLLIMPORT DSCRATCH_STATUS dscratch_get_default_min_amplitude(DSCRATCH_HANDLE  ha
     return DSCRATCH_SUCCESS;
 }
 
-DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(DSCRATCH_VINYLS vinyl_type)
+DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(dscratch_vinyls_t vinyl_type)
 {
     float result = 0.0f;
 

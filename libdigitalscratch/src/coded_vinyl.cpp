@@ -178,13 +178,13 @@ int Coded_vinyl::get_sample_rate()
     return this->sample_rate;
 }
 
-bool Coded_vinyl::set_rpm(unsigned short int rpm)
+bool Coded_vinyl::set_rpm(dscratch_vinyl_rpm_t rpm)
 {
     this->rpm = rpm;
     return true;
 }
 
-unsigned short int Coded_vinyl::get_rpm()
+dscratch_vinyl_rpm_t Coded_vinyl::get_rpm()
 {
     return this->rpm;
 }

@@ -25,8 +25,8 @@ void DigitalScratchApi_Test::cleanupTestCase()
  */
 void DigitalScratchApi_Test::testCase_dscratch_create_turntable()
 {
-    DSCRATCH_HANDLE handle_1 = nullptr;
-    DSCRATCH_HANDLE handle_2 = nullptr;
+    dscratch_handle_t handle_1 = nullptr;
+    dscratch_handle_t handle_2 = nullptr;
 
     // Create a turntable with bad parameters.
     QVERIFY2(dscratch_create_turntable(FINAL_SCRATCH, 44100, nullptr) == DSCRATCH_ERROR, "bad handle");
@@ -51,9 +51,9 @@ void DigitalScratchApi_Test::testCase_dscratch_create_turntable()
     QVERIFY2(dscratch_delete_turntable(handle_2) == DSCRATCH_SUCCESS, "clean turntable 2");
 }
 
-void DigitalScratchApi_Test::l_dscratch_analyze_timecode(DSCRATCH_VINYLS vinyl_type, const char *txt_timecode_file)
+void DigitalScratchApi_Test::l_dscratch_analyze_timecode(dscratch_vinyls_t vinyl_type, const char *txt_timecode_file)
 {
-    DSCRATCH_HANDLE handle = nullptr;
+    dscratch_handle_t handle = nullptr;
 
     // Create a turntable
     QVERIFY2(dscratch_create_turntable(vinyl_type, 44100, &handle) == DSCRATCH_SUCCESS, "create turntable");
@@ -130,7 +130,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_noises()
  */
 void DigitalScratchApi_Test::testCase_dscratch_display_turntable()
 {
-    DSCRATCH_HANDLE handle = nullptr;
+    dscratch_handle_t handle = nullptr;
 
     // Create a turntable
     QVERIFY2(dscratch_create_turntable(FINAL_SCRATCH, 44100, &handle) == DSCRATCH_SUCCESS, "create turntable");
@@ -151,8 +151,8 @@ void DigitalScratchApi_Test::testCase_dscratch_display_turntable()
  */
 void DigitalScratchApi_Test::testCase_dscratch_get_vinyl_type()
 {
-    DSCRATCH_VINYLS vinyl;
-    DSCRATCH_HANDLE handle = nullptr;
+    dscratch_vinyls_t vinyl;
+    dscratch_handle_t handle = nullptr;
 
     // Create a turntable
     QVERIFY2(dscratch_create_turntable(FINAL_SCRATCH, 44100, &handle) == DSCRATCH_SUCCESS, "create turntable");

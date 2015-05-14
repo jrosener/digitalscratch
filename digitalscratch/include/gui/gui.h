@@ -374,7 +374,7 @@ class Gui : public QObject
     QList<QSharedPointer<Deck_playback_process>>               playbacks;
     QSharedPointer<Sound_driver_access_rules>                  sound_card;
     QSharedPointer<Control_and_playback_process>               control_and_play;
-    DSCRATCH_HANDLE                                           *dscratch_handles;
+    dscratch_handle_t                                         *dscratch_handles;
     Application_settings                                      *settings;
 
     // External controller.
