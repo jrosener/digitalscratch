@@ -114,7 +114,7 @@ class Dicer_control_process : public QObject
     bool stop();                  // Stop the MIDI reader thread and close Dicers.
 
  private:
-    bool extract_midi_buffer(const unsigned char buf[],
+    bool extract_midi_buffer(const unsigned char    buf[],
                              dicer_t                &out_dicer_index,
                              dicer_mode_t           &out_mode,
                              dicer_button_t         &out_button_index,

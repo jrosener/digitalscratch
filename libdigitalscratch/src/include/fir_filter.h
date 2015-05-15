@@ -2,15 +2,15 @@
 
 #include <QVector>
 
-class FIR
+class FIR_filter
 {
  private:
         QVector<double> x;
         QVector<double> h;
 
  public:
-        FIR(QVector<double> h);
-        virtual ~FIR();
+        FIR_filter(QVector<double> h);
+        virtual ~FIR_filter();
 
  public:
     double compute(double sample);

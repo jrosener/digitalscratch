@@ -1,19 +1,19 @@
-#include <Unwrap.h>
+#include <unwrapper.h>
 
 using namespace std;
 
-Unwrap::Unwrap()
+Unwrapper::Unwrapper()
 {
     this->lastPhase = 0.0f;
     this->currentPhase = 0.0f;
 }
 
-Unwrap::~Unwrap()
+Unwrapper::~Unwrapper()
 {
     return;
 }
 
-double Unwrap::compute(const double &phase)
+double Unwrapper::compute(const double &phase)
 {
     double deltaPhase = phase - this->lastPhase;
 

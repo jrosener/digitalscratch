@@ -1,14 +1,14 @@
 #pragma once
 
-class Unwrap
+class Unwrapper
 {
  private:
     double lastPhase;
     double currentPhase;
 
  public:
-        Unwrap();
-        virtual ~Unwrap();
+        Unwrapper();
+        virtual ~Unwrapper();
 
  public:
     double compute(const double &phase);

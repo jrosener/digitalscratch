@@ -37,9 +37,9 @@
 
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
-#include "FIR.h"
-#include "Unwrap.h"
-#include "IIR.h"
+#include "fir_filter.h"
+#include "unwrapper.h"
+#include "iir_filter.h"
 
 #define DEFAULT_RPM RPM_33
 
@@ -50,108 +50,46 @@
  */
 class Coded_vinyl
 {
-    /* Attributes */
-    protected:
-        float min_amplitude;
+ protected:
+    float min_amplitude;
 
-    private:
-        int sample_rate;
-        dscratch_vinyl_rpm_t rpm;
-        bool is_reverse_direction;
+ private:
+    unsigned int         sample_rate;
+    dscratch_vinyl_rpm_t rpm;
+    bool                 is_reverse_direction;
 
-        FIR          *diffFIR;
-        Unwrap       *unwrap;
-        IIR          *speedIIR;
-        IIR          *amplitudeIIR;
-        double filteredFreqInst;
-        double filteredAmplitudeInst;
+    // Frequency and amplitude analysis.
+    FIR_filter diff_FIR;
+    Unwrapper  unwraper;
+    IIR_filter speed_IIR;
+    IIR_filter amplitude_IIR;
+    double     filtered_freq_inst;
+    double     filtered_amplitude_inst;
 
-    /* Constructor / Destructor */
-    public:
-        /**
-         * Constructor
-         */
-        Coded_vinyl(unsigned int sample_rate);
+ public:
+    Coded_vinyl(unsigned int sample_rate);
+    virtual ~Coded_vinyl();
 
-        /**
-         * Destructor
-         */
-        virtual ~Coded_vinyl();
+ public:
+    void run_recording_data_analysis(const QVector<float> &input_samples_1,
+                                     const QVector<float> &input_samples_2);
 
+    float get_speed();
+    float get_volume();
 
-    /* Methods */
-    public:
-        /**
-         * Get the current speed value.
-         * Define the pure virtual method in base class (Coded_vinyl)
-         * @return the speed value.
-         */
-        float get_speed();
+    bool set_sample_rate(unsigned int sample_rate);
+    unsigned int get_sample_rate();
 
-        /**
-         * Get the current volume value.
-         * Define the pure virtual method in base class (Coded_vinyl)
-         * @return the volume value.
-         */
-        float get_volume();
+    bool set_rpm(dscratch_vinyl_rpm_t rpm);
+    dscratch_vinyl_rpm_t get_rpm();
 
-        /**
-         * Analyze channels recording datas.
-         * @param input_samples_1 are the samples of channel 1.
-         * @param input_samples_2 are the samples of channel 2.
-         *
-         * @note input_samples_1 and input_samples_2 must have the same number
-         *       of element.
-         */
-        void run_recording_data_analysis(const QVector<float> &input_samples_1,
-                                         const QVector<float> &input_samples_2);
+    void  set_min_amplitude(float amplitude);
+    float get_min_amplitude();
+    virtual float get_default_min_amplitude() = 0;
 
-        /**
-         * Set the sample rate used to record timecoded vinyl.
-         * @param sample_rate is the value to set.
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_sample_rate(int sample_rate);
+    virtual int get_sinusoidal_frequency() = 0;
 
-        /**
-         * Get the sample rate used to record timecoded vinyl.
-         * @return the value to get.
-         */
-        int get_sample_rate();
-
-        /**
-         * Set number of RPM of the turntable.
-         * @param rpm is the value to set.
-         * @return TRUE if all is OK, otherwise FALSE.
-         */
-        bool set_rpm(dscratch_vinyl_rpm_t rpm);
-
-        /**
-         * Get number of RPM of the turntable.
-         * @return the value to get.
-         */
-        dscratch_vinyl_rpm_t get_rpm();
-
-        /**
-         * Get the sinusoidal frequency
-         */
-        virtual int get_sinusoidal_frequency() = 0;
-
-        /**
-         * @brief Getter/Setter for the minimal detectable amplitude.
-         */
-        void  set_min_amplitude(float amplitude);
-        float get_min_amplitude();
-        virtual float get_default_min_amplitude() = 0;
-
-    protected:
-        /**
-         * Set boolean to reverse direction (useful for Mixvibes record).
-         */
-        bool set_reverse_direction(bool is_reverse_direction);
-
-        /**
-         * Is reverse direction used ?.
-         */
-        bool get_reverse_direction();
+ protected:
+    bool set_reverse_direction(bool is_reverse_direction);
+    bool get_reverse_direction();
 };

@@ -2,7 +2,7 @@
 
 #include <QVector>
 
-class IIR
+class IIR_filter
 {
  private:
         QVector<double> x;
@@ -11,8 +11,8 @@ class IIR
         QVector<double> a;
 
  public:
-        IIR(QVector<double> a, QVector<double> b);
-        virtual ~IIR();
+        IIR_filter(QVector<double> a, QVector<double> b);
+        virtual ~IIR_filter();
 
  public:
     double compute(double sample);

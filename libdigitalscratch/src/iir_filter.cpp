@@ -1,9 +1,8 @@
-#include <IIR.h>
-#include <iterator>
+#include <iir_filter.h>
 
 using namespace std;
 
-IIR::IIR(QVector<double> a, QVector<double> b)
+IIR_filter::IIR_filter(QVector<double> a, QVector<double> b)
 {
     if (a.length() == 0)
         this->a << 0;
@@ -13,12 +12,12 @@ IIR::IIR(QVector<double> a, QVector<double> b)
     for (int i = 0; i < a.length(); i++) this->y << 0;
 }
 
-IIR::~IIR()
+IIR_filter::~IIR_filter()
 {
     return;
 }
 
-double IIR::compute(double sample)
+double IIR_filter::compute(double sample)
 {
     double y = 0.0f;
 

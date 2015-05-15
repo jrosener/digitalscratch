@@ -1,9 +1,8 @@
-#include <FIR.h>
-#include <iterator>
+#include <fir_filter.h>
 
 using namespace std;
 
-FIR::FIR(QVector<double> h)
+FIR_filter::FIR_filter(QVector<double> h)
 {
     this->h = h; // Copy filter kernel
     this->x.reserve(h.length()); // Create delay line
@@ -13,12 +12,12 @@ FIR::FIR(QVector<double> h)
     }
 }
 
-FIR::~FIR()
+FIR_filter::~FIR_filter()
 {
     return;
 }
 
-double FIR::compute(double sample)
+double FIR_filter::compute(double sample)
 {
     double y = 0.0f;
 
