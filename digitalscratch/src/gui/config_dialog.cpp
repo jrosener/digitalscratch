@@ -108,8 +108,6 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     {
         this->rpm_select->addItem(QString::number(available_rpms.at(i)));
     }
-    this->autostart_detection_check = new QCheckBox(this);
-    this->autostart_detection_check->setTristate(false);
 
     // Init keyboard shortcuts widgets.
     this->kb_switch_playback           = new ShortcutQLabel(this);
@@ -319,30 +317,26 @@ QWidget *Config_dialog::init_tab_motion_detect()
 {
     QGridLayout *motion_detect_layout = new QGridLayout(this);
 
-    QLabel *autostart_detection_label = new QLabel(tr("Start motion detection at startup: "), this);
-    motion_detect_layout->addWidget(autostart_detection_label,       0, 0);
-    motion_detect_layout->addWidget(this->autostart_detection_check, 0, 1);
-
     QLabel *vinyl_type_label = new QLabel(tr("Vinyl type: "), this);
-    motion_detect_layout->addWidget(vinyl_type_label,        1, 0);
-    motion_detect_layout->addWidget(this->vinyl_type_select, 1, 1);
+    motion_detect_layout->addWidget(vinyl_type_label,        0, 0);
+    motion_detect_layout->addWidget(this->vinyl_type_select, 0, 1);
 
     QLabel *rpm_label = new QLabel(tr("RPM: "), this);
-    motion_detect_layout->addWidget(rpm_label,        2, 0);
-    motion_detect_layout->addWidget(this->rpm_select, 2, 1);
+    motion_detect_layout->addWidget(rpm_label,        1, 0);
+    motion_detect_layout->addWidget(this->rpm_select, 1, 1);
 
     QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
     this->min_amplitude->setMinimum(1);
     this->min_amplitude->setMaximum(999);
     this->min_amplitude->setSingleStep(1);
-    motion_detect_layout->addWidget(min_amplitude_label, 5, 0);
-    motion_detect_layout->addWidget(this->min_amplitude, 5, 1);
-    motion_detect_layout->addWidget(this->min_amplitude_value, 5, 2);
+    motion_detect_layout->addWidget(min_amplitude_label, 2, 0);
+    motion_detect_layout->addWidget(this->min_amplitude, 2, 1);
+    motion_detect_layout->addWidget(this->min_amplitude_value, 2, 2);
     QObject::connect(this->min_amplitude, &QSlider::valueChanged, [this](int value){this->set_min_amplitude_value(value);});
 
     QPushButton *motion_params_reset_to_default = new QPushButton(this);
     motion_params_reset_to_default->setText(tr("Reset to default"));
-    motion_detect_layout->addWidget(motion_params_reset_to_default, 10, 0, Qt::AlignLeft);
+    motion_detect_layout->addWidget(motion_params_reset_to_default, 3, 0, Qt::AlignLeft);
     QObject::connect(motion_params_reset_to_default, &QPushButton::clicked, [this](){this->reset_motion_detection_params();});
 
     motion_detect_layout->setColumnStretch(0, 0);

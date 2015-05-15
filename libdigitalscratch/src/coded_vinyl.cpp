@@ -114,8 +114,8 @@ float Coded_vinyl::get_speed()
     qCDebug(DSLIB_ANALYZEVINYL) << "Searching new speed...";
 
     float speed = 0.0;
-    //if (filteredAmplitudeInst > 0.00005) // for left turntable // FIXME: use get_min_amplitude => should be defined per turntable and not per vinyl type.
-    if (this->filteredAmplitudeInst > 0.00030) // for right turntable
+    if (filteredAmplitudeInst > 0.00005) // for left turntable // FIXME: use get_min_amplitude => should be defined per turntable and not per vinyl type. => speed_min_amplitude
+    //if (this->filteredAmplitudeInst > 0.00030) // for right turntable
     {
         speed = this->filteredFreqInst;
         if (this->is_reverse_direction == true)
@@ -133,7 +133,7 @@ float Coded_vinyl::get_volume()
 
     float volume = 0.0;
     //if (filteredAmplitudeInst > 0.00005) // for left turntable
-    if (this->filteredAmplitudeInst > 0.00030) // for right turntable
+    if (this->filteredAmplitudeInst > 0.00030) // for right turntable    => volume_min_apmlitude
     {
         // Turntable is running.
         volume = this->filteredAmplitudeInst * 150.0; // FIXME: get this value from app settings

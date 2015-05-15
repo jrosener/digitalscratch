@@ -93,7 +93,6 @@ class Config_dialog : public QDialog
     QCheckBox            *device_internal_check;
     QComboBox            *device_internal_select;
 
-    QCheckBox            *autostart_detection_check;
     QComboBox            *vinyl_type_select;
     QComboBox            *rpm_select;
     QSlider              *min_amplitude;
