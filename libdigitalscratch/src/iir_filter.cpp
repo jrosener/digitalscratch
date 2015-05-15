@@ -1,3 +1,35 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                           Digital Scratch System                           */
+/*                                                                            */
+/*                                                                            */
+/*-----------------------------------------------------------( iir_filter.h )-*/
+/*                                                                            */
+/*  Copyright (C) 2003-2015                                                   */
+/*                Julien Rosener <julien.rosener@digital-scratch.org>         */
+/*                                                                            */
+/*----------------------------------------------------------------( License )-*/
+/*                                                                            */
+/*  This program is free software: you can redistribute it and/or modify      */
+/*  it under the terms of the GNU General Public License as published by      */
+/*  the Free Software Foundation, either version 3 of the License, or         */
+/*  (at your option) any later version.                                       */
+/*                                                                            */
+/*  This package is distributed in the hope that it will be useful,           */
+/*  but WITHOUT ANY WARRANTY; without even the implied warranty of            */
+/*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
+/*  GNU General Public License for more details.                              */
+/*                                                                            */
+/*  You should have received a copy of the GNU General Public License         */
+/*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
+/*                                                                            */
+/*------------------------------------------------------------( Description )-*/
+/*                                                                            */
+/*    IIR_filter class : Ininite Impulse Response filter implementation       */
+/*                                                                            */
+/*============================================================================*/
+
 #include <iir_filter.h>
 
 using namespace std;
@@ -5,11 +37,19 @@ using namespace std;
 IIR_filter::IIR_filter(QVector<double> a, QVector<double> b)
 {
     if (a.length() == 0)
+    {
         this->a << 0;
+    }
     this->a = a; // Copy filter kernel
     this->b = b; // Copy filter kernel
-    for (int i = 0; i < b.length(); i++) this->x << 0;
-    for (int i = 0; i < a.length(); i++) this->y << 0;
+    for (int i = 0; i < b.length(); i++)
+    {
+        this->x << 0;
+    }
+    for (int i = 0; i < a.length(); i++)
+    {
+        this->y << 0;
+    }
 }
 
 IIR_filter::~IIR_filter()
