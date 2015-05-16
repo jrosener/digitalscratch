@@ -37,7 +37,7 @@ using namespace std;
 FIR_filter::FIR_filter(QVector<double> h)
 {
     this->h = h; // Copy filter kernel
-    for (int i = 0; i < h.length(); i++) // Create delay line
+    for (int i = 0; i < h.length(); ++i) // Create delay line
     {
         this->x << 0;
     }
@@ -48,7 +48,7 @@ FIR_filter::~FIR_filter()
     return;
 }
 
-double FIR_filter::compute(double sample)
+double FIR_filter::compute(const double &sample)
 {
     double y = 0.0f;
 
@@ -60,7 +60,7 @@ double FIR_filter::compute(double sample)
     this->x[0] = sample;
 
     // Compute filter output
-    for(int i = 0; i < this->x.length(); i++)
+    for(int i = 0; i < this->x.length(); ++i)
     {
         y += (this->x[i] * this->h[i]);
     }

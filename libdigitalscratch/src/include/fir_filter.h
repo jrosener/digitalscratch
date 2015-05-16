@@ -45,5 +45,5 @@ class FIR_filter
         virtual ~FIR_filter();
 
  public:
-    double compute(double sample);
+    double compute(const double &sample);
 };

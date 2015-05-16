@@ -79,7 +79,7 @@ Manual_control_process::run()
     // Calculate volume based on speed.
     this->params->set_volume(1.0); // TODO calculate volume based on speed.
     this->params->set_volume_state(true);
-    emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0));
+    emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0)); // FIXME: is it used ?
 
     return true;
 }

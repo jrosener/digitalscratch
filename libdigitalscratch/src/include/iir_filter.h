@@ -47,5 +47,5 @@ class IIR_filter
         virtual ~IIR_filter();
 
  public:
-    double compute(double sample);
+    double compute(const double &sample);
 };

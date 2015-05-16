@@ -44,10 +44,11 @@ using namespace std;
 #include "coded_vinyl.h"
 #include <qmath.h>
 
+#define FIR_COEFF (sample_rate/1000.0) / (3.1416 * 2.0)
 
 Coded_vinyl::Coded_vinyl(unsigned int sample_rate) : sample_rate(sample_rate),
                                                      rpm(DEFAULT_RPM),
-                                                     diff_FIR({-(sample_rate/1000.0)/(3.1416*2), (sample_rate/1000.0)/(3.1416*2)}),
+                                                     diff_FIR({FIR_COEFF * -1.0,  FIR_COEFF}),
                                                      unwraper(),
                                                      speed_IIR({1.0, -0.998}, {0.001, 0.001}),
                                                      amplitude_IIR({1.0, -0.998}, {0.001, 0.001}),
@@ -116,8 +117,8 @@ float Coded_vinyl::get_volume()
     qCDebug(DSLIB_ANALYZEVINYL) << "Searching new volume...";
 
     float volume = 0.0;
-    //if (filteredAmplitudeInst > 0.00005) // for left turntable
-    if (this->filtered_amplitude_inst > 0.00030) // for right turntable    => volume_min_apmlitude
+    if (this->filtered_amplitude_inst > 0.00005) // for left turntable
+    //if (this->filtered_amplitude_inst > 0.00030) // for right turntable    => volume_min_apmlitude
     {
         // Turntable is running.
         volume = this->filtered_amplitude_inst * 150.0; // FIXME: get this value from app settings

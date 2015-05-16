@@ -35,8 +35,8 @@
 class Unwrapper
 {
  private:
-    double lastPhase;
-    double currentPhase;
+    double last_phase;
+    double current_phase;
 
  public:
         Unwrapper();

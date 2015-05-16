@@ -36,8 +36,8 @@ using namespace std;
 
 Unwrapper::Unwrapper()
 {
-    this->lastPhase = 0.0f;
-    this->currentPhase = 0.0f;
+    this->last_phase = 0.0;
+    this->current_phase = 0.0;
 }
 
 Unwrapper::~Unwrapper()
@@ -47,15 +47,15 @@ Unwrapper::~Unwrapper()
 
 double Unwrapper::compute(const double &phase)
 {
-    double deltaPhase = phase - this->lastPhase;
+    double deltaPhase = phase - this->last_phase;
 
     if (deltaPhase > 3.1416) // Overflow
-        this->currentPhase += deltaPhase - 3.1416*2;
+        this->current_phase += deltaPhase - 3.1416*2;
     else if (deltaPhase < -3.1416) // Underflow
-        this->currentPhase += deltaPhase + 3.1416*2;
+        this->current_phase += deltaPhase + 3.1416*2;
     else // There is no phase over/underflow
-        this->currentPhase += deltaPhase;
-    this->lastPhase = phase;
+        this->current_phase += deltaPhase;
+    this->last_phase = phase;
 
-    return this->currentPhase;
+    return this->current_phase;
 }

@@ -118,7 +118,7 @@ Jack_access_rules::start(void *callback_param)
                 const char *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
                 this->input_port << jack_port_register(this->stream,
                                                         input_port_names[i],
-                                                        JACK_DEFAULT_AUDIO_TYPE,
+                                                        JACK_DEFAULT_AUDIO_TYPE, // =  "32 bit float mono audio"
                                                         JackPortIsInput,
                                                         0);
                 if (this->input_port[i] == nullptr)

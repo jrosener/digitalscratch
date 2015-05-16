@@ -42,11 +42,11 @@ IIR_filter::IIR_filter(QVector<double> a, QVector<double> b)
     }
     this->a = a; // Copy filter kernel
     this->b = b; // Copy filter kernel
-    for (int i = 0; i < b.length(); i++)
+    for (int i = 0; i < b.length(); ++i)
     {
         this->x << 0;
     }
-    for (int i = 0; i < a.length(); i++)
+    for (int i = 0; i < a.length(); ++i)
     {
         this->y << 0;
     }
@@ -57,7 +57,7 @@ IIR_filter::~IIR_filter()
     return;
 }
 
-double IIR_filter::compute(double sample)
+double IIR_filter::compute(const double &sample)
 {
     double y = 0.0f;
 
@@ -73,11 +73,11 @@ double IIR_filter::compute(double sample)
     }
 
     // Compute filter output
-    for (int i = 0; i < this->x.length(); i++)
+    for (int i = 0; i < this->x.length(); ++i)
     {
         y += (this->x[i] * this->b[i]);
     }
-    for (int i = 1; i < this->y.length(); i++)
+    for (int i = 1; i < this->y.length(); ++i)
     {
         y -= (this->y[i] * this->a[i]);
     }
