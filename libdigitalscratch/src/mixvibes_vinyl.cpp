@@ -60,11 +60,6 @@ int Mixvibes_vinyl::get_sinusoidal_frequency()
         return MIXVIBES_SINUSOIDAL_FREQ_45RPM;
 }
 
-float Mixvibes_vinyl::get_default_min_amplitude_for_normal_speed()
-{
-    return DEFAULT_MIXVIBES_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
-}
-
 float Mixvibes_vinyl::get_default_min_amplitude()
 {
     return DEFAULT_MIXVIBES_MIN_AMPLITUDE;

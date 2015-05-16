@@ -362,19 +362,19 @@ void Config_dialog::fill_tab_motion_detect()
 
 void Config_dialog::set_min_amplitude_slider(const float &value)
 {
-    this->min_amplitude->setValue(qRound(value * 1000.0));
+    this->min_amplitude->setValue(qRound(value * 100000.0));
 }
 
 float Config_dialog::get_min_amplitude_slider()
 {
-   return this->min_amplitude->value() / 1000.0;
+   return this->min_amplitude->value() / 100000.0;
 }
 
 void
 Config_dialog::set_min_amplitude_value(const int &value)
 {
     Q_UNUSED(value);
-    this->min_amplitude_value->setText(QString::number(this->get_min_amplitude_slider()));
+    this->min_amplitude_value->setText(QString::number(this->get_min_amplitude_slider(), 'f'));
 }
 
 QWidget *Config_dialog::init_tab_shortcuts()

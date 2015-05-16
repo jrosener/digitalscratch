@@ -59,11 +59,6 @@ int Serato_vinyl::get_sinusoidal_frequency()
         return SERATO_VINYL_SINUSOIDAL_FREQ_45RPM;
 }
 
-float Serato_vinyl::get_default_min_amplitude_for_normal_speed()
-{
-    return DEFAULT_SERATO_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
-}
-
 float Serato_vinyl::get_default_min_amplitude()
 {
     return DEFAULT_SERATO_MIN_AMPLITUDE;

@@ -58,11 +58,6 @@ int Final_scratch_vinyl::get_sinusoidal_frequency()
         return FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
 }
 
-float Final_scratch_vinyl::get_default_min_amplitude_for_normal_speed()
-{
-    return DEFAULT_FS_MIN_AMPLITUDE_FOR_NORMAL_SPEED;
-}
-
 float Final_scratch_vinyl::get_default_min_amplitude()
 {
     return DEFAULT_FS_MIN_AMPLITUDE;
