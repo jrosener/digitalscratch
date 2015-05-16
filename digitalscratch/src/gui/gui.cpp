@@ -216,15 +216,15 @@ Gui::apply_application_settings()
     for (int i = 0; i < this->nb_decks; i++)
     {
         // FIXME : wrap these calls into Timecode_control_process and remove the digital_scratch_api dependency (this->dscratch_handles).
-        if (dscratch_change_vinyl_type(this->dscratch_handles[i], this->settings->get_vinyl_type()) != DSCRATCH_SUCCESS)
+        if (dscratch_change_vinyl_type(this->dscratch_handles[i], this->settings->get_vinyl_type(i)) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set vinyl type";
         }
-        if (dscratch_set_rpm(this->dscratch_handles[i], this->settings->get_rpm()) != DSCRATCH_SUCCESS)
+        if (dscratch_set_rpm(this->dscratch_handles[i], this->settings->get_rpm(i)) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set turntable RPM";
         }
-        if (dscratch_set_min_amplitude(this->dscratch_handles[i], this->settings->get_min_amplitude()) != DSCRATCH_SUCCESS)
+        if (dscratch_set_min_amplitude(this->dscratch_handles[i], this->settings->get_min_amplitude(i)) != DSCRATCH_SUCCESS)
         {
             qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude value";
         }

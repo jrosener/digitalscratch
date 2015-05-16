@@ -107,11 +107,23 @@ Application_settings::init_settings()
     //
     // Timecode signal detection parameters.
     //
-    if (this->settings.contains(VINYL_TYPE_CFG) == false) {
-        this->settings.setValue(VINYL_TYPE_CFG, this->get_vinyl_type_default());
-    }
-    if (this->settings.contains(MIN_AMPLITUDE) == false) {
-        this->settings.setValue(MIN_AMPLITUDE, (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->get_vinyl_type())));
+    for (int i = 0; i < 3; i++)
+    {
+        if (this->settings.contains(QString(DECK_INDEX) + QString::number(i) + "/" + QString(VINYL_TYPE_CFG)) == false)
+        {
+            this->settings.setValue(QString(DECK_INDEX) + QString::number(i) + "/" + QString(VINYL_TYPE_CFG),
+                                    this->get_vinyl_type_default());
+        }
+        if (this->settings.contains(QString(DECK_INDEX) + QString::number(i) + "/" + QString(MIN_AMPLITUDE_CFG)) == false)
+        {
+            this->settings.setValue(QString(DECK_INDEX) + QString::number(i) + "/" + QString(MIN_AMPLITUDE_CFG),
+                                    (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->get_vinyl_type_default()), 'f'));
+        }
+        if (this->settings.contains(QString(DECK_INDEX) + QString::number(i) + "/" + QString(RPM_CFG)) == false)
+        {
+            this->settings.setValue(QString(DECK_INDEX) + QString::number(i) + "/" + QString(RPM_CFG),
+                                    (new QString)->setNum(this->get_rpm_default()));
+        }
     }
 
     //
@@ -367,9 +379,10 @@ Application_settings::set_nb_samplers(const unsigned short int &nb_samplers)
 //
 
 float
-Application_settings::get_min_amplitude()
+Application_settings::get_min_amplitude(const unsigned short int &deck_index)
 {
-    return this->settings.value(MIN_AMPLITUDE).toFloat();
+    return this->settings.value(QString(DECK_INDEX) + QString::number(deck_index)
+                                + "/" + QString(MIN_AMPLITUDE_CFG)).toFloat();
 }
 
 float
@@ -379,14 +392,75 @@ Application_settings::get_min_amplitude_default_from_vinyl_type(dscratch_vinyls_
 }
 
 void
-Application_settings::set_min_amplitude(const float &amplitude)
+Application_settings::set_min_amplitude(const unsigned short int &deck_index, const float &amplitude)
 {
     QString value;
-    value.setNum(amplitude);
+    value.setNum(amplitude, 'f');
     if (amplitude > 0.0 && amplitude < 1.0) // Range: ]0,1[
     {
-        this->settings.setValue(MIN_AMPLITUDE, value);
+        this->settings.setValue(QString(DECK_INDEX) + QString::number(deck_index)
+                                + "/" + QString(MIN_AMPLITUDE_CFG), value);
     }
+}
+
+dscratch_vinyls_t
+Application_settings::get_vinyl_type(const unsigned short int &deck_index)
+{
+    return static_cast<dscratch_vinyls_t>(this->settings.value(QString(DECK_INDEX) + QString::number(deck_index)
+                                                               + "/" + QString(VINYL_TYPE_CFG)).toInt());
+}
+
+dscratch_vinyls_t
+Application_settings::get_vinyl_type_default()
+{
+    return dscratch_get_default_vinyl_type();
+}
+
+void
+Application_settings::set_vinyl_type(const unsigned short int &deck_index, dscratch_vinyls_t type)
+{
+    this->settings.setValue(QString(DECK_INDEX) + QString::number(deck_index)
+                            + "/" + QString(VINYL_TYPE_CFG), type);
+}
+
+QMap<dscratch_vinyls_t, QString>
+Application_settings::get_available_vinyl_types()
+{
+    return this->available_vinyl_types;
+}
+
+void
+Application_settings::set_rpm(const unsigned short int &deck_index, const dscratch_vinyl_rpm_t &rpm)
+{
+    QString value;
+    value.setNum(rpm);
+    if (rpm == RPM_33 || rpm == RPM_45) // Supported speeds are 33 and 45 rpm, nothing else.
+    {
+        this->settings.setValue(QString(DECK_INDEX) + QString::number(deck_index)
+                                + "/" + QString(RPM_CFG), value);
+    }
+}
+
+dscratch_vinyl_rpm_t
+Application_settings::get_rpm(const unsigned short int &deck_index)
+{
+    if (this->settings.value(QString(DECK_INDEX) + QString::number(deck_index)
+                             + "/" + QString(RPM_CFG)).toInt() == RPM_45)
+        return RPM_45;
+    else
+        return RPM_33;
+}
+
+dscratch_vinyl_rpm_t
+Application_settings::get_rpm_default()
+{
+    return dscratch_get_default_rpm();
+}
+
+QList<unsigned short int>
+Application_settings::get_available_rpms()
+{
+    return this->available_rpms;
 }
 
 void
@@ -501,62 +575,6 @@ QList<QString>
 Application_settings::get_available_internal_sound_cards()
 {
     return this->available_sound_cards;
-}
-
-dscratch_vinyls_t
-Application_settings::get_vinyl_type()
-{
-    return static_cast<dscratch_vinyls_t>(this->settings.value(VINYL_TYPE_CFG).toInt());
-}
-
-dscratch_vinyls_t
-Application_settings::get_vinyl_type_default()
-{
-    return dscratch_get_default_vinyl_type();
-}
-
-void
-Application_settings::set_vinyl_type(dscratch_vinyls_t type)
-{
-    this->settings.setValue(VINYL_TYPE_CFG, type);
-}
-
-QMap<dscratch_vinyls_t, QString>
-Application_settings::get_available_vinyl_types()
-{
-    return this->available_vinyl_types;
-}
-
-void
-Application_settings::set_rpm(const dscratch_vinyl_rpm_t &rpm)
-{
-    QString value;
-    value.setNum(rpm);
-    if (rpm == RPM_33 || rpm == RPM_45) // Supported speeds are 33 and 45 rpm, nothing else.
-    {
-        this->settings.setValue(RPM_CFG, value);
-    }
-}
-
-dscratch_vinyl_rpm_t
-Application_settings::get_rpm()
-{
-    if (this->settings.value(RPM_CFG).toInt() == RPM_45)
-        return RPM_45;
-    else
-        return RPM_33;
-}
-
-dscratch_vinyl_rpm_t
-Application_settings::get_rpm_default()
-{
-    return dscratch_get_default_rpm();
-}
-
-QList<unsigned short int>
-Application_settings::get_available_rpms()
-{
-    return this->available_rpms;
 }
 
 QList<unsigned int>

@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 
         // Process which analyze captured timecode data for a deck.
         QSharedPointer<Timecode_control_process> tcode_control(new Timecode_control_process(play_param,
-                                                                                            settings->get_vinyl_type(),
+                                                                                            settings->get_vinyl_type(i),
                                                                                             settings->get_sample_rate()));
         tcode_controls << tcode_control;
 

@@ -83,14 +83,11 @@ using namespace std;
 #define SOUND_CARD_CFG                      "sound_card/sound_card_id"
 #define SOUND_CARD_DEFAULT                  "0"
 
-// Motion detection.
-#define VINYL_TYPE_CFG                      "motion_detection/vinyl_type"
-#define RPM_CFG                             "motion_detection/rpm"
-#define EXTREME_MIN_CFG                     "motion_detection/extreme_min"
-#define MAX_NB_BUFFER_CFG                   "motion_detection/max_nb_buffer"
-#define MAX_BUFFER_COEFF_CFG                "motion_detection/max_buffer_coeff"
-#define LOW_PASS_FILTER_MAX_SPEED_USAGE_CFG "motion_detection/low_pass_filter_max_speed_usage"
-#define MIN_AMPLITUDE                       "motion_detection/min_amplitude"
+// Decks: motion detection.
+#define DECK_INDEX                          "deck_"
+#define VINYL_TYPE_CFG                      "vinyl_type"
+#define RPM_CFG                             "rpm"
+#define MIN_AMPLITUDE_CFG                   "min_amplitude"
 
 // Playback parameters.
 #define MAX_SPEED_DIFF_CFG                  "playback_parameters/max_speed_diff"
@@ -231,18 +228,18 @@ class Application_settings : public QObject
     bool            get_autostart_motion_detection();
     bool            get_autostart_motion_detection_default();
 
-    void            set_vinyl_type(dscratch_vinyls_t vinyl_type);
-    dscratch_vinyls_t get_vinyl_type();
+    void              set_vinyl_type(const unsigned short &deck_index, dscratch_vinyls_t vinyl_type);
+    dscratch_vinyls_t get_vinyl_type(const unsigned short &deck_index);
     dscratch_vinyls_t get_vinyl_type_default();
     QMap<dscratch_vinyls_t, QString> get_available_vinyl_types();
 
-    void                   set_rpm(const dscratch_vinyl_rpm_t &rpm);
-    dscratch_vinyl_rpm_t   get_rpm();
+    void                   set_rpm(const unsigned short &deck_index, const dscratch_vinyl_rpm_t &rpm);
+    dscratch_vinyl_rpm_t   get_rpm(const unsigned short &deck_index);
     dscratch_vinyl_rpm_t   get_rpm_default();
     QList<unsigned short>  get_available_rpms();
 
-    void  set_min_amplitude(const float &amplitude);
-    float get_min_amplitude();
+    void  set_min_amplitude(const unsigned short &deck_index, const float &amplitude);
+    float get_min_amplitude(const unsigned short &deck_index);
     float get_min_amplitude_default_from_vinyl_type(dscratch_vinyls_t vinyl_type);
 
     void    set_keyboard_shortcut(const QString &kb_shortcut_path, const QString &value);

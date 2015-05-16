@@ -93,10 +93,9 @@ class Config_dialog : public QDialog
     QCheckBox            *device_internal_check;
     QComboBox            *device_internal_select;
 
-    QComboBox            *vinyl_type_select;
-    QComboBox            *rpm_select;
-    QSlider              *min_amplitude;
-    QLabel               *min_amplitude_value;
+    QList<QComboBox*>     vinyl_type_select;
+    QList<QComboBox*>     rpm_select;
+    QList<QLineEdit*>     min_amplitude;
     ShortcutQLabel       *kb_switch_playback;
     ShortcutQLabel       *kb_load_track_on_deck;
     ShortcutQLabel       *kb_play_begin_track_on_deck;
@@ -129,21 +128,18 @@ class Config_dialog : public QDialog
     void     reject();
     QWidget *init_tab_player();
     QWidget *init_tab_sound_card();
-    QWidget *init_tab_motion_detect();
+    QWidget *init_tab_motion_detect(const unsigned short int &deck_index);
     QWidget *init_tab_shortcuts();
     void     fill_tab_player();
     void     fill_tab_sound_card();
-    void     fill_tab_motion_detect();
+    void     fill_tab_motion_detect(const unsigned short &deck_index);
     void     fill_tab_shortcuts();
-    void     set_min_amplitude_slider(const float &value);
-    float    get_min_amplitude_slider();
     bool     is_duplicate_shortcut(const QString &value);
 
  private slots:
     bool show_browse_window();
     bool show_browse_extern_prog_window();
     void reset_shortcuts();
-    void reset_motion_detection_params();
-    void set_min_amplitude_value(const int &value);
+    void reset_motion_detection_params(const unsigned short int & deck_index);
     void validate_and_set_shortcut(const QString &value, ShortcutQLabel *label);
 };

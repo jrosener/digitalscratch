@@ -92,21 +92,27 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     }
 
     // Init motion detection parameters widgets.
-    this->min_amplitude       = new QSlider(Qt::Horizontal, this);
-    this->min_amplitude_value = new QLabel(this);
-    this->vinyl_type_select   = new QComboBox(this);
-    QMap<dscratch_vinyls_t, QString> available_vinyl_types = this->settings->get_available_vinyl_types();
-    QMapIterator<dscratch_vinyls_t, QString> i(available_vinyl_types);
-    while (i.hasNext())
+    for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
     {
-        i.next();
-        this->vinyl_type_select->addItem(i.value(), i.key());
-    }
-    this->rpm_select                         = new QComboBox(this);
-    QList<unsigned short int> available_rpms = this->settings->get_available_rpms();
-    for (int i = 0; i < available_rpms.size(); i++)
-    {
-        this->rpm_select->addItem(QString::number(available_rpms.at(i)));
+        this->min_amplitude << new QLineEdit(this);
+
+        QComboBox *vinyls = new QComboBox(this);
+        QMap<dscratch_vinyls_t, QString> available_vinyl_types = this->settings->get_available_vinyl_types();
+        QMapIterator<dscratch_vinyls_t, QString> j(available_vinyl_types);
+        while (j.hasNext())
+        {
+            j.next();
+            vinyls->addItem(j.value(), j.key());
+        }
+        this->vinyl_type_select << vinyls;
+
+        QComboBox *rpms = new QComboBox(this);
+        QList<unsigned short int> available_rpms = this->settings->get_available_rpms();
+        for (int k = 0; k < available_rpms.size(); k++)
+        {
+            rpms->addItem(QString::number(available_rpms.at(k)));
+        }
+        this->rpm_select << rpms;
     }
 
     // Init keyboard shortcuts widgets.
@@ -142,21 +148,31 @@ Config_dialog::~Config_dialog()
 int
 Config_dialog::show()
 {
+    // Create 3 tabs: player, sound card and motion detection.
+    QTabWidget *tabs = new QTabWidget(this);
+
     // Create the player tab.
     QWidget *player_tab = this->init_tab_player();
     this->fill_tab_player();
+    tabs->insertTab(0, player_tab, tr("Player"));
 
     // Create the sound card tab.
     QWidget *sound_card_tab = this->init_tab_sound_card();
     this->fill_tab_sound_card();
-
-    // Create the motion detection tab: provide coded vinyl configuration parameters.
-    QWidget *motion_detect_tab = this->init_tab_motion_detect();
-    this->fill_tab_motion_detect();
+    tabs->insertTab(1, sound_card_tab, tr("Sound card"));
 
     // Create the keyboard shortcuts tab.
     QWidget *shortcuts_tab = this->init_tab_shortcuts();
     this->fill_tab_shortcuts();
+    tabs->insertTab(2, shortcuts_tab, tr("Shortcuts"));
+
+    // Create the motion detection tab: provide coded vinyl configuration parameters per decks.
+    for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
+    {
+        QWidget *motion_detect_tab = this->init_tab_motion_detect(i);
+        this->fill_tab_motion_detect(i);
+        tabs->insertTab(3 + i, motion_detect_tab, tr("Deck ") + QString::number(i));
+    }
 
     //
     // Main window.
@@ -167,13 +183,6 @@ Config_dialog::show()
 
     // Set window icon
     this->setWindowIcon(QIcon(ICON));
-
-    // Create 3 tabs: player, sound card and motion detection.
-    QTabWidget *tabs = new QTabWidget(this);
-    tabs->insertTab(0, player_tab,        tr("Player"));
-    tabs->insertTab(1, sound_card_tab,    tr("Sound card"));
-    tabs->insertTab(2, motion_detect_tab, tr("Motion detection"));
-    tabs->insertTab(3, shortcuts_tab,     tr("Shortcuts"));
 
     // 2 buttons: OK and Cancel.
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
@@ -276,19 +285,19 @@ QWidget *Config_dialog::init_tab_sound_card()
     this->auto_jack_connections_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     device_layout->addWidget(this->auto_jack_connections_check, 1, 3, Qt::AlignLeft);
 
-    // Select sound device : choice 2 (internal).
-    this->device_internal_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    device_layout->addWidget(device_internal_check, 2, 1, Qt::AlignLeft);
-    QLabel *internal_label = new QLabel(tr("Internal"), this);
-    internal_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    device_layout->addWidget(internal_label, 2, 2, Qt::AlignLeft);
-    device_internal_select->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    device_layout->addWidget(device_internal_select, 3, 2, Qt::AlignLeft);
+    // Select sound device : choice 2 (internal). // TODO add internal sound card capture support
+//    this->device_internal_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//    device_layout->addWidget(device_internal_check, 2, 1, Qt::AlignLeft);
+//    QLabel *internal_label = new QLabel(tr("Internal"), this);
+//    internal_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//    device_layout->addWidget(internal_label, 2, 2, Qt::AlignLeft);
+//    device_internal_select->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+//    device_layout->addWidget(device_internal_select, 3, 2, Qt::AlignLeft);
 
     // Make device choices exclusive.
     QButtonGroup *device_choices = new QButtonGroup(this);
     device_choices->addButton(this->device_jack_check);
-    device_choices->addButton(this->device_internal_check);
+//    device_choices->addButton(this->device_internal_check);
     device_choices->setExclusive(true);
 
     // Create tab.
@@ -313,31 +322,27 @@ void Config_dialog::fill_tab_sound_card()
     this->device_internal_select->setCurrentIndex(this->device_internal_select->findText(this->settings->get_internal_sound_card()));
 }
 
-QWidget *Config_dialog::init_tab_motion_detect()
+QWidget *Config_dialog::init_tab_motion_detect(const unsigned short &deck_index)
 {
     QGridLayout *motion_detect_layout = new QGridLayout(this);
 
     QLabel *vinyl_type_label = new QLabel(tr("Vinyl type: "), this);
-    motion_detect_layout->addWidget(vinyl_type_label,        0, 0);
-    motion_detect_layout->addWidget(this->vinyl_type_select, 0, 1);
+    motion_detect_layout->addWidget(vinyl_type_label,                    0, 0);
+    motion_detect_layout->addWidget(this->vinyl_type_select[deck_index], 0, 1);
 
     QLabel *rpm_label = new QLabel(tr("RPM: "), this);
-    motion_detect_layout->addWidget(rpm_label,        1, 0);
-    motion_detect_layout->addWidget(this->rpm_select, 1, 1);
+    motion_detect_layout->addWidget(rpm_label,                    1, 0);
+    motion_detect_layout->addWidget(this->rpm_select[deck_index], 1, 1);
 
     QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
-    this->min_amplitude->setMinimum(1);
-    this->min_amplitude->setMaximum(999);
-    this->min_amplitude->setSingleStep(1);
-    motion_detect_layout->addWidget(min_amplitude_label, 2, 0);
-    motion_detect_layout->addWidget(this->min_amplitude, 2, 1);
-    motion_detect_layout->addWidget(this->min_amplitude_value, 2, 2);
-    QObject::connect(this->min_amplitude, &QSlider::valueChanged, [this](int value){this->set_min_amplitude_value(value);});
+    this->min_amplitude[deck_index]->setMinimumWidth(300);
+    motion_detect_layout->addWidget(min_amplitude_label,             2, 0);
+    motion_detect_layout->addWidget(this->min_amplitude[deck_index], 2, 1);
 
     QPushButton *motion_params_reset_to_default = new QPushButton(this);
     motion_params_reset_to_default->setText(tr("Reset to default"));
     motion_detect_layout->addWidget(motion_params_reset_to_default, 3, 0, Qt::AlignLeft);
-    QObject::connect(motion_params_reset_to_default, &QPushButton::clicked, [this](){this->reset_motion_detection_params();});
+    QObject::connect(motion_params_reset_to_default, &QPushButton::clicked, [this, deck_index](){this->reset_motion_detection_params(deck_index);});
 
     motion_detect_layout->setColumnStretch(0, 0);
     motion_detect_layout->setColumnStretch(1, 30);
@@ -350,31 +355,15 @@ QWidget *Config_dialog::init_tab_motion_detect()
     return motion_detect_tab;
 }
 
-void Config_dialog::fill_tab_motion_detect()
+void Config_dialog::fill_tab_motion_detect(const unsigned short int &deck_index)
 {
-    this->vinyl_type_select->setCurrentIndex(this->vinyl_type_select->findData(this->settings->get_vinyl_type()));
+    this->vinyl_type_select[deck_index]->setCurrentIndex(
+                this->vinyl_type_select[deck_index]->findData(this->settings->get_vinyl_type(deck_index)));
 
-    this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm())));
+    this->rpm_select[deck_index]->setCurrentIndex(
+                this->rpm_select[deck_index]->findText(QString::number(this->settings->get_rpm(deck_index))));
 
-    this->set_min_amplitude_slider(this->settings->get_min_amplitude());
-    this->set_min_amplitude_value(this->min_amplitude->value());
-}
-
-void Config_dialog::set_min_amplitude_slider(const float &value)
-{
-    this->min_amplitude->setValue(qRound(value * 100000.0));
-}
-
-float Config_dialog::get_min_amplitude_slider()
-{
-   return this->min_amplitude->value() / 100000.0;
-}
-
-void
-Config_dialog::set_min_amplitude_value(const int &value)
-{
-    Q_UNUSED(value);
-    this->min_amplitude_value->setText(QString::number(this->get_min_amplitude_slider(), 'f'));
+    this->min_amplitude[deck_index]->setText(QString::number(this->settings->get_min_amplitude(deck_index), 'f'));
 }
 
 QWidget *Config_dialog::init_tab_shortcuts()
@@ -619,11 +608,14 @@ Config_dialog::show_browse_extern_prog_window()
     return true;
 }
 
-void Config_dialog::reset_motion_detection_params()
+void Config_dialog::reset_motion_detection_params(const unsigned short &deck_index)
 {
     // Reset all motion detection parameters to their default values.
-    this->rpm_select->setCurrentIndex(this->rpm_select->findText(QString::number(this->settings->get_rpm_default())));
-    this->set_min_amplitude_slider(this->settings->get_min_amplitude_default_from_vinyl_type(static_cast<dscratch_vinyls_t>(this->vinyl_type_select->currentData().toInt())));
+    this->rpm_select[deck_index]->setCurrentIndex(
+                this->rpm_select[deck_index]->findText(QString::number(this->settings->get_rpm_default())));
+    this->min_amplitude[deck_index]->setText(
+                QString::number(this->settings->get_min_amplitude_default_from_vinyl_type(
+                                    static_cast<dscratch_vinyls_t>(this->vinyl_type_select[deck_index]->currentData().toInt())), 'f'));
 }
 
 void Config_dialog::reset_shortcuts()
@@ -673,12 +665,6 @@ Config_dialog::accept()
     // External prog run at startup.
     this->settings->set_extern_prog(this->extern_prog->text());
 
-    // Set vinyl type.
-    this->settings->set_vinyl_type(static_cast<dscratch_vinyls_t>(this->vinyl_type_select->currentData().toInt()));
-
-    // Set RPM.
-    this->settings->set_rpm(static_cast<dscratch_vinyl_rpm_t>(this->rpm_select->currentText().toInt()));
-
     // Set sound card settings.
     this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
     if (this->device_internal_check->isChecked() == true)
@@ -693,7 +679,13 @@ Config_dialog::accept()
     this->settings->set_auto_jack_connections(this->auto_jack_connections_check->isChecked());
 
     // Set motion detection settings.
-    this->settings->set_min_amplitude(this->get_min_amplitude_slider());
+    for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
+    {
+        this->settings->set_min_amplitude(i, this->min_amplitude[i]->text().toFloat());
+        this->settings->set_vinyl_type(i, static_cast<dscratch_vinyls_t>(this->vinyl_type_select[i]->currentData().toInt()));
+        this->settings->set_rpm(i, static_cast<dscratch_vinyl_rpm_t>(this->rpm_select[i]->currentText().toInt()));
+    }
+
 
     // Set keyboard shortcuts.
     this->settings->set_keyboard_shortcut(KB_SWITCH_PLAYBACK,           this->kb_switch_playback->text());
