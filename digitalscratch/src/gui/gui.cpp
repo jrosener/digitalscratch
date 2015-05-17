@@ -60,6 +60,7 @@
 #include <QDesktopServices>
 #include <QDateTime>
 #include <QFileDialog>
+#include <QThread>
 #include <math.h>
 #include <digital_scratch_api.h>
 #include <keyfinder_api.h>
@@ -115,10 +116,16 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->control_and_play        = control_and_playback;
     this->selected_deck           = 0;
     this->dscratch_handles        = new dscratch_handle_t[this->settings->get_nb_decks()];
-    for (int i = 0; i < this->settings->get_nb_decks(); i++)
+    for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
     {
         this->dscratch_handles[i] = this->tcode_controls[i]->get_dscratch_handle(); // FIXME: refactor: do not use an array but call a getter function each time
                                                                                     //        the handler is needed (this->get_dscratch_handle())
+    }
+
+    // Init thread watchers.
+    for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
+    {
+        this->get_current_amplitude_watcher << nullptr;
     }
 
     // Init pop-up dialogs.
@@ -235,6 +242,7 @@ Gui::apply_application_settings()
     this->shortcut_collapse_browser->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)));
     this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
     this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
+    this->shortcut_reset_signal_level->setKey(QKeySequence("r")); // TODO get it from settings.
     if (this->shortcut_load_samples.size() >= 1)
         this->shortcut_load_samples[0]->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)));
     if (this->shortcut_load_samples.size() >= 2)
@@ -862,6 +870,10 @@ Gui::clean_decks_area()
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
         delete this->decks[i];
+        if (this->get_current_amplitude_watcher[i] != nullptr)
+        {
+            delete this->get_current_amplitude_watcher[i];
+        }
     }
 
     delete [] this->shortcut_set_cue_points;
@@ -1019,6 +1031,10 @@ Gui::connect_decks_area()
     // Keyboard shortcut to restart to begin.
     this->shortcut_go_to_begin = new QShortcut(this->window);
     QObject::connect(this->shortcut_go_to_begin,  &QShortcut::activated, [this](){this->deck_go_to_begin();});
+
+    // Keyboard shortcut to reset the recorded signal level when turntable is stopped.
+    this->shortcut_reset_signal_level = new QShortcut(this->window);
+    QObject::connect(this->shortcut_reset_signal_level,  &QShortcut::activated, [this](){this->deck_reset_signal_level();});
 
     // Keyboard shortcut and buttons to set and play cue points.
     this->shortcut_set_cue_points   = new QShortcut* [MAX_NB_CUE_POINTS];
@@ -2565,6 +2581,74 @@ Gui::go_to_begin(const unsigned short &deck_index)
     this->deck_go_to_begin();
 
     return;
+}
+
+float
+Gui::get_current_amplitude(const unsigned short &deck_index) const
+{
+    float current_amplitude = 0.0;
+    float max_amplitude = 0.0;
+
+    // Get current amplitude during 1 sec and keep the highest value.
+    for (int i = 0; i < 10; i++)
+    {
+        if (dscratch_get_current_amplitude(this->dscratch_handles[deck_index], &current_amplitude) != DSCRATCH_SUCCESS)
+        {
+            qCWarning(DS_APPSETTINGS) << "cannot get current amplitude value";
+        }
+        else
+        {
+            if (max_amplitude < current_amplitude)
+            {
+                max_amplitude = current_amplitude;
+            }
+        }
+        QThread::msleep(100);
+    }
+
+    return max_amplitude;
+}
+
+void
+Gui::deck_reset_signal_level()
+{
+    unsigned short int deck_index = this->get_selected_deck_index();
+
+    //
+    // Get current signal level during 1 sec (in a separate thread) and return the highest one.
+    //
+
+    // Create a new future watcher.
+    if (this->get_current_amplitude_watcher[deck_index] != nullptr)
+    {
+        delete this->get_current_amplitude_watcher[deck_index];
+    }
+    this->get_current_amplitude_watcher[deck_index] = new QFutureWatcher<float>;
+
+    // When the watcher is done, set the new amplitude.
+    QObject::connect(this->get_current_amplitude_watcher[deck_index], &QFutureWatcher<float>::finished,
+                     [this, deck_index]()
+                     {
+                        this->set_min_amplitude(deck_index, this->get_current_amplitude_watcher[deck_index]->result());
+                     });
+
+    // Start the amplitude analysis.
+    QFuture<float> future = QtConcurrent::run(this, &Gui::get_current_amplitude, deck_index);
+    this->get_current_amplitude_watcher[deck_index]->setFuture(future);
+
+    return;
+}
+
+void
+Gui::set_min_amplitude(const unsigned short &deck_index, const float &ampl)
+{
+    this->settings->set_min_amplitude(deck_index, ampl);
+    if (dscratch_set_min_amplitude(this->dscratch_handles[deck_index], this->settings->get_min_amplitude(deck_index)) != DSCRATCH_SUCCESS)
+    {
+        qCWarning(DS_APPSETTINGS) << "cannot set new min amplitude value";
+    }
+
+    qCDebug(DS_APPSETTINGS) << "reset minimal signal level on deck #" << deck_index << " to " << ampl;
 }
 
 bool

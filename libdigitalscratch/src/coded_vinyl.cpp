@@ -53,7 +53,8 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate) : sample_rate(sample_rate),
                                                      speed_IIR({1.0, -0.998}, {0.001, 0.001}),
                                                      amplitude_IIR({1.0, -0.998}, {0.001, 0.001}),
                                                      filtered_freq_inst(0.0),
-                                                     filtered_amplitude_inst(0.0)
+                                                     filtered_amplitude_inst(0.0),
+                                                     current_amplitude(0.0)
 {
     this->set_reverse_direction(false);
 }
@@ -91,6 +92,9 @@ void Coded_vinyl::run_recording_data_analysis(const QVector<float> &input_sample
         this->filtered_amplitude_inst = this->amplitude_IIR.compute(amplitude);
     }
 
+    // Store current amplitude.
+    this->current_amplitude = this->filtered_amplitude_inst;
+
     return;
 }
 
@@ -99,8 +103,6 @@ float Coded_vinyl::get_speed()
     qCDebug(DSLIB_ANALYZEVINYL) << "Searching new speed...";
 
     float speed = 0.0;
-    //if (this->filtered_amplitude_inst > 0.00005) // for left turntable // FIXME: use get_min_amplitude => should be defined per turntable and not per vinyl type. => speed_min_amplitude
-    //if (this->filtered_amplitude_inst > 0.00030) // for right turntable
     if (this->filtered_amplitude_inst > this->min_amplitude)
     {
         speed = this->filtered_freq_inst;
@@ -118,8 +120,6 @@ float Coded_vinyl::get_volume()
     qCDebug(DSLIB_ANALYZEVINYL) << "Searching new volume...";
 
     float volume = 0.0;
-    //if (this->filtered_amplitude_inst > 0.00005) // for left turntable
-    //if (this->filtered_amplitude_inst > 0.00030) // for right turntable    => volume_min_apmlitude
     if (this->filtered_amplitude_inst > this->min_amplitude)
     {
         // Turntable is running.
@@ -184,4 +184,9 @@ void Coded_vinyl::set_min_amplitude(float amplitude)
 float Coded_vinyl::get_min_amplitude()
 {
     return this->min_amplitude;
+}
+
+float Coded_vinyl::get_current_amplitude()
+{
+    return this->current_amplitude;
 }

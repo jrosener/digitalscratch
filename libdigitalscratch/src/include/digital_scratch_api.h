@@ -225,6 +225,7 @@ DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm();
  */
 DLLIMPORT dscratch_status_t dscratch_set_min_amplitude(dscratch_handle_t handle, float amplitude);
 DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t handle, float *out_ampl);
+DLLIMPORT dscratch_status_t dscratch_get_current_amplitude(dscratch_handle_t handle, float *out_ampl);
 DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t handle, float *out_ampl);
 DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(dscratch_vinyls_t vinyl_type);
 

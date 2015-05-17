@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
     qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
     QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
                                                     ds.file.debug=true\n \
+                                                    ds.appsettings.debug=true\n \
                                                     *.warning=true\n \
                                                     *.critical=true\n"));
 

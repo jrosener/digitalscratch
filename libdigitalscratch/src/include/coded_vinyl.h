@@ -65,6 +65,7 @@ class Coded_vinyl
     IIR_filter amplitude_IIR;
     double     filtered_freq_inst;
     double     filtered_amplitude_inst;
+    double     current_amplitude;
 
  public:
     Coded_vinyl(unsigned int sample_rate);
@@ -85,6 +86,7 @@ class Coded_vinyl
 
     void  set_min_amplitude(float amplitude);
     float get_min_amplitude();
+    float get_current_amplitude();
     virtual float get_default_min_amplitude() = 0;
 
     virtual int get_sinusoidal_frequency() = 0;

@@ -382,6 +382,27 @@ DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t  handle
     return DSCRATCH_SUCCESS;
 }
 
+DLLIMPORT dscratch_status_t dscratch_get_current_amplitude(dscratch_handle_t  handle,
+                                                           float             *out_ampl)
+{
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
+    {
+        return DSCRATCH_ERROR;
+    }
+
+    // Get current detected amplitude from Coded_vinyl.
+    if (out_ampl == nullptr)
+    {
+        qCCritical(DSLIB_API) << "out_ampl is null.";
+        return DSCRATCH_ERROR;
+    }
+    *out_ampl = handle_typed->dscratch->get_coded_vinyl()->get_current_amplitude();
+
+    return DSCRATCH_SUCCESS;
+}
+
 DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t  handle,
                                                                float             *out_ampl)
 {
