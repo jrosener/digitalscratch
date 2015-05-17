@@ -39,13 +39,13 @@ void Control_and_playback_process_Test::testCaseRunWithJack_1deck()
     // Prepare full stack for analyzing timecode captured from sound card.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
     settings->set_sample_rate(44100);
-    settings->set_vinyl_type(SERATO);
+    settings->set_vinyl_type(0, SERATO);
     settings->set_nb_decks(1);
 
     QSharedPointer<Playback_parameters> play_param(new Playback_parameters);
 
     QSharedPointer<Timecode_control_process> tcode_control(new Timecode_control_process(play_param,
-                                                                                        settings->get_vinyl_type(),
+                                                                                        settings->get_vinyl_type(0),
                                                                                         settings->get_sample_rate()));
     QList<QSharedPointer<Timecode_control_process>> tcode_controls = {tcode_control};
 
@@ -91,16 +91,17 @@ void Control_and_playback_process_Test::testCaseRunWithJack_2decks()
     // Prepare full stack for analyzing timecode captured from sound card.
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
     settings->set_sample_rate(44100);
-    settings->set_vinyl_type(SERATO);
     settings->set_nb_decks(2);
+    settings->set_vinyl_type(0, SERATO);
+    settings->set_vinyl_type(1, SERATO);
 
     QSharedPointer<Playback_parameters> play_param_1(new Playback_parameters);
     QSharedPointer<Timecode_control_process> tcode_control_1(new Timecode_control_process(play_param_1,
-                                                                                          settings->get_vinyl_type(),
+                                                                                          settings->get_vinyl_type(0),
                                                                                           settings->get_sample_rate()));
     QSharedPointer<Playback_parameters> play_param_2(new Playback_parameters);
     QSharedPointer<Timecode_control_process> tcode_control_2(new Timecode_control_process(play_param_2,
-                                                                                          settings->get_vinyl_type(),
+                                                                                          settings->get_vinyl_type(1),
                                                                                           settings->get_sample_rate()));
     QList<QSharedPointer<Timecode_control_process>> tcode_controls = {tcode_control_1, tcode_control_2};
 
