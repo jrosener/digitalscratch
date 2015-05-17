@@ -2618,51 +2618,54 @@ Gui::get_current_amplitude(const unsigned short &deck_index) const
 
 void
 Gui::deck_reset_signal_level()
-{
+{    
     unsigned short int deck_index = this->get_selected_deck_index();
 
-    //
-    // Show a pop-up asking to confirm to reset the signal level.
-    //
+    if (this->playbacks[deck_index]->is_track_loaded() == true)
+    {
+        //
+        // Show a pop-up asking to confirm to reset the signal level.
+        //
 
-    QMessageBox msg_box;
-    msg_box.setWindowTitle("DigitalScratch");
-    msg_box.setText(tr("Do you want to reset the minimal signal level for the deck ") + QString::number(deck_index) + " ?");
-    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    msg_box.setIcon(QMessageBox::Question);
-    msg_box.setDefaultButton(QMessageBox::Cancel);
-    msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
-    if (this->nb_decks > 1)
-    {
-        msg_box.setWindowIcon(QIcon(ICON_2));
-    }
-    else
-    {
-        msg_box.setWindowIcon(QIcon(ICON));
-    }
-
-    //
-    // Get current signal level during 1 sec (in a separate thread) and return the highest one.
-    //
-    if (msg_box.exec() == QMessageBox::Ok)
-    {
-        // Create a new future watcher.
-        if (this->get_current_amplitude_watcher[deck_index] != nullptr)
+        QMessageBox msg_box;
+        msg_box.setWindowTitle("DigitalScratch");
+        msg_box.setText(tr("Do you want to reset the minimal signal level for the deck ") + QString::number(deck_index) + " ?");
+        msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msg_box.setIcon(QMessageBox::Question);
+        msg_box.setDefaultButton(QMessageBox::Cancel);
+        msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
+        if (this->nb_decks > 1)
         {
-            delete this->get_current_amplitude_watcher[deck_index];
+            msg_box.setWindowIcon(QIcon(ICON_2));
         }
-        this->get_current_amplitude_watcher[deck_index] = new QFutureWatcher<float>;
+        else
+        {
+            msg_box.setWindowIcon(QIcon(ICON));
+        }
 
-        // When the watcher is done, set the new amplitude.
-        QObject::connect(this->get_current_amplitude_watcher[deck_index], &QFutureWatcher<float>::finished,
-                         [this, deck_index]()
-                         {
-                            this->set_min_amplitude(deck_index, this->get_current_amplitude_watcher[deck_index]->result());
-                         });
+        //
+        // Get current signal level during 1 sec (in a separate thread) and return the highest one.
+        //
+        if (msg_box.exec() == QMessageBox::Ok)
+        {
+            // Create a new future watcher.
+            if (this->get_current_amplitude_watcher[deck_index] != nullptr)
+            {
+                delete this->get_current_amplitude_watcher[deck_index];
+            }
+            this->get_current_amplitude_watcher[deck_index] = new QFutureWatcher<float>;
 
-        // Start the amplitude analysis.
-        QFuture<float> future = QtConcurrent::run(this, &Gui::get_current_amplitude, deck_index);
-        this->get_current_amplitude_watcher[deck_index]->setFuture(future);
+            // When the watcher is done, set the new amplitude.
+            QObject::connect(this->get_current_amplitude_watcher[deck_index], &QFutureWatcher<float>::finished,
+                             [this, deck_index]()
+                             {
+                                this->set_min_amplitude(deck_index, this->get_current_amplitude_watcher[deck_index]->result());
+                             });
+
+            // Start the amplitude analysis.
+            QFuture<float> future = QtConcurrent::run(this, &Gui::get_current_amplitude, deck_index);
+            this->get_current_amplitude_watcher[deck_index]->setFuture(future);
+        }
     }
 
     return;
