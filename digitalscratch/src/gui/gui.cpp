@@ -242,7 +242,7 @@ Gui::apply_application_settings()
     this->shortcut_collapse_browser->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)));
     this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
     this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
-    this->shortcut_reset_signal_level->setKey(QKeySequence("r")); // TODO get it from settings.
+    this->shortcut_reset_signal_level->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL)));
     if (this->shortcut_load_samples.size() >= 1)
         this->shortcut_load_samples[0]->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)));
     if (this->shortcut_load_samples.size() >= 2)
@@ -254,6 +254,7 @@ Gui::apply_application_settings()
     this->shortcut_show_next_keys->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS)));
     this->shortcut_fullscreen->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FULLSCREEN)));
     this->shortcut_help->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_HELP)));
+    this->shortcut_reset_signal_level->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL)));
     this->shortcut_file_search->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FILE_SEARCH)));
     this->shortcut_file_search_press_enter->setKey(QKeySequence(Qt::Key_Enter));
     this->shortcut_file_search_press_esc->setKey(QKeySequence(Qt::Key_Escape));
@@ -1558,6 +1559,8 @@ Gui::init_bottom_help()
     this->help_next_track_value    = new QLabel();
     QLabel *help_cue_lb            = new QLabel(tr("Set/Play cue point 1/2/3/4"));
     this->help_cue_value           = new QLabel();
+    QLabel *help_reset_signal_lb   = new QLabel(tr("Reset minimal signal level"));
+    this->help_reset_signal_value  = new QLabel();
 
     QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
     QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
@@ -1585,6 +1588,7 @@ Gui::init_bottom_help()
     help_load_deck_lb->setObjectName("Help");
     help_next_track_lb->setObjectName("Help");
     help_cue_lb->setObjectName("Help");
+    help_reset_signal_lb->setObjectName("Help");
 
     help_sampler_lb->setObjectName("Help_title");
     help_sample_lb->setObjectName("Help");
@@ -1598,33 +1602,35 @@ Gui::init_bottom_help()
     // Main help layout.
     QGridLayout *help_layout = new QGridLayout();
 
-    help_layout->addWidget(help_display_lb,           0, 0);
-    help_layout->addWidget(help_fullscreen_lb,        1, 0);
-    help_layout->addWidget(help_fullscreen_value,     1, 1, Qt::AlignLeft);
-    help_layout->addWidget(help_help_lb,              2, 0);
-    help_layout->addWidget(help_help_value,           2, 1, Qt::AlignLeft);
-    help_layout->addWidget(help_switch_deck_lb,       3, 0);
-    help_layout->addWidget(help_switch_deck_value,    3, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_deck_lb,              0, 0);
+    help_layout->addWidget(help_load_deck_lb,         1, 0);
+    help_layout->addWidget(help_load_deck_value,      1, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_next_track_lb,        2, 0);
+    help_layout->addWidget(help_next_track_value,     2, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_cue_lb,               3, 0);
+    help_layout->addWidget(help_cue_value,            3, 1, Qt::AlignLeft);
+    help_layout->addWidget(help_reset_signal_lb,      4, 0);
+    help_layout->addWidget(help_reset_signal_value,   4, 1, Qt::AlignLeft);
 
-    help_layout->addWidget(help_deck_lb,              0, 2);
-    help_layout->addWidget(help_load_deck_lb,         1, 2);
-    help_layout->addWidget(help_load_deck_value,      1, 3, Qt::AlignLeft);
-    help_layout->addWidget(help_next_track_lb,        2, 2);
-    help_layout->addWidget(help_next_track_value,     2, 3, Qt::AlignLeft);
-    help_layout->addWidget(help_cue_lb,               3, 2);
-    help_layout->addWidget(help_cue_value,            3, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_display_lb,           0, 2);
+    help_layout->addWidget(help_fullscreen_lb,        1, 2);
+    help_layout->addWidget(help_fullscreen_value,     1, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_help_lb,              2, 2);
+    help_layout->addWidget(help_help_value,           2, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_switch_deck_lb,       3, 2);
+    help_layout->addWidget(help_switch_deck_value,    3, 3, Qt::AlignLeft);
 
-    help_layout->addWidget(help_sampler_lb,           0, 4);
-    help_layout->addWidget(help_sample_lb,            1, 4);
-    help_layout->addWidget(help_sample_value,         1, 5, Qt::AlignLeft);
-    help_layout->addWidget(help_online_lb,            3, 4);
-    help_layout->addWidget(help_url_lb,               3, 5, 1, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_browser_lb,           0, 4);
+    help_layout->addWidget(help_browse_lb1,           1, 4);
+    help_layout->addWidget(help_browse_value1,        1, 5, Qt::AlignLeft);
+    help_layout->addWidget(help_browse_lb2,           2, 4);
+    help_layout->addWidget(help_browse_value2,        2, 5, Qt::AlignLeft);
 
-    help_layout->addWidget(help_browser_lb,           0, 6);
-    help_layout->addWidget(help_browse_lb1,           1, 6);
-    help_layout->addWidget(help_browse_value1,        1, 7, Qt::AlignLeft);
-    help_layout->addWidget(help_browse_lb2,           2, 6);
-    help_layout->addWidget(help_browse_value2,        2, 7, Qt::AlignLeft);
+    help_layout->addWidget(help_sampler_lb,           0, 6);
+    help_layout->addWidget(help_sample_lb,            1, 6);
+    help_layout->addWidget(help_sample_value,         1, 7, Qt::AlignLeft);
+    help_layout->addWidget(help_online_lb,            4, 6);
+    help_layout->addWidget(help_url_lb,               4, 7, 1, 3, Qt::AlignLeft);
 
     help_layout->setColumnStretch(0, 1);
     help_layout->setColumnStretch(1, 5);
@@ -1763,6 +1769,7 @@ Gui::set_help_shortcut_value()
                                   + ", " + this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT4_ON_DECK)
                                   + "/"
                                   + this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT4_ON_DECK));
+    this->help_reset_signal_value->setText(this->settings->get_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL));
     this->help_sample_value->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1)
                                      + "/"
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER2)
@@ -1807,7 +1814,7 @@ Gui::force_close()
 {
     // User probably clicked on the 'X' button, so close without confirmation.
     this->sound_card->stop();
-    //this->window->close(); // Looks not necessary.
+    //this->window->close(); // FIXME: Looks not necessary.
 }
 
 
@@ -2615,26 +2622,48 @@ Gui::deck_reset_signal_level()
     unsigned short int deck_index = this->get_selected_deck_index();
 
     //
-    // Get current signal level during 1 sec (in a separate thread) and return the highest one.
+    // Show a pop-up asking to confirm to reset the signal level.
     //
 
-    // Create a new future watcher.
-    if (this->get_current_amplitude_watcher[deck_index] != nullptr)
+    QMessageBox msg_box;
+    msg_box.setWindowTitle("DigitalScratch");
+    msg_box.setText(tr("Do you want to reset the minimal signal level for the deck ") + QString::number(deck_index) + " ?");
+    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setIcon(QMessageBox::Question);
+    msg_box.setDefaultButton(QMessageBox::Cancel);
+    msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
     {
-        delete this->get_current_amplitude_watcher[deck_index];
+        msg_box.setWindowIcon(QIcon(ICON_2));
     }
-    this->get_current_amplitude_watcher[deck_index] = new QFutureWatcher<float>;
+    else
+    {
+        msg_box.setWindowIcon(QIcon(ICON));
+    }
 
-    // When the watcher is done, set the new amplitude.
-    QObject::connect(this->get_current_amplitude_watcher[deck_index], &QFutureWatcher<float>::finished,
-                     [this, deck_index]()
-                     {
-                        this->set_min_amplitude(deck_index, this->get_current_amplitude_watcher[deck_index]->result());
-                     });
+    //
+    // Get current signal level during 1 sec (in a separate thread) and return the highest one.
+    //
+    if (msg_box.exec() == QMessageBox::Ok)
+    {
+        // Create a new future watcher.
+        if (this->get_current_amplitude_watcher[deck_index] != nullptr)
+        {
+            delete this->get_current_amplitude_watcher[deck_index];
+        }
+        this->get_current_amplitude_watcher[deck_index] = new QFutureWatcher<float>;
 
-    // Start the amplitude analysis.
-    QFuture<float> future = QtConcurrent::run(this, &Gui::get_current_amplitude, deck_index);
-    this->get_current_amplitude_watcher[deck_index]->setFuture(future);
+        // When the watcher is done, set the new amplitude.
+        QObject::connect(this->get_current_amplitude_watcher[deck_index], &QFutureWatcher<float>::finished,
+                         [this, deck_index]()
+                         {
+                            this->set_min_amplitude(deck_index, this->get_current_amplitude_watcher[deck_index]->result());
+                         });
+
+        // Start the amplitude analysis.
+        QFuture<float> future = QtConcurrent::run(this, &Gui::get_current_amplitude, deck_index);
+        this->get_current_amplitude_watcher[deck_index]->setFuture(future);
+    }
 
     return;
 }

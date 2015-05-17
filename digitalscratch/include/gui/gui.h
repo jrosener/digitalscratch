@@ -340,6 +340,7 @@ class Gui : public QObject
     QLabel                             *help_load_deck_value;
     QLabel                             *help_next_track_value;
     QLabel                             *help_cue_value;
+    QLabel                             *help_reset_signal_value;
     QLabel                             *help_sample_value;
     QLabel                             *help_browse_value1;
     QLabel                             *help_browse_value2;

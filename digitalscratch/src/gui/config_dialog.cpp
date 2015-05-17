@@ -82,14 +82,15 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->device_jack_check->setTristate(false);
     this->auto_jack_connections_check = new QCheckBox(this);
     this->auto_jack_connections_check->setTristate(false);
-    this->device_internal_check = new QCheckBox(this);
-    this->device_internal_check->setTristate(false);
-    this->device_internal_select = new QComboBox(this);
-    QList<QString> available_sound_cards = this->settings->get_available_internal_sound_cards();
-    for (int i = 0; i < available_sound_cards.size(); i++)
-    {
-        this->device_internal_select->addItem(available_sound_cards.at(i));
-    }
+// TODO: make it visible when internal sound card is supported.
+//    this->device_internal_check = new QCheckBox(this);
+//    this->device_internal_check->setTristate(false);
+//    this->device_internal_select = new QComboBox(this);
+//    QList<QString> available_sound_cards = this->settings->get_available_internal_sound_cards();
+//    for (int i = 0; i < available_sound_cards.size(); i++)
+//    {
+//        this->device_internal_select->addItem(available_sound_cards.at(i));
+//    }
 
     // Init motion detection parameters widgets.
     for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
@@ -116,26 +117,27 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     }
 
     // Init keyboard shortcuts widgets.
-    this->kb_switch_playback           = new ShortcutQLabel(this);
-    this->kb_load_track_on_deck        = new ShortcutQLabel(this);
-    this->kb_play_begin_track_on_deck  = new ShortcutQLabel(this);
-    this->kb_get_next_track_from_deck  = new ShortcutQLabel(this);
-    this->kb_set_cue_point1_on_deck    = new ShortcutQLabel(this);
-    this->kb_play_cue_point1_on_deck   = new ShortcutQLabel(this);
-    this->kb_set_cue_point2_on_deck    = new ShortcutQLabel(this);
-    this->kb_play_cue_point2_on_deck   = new ShortcutQLabel(this);
-    this->kb_set_cue_point3_on_deck    = new ShortcutQLabel(this);
-    this->kb_play_cue_point3_on_deck   = new ShortcutQLabel(this);
-    this->kb_set_cue_point4_on_deck    = new ShortcutQLabel(this);
-    this->kb_play_cue_point4_on_deck   = new ShortcutQLabel(this);
-    this->kb_collapse_browse           = new ShortcutQLabel(this);
-    this->kb_fullscreen                = new ShortcutQLabel(this);
-    this->kb_help                      = new ShortcutQLabel(this);
-    this->kb_file_search               = new ShortcutQLabel(this);
-    this->kb_load_track_on_sampler1    = new ShortcutQLabel(this);
-    this->kb_load_track_on_sampler2    = new ShortcutQLabel(this);
-    this->kb_load_track_on_sampler3    = new ShortcutQLabel(this);
-    this->kb_load_track_on_sampler4    = new ShortcutQLabel(this);
+    this->kb_switch_playback            = new ShortcutQLabel(this);
+    this->kb_load_track_on_deck         = new ShortcutQLabel(this);
+    this->kb_play_begin_track_on_deck   = new ShortcutQLabel(this);
+    this->kb_get_next_track_from_deck   = new ShortcutQLabel(this);
+    this->kb_set_cue_point1_on_deck     = new ShortcutQLabel(this);
+    this->kb_play_cue_point1_on_deck    = new ShortcutQLabel(this);
+    this->kb_set_cue_point2_on_deck     = new ShortcutQLabel(this);
+    this->kb_play_cue_point2_on_deck    = new ShortcutQLabel(this);
+    this->kb_set_cue_point3_on_deck     = new ShortcutQLabel(this);
+    this->kb_play_cue_point3_on_deck    = new ShortcutQLabel(this);
+    this->kb_set_cue_point4_on_deck     = new ShortcutQLabel(this);
+    this->kb_play_cue_point4_on_deck    = new ShortcutQLabel(this);
+    this->kb_reset_signal_level_on_deck = new ShortcutQLabel(this);
+    this->kb_collapse_browse            = new ShortcutQLabel(this);
+    this->kb_fullscreen                 = new ShortcutQLabel(this);
+    this->kb_help                       = new ShortcutQLabel(this);
+    this->kb_file_search                = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler1     = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler2     = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler3     = new ShortcutQLabel(this);
+    this->kb_load_track_on_sampler4     = new ShortcutQLabel(this);
 
     return;
 }
@@ -313,13 +315,13 @@ void Config_dialog::fill_tab_sound_card()
     this->auto_jack_connections_check->setChecked(this->settings->get_auto_jack_connections());
     if (this->settings->get_sound_driver() == SOUND_DRIVER_INTERNAL)
     {
-        this->device_internal_check->setChecked(true);
+        //this->device_internal_check->setChecked(true);
     }
     else
     {
         this->device_jack_check->setChecked(true);
     }
-    this->device_internal_select->setCurrentIndex(this->device_internal_select->findText(this->settings->get_internal_sound_card()));
+//    this->device_internal_select->setCurrentIndex(this->device_internal_select->findText(this->settings->get_internal_sound_card()));
 }
 
 QWidget *Config_dialog::init_tab_motion_detect(const unsigned short &deck_index)
@@ -414,6 +416,10 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(kb_play_cue_point4_on_deck_label, 11, 0);
     shortcuts_layout->addWidget(this->kb_play_cue_point4_on_deck, 11, 1, Qt::AlignVCenter);
 
+    QLabel *kb_reset_signal_level_on_deck_label = new QLabel(tr("Reset min signal level"), this);
+    shortcuts_layout->addWidget(kb_reset_signal_level_on_deck_label, 12, 0);
+    shortcuts_layout->addWidget(this->kb_reset_signal_level_on_deck, 12, 1, Qt::AlignVCenter);
+
     QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"), this);
     shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 1, 3);
     shortcuts_layout->addWidget(this->kb_load_track_on_sampler1, 1, 4, Qt::AlignVCenter);
@@ -452,7 +458,7 @@ QWidget *Config_dialog::init_tab_shortcuts()
 
     QPushButton *shortcut_reset_to_default = new QPushButton(this);
     shortcut_reset_to_default->setText(tr("Reset to default"));
-    shortcuts_layout->addWidget(shortcut_reset_to_default, 11, 4, Qt::AlignRight);
+    shortcuts_layout->addWidget(shortcut_reset_to_default, 12, 4, Qt::AlignRight);
     QObject::connect(shortcut_reset_to_default, &QPushButton::clicked, [this](){this->reset_shortcuts();});
 
     // Force space between shortcuts columns.
@@ -461,26 +467,68 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->setColumnMinimumWidth(4, 150);
 
     // Signal send ShortCutQLabels when a new value is there.
-    QObject::connect(this->kb_switch_playback,          &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_switch_playback);});
-    QObject::connect(this->kb_load_track_on_deck,       &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_deck);});
-    QObject::connect(this->kb_play_begin_track_on_deck, &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_begin_track_on_deck);});
-    QObject::connect(this->kb_get_next_track_from_deck, &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_get_next_track_from_deck);});
-    QObject::connect(this->kb_set_cue_point1_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point1_on_deck);});
-    QObject::connect(this->kb_play_cue_point1_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point1_on_deck);});
-    QObject::connect(this->kb_set_cue_point2_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point2_on_deck);});
-    QObject::connect(this->kb_play_cue_point2_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point2_on_deck);});
-    QObject::connect(this->kb_set_cue_point3_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point3_on_deck);});
-    QObject::connect(this->kb_play_cue_point3_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point3_on_deck);});
-    QObject::connect(this->kb_set_cue_point4_on_deck,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point4_on_deck);});
-    QObject::connect(this->kb_play_cue_point4_on_deck,  &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point4_on_deck);});
-    QObject::connect(this->kb_fullscreen,               &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_fullscreen);});
-    QObject::connect(this->kb_collapse_browse,          &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_collapse_browse);});
-    QObject::connect(this->kb_load_track_on_sampler1,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler1);});
-    QObject::connect(this->kb_load_track_on_sampler2,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler2);});
-    QObject::connect(this->kb_load_track_on_sampler3,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler3);});
-    QObject::connect(this->kb_load_track_on_sampler4,   &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler4);});
-    QObject::connect(this->kb_help,                     &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_help);});
-    QObject::connect(this->kb_file_search,              &ShortcutQLabel::new_value, [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_file_search);});
+    QObject::connect(this->kb_switch_playback, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_switch_playback);});
+
+    QObject::connect(this->kb_load_track_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_deck);});
+
+    QObject::connect(this->kb_play_begin_track_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_begin_track_on_deck);});
+
+    QObject::connect(this->kb_get_next_track_from_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_get_next_track_from_deck);});
+
+    QObject::connect(this->kb_set_cue_point1_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point1_on_deck);});
+
+    QObject::connect(this->kb_play_cue_point1_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point1_on_deck);});
+
+    QObject::connect(this->kb_set_cue_point2_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point2_on_deck);});
+
+    QObject::connect(this->kb_play_cue_point2_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point2_on_deck);});
+
+    QObject::connect(this->kb_set_cue_point3_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point3_on_deck);});
+
+    QObject::connect(this->kb_play_cue_point3_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point3_on_deck);});
+
+    QObject::connect(this->kb_set_cue_point4_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_set_cue_point4_on_deck);});
+
+    QObject::connect(this->kb_play_cue_point4_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point4_on_deck);});
+
+    QObject::connect(this->kb_reset_signal_level_on_deck, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_reset_signal_level_on_deck);});
+
+    QObject::connect(this->kb_fullscreen, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_fullscreen);});
+
+    QObject::connect(this->kb_collapse_browse, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_collapse_browse);});
+
+    QObject::connect(this->kb_load_track_on_sampler1, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler1);});
+
+    QObject::connect(this->kb_load_track_on_sampler2, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler2);});
+
+    QObject::connect(this->kb_load_track_on_sampler3, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler3);});
+
+    QObject::connect(this->kb_load_track_on_sampler4, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_load_track_on_sampler4);});
+
+    QObject::connect(this->kb_help, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_help);});
+
+    QObject::connect(this->kb_file_search, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_file_search);});
 
     // Create tab.
     QWidget *shortcuts_tab = new QWidget(this);
@@ -492,25 +540,26 @@ QWidget *Config_dialog::init_tab_shortcuts()
 bool Config_dialog::is_duplicate_shortcut(const QString &value)
 {
     // For each shortcut label, check if the provided shortcut already exists.
-    if ((this->kb_switch_playback->text().compare(value,          Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_deck->text().compare(value,       Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_begin_track_on_deck->text().compare(value, Qt::CaseInsensitive) == 0) ||
-        (this->kb_get_next_track_from_deck->text().compare(value, Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point1_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point1_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point2_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point2_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point3_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point3_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_set_cue_point4_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_play_cue_point4_on_deck->text().compare(value,  Qt::CaseInsensitive) == 0) ||
-        (this->kb_fullscreen->text().compare(value,               Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler1->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler2->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler3->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_load_track_on_sampler4->text().compare(value,   Qt::CaseInsensitive) == 0) ||
-        (this->kb_help->text().compare(value,                     Qt::CaseInsensitive) == 0) ||
-        (this->kb_file_search->text().compare(value,              Qt::CaseInsensitive) == 0))
+    if ((this->kb_switch_playback->text().compare(value,            Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_deck->text().compare(value,         Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_begin_track_on_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_get_next_track_from_deck->text().compare(value,   Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point1_on_deck->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point1_on_deck->text().compare(value,    Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point2_on_deck->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point2_on_deck->text().compare(value,    Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point3_on_deck->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point3_on_deck->text().compare(value,    Qt::CaseInsensitive) == 0) ||
+        (this->kb_set_cue_point4_on_deck->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_play_cue_point4_on_deck->text().compare(value,    Qt::CaseInsensitive) == 0) ||
+        (this->kb_reset_signal_level_on_deck->text().compare(value, Qt::CaseInsensitive) == 0) ||
+        (this->kb_fullscreen->text().compare(value,                 Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler1->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler2->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler3->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_load_track_on_sampler4->text().compare(value,     Qt::CaseInsensitive) == 0) ||
+        (this->kb_help->text().compare(value,                       Qt::CaseInsensitive) == 0) ||
+        (this->kb_file_search->text().compare(value,                Qt::CaseInsensitive) == 0))
     {
         return true;
     }
@@ -563,6 +612,7 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_play_cue_point3_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT3_ON_DECK));
     this->kb_set_cue_point4_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT4_ON_DECK));
     this->kb_play_cue_point4_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT4_ON_DECK));
+    this->kb_reset_signal_level_on_deck->setText(this->settings->get_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL));
     this->kb_fullscreen->setText(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
     this->kb_collapse_browse->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
     this->kb_load_track_on_sampler1->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1));
@@ -633,6 +683,7 @@ void Config_dialog::reset_shortcuts()
     this->kb_play_cue_point3_on_deck->setText(KB_PLAY_CUE_POINT3_ON_DECK_DEFAULT);
     this->kb_set_cue_point4_on_deck->setText(KB_SET_CUE_POINT4_ON_DECK_DEFAULT);
     this->kb_play_cue_point4_on_deck->setText(KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT);
+    this->kb_reset_signal_level_on_deck->setText(KB_RESET_SIGNAL_LEVEL_DEFAULT);
     this->kb_fullscreen->setText(KB_FULLSCREEN_DEFAULT);
     this->kb_collapse_browse->setText(KB_COLLAPSE_BROWSER_DEFAULT);
     this->kb_load_track_on_sampler1->setText(KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
@@ -667,15 +718,16 @@ Config_dialog::accept()
 
     // Set sound card settings.
     this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
-    if (this->device_internal_check->isChecked() == true)
-    {
-        this->settings->set_sound_driver(SOUND_DRIVER_INTERNAL);
-    }
-    else
-    {
-        this->settings->set_sound_driver(SOUND_DRIVER_JACK);
-    }
-    this->settings->set_internal_sound_card(this->device_internal_select->currentText());
+//    if (this->device_internal_check->isChecked() == true)
+//    {
+//        this->settings->set_sound_driver(SOUND_DRIVER_INTERNAL);
+//    }
+//    else
+//    {
+//        this->settings->set_sound_driver(SOUND_DRIVER_JACK);
+//    }
+    this->settings->set_sound_driver(SOUND_DRIVER_JACK);
+//    this->settings->set_internal_sound_card(this->device_internal_select->currentText());
     this->settings->set_auto_jack_connections(this->auto_jack_connections_check->isChecked());
 
     // Set motion detection settings.
@@ -700,6 +752,7 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT3_ON_DECK,   this->kb_play_cue_point3_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT4_ON_DECK,    this->kb_set_cue_point4_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT4_ON_DECK,   this->kb_play_cue_point4_on_deck->text());
+    this->settings->set_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL,        this->kb_reset_signal_level_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_FULLSCREEN,                this->kb_fullscreen->text());
     this->settings->set_keyboard_shortcut(KB_COLLAPSE_BROWSER,          this->kb_collapse_browse->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1,    this->kb_load_track_on_sampler1->text());

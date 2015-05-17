@@ -180,6 +180,9 @@ Application_settings::init_settings()
     if (this->settings.contains(KB_SHOW_NEXT_KEYS) == false) {
         this->settings.setValue(KB_SHOW_NEXT_KEYS, KB_SHOW_NEXT_KEYS_DEFAULT);
     }
+    if (this->settings.contains(KB_RESET_SIGNAL_LEVEL) == false) {
+        this->settings.setValue(KB_RESET_SIGNAL_LEVEL, KB_RESET_SIGNAL_LEVEL_DEFAULT);
+    }
     if (this->settings.contains(KB_FULLSCREEN) == false) {
         this->settings.setValue(KB_FULLSCREEN, KB_FULLSCREEN_DEFAULT);
     }
