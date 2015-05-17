@@ -710,9 +710,6 @@ Config_dialog::accept()
     // Set gui style.
     this->settings->set_gui_style(this->gui_style_select->currentText());
 
-    // Set number of decks.
-    this->settings->set_nb_decks(this->nb_decks_select->currentText().toInt());
-
     // External prog run at startup.
     this->settings->set_extern_prog(this->extern_prog->text());
 
@@ -761,6 +758,9 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4,    this->kb_load_track_on_sampler4->text());
     this->settings->set_keyboard_shortcut(KB_HELP,                      this->kb_help->text());
     this->settings->set_keyboard_shortcut(KB_FILE_SEARCH,               this->kb_file_search->text());
+
+    // Set number of decks.
+    this->settings->set_nb_decks(this->nb_decks_select->currentText().toInt());
 
     // Close window.
     this->done(QDialog::Accepted);
