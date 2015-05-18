@@ -4,17 +4,20 @@
 #
 #-------------------------------------------------
 
-# Release version number.
-#VERSION = 1.5.0
-
-# Snapshot version number.
-win32 {
+CONFIG(debug, debug|release) {
+    # Snapshot version number.
+    win32 {
+        VERSION = 1.6.0
+    }
+    unix {
+        CURRENT_DATE = $$system(date +%Y%m%d)
+        VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
+    }
+} else {
+    # Release version number.
     VERSION = 1.6.0
 }
-unix {
-    CURRENT_DATE = $$system(date +%Y%m%d)
-    VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
-}
+
 DEFINES += VERSION=$${VERSION}
 
 CONFIG += qt c++11
@@ -41,6 +44,12 @@ else {
 
     INSTALLS += target include
 }
+
+############################
+# Windows binary metadata.
+win32:QMAKE_TARGET_PRODUCT = "digitalscratch.dll"
+win32:QMAKE_TARGET_COPYRIGHT = "GPL V3"
+############################
 
 SOURCES += \ 
     src/volume.cpp \

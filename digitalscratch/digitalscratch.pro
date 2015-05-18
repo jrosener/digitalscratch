@@ -1,14 +1,17 @@
-# Release version number.
-#VERSION = 1.5.0
-
-# Snapshot version number.
-win32 {
+CONFIG(debug, debug|release) {
+    # Snapshot version number.
+    win32 {
+        VERSION = 1.6.0
+    }
+    unix {
+        CURRENT_DATE = $$system(date +%Y%m%d)
+        VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
+    }
+} else {
+    # Release version number.
     VERSION = 1.6.0
 }
-unix {
-    CURRENT_DATE = $$system(date +%Y%m%d)
-    VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
-}
+
 DEFINES += VERSION=$${VERSION}
 
 ##############################
@@ -211,8 +214,10 @@ CONFIG += qt thread c++11
 #############################
 
 ############################
-# Icon for Windows build
-win32:RC_FILE = digitalscratch_resource.rc
+# Windows binary metadata.
+win32:RC_ICONS = pixmaps/digitalscratch.ico
+win32:QMAKE_TARGET_PRODUCT = "DigitalScratch"
+win32:QMAKE_TARGET_COPYRIGHT = "GPL V3"
 ############################
 
 ############################
