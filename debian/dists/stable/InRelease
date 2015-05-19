@@ -1,51 +1,51 @@
 -----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hash: SHA256
 
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Thu, 06 Mar 2014 11:02:25 UTC
+Date: Tue, 19 May 2015 23:34:21 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- e3d1f6cdcba1008c27791cc32d711c73 4400 main/binary-amd64/Packages
- d49206f28f2385e127dde440ebbd3113 1494 main/binary-amd64/Packages.gz
+ 8b01fab01576a040904bc2d8843d0494 4405 main/binary-amd64/Packages
+ 954cbef54db19f66b81c933f12dfcb6b 1517 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
- f43b4833695d858238b0974bc140d84a 4396 main/binary-i386/Packages
- 6cdb3a699f7ec209be27bb31567ca6c8 1504 main/binary-i386/Packages.gz
+ 50adc41d283786dff729afef75cb2bfa 4402 main/binary-i386/Packages
+ 69397e6cd887e1ee685b9281a0fc3948 1518 main/binary-i386/Packages.gz
  32122f38610f15b8026cd7f4be3176d6 152 main/binary-i386/Release
  d41d8cd98f00b204e9800998ecf8427e 0 main/source/Sources
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- 3a7235bb70fb93055bd88beba4e208ca92f0f5cd 4400 main/binary-amd64/Packages
- a731704746e0246c1b020b7806fef37d3cd10a42 1494 main/binary-amd64/Packages.gz
+ 19e7586384fd54c48c012468e89ab4c10c98061b 4405 main/binary-amd64/Packages
+ 816c02daabef0b911ace64990dc4e398b906ebbc 1517 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
- a04645363adee771d46a0fce63fbb8b2bc245797 4396 main/binary-i386/Packages
- d49f026ea5da6693611aefc92d5350f0f0e4227e 1504 main/binary-i386/Packages.gz
+ 72589d50cdc8133fb4310d4d9de65de95cd1de59 4402 main/binary-i386/Packages
+ 58af756447a321146caeaa07125a6d9c871a1763 1518 main/binary-i386/Packages.gz
  aca0e76982209e8c4be03047232e3ecc2606ffb5 152 main/binary-i386/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/source/Sources
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- 472135f35697bbeef7064d5d8d0b900c897c1434691fe5258f7688881f07d2d6 4400 main/binary-amd64/Packages
- 7f78efebed9bb2afb19fc3185c60e732467c37a6bc7a32eb758d9a0833867417 1494 main/binary-amd64/Packages.gz
+ 592af0414e9ad8a6200cfb956231a0b6984e29ba6cc7ede954153d5464d6a7ae 4405 main/binary-amd64/Packages
+ 197aced91bd2288128c59b5adb6d7a16d2796ba0c656c2a451478b411aadde70 1517 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
- 645bed702e0f6f0c36b0d2ff2a2889f20d355ecd8d8433c45b2144d2de66ffa5 4396 main/binary-i386/Packages
- 00388dbea2bb1c2e76fbacde6847edef1daf3ab07dc91ffdfb99fead3e8dca71 1504 main/binary-i386/Packages.gz
+ 2837c87415c4149c0bfecfb564d2b3620a594c21b50aff4737bc4b340dca4254 4402 main/binary-i386/Packages
+ a7fa2262e4da72c3dc97d30e5c13976801190b4db09cc0ca6d7f898b839db716 1518 main/binary-i386/Packages.gz
  a768893c28dcc669ffc5552b2b2a9e97c4a1e6c199091942e82e409a1feb0637 152 main/binary-i386/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/source/Sources
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/source/Sources.gz
  061233eff9824877355156ac18c76d341310ced9007d0fdeed814e8dcc713fc0 154 main/source/Release
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v2
 
-iQEcBAEBAgAGBQJTGFXBAAoJEJ1a+q4YMfpR2toIAIvfIxWSLsJu1OPDGE0SyL+q
-xkE5cdnovzRpw0RiXeppkgIqv5Q8blpsFSawqQNhdLAGfsD8g5InjMKUn1X4plu+
-KEME/APsFMw7jYeDBjirXCqNWo/zjQg0C3SGIJo0jRDccPdO7SjEQJG8RCWiOOcm
-iVU7Ggo1C//TvYIdYhkoUjxXkD6UaX4kJrWvecc39mWDp1inE1RmtuPQFizvezdI
-DbXz4oADTytwj+2FRaWto3ZIL/cwaXe3RV5I2VwlMDCAt2rydLDTUaIhFPDF22IA
-XRHwwJfn76oFZaZA00+5KjHpD9u63mKAuOV9fKcJ5JAlfdbDP606qU9RK/FK/S8=
-=6/Ql
+iQEcBAEBCAAGBQJVW8h9AAoJEJ1a+q4YMfpRe9EH/1jeMQl4mt9eSCwBG2l+ifGo
+/nT+g+fXnFxqeBtW0/BlpHrUsQcogzkyxN3Z0GeMrFRZn1OctMz9IM+uG4NeYFRo
+cOKkFFUBb7JFQyGs+NH0v1SciRnTqPOuK9e5MIEJhO8DSu20ih0tjW2V7SyvcBfp
+TsAARdUnuNTmqMWZXDfthrt12mEwhzHLKgvQyNIiV+Dhipsl8Yv8Yk42tIByxBgX
+hufPUuR/QZyGPscJ5R/T8LGZxtIi3UW/okL3PFjpo+TnqgyW7O9hcdozjHUFBNlY
+cdIvb58dowEQ/T9X0dh99rRxyq+HAJcNX7WG8Kxwh3yKTj2Kz7bgiCOhUnlL5Uk=
+=kJ1Z
 -----END PGP SIGNATURE-----

@@ -22,19 +22,19 @@ Description: Audio file player driven by vinyl turntable
 
 Package: libdigitalscratch-dev
 Source: libdigitalscratch
-Version: 1.5.0-1
+Version: 1.6.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 52
-Depends: libdigitalscratch1 (= 1.5.0-1)
+Installed-Size: 47
+Depends: libdigitalscratch1 (= 1.6.0-1)
 Homepage: http://www.digital-scratch.org
 Priority: extra
 Section: libdevel
-Filename: pool/main/libd/libdigitalscratch/libdigitalscratch-dev_1.5.0-1_amd64.deb
-Size: 6682
-SHA256: f35f60f5b6cae19ffee5b5984f9460d0c256dec422bd32ace6b94c257dd9ae2c
-SHA1: 9f9d80df9a0ce67a6f3b226801f58be7d35f5ce8
-MD5sum: f31a411e71ad620f19b9ac23716e1224
+Filename: pool/main/libd/libdigitalscratch/libdigitalscratch-dev_1.6.0-1_amd64.deb
+Size: 5704
+SHA256: 6f68889614864a588a00c5644e538a63fad28d3aa5ea6f0fcfdb5439f7cef802
+SHA1: fa1fe7e4178108fde627c54cc224a36e16a1aa29
+MD5sum: b254bde52e8ca764e3073ccac3c125d1
 Description: Motion detection for vinyl turntable
  DigitalScratch library is designed to analyze motion of a disc on a vinyl
  turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
@@ -45,19 +45,19 @@ Description: Motion detection for vinyl turntable
 
 Package: libdigitalscratch1
 Source: libdigitalscratch
-Version: 1.5.0-1
+Version: 1.6.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 152
-Depends: libc6 (>= 2.2.5), libgcc1 (>= 1:4.1.1), libqtcore4 (>= 4:4.5.3), libstdc++6 (>= 4.4.0)
+Installed-Size: 87
+Depends: libc6 (>= 2.14), libgcc1 (>= 1:4.1.1), libqt5core5a (>= 5.2.0~alpha1), libstdc++6 (>= 4.4.0)
 Homepage: http://www.digital-scratch.org
 Priority: extra
 Section: libs
-Filename: pool/main/libd/libdigitalscratch/libdigitalscratch1_1.5.0-1_amd64.deb
-Size: 49308
-SHA256: 96de697f53678e63fb7699a21d1ded734309d5aced0f0f2d63f2f75376cb4060
-SHA1: a1965911e93977655a1383c236b93ca00cf02913
-MD5sum: 7e33c895b5dd5d2692a930a86f600e2d
+Filename: pool/main/libd/libdigitalscratch/libdigitalscratch1_1.6.0-1_amd64.deb
+Size: 19826
+SHA256: 6bdd5a2910a8748699636b4a4e9da904a4252b0beb31f1bbffb0fd62d3b5f1e5
+SHA1: b1c6d03f87e3e065fdc2ea5ece633fbfd47aed3a
+MD5sum: 18ffa917bc8ced8fb7f4296d556441e2
 Description: Motion detection for vinyl turntable
  Digital Scratch library is designed to analyze motion of a disc on a vinyl
  turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
