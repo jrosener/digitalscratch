@@ -7,6 +7,25 @@
 /*                                                                            */
 /*============================================================================*/
 
+digitalscratch-1.6.0:
+  * features:
+     - add Novation Dicer support (cue points management), Linux only
+     - add tracklist recording support
+     - add direct turntable output support ("thru" button that bypass all digitalscratch playback).
+     - add manual speed change support (bypass motion detection)
+  * music tracks management:
+     - improve speed of requests in music track database
+     - auto backup database of audio tracks (at startup)
+  * graphics:
+     - refactor the main GUI buttons into a menu layer
+  * coding:
+     - remove Qt4 support
+     - better handling of 1, 2 or 3 turntables
+     - refactor logging system
+     - refactor duplicate slots using lambda functions
+  * motion detection engine (libdigitalscratch):
+     - rewrite the timecoded signal detection using FIR and IIR filters 
+
 digitalscratch-1.5.0:
   * features:
      - read .pls playlist format

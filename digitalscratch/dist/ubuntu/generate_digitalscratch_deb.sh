@@ -51,13 +51,10 @@ echo ""
 echo ""
 
 echo "************************* Get version from .pro ************************"
-VERSION=$(cat ../../digitalscratch.pro | grep -i '^\s*VERSION =')
-if [[ $VERSION =~ "CURRENT_DATE" ]]
-then
-  VERSION=$(cat ../../digitalscratch.pro | grep -i '^\s*VERSION =' | grep '\{CURRENT_DATE\}'  | cut -d'=' -f2 | tr -d ' ' | tr -d '\r')
-  VERSION=${VERSION/\$\$\{CURRENT_DATE\}/$(date +%Y%m%d)}
-else
-  VERSION=$(echo $VERSION | cut -d'=' -f2 | tr -d ' ' | tr -d '\r')
+VERSION=$(cat ../../digitalscratch.pro | grep -i '^VERSION ='| cut -d'=' -f2 | tr -d ' ' | tr -d '\r' | cut -d'+' -f1)
+if [[ $1 == test ]] ; then
+    VERSION=$VERSION+SNAPSHOT$(date +%Y%m%d)
+    sed -i s/^VERSION\ =.*/VERSION\ =\ $VERSION/g ../../digitalscratch.pro
 fi
 echo VERSION = $VERSION
 check_error
@@ -103,14 +100,13 @@ if [[ $2 == --rebuild ]] ; then
 else
     echo "******************** Compress orig source directory *********************"
     cd ../../
-    git archive --format zip --output $WORKINGPATH/archive.zip $(git symbolic-ref --short -q HEAD)
-    unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR_ORIG
-    rm -v -rf $WORKINGPATH/$SOURCEDIR_ORIG/dist
-    check_error
+    git ls-files | grep -v win-external/ | grep -v dist/ | grep -v test/ | tar -czf $WORKINGPATH/$TARPACK -T -
+    mkdir -p $WORKINGPATH/$SOURCEDIR_ORIG
     ORIGDIR=$(pwd)
-    cd $WORKINGPATH
-    tar cvzf $TARPACK $SOURCEDIR_ORIG
+    cd $WORKINGPATH/$SOURCEDIR_ORIG
+    tar -xzf $WORKINGPATH/$TARPACK
     cd $ORIGDIR
+    check_error
 fi
 echo ""
 echo ""

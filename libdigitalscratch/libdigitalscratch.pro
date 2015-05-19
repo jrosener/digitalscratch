@@ -1,23 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2010-11-08T23:36:00
-#
-#-------------------------------------------------
-
-CONFIG(debug, debug|release) {
-    # Snapshot version number.
-    win32 {
-        VERSION = 1.6.0
-    }
-    unix {
-        CURRENT_DATE = $$system(date +%Y%m%d)
-        VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
-    }
-} else {
-    # Release version number.
-    VERSION = 1.6.0
-}
-
+VERSION = 1.6.0
 DEFINES += VERSION=$${VERSION}
 
 CONFIG += qt c++11

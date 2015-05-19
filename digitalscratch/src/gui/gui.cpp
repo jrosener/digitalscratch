@@ -2629,7 +2629,8 @@ Gui::deck_reset_signal_level()
 
         QMessageBox msg_box;
         msg_box.setWindowTitle("DigitalScratch");
-        msg_box.setText(tr("Do you want to reset the minimal signal level for the deck ") + QString::number(deck_index) + " ?");
+        msg_box.setText(tr("Do you want to reset the minimal signal level for the deck ") + QString::number(deck_index) + " ?\n"
+                        + tr("Do not forget to run it when turntable is STOPPED."));
         msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msg_box.setIcon(QMessageBox::Question);
         msg_box.setDefaultButton(QMessageBox::Cancel);

@@ -10,7 +10,7 @@
 Digital Scratch player is an audio file player driven by vinyl turntable.
 It requires a timecoded vinyl disc such as Serato, FinalScratch or Mixvibes
 disc.
-It uses Jack Audio Connection Kit (JACK) as audio server.
+It uses Jack Audio Connection Kit (JACK) for the sound card management.
 
 Digital Scratch player is under GNU/GPL3 licence.
 

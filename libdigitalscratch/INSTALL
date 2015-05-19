@@ -12,12 +12,12 @@
 -- Building requirements ----------------------------------------------------------------
 
 [Compiler]
-- GCC (g++-4.x):        http://gcc.gnu.org
+- GCC (g++-4.x): http://gcc.gnu.org
 or
 - MS VS 2013 Community: https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx
 
 [Libraries]
-- Qt SDK (qt5.x):       http://www.qt.io
+- Qt SDK (qt5.x): http://www.qt.io
 
 [Ubuntu 15.04]
 - build-essential

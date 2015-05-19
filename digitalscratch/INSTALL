@@ -22,6 +22,7 @@ or
 - Sample rate library:     http://www.mega-nerd.com/SRC/
 - JACK library:            http://jackaudio.org
 - LibKeyFinder:            http://www.ibrahimshaath.co.uk/keyfinder/
+- ALSA library:            http://www.alsa-project.org
 
 [Ubuntu 15.04]
 - build-essential
@@ -33,6 +34,7 @@ or
 - libsamplerate0-dev
 - qtmultimedia5-dev
 - libqt5multimedia5-plugins
+- libasound2-dev
 - libdigitalscratch-dev    (ppa:julien-rosener/keyfinder)
 - libkeyfinder-dev         (ppa:julien-rosener/keyfinder)
 

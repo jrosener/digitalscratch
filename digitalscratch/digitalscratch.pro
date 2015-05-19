@@ -1,17 +1,4 @@
-CONFIG(debug, debug|release) {
-    # Snapshot version number.
-    win32 {
-        VERSION = 1.6.0
-    }
-    unix {
-        CURRENT_DATE = $$system(date +%Y%m%d)
-        VERSION = 1.5.0+1.6.0SNAPSHOT$${CURRENT_DATE}
-    }
-} else {
-    # Release version number.
-    VERSION = 1.6.0
-}
-
+VERSION = 1.6.0
 DEFINES += VERSION=$${VERSION}
 
 ##############################
@@ -29,15 +16,7 @@ INSTALLS += target
 ##############################
 
 TEMPLATE = app
-
-contains(QT_VERSION, ^4\\.[0-9]\\..*) {
-    #Qt 4.x
-    QT += gui sql
-}
-else {
-    # Qt 5 and more
-    QT += gui widgets sql concurrent multimedia
-}
+QT += gui widgets sql concurrent multimedia
 
 DEFINES += ENABLE_TEST_DEVICE
 CONFIG(test-no_device_test) {
