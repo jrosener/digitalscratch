@@ -4,36 +4,36 @@ Hash: SHA256
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Tue, 19 May 2015 23:34:21 UTC
+Date: Wed, 20 May 2015 18:31:22 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- 8b01fab01576a040904bc2d8843d0494 4405 main/binary-amd64/Packages
- 954cbef54db19f66b81c933f12dfcb6b 1517 main/binary-amd64/Packages.gz
+ 268aa55077febcc38e440d19a29dd0fa 4383 main/binary-amd64/Packages
+ 1758475b26b1137b8e30279311182f9e 1514 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
- 50adc41d283786dff729afef75cb2bfa 4402 main/binary-i386/Packages
- 69397e6cd887e1ee685b9281a0fc3948 1518 main/binary-i386/Packages.gz
+ 22bb0ba58f19c94d25b6bf88b81dae91 4380 main/binary-i386/Packages
+ 7c204af5f62eb0f7b467562dc926980d 1513 main/binary-i386/Packages.gz
  32122f38610f15b8026cd7f4be3176d6 152 main/binary-i386/Release
  d41d8cd98f00b204e9800998ecf8427e 0 main/source/Sources
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- 19e7586384fd54c48c012468e89ab4c10c98061b 4405 main/binary-amd64/Packages
- 816c02daabef0b911ace64990dc4e398b906ebbc 1517 main/binary-amd64/Packages.gz
+ 40b7226af982dfb10fcae2429784efb5ff2f857e 4383 main/binary-amd64/Packages
+ 90de290e3d58d13ba0ecb0710127b2ebf15ff28c 1514 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
- 72589d50cdc8133fb4310d4d9de65de95cd1de59 4402 main/binary-i386/Packages
- 58af756447a321146caeaa07125a6d9c871a1763 1518 main/binary-i386/Packages.gz
+ d9d628ee43614047a00bef355669b70c1aeec037 4380 main/binary-i386/Packages
+ 94433e6898a4a6a12b4698d924423d0fc34c49da 1513 main/binary-i386/Packages.gz
  aca0e76982209e8c4be03047232e3ecc2606ffb5 152 main/binary-i386/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/source/Sources
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- 592af0414e9ad8a6200cfb956231a0b6984e29ba6cc7ede954153d5464d6a7ae 4405 main/binary-amd64/Packages
- 197aced91bd2288128c59b5adb6d7a16d2796ba0c656c2a451478b411aadde70 1517 main/binary-amd64/Packages.gz
+ d83ea890b954c37dcffc576a7f5a40609d0679f324307cda51338a7781af99d8 4383 main/binary-amd64/Packages
+ f98dc1440276f43ca793ce77a0a9ec7b8b7efc0bae22bd1cf0841368e1aa270c 1514 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
- 2837c87415c4149c0bfecfb564d2b3620a594c21b50aff4737bc4b340dca4254 4402 main/binary-i386/Packages
- a7fa2262e4da72c3dc97d30e5c13976801190b4db09cc0ca6d7f898b839db716 1518 main/binary-i386/Packages.gz
+ 6c136c7e85cdffe3a97b865f6d30df905c16d1702a739390393821815fa5de01 4380 main/binary-i386/Packages
+ bc1454e5b8aca40bce3082cdda5017f732dcf32002b597607acfc642e0573705 1513 main/binary-i386/Packages.gz
  a768893c28dcc669ffc5552b2b2a9e97c4a1e6c199091942e82e409a1feb0637 152 main/binary-i386/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/source/Sources
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/source/Sources.gz
@@ -41,11 +41,11 @@ SHA256:
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVW8h9AAoJEJ1a+q4YMfpRe9EH/1jeMQl4mt9eSCwBG2l+ifGo
-/nT+g+fXnFxqeBtW0/BlpHrUsQcogzkyxN3Z0GeMrFRZn1OctMz9IM+uG4NeYFRo
-cOKkFFUBb7JFQyGs+NH0v1SciRnTqPOuK9e5MIEJhO8DSu20ih0tjW2V7SyvcBfp
-TsAARdUnuNTmqMWZXDfthrt12mEwhzHLKgvQyNIiV+Dhipsl8Yv8Yk42tIByxBgX
-hufPUuR/QZyGPscJ5R/T8LGZxtIi3UW/okL3PFjpo+TnqgyW7O9hcdozjHUFBNlY
-cdIvb58dowEQ/T9X0dh99rRxyq+HAJcNX7WG8Kxwh3yKTj2Kz7bgiCOhUnlL5Uk=
-=kJ1Z
+iQEcBAEBCAAGBQJVXNL6AAoJEJ1a+q4YMfpRSo4H/2HFIR3zs75Das8Jh0M+4nGZ
+uI8RV53xoGadKGd4FmUPh1grOFzhWL/01tkPnB8vZp9g45asAVMmVYzDUFZf19xs
+OHENahMj4QZrqWSilSQ5nRMLRwCcpDNQf/UaXlsGLfY6SL1EI4AnhxEFbzPKmznh
+tLO+axh8VHxyFBzkF+/gKQn4jspHKOKp6ExMbIqLsIX2o5plGMEkSWep7Ku9MA8/
+Nuws5aMMy51XlqYrdwbAtaS1UfjfbaJ6fYhahEii9tyyNDsblPvK2yXxRlDrAGI2
+TEDVhOFCif1EXKuje8202Rlc2a4nMgjpvWK2w0PvXqMmO+YMYFAxH2lVOrJkY58=
+=Nyd4
 -----END PGP SIGNATURE-----

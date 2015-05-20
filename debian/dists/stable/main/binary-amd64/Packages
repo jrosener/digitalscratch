@@ -74,10 +74,10 @@ Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libdevel
 Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_amd64.deb
-Size: 3332
-SHA256: a4bf5538ba41506c02f9d36dd160ab61c3f07f707ecd147cfa4264db80c391ef
-SHA1: 25b556ff894cb0b20e01b006ccb8cbe5c4c1db0b
-MD5sum: b5108c6a5c17291fe54ae9baba28e4a6
+Size: 3384
+SHA256: 44df3880d3fd82b80f8d07db726199c85adea26ffeb0c307cc0bce3831a00f8e
+SHA1: 4d218a4c992cb416b4703dc539f18aa12d33496b
+MD5sum: 657c1972652a1195e7ab2aa1e9b8bc0d
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
  .
@@ -89,16 +89,16 @@ Source: libkeyfinder
 Version: 0.11.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 184
-Depends: libfftw3-3, libboost-system1.49.0 (>= 1.49.0-1), libboost-thread1.49.0 (>= 1.49.0-1), libc6 (>= 2.2.5), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
+Installed-Size: 182
+Depends: libboost-system1.55.0, libboost-thread1.55.0, libc6 (>= 2.2.5), libfftw3-double3, libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
 Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libs
 Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_amd64.deb
-Size: 64308
-SHA256: 5addd94c178943a56c9773f6d02095eca0affef6d26d39db65627b234b7e4b5b
-SHA1: 45d85598a66e489fcba762596ab198ea588a381e
-MD5sum: dddc2777ea3b930add661a61058cd3a1
+Size: 53068
+SHA256: e46d4c5550269f5fee9d294c641e16db2300630a402be4691d76ebf64949c6a6
+SHA1: a545b6c3a85fb71ebf4cbd4eda90fe6c193182ec
+MD5sum: e388f3b17ab546d503f9561b406de0ab
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
 
