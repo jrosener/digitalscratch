@@ -89,8 +89,9 @@ echo "**************************** Copy source code ***************************"
 git checkout debian/changelog
 check_error
 cd ../../
-git ls-files | grep -v dist/ | grep -v test/ | tar -czf $WORKINGPATH/$TARPACK -T -
+git ls-files | grep -v dist/ | grep -v test/ | grep -v win-external/ | tar -czf $WORKINGPATH/$TARPACK -T -
 ORIGDIR=$(pwd)
+mkdir -p $WORKINGPATH/$SOURCEDIR
 cd $WORKINGPATH/$SOURCEDIR
 tar -xzf $WORKINGPATH/$TARPACK
 cd $ORIGDIR
@@ -99,18 +100,19 @@ echo ""
 echo ""
 
 echo "**************************** Install debian/ folder ***************************"
-cp -r $WORKINGPATH/$SOURCEDIR/dist/debian/debian $WORKINGPATH/$SOURCEDIR/
+cp -r dist/debian/debian $WORKINGPATH/$SOURCEDIR/
 check_error
 echo ""
 echo ""
 
 echo "************************* Update changelog ******************************"
 cd dist/debian/debian
+ORIGDIR=$(pwd)
 cd $WORKINGPATH/$SOURCEDIR
 debchange --newversion $VERSIONPACKAGE --distribution $DISTRIB
 check_error
 cat $WORKINGPATH/$SOURCEDIR/debian/changelog
-cp $WORKINGPATH/$SOURCEDIR/debian/changelog $ORIGDIR/debian
+cp $WORKINGPATH/$SOURCEDIR/debian/changelog $ORIGDIR
 check_error
 echo ""
 echo ""
@@ -146,12 +148,10 @@ echo ""
 echo ""
 
 echo "************ Install package to local apt repo $REPOPATH *************"
-cd $ORIGDIR
 cd $REPOPATH
-#reprepro -A $ARCHI remove $DISTRIB digitalscratch
+reprepro -A $ARCHI remove $DISTRIB digitalscratch
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBBIN}
 check_error
-cd $ORIGDIR
 echo ""
 echo ""
 
