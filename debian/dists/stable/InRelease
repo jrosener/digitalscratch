@@ -4,36 +4,36 @@ Hash: SHA256
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Wed, 20 May 2015 18:31:22 UTC
+Date: Wed, 20 May 2015 20:55:23 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- 268aa55077febcc38e440d19a29dd0fa 4383 main/binary-amd64/Packages
- 1758475b26b1137b8e30279311182f9e 1514 main/binary-amd64/Packages.gz
+ 07a4570ac3c1a11f345766f3897fc67e 4561 main/binary-amd64/Packages
+ 2c0293f505fa10cc1b11084f3d3d650c 1569 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
- 22bb0ba58f19c94d25b6bf88b81dae91 4380 main/binary-i386/Packages
- 7c204af5f62eb0f7b467562dc926980d 1513 main/binary-i386/Packages.gz
+ 3c38328d1fbada7d6ee476c71af13596 4559 main/binary-i386/Packages
+ 1c4d80a08d516ed31cad7204854c22a3 1570 main/binary-i386/Packages.gz
  32122f38610f15b8026cd7f4be3176d6 152 main/binary-i386/Release
  d41d8cd98f00b204e9800998ecf8427e 0 main/source/Sources
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- 40b7226af982dfb10fcae2429784efb5ff2f857e 4383 main/binary-amd64/Packages
- 90de290e3d58d13ba0ecb0710127b2ebf15ff28c 1514 main/binary-amd64/Packages.gz
+ 430af3fcd5448ab09605b68121f5bea65ef505ab 4561 main/binary-amd64/Packages
+ 9003da582af414692f7f3df83bfa44606173c7b1 1569 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
- d9d628ee43614047a00bef355669b70c1aeec037 4380 main/binary-i386/Packages
- 94433e6898a4a6a12b4698d924423d0fc34c49da 1513 main/binary-i386/Packages.gz
+ d9652df0b28331e48daf1ca4ad7c3dad4910015f 4559 main/binary-i386/Packages
+ abcab55ddb733cabff374edfcf7d584702353b1c 1570 main/binary-i386/Packages.gz
  aca0e76982209e8c4be03047232e3ecc2606ffb5 152 main/binary-i386/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 main/source/Sources
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- d83ea890b954c37dcffc576a7f5a40609d0679f324307cda51338a7781af99d8 4383 main/binary-amd64/Packages
- f98dc1440276f43ca793ce77a0a9ec7b8b7efc0bae22bd1cf0841368e1aa270c 1514 main/binary-amd64/Packages.gz
+ 729a709ea1786f116e53be104174559c6febb04e531b78e4b60c2c24a41f159f 4561 main/binary-amd64/Packages
+ d95eb109f687728a8ede0561eff0cdbea0496fce954ecc7027769f1839328a90 1569 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
- 6c136c7e85cdffe3a97b865f6d30df905c16d1702a739390393821815fa5de01 4380 main/binary-i386/Packages
- bc1454e5b8aca40bce3082cdda5017f732dcf32002b597607acfc642e0573705 1513 main/binary-i386/Packages.gz
+ f7839934090db6bf4a585dc26bdd5d9385059b96bcb336efb533854e1edadcbe 4559 main/binary-i386/Packages
+ 588d28b41a0286e3d5d033ccd5ea0359df157f7696b4dcc94305508209c3673a 1570 main/binary-i386/Packages.gz
  a768893c28dcc669ffc5552b2b2a9e97c4a1e6c199091942e82e409a1feb0637 152 main/binary-i386/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/source/Sources
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 main/source/Sources.gz
@@ -41,11 +41,11 @@ SHA256:
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXNL6AAoJEJ1a+q4YMfpRSo4H/2HFIR3zs75Das8Jh0M+4nGZ
-uI8RV53xoGadKGd4FmUPh1grOFzhWL/01tkPnB8vZp9g45asAVMmVYzDUFZf19xs
-OHENahMj4QZrqWSilSQ5nRMLRwCcpDNQf/UaXlsGLfY6SL1EI4AnhxEFbzPKmznh
-tLO+axh8VHxyFBzkF+/gKQn4jspHKOKp6ExMbIqLsIX2o5plGMEkSWep7Ku9MA8/
-Nuws5aMMy51XlqYrdwbAtaS1UfjfbaJ6fYhahEii9tyyNDsblPvK2yXxRlDrAGI2
-TEDVhOFCif1EXKuje8202Rlc2a4nMgjpvWK2w0PvXqMmO+YMYFAxH2lVOrJkY58=
-=Nyd4
+iQEcBAEBCAAGBQJVXPS7AAoJEJ1a+q4YMfpRCskH/j8V6+Eadbt0Q6GBQWK8HRLK
+sLHahSpXdK3q75pm8jfcZoQ9PRgU3YhF+j9PQNhrYEQYlzG4U1mmLWpl7/Vpwcv9
+Z2lfDmsyVYUelos+mWrZskZROWBK8OYHXpmeGxucmfERtWbssRmb++5in5aud6IH
+xQfzH6D7ZQe9tVdLqZXCHa4NUcHJ+HLhHM5znkJp2ngVpYa+xsfD0LFr1pkuoKO0
+CEbMkVD4uK3JlpYJ149FsqH/pHeR0y9jqeS6xwunqvKl+HK2g7L7daMdllWON5nT
+usHtsuqSOMHTdZZRKUMEy2rYvRlncHEnaf7lgf3HmTPicnGJdZcETMW7pDKScUU=
+=F+1Z
 -----END PGP SIGNATURE-----
