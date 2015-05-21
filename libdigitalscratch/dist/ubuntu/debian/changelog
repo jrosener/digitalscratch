@@ -1,3 +1,11 @@
+libdigitalscratch (1.6.0-1ppa1~vivid1) vivid; urgency=medium
+
+  * rewrite the timecoded signal detection using FIR and IIR filters 
+  * refactor the API using more standard fonctions/handle
+  * refactor the logging system 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 21 May 2015 10:31:56 +0200
+
 libdigitalscratch (1.5.0-1ppa1~trusty1) trusty; urgency=medium
 
   * built for Ubuntu 14.04 
