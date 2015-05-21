@@ -40,7 +40,7 @@
 Application_settings::Application_settings() : settings(APPLICATION_NAME)
 {
     this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
-    for (int i = 0; i <= NB_DSCRATCH_VINYLS; i++)
+    for (int i = 0; i < NB_DSCRATCH_VINYLS; i++)
     {
        this->available_vinyl_types.insert(static_cast<dscratch_vinyls_t>(i),
                                           dscratch_get_vinyl_name_from_type(static_cast<dscratch_vinyls_t>(i)));

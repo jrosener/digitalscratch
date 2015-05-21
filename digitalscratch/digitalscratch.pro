@@ -219,6 +219,8 @@ win32 {
                 %QTDIR%/bin/Qt5Guid.dll \
                 %QTDIR%/bin/Qt5Widgetsd.dll \
                 %QTDIR%/bin/Qt5Concurrentd.dll \
+                %QTDIR%/bin/Qt5Multimediad.dll \
+                %QTDIR%/bin/Qt5Networkd.dll \
                 %QTDIR%/bin/icu*.dll \
                 %QTDIR%/bin/Qt5Sqld.dll
         DLLS_PLATFORMS = %QTDIR%/plugins/platforms/qwindowsd.dll
@@ -232,6 +234,8 @@ win32 {
                 %QTDIR%/bin/Qt5Gui.dll \
                 %QTDIR%/bin/Qt5Widgets.dll \
                 %QTDIR%/bin/Qt5Concurrent.dll \
+                %QTDIR%/bin/Qt5Multimedia.dll \
+                %QTDIR%/bin/Qt5Network.dll \
                 %QTDIR%/bin/icu*.dll \
                 %QTDIR%/bin/Qt5Sql.dll
         DLLS_PLATFORMS = %QTDIR%/plugins/platforms/qwindows.dll
