@@ -44,11 +44,12 @@ Install
     sudo apt-get update
     sudo apt-get install digitalscratch
 
-### Debian 8
-    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
-    sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
-    sudo apt-get update
-    sudo apt-get install digitalscratch
+### Debian 8 (as root)
+    apt-get install software-properties-common
+    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -
+    add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
+    apt-get update
+    apt-get install digitalscratch
 
 ### MS Windows
 Go to the download page: [http://www.digital-scratch.org/download.html](http://www.digital-scratch.org/download.html)
@@ -63,11 +64,12 @@ Build
     sudo apt-get update
     sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev qtmultimedia5-dev libqt5multimedia5-plugins libasound2-dev
     
-#### Install build tools (Debian 8 - Jessie)
-    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -
-    sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
-    sudo apt-get update
-    sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev qtmultimedia5-dev libasound2-dev
+#### Install build tools (Debian 8 - Jessie), as root
+    apt-get install software-properties-common
+    wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -
+    add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
+    apt-get update
+    apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev qtmultimedia5-dev libasound2-dev
 
 #### Compile and install _libdigitalscratch_
     cd libdigitalscratch
