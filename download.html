@@ -65,12 +65,13 @@
       </ul>
       <p>Check this page to run Digital-Scratch on GNU/Linux: <a href="https://github.com/jrosener/digitalscratch/wiki/Run-DigitalScratch-on-Linux">how to</a></p>
       <h5>Debian Stable GNU/Linux</h5>
-      <p>Debian Stable packages for i386 and amd64. Please type the following commands in a terminal:</p>
+      <p>Debian Stable packages for i386 and amd64. Please type the following commands as <em>root</em> in a terminal:</p>
       <ul>
-        <li><code>wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | sudo apt-key add -</code></li>
-        <li><code>sudo add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"</code></li>
-        <li><code>sudo apt-get update</code></li>
-        <li><code>sudo apt-get install digitalscratch</code></li>        
+        <li><code>apt-get install software-properties-common</code></li>
+        <li><code>wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -</code></li>
+        <li><code>add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"</code></li>
+        <li><code>apt-get update</code></li>
+        <li><code>apt-get install digitalscratch</code></li>        
       </ul>
       <h5>Windows</h5>
       <p>Digital-Scratch for Windows 7/8: <a href="https://github.com/jrosener/digitalscratch/releases/download/v1.6.0/digitalscratch-1.6.0.msi">digitalscratch-1.6.0.msi</a></p>
