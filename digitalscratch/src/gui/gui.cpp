@@ -1709,24 +1709,36 @@ Gui::connect_dicer_actions()
                                 case HOT_CUE: // Register/Play cue point.
                                     if (this->get_cue_point_number_from_dicer_button(button_index, cue_point_number) == true)
                                     {
-                                        // Dicer's button can be mapped to a cue point GUI button.
-                                        if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == false)
+                                        // Dicer button 5 => go to begin of the track (special cue point).
+                                        if (button_index == BUTTON_5)
                                         {
-                                            // Register cue point.
-                                            emit this->decks[deck_index]->cue_set_buttons[cue_point_number]->clicked();
+                                            emit this->decks[deck_index]->restart_button->clicked();
                                         }
                                         else
                                         {
-                                            // Cue point is already defined, play it.
-                                            emit this->decks[deck_index]->cue_play_buttons[cue_point_number]->clicked();
+                                            // Dicer's button can be mapped to a cue point GUI button.
+                                            if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == false)
+                                            {
+                                                // Register cue point.
+                                                emit this->decks[deck_index]->cue_set_buttons[cue_point_number]->clicked();
+                                            }
+                                            else
+                                            {
+                                                // Cue point is already defined, play it.
+                                                emit this->decks[deck_index]->cue_play_buttons[cue_point_number]->clicked();
+                                            }
                                         }
                                     }
                                     break;
                                 case CLEAR_CUE: // Delete a registered cue point.
                                     if (this->get_cue_point_number_from_dicer_button(button_index, cue_point_number) == true)
                                     {
-                                        // Dicer's button can be mapped to a delete cue point GUI button.
-                                        emit this->decks[deck_index]->cue_del_buttons[cue_point_number]->clicked();
+                                        // Dicer button 5 => go to begin of the track => can not be removed.
+                                        if (button_index != BUTTON_5)
+                                        {
+                                            // Dicer's button can be mapped to a delete cue point GUI button.
+                                            emit this->decks[deck_index]->cue_del_buttons[cue_point_number]->clicked();
+                                        }
                                     }
                                     break;
                                 case LOOP_ROLL: // Modes not handled for the moment.
@@ -2336,6 +2348,9 @@ Gui::run_audio_file_decoding_process()
             }
         }
 
+        // On Dicer, always lit the 5th button to handle the "go to begin" feature.
+        this->lit_dicer_button_cue_point(deck_index, 4);
+
         // Update waveform.
         deck_waveform->update();
 
@@ -2719,6 +2734,9 @@ Gui::get_dicer_button_from_cue_point_number(const unsigned short &cue_point_numb
         case 3:
             out_dicer_button = BUTTON_4;
             break;
+        case 4:
+            out_dicer_button = BUTTON_5;
+            break;
         default:
             return false;
     }
@@ -2764,6 +2782,9 @@ Gui::get_cue_point_number_from_dicer_button(const dicer_button_t &button_index, 
         case BUTTON_4:
             out_cue_point_number = 3;
             break;
+        case BUTTON_5:
+            out_cue_point_number = 4;
+            break;
         default:
             return false;
     }
@@ -2779,10 +2800,10 @@ Gui::lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned
 
     if ((this->get_dicer_index_from_deck_index(deck_index, dicer_index) == true) &&
         (this->get_dicer_button_from_cue_point_number(cue_point_number, dicer_button) == true))
-    {
-        // Lit the pad button in HOT_CUE and CLEAR_CUE mode.
-        this->dicer_control->set_button_state(dicer_index, HOT_CUE,   dicer_button, LIT);
-        this->dicer_control->set_button_state(dicer_index, CLEAR_CUE, dicer_button, LIT);
+        {
+            // Lit the pad button in HOT_CUE and CLEAR_CUE mode.
+            this->dicer_control->set_button_state(dicer_index, HOT_CUE,   dicer_button, LIT);
+            this->dicer_control->set_button_state(dicer_index, CLEAR_CUE, dicer_button, LIT);
     }
 }
 
