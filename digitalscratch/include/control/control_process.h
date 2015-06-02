@@ -52,5 +52,4 @@ class Control_process : public QObject
 
  signals:
     void speed_changed(const float &speed);
-    void volume_changed(const double &volume);
 };

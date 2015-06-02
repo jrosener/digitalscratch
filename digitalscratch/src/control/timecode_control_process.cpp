@@ -107,7 +107,6 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
 
             this->params->set_volume(volume);
             this->params->set_volume_state(true); // FIXME:  still needed ?
-            emit volume_changed((double)(floorf((this->params->get_volume() * 100.0) * 10.0) / 10.0));
         }
         else
         {
