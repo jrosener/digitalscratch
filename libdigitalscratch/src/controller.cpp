@@ -41,15 +41,13 @@ using namespace std;
 
 Controller::Controller()
 {
-    this->speed    = new Speed();
-    this->volume   = new Volume();
+    this->speed    = 0.0;
+    this->volume   = 0.0;
     this->set_playing_parameters_ready(false);
 }
 
 Controller::~Controller()
 {
-    delete this->speed;
-    delete this->volume;
 }
 
 bool Controller::get_playing_parameters(float *speed,
@@ -57,8 +55,8 @@ bool Controller::get_playing_parameters(float *speed,
 {
     if (this->playing_parameters_ready == true)
     {
-        *speed    = this->speed->get_value();
-        *volume   = this->volume->get_value();
+        *speed    = this->speed;
+        *volume   = this->volume;
 
         return true;
     }

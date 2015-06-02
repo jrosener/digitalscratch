@@ -35,8 +35,6 @@
 #include <string>
 
 #include "dscratch_parameters.h"
-#include "speed.h"
-#include "volume.h"
 
 /**
  * Define a Controller class.\n
@@ -47,31 +45,15 @@
 
 class Controller // FIXME: still necessary ?
 {
-    /* Attributes */
     protected:
-        /**
-         * Speed object pointer.
-         */
-        Speed *speed;
+        float speed;
+        float volume;
+        bool  playing_parameters_ready;
 
-        /**
-         * Volume object pointer.
-         */
-        Volume *volume;
-
-        /**
-         * Set to true by analyze_recording_datas() when playing parameters can
-         * be used.
-         */
-        bool playing_parameters_ready;
-
-    /* Constructor / Destructor */
     public:
         Controller();
         virtual ~Controller();
 
-
-    /* Methods */
     public:
         /**
          * Get last detected speed, direction and volume.
@@ -82,7 +64,7 @@ class Controller // FIXME: still necessary ?
 
     protected:
         /**
-         * Set flag to true if Controller is able to give playin parameters.
+         * Set flag to true if Controller is able to give playing parameters.
          * @return true is all is OK, otherwise false.
          */
         bool set_playing_parameters_ready(bool flag);

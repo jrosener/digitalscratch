@@ -491,7 +491,7 @@ Deck_playback_process::play_data_with_playback_parameters(QVector<float*> &io_pl
     this->src_data->src_ratio         = fabs(1.0 / speed);
     if ((err = src_process(this->src_state, this->src_data)) != 0)
     {
-        // FIXME: when speed is very slow, src_process fails, it is not really an issue, so investigate that.
+        // FIXME: when speed is very slow, src_process fails, it is not really an issue, but investigate that.
         //qCWarning(DS_PLAYBACK) << "libsamplerate fails: " << src_strerror(err);
         this->play_silence(io_playback_bufs, buf_size);
         return true;

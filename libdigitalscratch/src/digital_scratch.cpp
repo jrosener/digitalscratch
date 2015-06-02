@@ -108,8 +108,8 @@ bool Digital_scratch::analyze_recording_data(const QVector<float> &input_samples
     this->set_playing_parameters_ready(false);
 
     this->vinyl->run_recording_data_analysis(input_samples_1, input_samples_2);
-    this->speed->set_value(this->vinyl->get_speed());
-    this->volume->set_value(this->vinyl->get_volume());
+    this->speed = this->vinyl->get_speed();
+    this->volume = this->vinyl->get_volume();
 
     this->set_playing_parameters_ready(true);
 
@@ -132,20 +132,20 @@ bool Digital_scratch::change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type)
 
 void Digital_scratch::calculate_speed()
 {
-    this->speed->set_value(this->vinyl->get_speed());
+    this->speed = this->vinyl->get_speed();
 }
 
 float Digital_scratch::get_speed()
 {
-    return this->speed->get_value();
+    return this->speed;
 }
 
 void Digital_scratch::calculate_volume()
 {
-    this->volume->set_value(this->vinyl->get_volume());
+    this->volume = this->vinyl->get_volume();
 }
 
 float Digital_scratch::get_volume()
 {
-    return this->volume->get_value();
+    return this->volume;
 }

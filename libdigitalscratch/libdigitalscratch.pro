@@ -33,8 +33,6 @@ win32:QMAKE_TARGET_COPYRIGHT = "GPL V3"
 ############################
 
 SOURCES += \ 
-    src/volume.cpp \
-    src/speed.cpp \
     src/serato_vinyl.cpp \
     src/final_scratch_vinyl.cpp \
     src/digital_scratch_api.cpp \
@@ -48,8 +46,6 @@ SOURCES += \
     src/iir_filter.cpp
 
 HEADERS += \ 
-    src/include/volume.h \
-    src/include/speed.h \
     src/include/serato_vinyl.h \
     src/include/final_scratch_vinyl.h \
     src/include/dscratch_parameters.h \
