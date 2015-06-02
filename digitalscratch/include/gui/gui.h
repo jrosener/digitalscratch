@@ -435,11 +435,11 @@ class Gui : public QObject
     void write_tracklist();
     void connect_dicer_actions();
     bool get_dicer_index_from_deck_index(const unsigned short &deck_index, dicer_t &out_dicer_index);
-    bool get_dicer_button_from_cue_point_number(const unsigned short &cue_point_number, dicer_button_t &out_dicer_button);
+    bool get_dicer_button_from_cue_point_index(const unsigned short &cue_point_index, dicer_button_t &out_dicer_button);
     bool get_deck_index_from_dicer_index(const dicer_t &dicer_index, unsigned short int &out_deck_index);
-    bool get_cue_point_number_from_dicer_button(const dicer_button_t &button_index, unsigned short int &out_cue_point_number);
-    void lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number);
-    void unlit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_number);
+    bool get_cue_point_index_from_dicer_button(const dicer_button_t &button_index, unsigned short int &out_cue_point_index);
+    void lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_index);
+    void unlit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_index);
     float get_current_amplitude(const unsigned short &deck_index) const;
 
  public slots:
@@ -494,11 +494,11 @@ class Gui : public QObject
     void deck_reset_signal_level();
     void set_min_amplitude(const unsigned short int &deck_index, const float &ampl);
     bool set_cue_point(const unsigned short int &deck_index,
-                       const unsigned short int &cue_point_number); // FIXME: refactor to cue_point_index
+                       const unsigned short int &cue_point_index);
     void go_to_cue_point(const unsigned short int &deck_index,
-                         const unsigned short int &cue_point_number);
+                         const unsigned short int &cue_point_index);
     bool del_cue_point(const unsigned short int &deck_index,
-                       const unsigned short int &cue_point_number);
+                       const unsigned short int &cue_point_index);
     void switch_playback_selection();
     void select_playback(const unsigned short int &deck_index);
     void hover_playback(const unsigned short int &deck_index);
