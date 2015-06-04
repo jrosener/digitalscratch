@@ -43,7 +43,7 @@
  * @author Julien Rosener
  */
 
-class Controller // FIXME: still necessary ?
+class Controller // FIXME: still necessary ? => only DigitalScratch class is a Controller.
 {
     protected:
         float speed;

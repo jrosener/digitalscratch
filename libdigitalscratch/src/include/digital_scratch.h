@@ -59,7 +59,7 @@
  * It implement a Controller class.
  * @author Julien Rosener
  */
-class Digital_scratch : public Controller
+class Digital_scratch : public Controller // FIXME: rename in Vinyl_controller (and remove Controller) ?
 {
     /* Attributes */
     private:
