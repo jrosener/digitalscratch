@@ -64,12 +64,10 @@ CONFIG(test) {
 
     SOURCES += test/main_test.cpp \
                test/test_utils.cpp \
-               test/controller_test.cpp \
                test/digital_scratch_api_test.cpp \
                test/digital_scratch_test.cpp
 
     HEADERS += test/test_utils.h \
-               test/controller_test.h \
                test/digital_scratch_api_test.h \
                test/digital_scratch_test.h
 }

@@ -56,9 +56,6 @@ Manual_control_process::~Manual_control_process()
 bool
 Manual_control_process::run()
 {
-    // New playback speed/volume are available.
-    this->params->set_data_state(true);
-
     // If using temporary speed acceleration then set the accelerated speed. At the end of the acceleration, reset to
     // previous speed.
     if (this->do_temp_inc_speed == true)
@@ -78,7 +75,6 @@ Manual_control_process::run()
 
     // Calculate volume based on speed.
     this->params->set_volume(1.0); // TODO calculate volume based on speed.
-    this->params->set_volume_state(true);
 
     return true;
 }

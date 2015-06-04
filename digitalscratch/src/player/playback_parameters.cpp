@@ -35,9 +35,7 @@
 
 #include "player/playback_parameters.h"
 
-Playback_parameters::Playback_parameters() : new_speed {false},
-                                             new_volume {false},
-                                             new_data {false}
+Playback_parameters::Playback_parameters()
 {
     this->reset();
 
@@ -83,20 +81,6 @@ Playback_parameters::inc_speed(const float &speed)
 }
 
 bool
-Playback_parameters::set_speed_state(const bool &is_new)
-{
-    this->new_speed = is_new;
-
-    return true;
-}
-
-bool
-Playback_parameters::is_new_speed() const
-{
-    return this->new_speed;
-}
-
-bool
 Playback_parameters::set_volume(const float &volume)
 {
     if (volume != this->volume)
@@ -112,32 +96,3 @@ Playback_parameters::get_volume() const
 {
     return this->volume;
 }
-
-bool
-Playback_parameters::set_volume_state(const bool &is_new)
-{
-    this->new_volume = is_new;
-
-    return true;
-}
-
-bool
-Playback_parameters::is_new_volume() const
-{
-    return this->new_volume;
-}
-
-bool
-Playback_parameters::set_data_state(const bool &are_new)
-{
-    this->new_data = are_new;
-
-    if (are_new == false)
-    {
-        this->new_speed  = false;
-        this->new_volume = false;
-    }
-
-    return true;
-}
-

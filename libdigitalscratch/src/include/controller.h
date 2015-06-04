@@ -48,7 +48,6 @@ class Controller // FIXME: still necessary ? => only DigitalScratch class is a C
     protected:
         float speed;
         float volume;
-        bool  playing_parameters_ready;
 
     public:
         Controller();
@@ -61,11 +60,4 @@ class Controller // FIXME: still necessary ? => only DigitalScratch class is a C
          */
         bool get_playing_parameters(float *speed,
                                     float *volume);
-
-    protected:
-        /**
-         * Set flag to true if Controller is able to give playing parameters.
-         * @return true is all is OK, otherwise false.
-         */
-        bool set_playing_parameters_ready(bool flag);
 };

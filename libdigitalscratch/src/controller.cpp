@@ -43,7 +43,6 @@ Controller::Controller()
 {
     this->speed    = 0.0;
     this->volume   = 0.0;
-    this->set_playing_parameters_ready(false);
 }
 
 Controller::~Controller()
@@ -53,22 +52,8 @@ Controller::~Controller()
 bool Controller::get_playing_parameters(float *speed,
                                         float *volume)
 {
-    if (this->playing_parameters_ready == true)
-    {
-        *speed    = this->speed;
-        *volume   = this->volume;
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool Controller::set_playing_parameters_ready(bool flag)
-{
-    this->playing_parameters_ready = flag;
+    *speed    = this->speed;
+    *volume   = this->volume;
 
     return true;
 }

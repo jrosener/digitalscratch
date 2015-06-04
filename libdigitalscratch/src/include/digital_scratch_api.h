@@ -128,7 +128,7 @@ DLLIMPORT dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  h
  *        the more is the speed the more will be the volume.
  *        0.0 = mute. 1.0 = 100% volume.
  *
- * @return DSCRATCH_SUCCESS if playing parameters are found.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
 DLLIMPORT dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
                                                             float             *speed,

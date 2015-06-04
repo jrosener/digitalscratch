@@ -39,7 +39,7 @@
 
 using namespace std;
 
-class Control_process : public QObject
+class Control_process : public QObject // FIXME : necessary ?
 {
     Q_OBJECT
 

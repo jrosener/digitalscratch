@@ -52,10 +52,7 @@ Digital_scratch::Digital_scratch(dscratch_vinyls_t coded_vinyl_type,
 
 bool Digital_scratch::init(dscratch_vinyls_t coded_vinyl_type)
 {
-    // Internal parameters.
-    this->set_playing_parameters_ready(false);
-
-    this->vinyl = NULL;
+    this->vinyl = nullptr;
     switch(coded_vinyl_type)
     {
         case FINAL_SCRATCH :
@@ -102,16 +99,10 @@ bool Digital_scratch::analyze_recording_data(const QVector<float> &input_samples
         return false;
     }
 
-    // The goal of this method is to analyze input datas, calculate playing
-    // parameters and then say if yes or no we are ready to use these
-    // values to control the player.
-    this->set_playing_parameters_ready(false);
-
+    // The goal of this method is to analyze input datas and calculate speed and volume.
     this->vinyl->run_recording_data_analysis(input_samples_1, input_samples_2);
     this->speed = this->vinyl->get_speed();
     this->volume = this->vinyl->get_volume();
-
-    this->set_playing_parameters_ready(true);
 
     return true;
 }

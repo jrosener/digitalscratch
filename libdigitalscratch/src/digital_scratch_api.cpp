@@ -167,7 +167,7 @@ dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
 
 dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
                                                   float             *speed,
-                                                  float             *volume)
+                                                  float             *volume) // FIXME : volume should not be returned by libdigitalscratch but calculated by the player
 {
     // Get handle.
     dscratch_handle_t_struct *handle_typed;

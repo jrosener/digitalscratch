@@ -46,9 +46,6 @@ class Playback_parameters
  private:
     float speed;        // Vinyl speed.
     float volume;       // Turntable sound volume.
-    bool  new_speed;    // If true: speed is updated.
-    bool  new_volume;   // If true: volume is updated.
-    bool  new_data;     // If true: data are updated.
 
  public:
     Playback_parameters();
@@ -58,15 +55,8 @@ class Playback_parameters
     bool  set_speed(const float &speed);
     float get_speed() const;
     bool  inc_speed(const float &speed);
-    bool  set_speed_state(const bool &is_new);
-    bool  is_new_speed() const;
-
     bool  set_volume(const float &volume);
     float get_volume() const;
-    bool  set_volume_state(const bool &is_new);
-    bool  is_new_volume() const;
-
-    bool  set_data_state(const bool &are_new);
 
  private:
     bool reset();

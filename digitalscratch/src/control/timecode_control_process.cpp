@@ -68,9 +68,8 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
                                    const float              *samples_1,
                                    const float              *samples_2)
 {
-    int   are_new_params = 0;
-    float speed          = 0.0;
-    float volume         = 0.0;
+    float speed  = 0.0;
+    float volume = 0.0;
 
     // Iterate over decks and analyze captured timecode.
     if (dscratch_analyze_recorded_datas(this->dscratch_handle,
@@ -82,36 +81,30 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
     }
 
     // Update playing parameters.
-    if ((are_new_params = dscratch_get_playing_parameters(this->dscratch_handle,
-                                                          &speed,
-                                                          &volume)) == DSCRATCH_SUCCESS)
+    if (dscratch_get_playing_parameters(this->dscratch_handle,
+                                        &speed,
+                                        &volume) != DSCRATCH_SUCCESS)
     {
-        if (are_new_params == 0)
+        qCWarning(DS_PLAYBACK) << "cannot get plqying parameters";
+    }
+    else
+    {
+        this->params->set_speed(speed);
+
+        // Change speed label in Gui only every 10 times.
+        if (this->waitfor_emit_speed_changed > 10)
         {
-            this->params->set_data_state(true); // FIXME:  still needed ?
-            this->params->set_speed(speed);
-            this->params->set_speed_state(true);// FIXME:  still needed ?
-
-            // Change speed label in Gui only every 10 times.
-            if (this->waitfor_emit_speed_changed > 10)
-            {
-                // FIXME: it looks like if we change regularly the speed on the gui, sometimes the app is crashing.
-                //        so, for the moment, we do not send the signal for changing speed.
-                emit speed_changed(this->params->get_speed());
-                this->waitfor_emit_speed_changed = 0;
-            }
-            else
-            {
-                this->waitfor_emit_speed_changed++;
-            }
-
-            this->params->set_volume(volume);
-            this->params->set_volume_state(true); // FIXME:  still needed ?
+            // FIXME: it looks like if we change regularly the speed on the gui, sometimes the app is crashing.
+            //        so, for the moment, we do not send the signal for changing speed.
+            emit speed_changed(this->params->get_speed());
+            this->waitfor_emit_speed_changed = 0;
         }
         else
         {
-            this->params->set_data_state(false);
+            this->waitfor_emit_speed_changed++;
         }
+
+        this->params->set_volume(volume);
     }
 
     return true;
