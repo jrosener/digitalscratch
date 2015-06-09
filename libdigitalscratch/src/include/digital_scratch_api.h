@@ -107,10 +107,10 @@ DLLIMPORT dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle);
  * @note Warning: left_samples and right_samples must have the same number
  *                of elements (nb_frames elements).
  */
-DLLIMPORT dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
-                                                            const float       *left_samples,
-                                                            const float       *right_samples,
-                                                            int                samples_table_size);
+DLLIMPORT dscratch_status_t dscratch_process_captured_timecoded_signal(dscratch_handle_t  handle,
+                                                                       const float       *left_samples,
+                                                                       const float       *right_samples,
+                                                                       int                samples_table_size);
 
 /**
  * Returns playing parameters (only relevant if dscratch_analyze_recorded_datas()

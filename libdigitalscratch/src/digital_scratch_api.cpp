@@ -137,10 +137,10 @@ dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle)
     return DSCRATCH_SUCCESS;
 }
 
-dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
-                                                  const float       *left_samples,
-                                                  const float       *right_samples,
-                                                  int                samples_table_size)
+dscratch_status_t dscratch_process_captured_timecoded_signal(dscratch_handle_t  handle,
+                                                             const float       *left_samples,
+                                                             const float       *right_samples,
+                                                             int                samples_table_size)
 {
     // Get handle.
     dscratch_handle_t_struct *handle_typed;

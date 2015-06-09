@@ -72,7 +72,7 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
     float volume = 0.0;
 
     // Iterate over decks and analyze captured timecode.
-    if (dscratch_analyze_recorded_datas(this->dscratch_handle,
+    if (dscratch_process_captured_timecoded_signal(this->dscratch_handle,
                                         samples_1,
                                         samples_2,
                                         nb_samples) != DSCRATCH_SUCCESS)
