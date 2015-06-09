@@ -73,19 +73,17 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
 
     // Iterate over decks and analyze captured timecode.
     if (dscratch_process_captured_timecoded_signal(this->dscratch_handle,
-                                        samples_1,
-                                        samples_2,
-                                        nb_samples) != DSCRATCH_SUCCESS)
+                                                   samples_1,
+                                                   samples_2,
+                                                   nb_samples) != DSCRATCH_SUCCESS)
     {
         qCWarning(DS_PLAYBACK) << "cannot analyze captured data";
     }
 
-    // Update playing parameters.
-    if (dscratch_get_playing_parameters(this->dscratch_handle,
-                                        &speed,
-                                        &volume) != DSCRATCH_SUCCESS)
+    // Calculate speed.
+    if (dscratch_get_speed(this->dscratch_handle, &speed) != DSCRATCH_SUCCESS)
     {
-        qCWarning(DS_PLAYBACK) << "cannot get plqying parameters";
+        qCWarning(DS_PLAYBACK) << "cannot get current speed";
     }
     else
     {
@@ -104,7 +102,16 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
             this->waitfor_emit_speed_changed++;
         }
 
-        this->params->set_volume(volume);
+        // Calculate volume.
+        if (dscratch_get_volume(this->dscratch_handle, &volume) != DSCRATCH_SUCCESS)
+        {
+            qCWarning(DS_PLAYBACK) << "cannot get current volume";
+        }
+        else
+        {
+            volume = qMin(volume * 150.0, 1.0); // FIXME: get this value from app settings
+            this->params->set_volume(volume);
+        }
     }
 
     return true;

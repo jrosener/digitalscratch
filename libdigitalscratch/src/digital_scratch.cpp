@@ -89,8 +89,8 @@ void Digital_scratch::clean()
     }
 }
 
-bool Digital_scratch::analyze_recording_data(const QVector<float> &input_samples_1,
-                                             const QVector<float> &input_samples_2)
+bool Digital_scratch::analyze_captured_timecoded_signal(const QVector<float> &input_samples_1,
+                                                        const QVector<float> &input_samples_2)
 {
     if ((input_samples_1.size() == 0)
        || (input_samples_1.size() != input_samples_2.size()))
@@ -101,7 +101,7 @@ bool Digital_scratch::analyze_recording_data(const QVector<float> &input_samples
 
     // The goal of this method is to analyze input datas and calculate speed and volume.
     this->vinyl->run_recording_data_analysis(input_samples_1, input_samples_2);
-    this->speed = this->vinyl->get_speed();
+    this->speed  = this->vinyl->get_speed();
     this->volume = this->vinyl->get_volume();
 
     return true;
@@ -121,19 +121,9 @@ bool Digital_scratch::change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type)
     return this->init(coded_vinyl_type);
 }
 
-void Digital_scratch::calculate_speed()
-{
-    this->speed = this->vinyl->get_speed();
-}
-
 float Digital_scratch::get_speed()
 {
     return this->speed;
-}
-
-void Digital_scratch::calculate_volume()
-{
-    this->volume = this->vinyl->get_volume();
 }
 
 float Digital_scratch::get_volume()

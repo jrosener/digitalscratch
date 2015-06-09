@@ -91,26 +91,16 @@ class Digital_scratch : public Controller // FIXME: rename in Vinyl_controller (
          * @note input_samples_1 and input_samples_2 must have the same number
          *       of elements.
          */
-        bool analyze_recording_data(const QVector<float> &input_samples_1,
-                                    const QVector<float> &input_samples_2);
+        bool analyze_captured_timecoded_signal(const QVector<float> &input_samples_1,
+                                               const QVector<float> &input_samples_2);
 
-        /**
-         * Get Coded_vinyl object.
-         */
         Coded_vinyl* get_coded_vinyl();
-
-        /**
-         * Set Coded_vinyl object.
-         */
         bool change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type);
+
+        float get_speed();
+        float get_volume();
 
     private:
         bool init(dscratch_vinyls_t coded_vinyl_type);
         void clean();
-
-        void  calculate_speed();
-        float get_speed();
-
-        void  calculate_volume();
-        float get_volume();
 };

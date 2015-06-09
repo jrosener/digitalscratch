@@ -156,7 +156,7 @@ dscratch_status_t dscratch_process_captured_timecoded_signal(dscratch_handle_t  
     std::copy(right_samples, right_samples + samples_table_size, std::back_inserter(handle_typed->samples_2));
 
     // Analyze new samples.
-    if (handle_typed->dscratch->analyze_recording_data(handle_typed->samples_1, handle_typed->samples_2) == false)
+    if (handle_typed->dscratch->analyze_captured_timecoded_signal(handle_typed->samples_1, handle_typed->samples_2) == false)
     {
         qCCritical(DSLIB_API) << "Cannot analyze recorded datas.";
         return DSCRATCH_ERROR;
@@ -165,9 +165,8 @@ dscratch_status_t dscratch_process_captured_timecoded_signal(dscratch_handle_t  
     return DSCRATCH_SUCCESS;
 }
 
-dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
-                                                  float             *speed,
-                                                  float             *volume) // FIXME : volume should not be returned by libdigitalscratch but calculated by the player
+dscratch_status_t dscratch_get_speed(dscratch_handle_t  handle,
+                                     float             *speed)
 {
     // Get handle.
     dscratch_handle_t_struct *handle_typed;
@@ -176,11 +175,24 @@ dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
         return DSCRATCH_ERROR;
     }
 
-    // Get current speed and volume.
-    if (handle_typed->dscratch->get_playing_parameters(speed, volume) == false)
+    // Get current speed.
+    *speed = handle_typed->dscratch->get_speed();
+
+    return DSCRATCH_SUCCESS;
+}
+
+dscratch_status_t dscratch_get_volume(dscratch_handle_t  handle,
+                                      float             *volume)
+{
+    // Get handle.
+    dscratch_handle_t_struct *handle_typed;
+    if (l_get_typed_handle(handle, &handle_typed) == false)
     {
         return DSCRATCH_ERROR;
     }
+
+    // Get current volume.
+    *volume = handle_typed->dscratch->get_volume();
 
     return DSCRATCH_SUCCESS;
 }

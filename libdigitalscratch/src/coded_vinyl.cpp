@@ -123,7 +123,7 @@ float Coded_vinyl::get_volume()
     if (this->filtered_amplitude_inst > this->min_amplitude)
     {
         // Turntable is running.
-        volume = qMin(this->filtered_amplitude_inst * 150.0, 1.0); // FIXME: get this value from app settings
+        volume = this->filtered_amplitude_inst;
     }
 
     return volume;
