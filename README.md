@@ -12,10 +12,10 @@ __In other words__: with Digital-Scratch you can mix your digital music track co
 
 ### Requirements
 
-* 1 or 2 timecoded vinyl disc, ([Serato Scratch Live](http://serato.com/scratchlive), [Final Scratch](http://en.wikipedia.org/wiki/Final_Scratch),...)
-* 1 or 2 vinyl turntables and a mixer
+* Up to 3 timecoded vinyl disc, ([Serato Scratch Live](http://serato.com/scratchlive), [Final Scratch](http://en.wikipedia.org/wiki/Final_Scratch),...)
+* Up to 3 vinyl turntables and a mixer
 * A GNU/Linux or MS Windows computer
-* A sound card driven by [JACK](http://jackaudio.org/) providing 1 or 2 stereo inputs
+* A sound card driven by [JACK](http://jackaudio.org/) a stereo input/output for each turntable
 * An optionnal external Novation Dicer controller
 
 ### Software architecture
