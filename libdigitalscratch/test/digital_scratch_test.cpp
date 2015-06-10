@@ -25,7 +25,7 @@ void DigitalScratch_Test::cleanupTestCase()
 
 /**
  * Test:
- *    analyze_recording_data()
+ *    analyze_captured_timecoded_signal()
  */
 void DigitalScratch_Test::testCase_analyze_recording_data()
 {
@@ -35,18 +35,18 @@ void DigitalScratch_Test::testCase_analyze_recording_data()
    // Check analyze_recording_data()
    QVector<float> tab_1;
    QVector<float> tab_2;
-   QVERIFY2(dscratch->analyze_recording_data(tab_1, tab_2) == false, "empty tables");
+   QVERIFY2(dscratch->analyze_captured_timecoded_signal(tab_1, tab_2) == false, "empty tables");
 
    tab_1.push_back(10); tab_1.push_back(20);
    tab_2.push_back(10);
-   QVERIFY2(dscratch->analyze_recording_data(tab_1, tab_2) == false, "different table sizes");
+   QVERIFY2(dscratch->analyze_captured_timecoded_signal(tab_1, tab_2) == false, "different table sizes");
 
    tab_1.clear();
    tab_2.clear();
    l_create_default_input_samples(tab_1, tab_2);
    QVERIFY2(tab_1.size() > 0, "table 1 not empty");
    QVERIFY2(tab_2.size() > 0, "table 2 not empty");
-   QVERIFY2(dscratch->analyze_recording_data(tab_1, tab_2) == true, "correct tables");
+   QVERIFY2(dscratch->analyze_captured_timecoded_signal(tab_1, tab_2) == true, "correct tables");
 
    // Cleanup.
    delete dscratch;

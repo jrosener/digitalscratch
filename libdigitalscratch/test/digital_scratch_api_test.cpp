@@ -77,13 +77,14 @@ void DigitalScratchApi_Test::l_dscratch_analyze_timecode(dscratch_vinyls_t vinyl
 
         if (eof == false)
         {
-            // Check dscratch_analyze_recorded_datas()
-            QVERIFY2(dscratch_analyze_recorded_datas(handle, &channel_1[0], &channel_2[0], (int)channel_1.size()) == DSCRATCH_SUCCESS, "analyze data");
+            // Check dscratch_process_captured_timecoded_signal()
+            QVERIFY2(dscratch_process_captured_timecoded_signal(handle, &channel_1[0], &channel_2[0], (int)channel_1.size()) == DSCRATCH_SUCCESS, "analyze data");
 
             // Check if digital-scratch was able to find playing parameters.
             if (expected_speed != -99.0)
             {
-                QVERIFY2(dscratch_get_playing_parameters(handle, &speed, &volume) == DSCRATCH_SUCCESS, "get playing parameters");
+                QVERIFY2(dscratch_get_speed(handle,  &speed)  == DSCRATCH_SUCCESS, "get speed");
+                QVERIFY2(dscratch_get_volume(handle, &volume) == DSCRATCH_SUCCESS, "get volume");
 
                  cout << "expected speed=" << expected_speed << endl;
                  cout << "speed=" << speed << "\t" << "volume=" << volume << endl;
@@ -111,8 +112,9 @@ void DigitalScratchApi_Test::l_dscratch_analyze_timecode(dscratch_vinyls_t vinyl
 }
 
 /** Test:
- *    dscratch_analyze_recorded_datas()
- *    dscratch_get_playing_parameters()
+ *    dscratch_process_captured_timecoded_signal()
+ *    dscratch_get_speed()
+ *    dscratch_get_volume()
  */
 void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_stop_fast()
 {
