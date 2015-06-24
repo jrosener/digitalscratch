@@ -57,7 +57,6 @@ class Coded_vinyl
  private:
     unsigned int         sample_rate;
     dscratch_vinyl_rpm_t rpm;
-    bool                 is_reverse_direction;
 
     // Frequency and amplitude analysis.
     IIR_filter speed_IIR;
@@ -89,7 +88,5 @@ class Coded_vinyl
     virtual float get_volume() = 0;
 
  protected:
-    bool set_reverse_direction(bool is_reverse_direction);
-    bool get_reverse_direction();
-   float get_signal_freq();
+    float get_signal_freq();
 };

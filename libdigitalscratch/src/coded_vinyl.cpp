@@ -53,7 +53,6 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate) : sample_rate(sample_rate),
                                                      filtered_freq_inst(0.0),
                                                      current_amplitude(0.0)
 {
-    this->set_reverse_direction(false);
 }
 
 Coded_vinyl::~Coded_vinyl()
@@ -84,25 +83,7 @@ void Coded_vinyl::run_recording_data_analysis(const QVector<float> &input_sample
 
 float Coded_vinyl::get_signal_freq()
 {
-    float freq = this->filtered_freq_inst;
-    if (this->is_reverse_direction == true)
-    {
-        freq *= -1.0;
-    }
-
-    return freq;
-}
-
-bool Coded_vinyl::set_reverse_direction(bool is_reverse_direction)
-{
-    this->is_reverse_direction = is_reverse_direction;
-
-    return true;
-}
-
-bool Coded_vinyl::get_reverse_direction()
-{
-    return this->is_reverse_direction;
+    return this->filtered_freq_inst;
 }
 
 bool Coded_vinyl::set_sample_rate(unsigned int sample_rate)

@@ -44,8 +44,6 @@ using namespace std;
 
 Mixvibes_vinyl::Mixvibes_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
 {
-    // Reverse direction detection.
-    this->set_reverse_direction(true);
 }
 
 Mixvibes_vinyl::~Mixvibes_vinyl()
@@ -69,7 +67,7 @@ float Mixvibes_vinyl::get_speed()
         speed = this->get_signal_freq() / MIXVIBES_SINUSOIDAL_FREQ_45RPM;
     }
 
-    return speed;
+    return speed * -1.0; // Mixvibes stereo signal temporal shift is reversed (than Serato, FinalScratch,...)
 }
 
 float Mixvibes_vinyl::get_volume()
