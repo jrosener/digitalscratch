@@ -87,7 +87,6 @@ using namespace std;
 #define DECK_INDEX                          "deck_"
 #define VINYL_TYPE_CFG                      "vinyl_type"
 #define RPM_CFG                             "rpm"
-#define MIN_AMPLITUDE_CFG                   "min_amplitude"
 
 // Playback parameters.
 #define MAX_SPEED_DIFF_CFG                  "playback_parameters/max_speed_diff"
@@ -137,8 +136,6 @@ using namespace std;
 #define KB_HELP_DEFAULT                     "H"
 #define KB_FILE_SEARCH                      "keyboard_shortcuts/kb_file_search"
 #define KB_FILE_SEARCH_DEFAULT              "Ctrl+F"
-#define KB_RESET_SIGNAL_LEVEL               "keyboard_shortcuts/kb_reset_signal_level"
-#define KB_RESET_SIGNAL_LEVEL_DEFAULT       "R"
 
 const QString KB_SET_CUE_POINTS_ON_DECK[]          = { KB_SET_CUE_POINT1_ON_DECK,
                                                        KB_SET_CUE_POINT2_ON_DECK,
@@ -239,10 +236,6 @@ class Application_settings : public QObject
     dscratch_vinyl_rpm_t   get_rpm(const unsigned short &deck_index);
     dscratch_vinyl_rpm_t   get_rpm_default();
     QList<unsigned short>  get_available_rpms();
-
-    void  set_min_amplitude(const unsigned short &deck_index, const float &amplitude);
-    float get_min_amplitude(const unsigned short &deck_index);
-    float get_min_amplitude_default_from_vinyl_type(dscratch_vinyls_t vinyl_type);
 
     void    set_keyboard_shortcut(const QString &kb_shortcut_path, const QString &value);
     QString get_keyboard_shortcut(QString in_kb_shortcut_path);

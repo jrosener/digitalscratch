@@ -95,7 +95,6 @@ class Config_dialog : public QDialog
 
     QList<QComboBox*>     vinyl_type_select;
     QList<QComboBox*>     rpm_select;
-    QList<QLineEdit*>     min_amplitude;
     ShortcutQLabel       *kb_switch_playback;
     ShortcutQLabel       *kb_load_track_on_deck;
     ShortcutQLabel       *kb_play_begin_track_on_deck;

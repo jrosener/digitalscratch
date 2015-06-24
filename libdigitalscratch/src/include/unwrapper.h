@@ -32,7 +32,7 @@
 
 #pragma once
 
-class Unwrapper
+class Unwrapper // FIXME: unused ?
 {
  private:
     double last_phase;

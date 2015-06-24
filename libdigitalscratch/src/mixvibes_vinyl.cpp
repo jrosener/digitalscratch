@@ -50,11 +50,6 @@ Mixvibes_vinyl::~Mixvibes_vinyl()
 {
 }
 
-float Mixvibes_vinyl::get_default_min_amplitude()
-{
-    return DEFAULT_MIXVIBES_MIN_AMPLITUDE;
-}
-
 float Mixvibes_vinyl::get_speed()
 {
     float speed = 0.0;

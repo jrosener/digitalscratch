@@ -95,8 +95,6 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     // Init motion detection parameters widgets.
     for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
     {
-        this->min_amplitude << new QLineEdit(this);
-
         QComboBox *vinyls = new QComboBox(this);
         QMap<dscratch_vinyls_t, QString> available_vinyl_types = this->settings->get_available_vinyl_types();
         QMapIterator<dscratch_vinyls_t, QString> j(available_vinyl_types);
@@ -129,7 +127,6 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->kb_play_cue_point3_on_deck    = new ShortcutQLabel(this);
     this->kb_set_cue_point4_on_deck     = new ShortcutQLabel(this);
     this->kb_play_cue_point4_on_deck    = new ShortcutQLabel(this);
-    this->kb_reset_signal_level_on_deck = new ShortcutQLabel(this);
     this->kb_collapse_browse            = new ShortcutQLabel(this);
     this->kb_fullscreen                 = new ShortcutQLabel(this);
     this->kb_help                       = new ShortcutQLabel(this);
@@ -336,14 +333,9 @@ QWidget *Config_dialog::init_tab_motion_detect(const unsigned short &deck_index)
     motion_detect_layout->addWidget(rpm_label,                    1, 0);
     motion_detect_layout->addWidget(this->rpm_select[deck_index], 1, 1);
 
-    QLabel *min_amplitude_label = new QLabel(tr("Minimal signal amplitude:"), this);
-    this->min_amplitude[deck_index]->setMinimumWidth(300);
-    motion_detect_layout->addWidget(min_amplitude_label,             2, 0);
-    motion_detect_layout->addWidget(this->min_amplitude[deck_index], 2, 1);
-
     QPushButton *motion_params_reset_to_default = new QPushButton(this);
     motion_params_reset_to_default->setText(tr("Reset to default"));
-    motion_detect_layout->addWidget(motion_params_reset_to_default, 3, 0, Qt::AlignLeft);
+    motion_detect_layout->addWidget(motion_params_reset_to_default, 2, 0, Qt::AlignLeft);
     QObject::connect(motion_params_reset_to_default, &QPushButton::clicked, [this, deck_index](){this->reset_motion_detection_params(deck_index);});
 
     motion_detect_layout->setColumnStretch(0, 0);
@@ -364,8 +356,6 @@ void Config_dialog::fill_tab_motion_detect(const unsigned short int &deck_index)
 
     this->rpm_select[deck_index]->setCurrentIndex(
                 this->rpm_select[deck_index]->findText(QString::number(this->settings->get_rpm(deck_index))));
-
-    this->min_amplitude[deck_index]->setText(QString::number(this->settings->get_min_amplitude(deck_index), 'f'));
 }
 
 QWidget *Config_dialog::init_tab_shortcuts()
@@ -415,10 +405,6 @@ QWidget *Config_dialog::init_tab_shortcuts()
     QLabel *kb_play_cue_point4_on_deck_label = new QLabel(tr("Play from cue point 4"), this);
     shortcuts_layout->addWidget(kb_play_cue_point4_on_deck_label, 11, 0);
     shortcuts_layout->addWidget(this->kb_play_cue_point4_on_deck, 11, 1, Qt::AlignVCenter);
-
-    QLabel *kb_reset_signal_level_on_deck_label = new QLabel(tr("Reset min signal level"), this);
-    shortcuts_layout->addWidget(kb_reset_signal_level_on_deck_label, 12, 0);
-    shortcuts_layout->addWidget(this->kb_reset_signal_level_on_deck, 12, 1, Qt::AlignVCenter);
 
     QLabel *kb_load_track_on_sampler1_label = new QLabel(tr("Load track on sampler 1"), this);
     shortcuts_layout->addWidget(kb_load_track_on_sampler1_label, 1, 3);
@@ -503,9 +489,6 @@ QWidget *Config_dialog::init_tab_shortcuts()
     QObject::connect(this->kb_play_cue_point4_on_deck, &ShortcutQLabel::new_value,
                      [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_play_cue_point4_on_deck);});
 
-    QObject::connect(this->kb_reset_signal_level_on_deck, &ShortcutQLabel::new_value,
-                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_reset_signal_level_on_deck);});
-
     QObject::connect(this->kb_fullscreen, &ShortcutQLabel::new_value,
                      [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_fullscreen);});
 
@@ -552,7 +535,6 @@ bool Config_dialog::is_duplicate_shortcut(const QString &value)
         (this->kb_play_cue_point3_on_deck->text().compare(value,    Qt::CaseInsensitive) == 0) ||
         (this->kb_set_cue_point4_on_deck->text().compare(value,     Qt::CaseInsensitive) == 0) ||
         (this->kb_play_cue_point4_on_deck->text().compare(value,    Qt::CaseInsensitive) == 0) ||
-        (this->kb_reset_signal_level_on_deck->text().compare(value, Qt::CaseInsensitive) == 0) ||
         (this->kb_fullscreen->text().compare(value,                 Qt::CaseInsensitive) == 0) ||
         (this->kb_load_track_on_sampler1->text().compare(value,     Qt::CaseInsensitive) == 0) ||
         (this->kb_load_track_on_sampler2->text().compare(value,     Qt::CaseInsensitive) == 0) ||
@@ -612,7 +594,6 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_play_cue_point3_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT3_ON_DECK));
     this->kb_set_cue_point4_on_deck->setText(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINT4_ON_DECK));
     this->kb_play_cue_point4_on_deck->setText(this->settings->get_keyboard_shortcut(KB_PLAY_CUE_POINT4_ON_DECK));
-    this->kb_reset_signal_level_on_deck->setText(this->settings->get_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL));
     this->kb_fullscreen->setText(this->settings->get_keyboard_shortcut(KB_FULLSCREEN));
     this->kb_collapse_browse->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
     this->kb_load_track_on_sampler1->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1));
@@ -663,9 +644,6 @@ void Config_dialog::reset_motion_detection_params(const unsigned short &deck_ind
     // Reset all motion detection parameters to their default values.
     this->rpm_select[deck_index]->setCurrentIndex(
                 this->rpm_select[deck_index]->findText(QString::number(this->settings->get_rpm_default())));
-    this->min_amplitude[deck_index]->setText(
-                QString::number(this->settings->get_min_amplitude_default_from_vinyl_type(
-                                    static_cast<dscratch_vinyls_t>(this->vinyl_type_select[deck_index]->currentData().toInt())), 'f'));
 }
 
 void Config_dialog::reset_shortcuts()
@@ -683,7 +661,6 @@ void Config_dialog::reset_shortcuts()
     this->kb_play_cue_point3_on_deck->setText(KB_PLAY_CUE_POINT3_ON_DECK_DEFAULT);
     this->kb_set_cue_point4_on_deck->setText(KB_SET_CUE_POINT4_ON_DECK_DEFAULT);
     this->kb_play_cue_point4_on_deck->setText(KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT);
-    this->kb_reset_signal_level_on_deck->setText(KB_RESET_SIGNAL_LEVEL_DEFAULT);
     this->kb_fullscreen->setText(KB_FULLSCREEN_DEFAULT);
     this->kb_collapse_browse->setText(KB_COLLAPSE_BROWSER_DEFAULT);
     this->kb_load_track_on_sampler1->setText(KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
@@ -730,7 +707,6 @@ Config_dialog::accept()
     // Set motion detection settings.
     for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
     {
-        this->settings->set_min_amplitude(i, this->min_amplitude[i]->text().toFloat());
         this->settings->set_vinyl_type(i, static_cast<dscratch_vinyls_t>(this->vinyl_type_select[i]->currentData().toInt()));
         this->settings->set_rpm(i, static_cast<dscratch_vinyl_rpm_t>(this->rpm_select[i]->currentText().toInt()));
     }
@@ -749,7 +725,6 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT3_ON_DECK,   this->kb_play_cue_point3_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_SET_CUE_POINT4_ON_DECK,    this->kb_set_cue_point4_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_PLAY_CUE_POINT4_ON_DECK,   this->kb_play_cue_point4_on_deck->text());
-    this->settings->set_keyboard_shortcut(KB_RESET_SIGNAL_LEVEL,        this->kb_reset_signal_level_on_deck->text());
     this->settings->set_keyboard_shortcut(KB_FULLSCREEN,                this->kb_fullscreen->text());
     this->settings->set_keyboard_shortcut(KB_COLLAPSE_BROWSER,          this->kb_collapse_browse->text());
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER1,    this->kb_load_track_on_sampler1->text());

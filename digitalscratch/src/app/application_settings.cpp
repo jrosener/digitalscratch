@@ -114,11 +114,6 @@ Application_settings::init_settings()
             this->settings.setValue(QString(DECK_INDEX) + QString::number(i) + "/" + QString(VINYL_TYPE_CFG),
                                     this->get_vinyl_type_default());
         }
-        if (this->settings.contains(QString(DECK_INDEX) + QString::number(i) + "/" + QString(MIN_AMPLITUDE_CFG)) == false)
-        {
-            this->settings.setValue(QString(DECK_INDEX) + QString::number(i) + "/" + QString(MIN_AMPLITUDE_CFG),
-                                    (new QString)->setNum(this->get_min_amplitude_default_from_vinyl_type(this->get_vinyl_type_default()), 'f'));
-        }
         if (this->settings.contains(QString(DECK_INDEX) + QString::number(i) + "/" + QString(RPM_CFG)) == false)
         {
             this->settings.setValue(QString(DECK_INDEX) + QString::number(i) + "/" + QString(RPM_CFG),
@@ -179,9 +174,6 @@ Application_settings::init_settings()
     }
     if (this->settings.contains(KB_SHOW_NEXT_KEYS) == false) {
         this->settings.setValue(KB_SHOW_NEXT_KEYS, KB_SHOW_NEXT_KEYS_DEFAULT);
-    }
-    if (this->settings.contains(KB_RESET_SIGNAL_LEVEL) == false) {
-        this->settings.setValue(KB_RESET_SIGNAL_LEVEL, KB_RESET_SIGNAL_LEVEL_DEFAULT);
     }
     if (this->settings.contains(KB_FULLSCREEN) == false) {
         this->settings.setValue(KB_FULLSCREEN, KB_FULLSCREEN_DEFAULT);
@@ -380,31 +372,6 @@ Application_settings::set_nb_samplers(const unsigned short int &nb_samplers)
 //
 // Timecode signal detection settings.
 //
-
-float
-Application_settings::get_min_amplitude(const unsigned short int &deck_index)
-{
-    return this->settings.value(QString(DECK_INDEX) + QString::number(deck_index)
-                                + "/" + QString(MIN_AMPLITUDE_CFG)).toFloat();
-}
-
-float
-Application_settings::get_min_amplitude_default_from_vinyl_type(dscratch_vinyls_t vinyl_type)
-{
-    return dscratch_get_default_min_amplitude_from_vinyl_type(vinyl_type);
-}
-
-void
-Application_settings::set_min_amplitude(const unsigned short int &deck_index, const float &amplitude)
-{
-    QString value;
-    value.setNum(amplitude, 'f');
-    if (amplitude > 0.0 && amplitude < 1.0) // Range: ]0,1[
-    {
-        this->settings.setValue(QString(DECK_INDEX) + QString::number(deck_index)
-                                + "/" + QString(MIN_AMPLITUDE_CFG), value);
-    }
-}
 
 dscratch_vinyls_t
 Application_settings::get_vinyl_type(const unsigned short int &deck_index)

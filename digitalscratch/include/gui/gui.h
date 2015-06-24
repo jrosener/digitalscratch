@@ -273,7 +273,6 @@ class Gui : public QObject
     QShortcut                         **shortcut_go_to_cue_points;
     QShortcut                          *shortcut_switch_playback;
     QShortcut                          *shortcut_reset_signal_level;
-    QList<QFutureWatcher<float>*>       get_current_amplitude_watcher;
     QList<Deck*>                        decks;
     unsigned short int                  selected_deck;
 
@@ -440,7 +439,6 @@ class Gui : public QObject
     bool get_cue_point_index_from_dicer_button(const dicer_button_t &button_index, unsigned short int &out_cue_point_index);
     void lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_index);
     void unlit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_index);
-    float get_current_amplitude(const unsigned short &deck_index) const;
 
  public slots:
     void force_close();
@@ -491,8 +489,6 @@ class Gui : public QObject
                           const unsigned short int &deck_index); // 0.0 < Position < 1.0
     void deck_go_to_begin();
     void go_to_begin(const unsigned short int &deck_index);
-    void deck_reset_signal_level();
-    void set_min_amplitude(const unsigned short int &deck_index, const float &ampl);
     bool set_cue_point(const unsigned short int &deck_index,
                        const unsigned short int &cue_point_index);
     void go_to_cue_point(const unsigned short int &deck_index,

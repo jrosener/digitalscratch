@@ -50,8 +50,7 @@ Coded_vinyl::Coded_vinyl(unsigned int sample_rate) : sample_rate(sample_rate),
                                                      rpm(DEFAULT_RPM),
                                                      speed_IIR({1.0, -0.998}, {0.001, 0.001}),
                                                      freq_inst(sample_rate),
-                                                     filtered_freq_inst(0.0),
-                                                     current_amplitude(0.0)
+                                                     filtered_freq_inst(0.0)
 {
 }
 
@@ -114,20 +113,4 @@ bool Coded_vinyl::set_rpm(dscratch_vinyl_rpm_t rpm)
 dscratch_vinyl_rpm_t Coded_vinyl::get_rpm()
 {
     return this->rpm;
-}
-
-void Coded_vinyl::set_min_amplitude(float amplitude)
-{
-    this->min_amplitude = amplitude;
-    return;
-}
-
-float Coded_vinyl::get_min_amplitude()
-{
-    return this->min_amplitude;
-}
-
-float Coded_vinyl::get_current_amplitude()
-{
-    return this->current_amplitude;
 }

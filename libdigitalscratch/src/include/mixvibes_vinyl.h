@@ -43,8 +43,6 @@
 // Mixvibes vinyl sinusoidal frequency (Hz) (@45 rpm)
 #define MIXVIBES_SINUSOIDAL_FREQ_45RPM 1755.0f
 
-#define DEFAULT_MIXVIBES_MIN_AMPLITUDE 0.00005f
-
 /**
  * Define a Mixvibes DVS timecode vinyl class.\n
  * @author Julien Rosener
@@ -56,7 +54,6 @@ class Mixvibes_vinyl : public Coded_vinyl
         virtual ~Mixvibes_vinyl();
 
     public:
-        float get_default_min_amplitude();
         float get_speed();
         float get_volume();
 };

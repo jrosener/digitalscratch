@@ -50,11 +50,6 @@ Final_scratch_vinyl::~Final_scratch_vinyl()
 {
 }
 
-float Final_scratch_vinyl::get_default_min_amplitude()
-{
-    return DEFAULT_FS_MIN_AMPLITUDE;
-}
-
 float Final_scratch_vinyl::get_speed()
 {
     float speed = 0.0;

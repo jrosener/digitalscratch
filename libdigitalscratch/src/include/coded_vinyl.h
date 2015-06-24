@@ -59,10 +59,9 @@ class Coded_vinyl
     dscratch_vinyl_rpm_t rpm;
 
     // Frequency and amplitude analysis.
-    IIR_filter speed_IIR;
+    IIR_filter          speed_IIR;
     Inst_freq_extractor freq_inst;
-    double filtered_freq_inst;
-    double current_amplitude; // FIXME: not needed with new algo ?
+    double              filtered_freq_inst;
 
  public:
     Coded_vinyl(unsigned int sample_rate);
@@ -77,12 +76,6 @@ class Coded_vinyl
 
     bool set_rpm(dscratch_vinyl_rpm_t rpm);
     dscratch_vinyl_rpm_t get_rpm();
-
-    // FIXME: not needed with new algo ?
-    void  set_min_amplitude(float amplitude);
-    float get_min_amplitude();
-    float get_current_amplitude();
-    virtual float get_default_min_amplitude() = 0;
 
     virtual float get_speed() = 0;
     virtual float get_volume() = 0;

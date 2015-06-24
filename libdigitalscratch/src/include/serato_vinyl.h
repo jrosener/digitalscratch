@@ -43,8 +43,6 @@
 // Serato vinyl sinusoidal frequency (Hz)  (@45 rpm)
 #define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1350.0f
 
-#define DEFAULT_SERATO_MIN_AMPLITUDE 0.00005f
-
 /**
  * Define a Serato Scratch Live timecode vinyl class.\n
  * @author Julien Rosener
@@ -56,8 +54,6 @@ class Serato_vinyl : public Coded_vinyl
         virtual ~Serato_vinyl();
 
     public:
-        float get_default_min_amplitude_for_normal_speed();
-        float get_default_min_amplitude();
         float get_speed();
         float get_volume();
 };

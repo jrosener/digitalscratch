@@ -45,8 +45,6 @@
 // Same value than 33rpm because there is a specific vinyl side for 45 rpm.
 #define FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM 1200.0f
 
-#define DEFAULT_FS_MIN_AMPLITUDE 0.00005f
-
 /**
  * Define a Stanton Final Scratch timecode vinyl class.\n
  * @author Julien Rosener
@@ -58,7 +56,6 @@ class Final_scratch_vinyl : public Coded_vinyl
         virtual ~Final_scratch_vinyl();
 
     public:
-        float get_default_min_amplitude();
         float get_speed();
         float get_volume();
 };
