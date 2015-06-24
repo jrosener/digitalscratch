@@ -51,15 +51,40 @@ Serato_vinyl::~Serato_vinyl()
 {
 }
 
-int Serato_vinyl::get_sinusoidal_frequency()
-{
-    if (this->get_rpm() == RPM_33)
-        return SERATO_VINYL_SINUSOIDAL_FREQ;
-    else
-        return SERATO_VINYL_SINUSOIDAL_FREQ_45RPM;
-}
-
 float Serato_vinyl::get_default_min_amplitude()
 {
     return DEFAULT_SERATO_MIN_AMPLITUDE;
+}
+
+float Serato_vinyl::get_speed()
+{
+    float speed = 0.0;
+    if (this->get_rpm() == RPM_33)
+    {
+        speed = this->get_signal_freq() / SERATO_VINYL_SINUSOIDAL_FREQ;
+    }
+    else
+    {
+        speed = this->get_signal_freq() / SERATO_VINYL_SINUSOIDAL_FREQ_45RPM;
+    }
+
+//cout << "speed = " << speed << endl;
+    return speed;
+}
+
+float Serato_vinyl::get_volume()
+{
+    // The volume is proportionnal to the speed.
+    float volume = 0.0;
+    if (this->get_rpm() == RPM_33)
+    {
+        volume = qMin(qAbs(this->get_signal_freq()) / SERATO_VINYL_SINUSOIDAL_FREQ, 1.0f);
+    }
+    else
+    {
+        volume = qMin(qAbs(this->get_signal_freq()) / SERATO_VINYL_SINUSOIDAL_FREQ_45RPM, 1.0f);
+    }
+
+//cout << "volume = " << volume << endl;
+    return volume;
 }

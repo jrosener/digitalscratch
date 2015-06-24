@@ -50,15 +50,38 @@ Final_scratch_vinyl::~Final_scratch_vinyl()
 {
 }
 
-int Final_scratch_vinyl::get_sinusoidal_frequency()
-{
-    if (this->get_rpm() == RPM_33)
-        return FINAL_SCRATCH_SINUSOIDAL_FREQ;
-    else
-        return FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
-}
-
 float Final_scratch_vinyl::get_default_min_amplitude()
 {
     return DEFAULT_FS_MIN_AMPLITUDE;
+}
+
+float Final_scratch_vinyl::get_speed()
+{
+    float speed = 0.0;
+    if (this->get_rpm() == RPM_33)
+    {
+        speed = this->get_signal_freq() / FINAL_SCRATCH_SINUSOIDAL_FREQ;
+    }
+    else
+    {
+        speed = this->get_signal_freq() / FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
+    }
+
+    return speed;
+}
+
+float Final_scratch_vinyl::get_volume()
+{
+    // The volume is proportionnal to the speed.
+    float volume = 0.0;
+    if (this->get_rpm() == RPM_33)
+    {
+        volume = qMin(qAbs(this->get_signal_freq()) / FINAL_SCRATCH_SINUSOIDAL_FREQ, 1.0f);
+    }
+    else
+    {
+        volume = qMin(qAbs(this->get_signal_freq()) / FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM, 1.0f);
+    }
+
+    return volume;
 }

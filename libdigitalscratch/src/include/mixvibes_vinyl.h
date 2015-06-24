@@ -37,15 +37,11 @@
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"
 
-/**
- * Mixvibes vinyl sinusoidal frequency (Hz) (@33 rpm)
- */
-#define MIXVIBES_SINUSOIDAL_FREQ 1300
+// Mixvibes vinyl sinusoidal frequency (Hz) (@33 rpm)
+#define MIXVIBES_SINUSOIDAL_FREQ 1300.0f
 
-/**
- * Mixvibes vinyl sinusoidal frequency (Hz) (@45 rpm)
- */
-#define MIXVIBES_SINUSOIDAL_FREQ_45RPM 1755
+// Mixvibes vinyl sinusoidal frequency (Hz) (@45 rpm)
+#define MIXVIBES_SINUSOIDAL_FREQ_45RPM 1755.0f
 
 #define DEFAULT_MIXVIBES_MIN_AMPLITUDE 0.00005f
 
@@ -55,21 +51,12 @@
  */
 class Mixvibes_vinyl : public Coded_vinyl
 {
-    /* Constructor / Destructor */
     public:
-        /**
-         * Constructor.
-         */
         Mixvibes_vinyl(unsigned int sample_rate);
-
-        /**
-         * Destructor.
-         */
         virtual ~Mixvibes_vinyl();
 
-
-    /* Methods */
     public:
-        int get_sinusoidal_frequency();
         float get_default_min_amplitude();
+        float get_speed();
+        float get_volume();
 };

@@ -38,38 +38,14 @@
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"
 
-/**
- * Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@33 rpm)
- */
-#define FINAL_SCRATCH_SINUSOIDAL_FREQ 1200
+// Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@33 rpm)
+#define FINAL_SCRATCH_SINUSOIDAL_FREQ 1200.0f
 
-/**
- * Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@45 rpm).
- * Same value than 33rpm because there is a specific vinyl side for 45 rpm.
- */
-#define FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM 1200
+// Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@45 rpm).
+// Same value than 33rpm because there is a specific vinyl side for 45 rpm.
+#define FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM 1200.0f
 
 #define DEFAULT_FS_MIN_AMPLITUDE 0.00005f
-
-/**
- * Bit value 1 for timecode start sequence
- */
-#define START_SEQ_BIT1 1
-
-/**
- * Bit value 2 for timecode start sequence
- */
-#define START_SEQ_BIT2 1
-
-/**
- * Bit value 3 for timecode start sequence
- */
-#define START_SEQ_BIT3 1
-
-/**
- * Bit value 4 for timecode start sequence
- */
-#define START_SEQ_BIT4 0
 
 /**
  * Define a Stanton Final Scratch timecode vinyl class.\n
@@ -77,21 +53,12 @@
  */
 class Final_scratch_vinyl : public Coded_vinyl
 {
-    /* Constructor / Destructor */
     public:
-        /**
-         * Constructor.
-         */
         Final_scratch_vinyl(unsigned int sample_rate);
-
-        /**
-         * Destructor.
-         */
         virtual ~Final_scratch_vinyl();
 
-
-    /* Methods */
     public:
-        int get_sinusoidal_frequency();
         float get_default_min_amplitude();
+        float get_speed();
+        float get_volume();
 };

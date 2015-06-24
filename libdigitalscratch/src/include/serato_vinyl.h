@@ -37,15 +37,11 @@
 #include "coded_vinyl.h"
 #include "digital_scratch_api.h"
 
-/**
- * Serato vinyl sinusoidal frequency (Hz) (@33 rpm)
- */
-#define SERATO_VINYL_SINUSOIDAL_FREQ 1000
+// Serato vinyl sinusoidal frequency (Hz) (@33 rpm)
+#define SERATO_VINYL_SINUSOIDAL_FREQ 972.0f
 
-/**
- * Serato vinyl sinusoidal frequency (Hz)  (@45 rpm)
- */
-#define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1350
+// Serato vinyl sinusoidal frequency (Hz)  (@45 rpm)
+#define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1350.0f
 
 #define DEFAULT_SERATO_MIN_AMPLITUDE 0.00005f
 
@@ -55,25 +51,13 @@
  */
 class Serato_vinyl : public Coded_vinyl
 {
-    /* Constructor / Destructor */
     public:
-        /**
-         * Constructor.
-         */
         Serato_vinyl(unsigned int sample_rate);
-
-        /**
-         * Destructor.
-         */
         virtual ~Serato_vinyl();
 
-
-    /* Methods */
     public:
-        int get_sinusoidal_frequency();
         float get_default_min_amplitude_for_normal_speed();
         float get_default_min_amplitude();
-
-    private:
-
+        float get_speed();
+        float get_volume();
 };

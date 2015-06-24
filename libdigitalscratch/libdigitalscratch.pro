@@ -1,4 +1,4 @@
-VERSION = 1.6.0
+VERSION = 1.6.1
 DEFINES += VERSION=$${VERSION}
 
 CONFIG += qt c++11
@@ -43,7 +43,8 @@ SOURCES += \
     src/log.cpp \
     src/fir_filter.cpp \
     src/unwrapper.cpp \
-    src/iir_filter.cpp
+    src/iir_filter.cpp \
+    src/inst_freq_extractor.cpp
 
 HEADERS += \ 
     src/include/serato_vinyl.h \
@@ -57,7 +58,8 @@ HEADERS += \
     src/include/log.h \
     src/include/fir_filter.h \
     src/include/unwrapper.h \
-    src/include/iir_filter.h
+    src/include/iir_filter.h \
+    src/include/inst_freq_extrator.h
 
 CONFIG(test) {
     INCLUDEPATH += test

@@ -52,15 +52,38 @@ Mixvibes_vinyl::~Mixvibes_vinyl()
 {
 }
 
-int Mixvibes_vinyl::get_sinusoidal_frequency()
-{
-    if (this->get_rpm() == RPM_33)
-        return MIXVIBES_SINUSOIDAL_FREQ;
-    else
-        return MIXVIBES_SINUSOIDAL_FREQ_45RPM;
-}
-
 float Mixvibes_vinyl::get_default_min_amplitude()
 {
     return DEFAULT_MIXVIBES_MIN_AMPLITUDE;
+}
+
+float Mixvibes_vinyl::get_speed()
+{
+    float speed = 0.0;
+    if (this->get_rpm() == RPM_33)
+    {
+        speed = this->get_signal_freq() / MIXVIBES_SINUSOIDAL_FREQ;
+    }
+    else
+    {
+        speed = this->get_signal_freq() / MIXVIBES_SINUSOIDAL_FREQ_45RPM;
+    }
+
+    return speed;
+}
+
+float Mixvibes_vinyl::get_volume()
+{
+    // The volume is proportionnal to the speed.
+    float volume = 0.0;
+    if (this->get_rpm() == RPM_33)
+    {
+        volume = qMin(qAbs(this->get_signal_freq()) / MIXVIBES_SINUSOIDAL_FREQ, 1.0f);
+    }
+    else
+    {
+        volume = qMin(qAbs(this->get_signal_freq()) / MIXVIBES_SINUSOIDAL_FREQ_45RPM, 1.0f);
+    }
+
+    return volume;
 }

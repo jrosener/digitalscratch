@@ -48,12 +48,9 @@ using namespace std;
 
 Coded_vinyl::Coded_vinyl(unsigned int sample_rate) : sample_rate(sample_rate),
                                                      rpm(DEFAULT_RPM),
-                                                     diff_FIR({FIR_COEFF * -1.0,  FIR_COEFF}),
-                                                     unwraper(),
                                                      speed_IIR({1.0, -0.998}, {0.001, 0.001}),
-                                                     amplitude_IIR({1.0, -0.998}, {0.001, 0.001}),
+                                                     freq_inst(sample_rate),
                                                      filtered_freq_inst(0.0),
-                                                     filtered_amplitude_inst(0.0),
                                                      current_amplitude(0.0)
 {
     this->set_reverse_direction(false);
@@ -66,7 +63,7 @@ Coded_vinyl::~Coded_vinyl()
 void Coded_vinyl::run_recording_data_analysis(const QVector<float> &input_samples_1,
                                               const QVector<float> &input_samples_2)
 {
-    qCDebug(DSLIB_ANALYZEVINYL) << "Finding frenquency and amplitude of recorded samples...";
+    qCDebug(DSLIB_ANALYZEVINYL) << "Extracting frequency and amplitude from recorded samples...";
 
     // Processing loop: One sample per iteration.
     for (int i = 0; i < input_samples_1.size(); i++)
@@ -75,58 +72,25 @@ void Coded_vinyl::run_recording_data_analysis(const QVector<float> &input_sample
         double left_sample  = input_samples_1[i];
         double right_sample = input_samples_2[i];
 
-        // Extract instantaneous phase from the complex sample formed by left/right channels.
-        double phase     = qAtan2(right_sample, left_sample);
-        double amplitude = qSqrt(right_sample*right_sample + left_sample*left_sample);
+        // Extract instantaneous phase from the complex sample formed by left/right channels
+        this->freq_inst.compute(right_sample, left_sample);
 
-        // Unwrap the phase to avoid discontinuity.
-        double phase_unwrap = this->unwraper.compute(phase);
-
-        // Diff the phase to get instantaneous frequency.
-        double freq_inst = this->diff_FIR.compute(phase_unwrap);
-
-        // Filter the instantaneous frequency.
-        this->filtered_freq_inst = this->speed_IIR.compute(freq_inst);
-
-        // Filter the amplitude.
-        this->filtered_amplitude_inst = this->amplitude_IIR.compute(amplitude);
+        // Filter the instantaneous frequency
+        this->filtered_freq_inst = this->speed_IIR.compute(this->freq_inst.getCurrentInstFreq());
     }
-
-    // Store current amplitude.
-    this->current_amplitude = this->filtered_amplitude_inst;
 
     return;
 }
 
-float Coded_vinyl::get_speed()
+float Coded_vinyl::get_signal_freq()
 {
-    qCDebug(DSLIB_ANALYZEVINYL) << "Searching new speed...";
-
-    float speed = 0.0;
-    if (this->filtered_amplitude_inst > this->min_amplitude)
+    float freq = this->filtered_freq_inst;
+    if (this->is_reverse_direction == true)
     {
-        speed = this->filtered_freq_inst;
-        if (this->is_reverse_direction == true)
-        {
-            speed *= -1.0;
-        }
+        freq *= -1.0;
     }
 
-    return speed;
-}
-
-float Coded_vinyl::get_volume()
-{
-    qCDebug(DSLIB_ANALYZEVINYL) << "Searching new volume...";
-
-    float volume = 0.0;
-    if (this->filtered_amplitude_inst > this->min_amplitude)
-    {
-        // Turntable is running.
-        volume = this->filtered_amplitude_inst;
-    }
-
-    return volume;
+    return freq;
 }
 
 bool Coded_vinyl::set_reverse_direction(bool is_reverse_direction)

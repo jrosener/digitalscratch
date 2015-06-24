@@ -1,10 +1,11 @@
+
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
 /*                           Digital Scratch System                           */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------------------------------( iir_filter.h )-*/
+/*--------------------------------------------------( inst_freq_extractor.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2015                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,68 +27,55 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*    IIR_filter class : Ininite Impulse Response filter implementation       */
+/*    Inst_Freq_Extractor class : Get the instantanous frequency of a         */
+/*                                buffer of doubles.                          */
 /*                                                                            */
 /*============================================================================*/
 
-#include <iir_filter.h>
-#include <algorithm>
+#include <inst_freq_extrator.h>
+#include <qmath.h>
+#include <math.h>
 
 using namespace std;
 
-IIR_filter::IIR_filter(QVector<double> a, QVector<double> b)
+Inst_freq_extractor::Inst_freq_extractor(double samplingFreq)
 {
-    if (a.length() == 0)
-    {
-        this->a << 0;
-    }
-    this->a = a; // Copy filter kernel
-    this->b = b; // Copy filter kernel
-    for (int i = 0; i < b.length(); ++i)
-    {
-        this->x << 0;
-    }
-    for (int i = 0; i < a.length(); ++i)
-    {
-        this->y << 0;
-    }
+    this->x1 = 0.0f;
+    this->x2 = 0.0f;
+    this->y1 = 0.0f;
+    this->y2 = 0.0f;
+    this->currentInstFreq = 0.0f;
+    this->currentInstModuleSquared = 0.0f;
+    this->scalingFactor = 0.25 * samplingFreq / M_PI;
 }
 
-IIR_filter::~IIR_filter()
+Inst_freq_extractor::~Inst_freq_extractor()
 {
     return;
 }
 
-double IIR_filter::compute(const double &sample)
+void Inst_freq_extractor::compute(double x0, double y0)
 {
-    double y = 0.0f;
+    this->currentInstModuleSquared = this->x1 * this->x1
+                                   + this->y1 * this->y1
+                                   + qPow(2, -20); // Avoid dividing by 0
 
-    // Shift delay line
-//    for (int i = this->x.length() - 1; i > 0; i--)
-//    {
-//        this->x[i] = this->x[i-1];
-//    }
-    std::rotate(this->x.begin(), this->x.end()-1, this->x.end()); // This is equivalent to the previous "for" loop.
-                                                                // TODO: check if calculation speed is better when using QList instead of QVector.
-    this->x[0] = sample;
+    this->currentInstFreq = this->scalingFactor
+                          * (this->x1 * (y0 - this->y2) - this->y1 * (x0 - this->x2))
+                          / this->currentInstModuleSquared;
 
-//    for (int i = this->y.length() - 1; i > 0; i--)
-//    {
-//        this->y[i] = this->y[i-1];
-//    }
-    std::rotate(this->y.begin(), this->y.end()-1, this->y.end()); // This is equivalent to the previous "for" loop.
+    this->x2 = this->x1;
+    this->x1 = x0;
+    this->y2 = this->y1;
+    this->y1 = y0;
+}
 
-    // Compute filter output
-    for (int i = 0; i < this->x.length(); ++i)
-    {
-        y += (this->x[i] * this->b[i]);
-    }
-    for (int i = 1; i < this->y.length(); ++i)
-    {
-        y -= (this->y[i] * this->a[i]);
-    }
-    y /= this->a[0];
-    this->y[0] = y;
+double Inst_freq_extractor::getCurrentInstModule()
+{
+    return qSqrt(this->currentInstModuleSquared);
+}
 
-    return y;
+double Inst_freq_extractor::getCurrentInstFreq()
+{
+    return this->currentInstFreq;
 }

@@ -40,6 +40,7 @@
 #include "fir_filter.h"
 #include "unwrapper.h"
 #include "iir_filter.h"
+#include "inst_freq_extrator.h"
 
 #define DEFAULT_RPM RPM_33
 
@@ -59,13 +60,10 @@ class Coded_vinyl
     bool                 is_reverse_direction;
 
     // Frequency and amplitude analysis.
-    FIR_filter diff_FIR;
-    Unwrapper  unwraper;
     IIR_filter speed_IIR;
-    IIR_filter amplitude_IIR;
-    double     filtered_freq_inst;
-    double     filtered_amplitude_inst;
-    double     current_amplitude;
+    Inst_freq_extractor freq_inst;
+    double filtered_freq_inst;
+    double current_amplitude; // FIXME: not needed with new algo ?
 
  public:
     Coded_vinyl(unsigned int sample_rate);
@@ -75,23 +73,23 @@ class Coded_vinyl
     void run_recording_data_analysis(const QVector<float> &input_samples_1,
                                      const QVector<float> &input_samples_2);
 
-    float get_speed();
-    float get_volume();
-
     bool set_sample_rate(unsigned int sample_rate);
     unsigned int get_sample_rate();
 
     bool set_rpm(dscratch_vinyl_rpm_t rpm);
     dscratch_vinyl_rpm_t get_rpm();
 
+    // FIXME: not needed with new algo ?
     void  set_min_amplitude(float amplitude);
     float get_min_amplitude();
     float get_current_amplitude();
     virtual float get_default_min_amplitude() = 0;
 
-    virtual int get_sinusoidal_frequency() = 0;
+    virtual float get_speed() = 0;
+    virtual float get_volume() = 0;
 
  protected:
     bool set_reverse_direction(bool is_reverse_direction);
     bool get_reverse_direction();
+   float get_signal_freq();
 };
