@@ -37,8 +37,6 @@
 
 #include "dscratch_parameters.h"
 #include "digital_scratch_api.h"
-#include "fir_filter.h"
-#include "unwrapper.h"
 #include "iir_filter.h"
 #include "inst_freq_extrator.h"
 

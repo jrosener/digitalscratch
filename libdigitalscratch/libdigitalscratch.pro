@@ -41,8 +41,6 @@ SOURCES += \
     src/coded_vinyl.cpp \
     src/mixvibes_vinyl.cpp \
     src/log.cpp \
-    src/fir_filter.cpp \
-    src/unwrapper.cpp \
     src/iir_filter.cpp \
     src/inst_freq_extractor.cpp
 
@@ -56,8 +54,6 @@ HEADERS += \
     src/include/coded_vinyl.h \
     src/include/mixvibes_vinyl.h \
     src/include/log.h \
-    src/include/fir_filter.h \
-    src/include/unwrapper.h \
     src/include/iir_filter.h \
     src/include/inst_freq_extrator.h
 
