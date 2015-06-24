@@ -44,8 +44,6 @@ using namespace std;
 #include "coded_vinyl.h"
 #include <qmath.h>
 
-#define FIR_COEFF (sample_rate/1000.0) / (3.1416 * 2.0)
-
 Coded_vinyl::Coded_vinyl(unsigned int sample_rate) : sample_rate(sample_rate),
                                                      rpm(DEFAULT_RPM),
                                                      speed_IIR({1.0, -0.998}, {0.001, 0.001}),
