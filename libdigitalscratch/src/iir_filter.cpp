@@ -68,7 +68,7 @@ double IIR_filter::compute(const double &sample)
 //        this->x[i] = this->x[i-1];
 //    }
     std::rotate(this->x.begin(), this->x.end()-1, this->x.end()); // This is equivalent to the previous "for" loop.
-                                                                // TODO: check if calculation speed is better when using QList instead of QVector.
+                                                                  // TODO: check if calculation speed is better when using QList instead of QVector.
     this->x[0] = sample;
 
 //    for (int i = this->y.length() - 1; i > 0; i--)
