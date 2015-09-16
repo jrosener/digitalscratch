@@ -1687,7 +1687,7 @@ Gui::connect_dicer_actions()
                                         // Dicer button 5 => go to begin of the track (special cue point).
                                         if (button_index == BUTTON_5)
                                         {
-                                            emit this->decks[deck_index]->restart_button->clicked();
+                                            this->decks[deck_index]->restart_button->click();
                                         }
                                         else
                                         {
@@ -1695,12 +1695,12 @@ Gui::connect_dicer_actions()
                                             if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == false)
                                             {
                                                 // Register cue point.
-                                                emit this->decks[deck_index]->cue_set_buttons[cue_point_number]->clicked();
+                                                this->decks[deck_index]->cue_set_buttons[cue_point_number]->click();
                                             }
                                             else
                                             {
                                                 // Cue point is already defined, play it.
-                                                emit this->decks[deck_index]->cue_play_buttons[cue_point_number]->clicked();
+                                                this->decks[deck_index]->cue_play_buttons[cue_point_number]->click();
                                             }
                                         }
                                     }
@@ -1712,7 +1712,7 @@ Gui::connect_dicer_actions()
                                         if (button_index != BUTTON_5)
                                         {
                                             // Dicer's button can be mapped to a delete cue point GUI button.
-                                            emit this->decks[deck_index]->cue_del_buttons[cue_point_number]->clicked();
+                                            this->decks[deck_index]->cue_del_buttons[cue_point_number]->click();
                                         }
                                     }
                                     break;
