@@ -54,7 +54,7 @@ class Manual_control_process : public Control_process
     unsigned short int nb_temp_speed_inc_cycles;  // Nb cycles used for the temporary speed acceleration.
 
  public:
-    Manual_control_process(const QSharedPointer<Playback_parameters> &param);
+    explicit Manual_control_process(const QSharedPointer<Playback_parameters> &param);
     virtual ~Manual_control_process();
 
     bool run();

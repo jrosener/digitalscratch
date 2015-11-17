@@ -56,8 +56,8 @@ class Audio_track : public QObject
     QString            music_key_tag;             // The main musical key of the track (get from metadata tag).
 
  public:
-    Audio_track(const unsigned int &sample_rate);       // Does not contains any samples.
-    Audio_track(const short unsigned int &max_minutes,  // Contains the table of decoded audio samples.
+    explicit Audio_track(const unsigned int &sample_rate);   // Does not contains any samples.
+    Audio_track(const short unsigned int &max_minutes,       // Contains the table of decoded audio samples.
                 const unsigned int       &sample_rate);
     virtual ~Audio_track();
 

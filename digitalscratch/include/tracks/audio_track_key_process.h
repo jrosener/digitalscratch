@@ -47,7 +47,7 @@ class Audio_track_key_process
     QSharedPointer<Audio_track> at;
 
  public:
-    Audio_track_key_process(const QSharedPointer<Audio_track> &at);
+    explicit Audio_track_key_process(const QSharedPointer<Audio_track> &at);
     virtual ~Audio_track_key_process();
 
     bool run();         // Compute music key of the track and set it to the Audio_track object.

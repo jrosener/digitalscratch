@@ -56,7 +56,7 @@ class Sound_driver_access_rules : public QObject
     bool                     do_capture;
 
  public:
-    Sound_driver_access_rules(const unsigned short int &nb_channels);
+    explicit Sound_driver_access_rules(const unsigned short int &nb_channels);
     virtual ~Sound_driver_access_rules();
 
  public:

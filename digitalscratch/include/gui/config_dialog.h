@@ -54,7 +54,7 @@ class ShortcutQLabel : public QLabel
     Q_OBJECT
 
  public:
-    ShortcutQLabel(QWidget *parent=0);
+    explicit ShortcutQLabel(QWidget *parent=0);
     virtual ~ShortcutQLabel();
     void set_old_text();
 
@@ -119,7 +119,7 @@ class Config_dialog : public QDialog
     Application_settings *settings;
 
  public:
-    Config_dialog(QWidget *parent);
+    explicit Config_dialog(QWidget *parent);
     virtual ~Config_dialog();
     int show();
 

@@ -64,7 +64,7 @@ class Jack_access_rules : public Sound_driver_access_rules
     QList<jack_port_t*> output_port;
 
  public:
-    Jack_access_rules(const unsigned short int &nb_channels);
+    explicit Jack_access_rules(const unsigned short int &nb_channels);
     virtual ~Jack_access_rules();
 
  private:

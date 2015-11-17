@@ -78,15 +78,15 @@ class SpeedQPushButton : public QPushButton
        bool l_pressed;
        void set_pressed(bool is_pressed) { l_pressed = is_pressed; }
 
-   protected:
-       void mousePressEvent(QMouseEvent *event);
-       void mouseReleaseEvent(QMouseEvent *event);
-
    public:
-       SpeedQPushButton(const QString &title);
+       explicit SpeedQPushButton(const QString &title);
        virtual ~SpeedQPushButton();
        bool is_pressed() { return l_pressed; }
        void redraw();
+
+   protected:
+       void mousePressEvent(QMouseEvent *event);
+       void mouseReleaseEvent(QMouseEvent *event);
 
    signals:
        void right_clicked();
@@ -116,18 +116,18 @@ class PlaybackQGroupBox : public QGroupBox
        bool l_selected;
        void set_selected(bool is_selected) { l_selected = is_selected; }
 
+   public:
+       explicit PlaybackQGroupBox(const QString &title);
+       virtual ~PlaybackQGroupBox();
+       bool is_selected() { return l_selected; }
+       void redraw();
+
    protected:
        void mousePressEvent(QMouseEvent *event);
        void enterEvent(QEvent *event);
        void leaveEvent(QEvent *event);
        void dragEnterEvent(QDragEnterEvent *event);
        void dropEvent(QDropEvent *event);
-
-   public:
-       PlaybackQGroupBox(const QString &title);
-       virtual ~PlaybackQGroupBox();
-       bool is_selected() { return l_selected; }
-       void redraw();
 
    signals:
        void selected();

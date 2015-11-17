@@ -114,7 +114,7 @@ class Audio_collection_model : public QAbstractItemModel
     QString                        root_path;
 
  public:
-    Audio_collection_model(QObject *in_parent = 0);
+    explicit Audio_collection_model(QObject *in_parent = 0);
     ~Audio_collection_model();
 
     QModelIndex   set_root_path(QString in_root_path);

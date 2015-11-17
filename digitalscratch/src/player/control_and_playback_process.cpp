@@ -105,7 +105,7 @@ Control_and_playback_process::kill()
 
 
 bool
-Control_and_playback_process::run(const unsigned short int &nb_buffer_frames)
+Control_and_playback_process::run(const unsigned short int &nb_buffer_frames) // FIXME: should take input+output buffers as parameter (so remove the Sound_driver_access_rules dependency)
 {
     QList<float *> input_buffers;
     QList<float *> output_buffers;

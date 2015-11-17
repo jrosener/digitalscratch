@@ -47,7 +47,7 @@ class Control_process : public QObject // FIXME : necessary ?
     QSharedPointer<Playback_parameters> params;
 
  public:
-    Control_process(const QSharedPointer<Playback_parameters> &param);
+    explicit Control_process(const QSharedPointer<Playback_parameters> &param);
     virtual ~Control_process();
 
  signals:
