@@ -12,10 +12,12 @@ before_install:
   - qmake --version
   - git clone https://github.com/jrosener/libKeyFinder.git
   - cd libKeyFinder && qmake && make && sudo make install
+  - cd ..
 script:
   - cd libdigitalscratch && qmake && make && sudo make install
   - make clean && qmake CONFIG+=test && make
   - ./libdigitalscratch-test
-  - cd ../digitalscratch && qmake && make
+  - cd ..
+  - cd digitalscratch && qmake && make
   - make clean && qmake CONFIG+=test-no_device_test && make
   - ./digitalscratch-test
