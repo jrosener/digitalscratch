@@ -70,11 +70,11 @@ class Data_persistence
     bool delete_cue_point(const QSharedPointer<Audio_track>  &at,         // Delete the in_number cue point of an audio track.
                           const unsigned int                 &number);
 
-    bool store_tag(const QString &name);                             // Insert a new tag.
-    bool rename_tag(const QString &old_name,                         // Rename a tag.
+    bool store_tag(const QString &name);                                   // Insert a new tag.
+    bool rename_tag(const QString &old_name,                               // Rename a tag.
                     const QString &new_name);
-    bool delete_tag(const QString &name);                            // Delete a tag (and remove it from all tracks).
-    bool get_full_tag_list(QStringList &out_tags);                      // Get a list of existing tags.
+    bool delete_tag(const QString &name);                                  // Delete a tag (and remove it from all tracks).
+    bool get_full_tag_list(QStringList &out_tags);                         // Get a list of existing tags.
 
     bool add_tag_to_track(const QSharedPointer<Audio_track> &at,           // Associate a tag to a track.
                           const QString                     &tag_name);
@@ -82,12 +82,25 @@ class Data_persistence
                             const QString                     &tag_name);
     bool get_tags_from_track(const QSharedPointer<Audio_track> &at,        // Get the list of tags for the specified track.
                              QStringList                       &out_tags);
+    bool get_tracks_from_tag(const QString                     &tag_name,  // Get the list of tracks for the specified tag.
+                             QStringList                       &out_tracklist);
+    bool switch_track_positions_in_tag_list(const QString &tag_name,                // In the tracklist of a specified tag,
+                                            const QSharedPointer<Audio_track> &at1, // Switch position of 2 tracks.
+                                            const QSharedPointer<Audio_track> &at2);
 
  private:
     bool init_db();
     bool create_db_structure();
     bool store_track_tag(const QString &id_track,
                          const QString &id_tag);
+    bool reorganize_track_pos_in_tag_list();                               // If track/tag association has no position in the track list
+                                                                           // of the tag, then put position to the end of the list.
+                                                                           // Reorganize also position values to have a contiguous list.
+    int get_track_pos_in_tag_list(const QSharedPointer<Audio_track> &at1,
+                                  const QString &tag_name);
+    bool set_track_position_in_tag_list(const QString &tag_name,
+                                        const QSharedPointer<Audio_track> &at,
+                                        const int &position);
 #ifndef ENABLE_TEST_MODE
     void backup_db();
 #endif

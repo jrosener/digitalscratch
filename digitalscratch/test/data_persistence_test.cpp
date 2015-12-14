@@ -167,7 +167,7 @@ void Data_persistence_Test::testCaseStoreAndGetCuePoint()
     // Get cue point: wrong params.
     unsigned int position = 0;
     QVERIFY2(data_persist->get_cue_point(at_wrong, 0, position) == false, "wrong audio track");
-    QVERIFY2(data_persist->get_cue_point(at,       MAX_NB_CUE_POINTS, position) == false, "too high cue point number");
+    QVERIFY2(data_persist->get_cue_point(at, MAX_NB_CUE_POINTS, position) == false, "too high cue point number");
 
     // Get cue point.
     QVERIFY2(data_persist->get_cue_point(at, 0, position) == true,  "get cue point 1");
@@ -263,5 +263,37 @@ void Data_persistence_Test::testCasePersistTag()
     data_persist->get_tags_from_track(at2, tags);
     QVERIFY2(tags.size() == 1, "nb tags = 1");
     QVERIFY2(tags[0] == "house", "tags[0] = house");
+
+    // Get track list of a specified tag.
+    QStringList tracklist;
+    tracklist.clear();
+    data_persist->get_tracks_from_tag("techno", tracklist);
+    QVERIFY2(tracklist.size() == 1, "nb techno tracks = 1");
+    QVERIFY2(tracklist[0] == QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_1)).absoluteFilePath(), "tracklist[0] = track_1.mp3");
+    
+    tracklist.clear();
+    data_persist->get_tracks_from_tag("house", tracklist);
+    QVERIFY2(tracklist.size() == 1, "nb house tracks = 1");
+    QVERIFY2(tracklist[0] == QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_2)).absoluteFilePath(), "tracklist[0] = track_2.mp3");
+
+    // Reorganize position of tracks in tag tracklists.
+    QSharedPointer<Audio_track> at3(new Audio_track(44100));
+    fullpath = QString(DATA_DIR) + QString(DATA_TRACK_3);
+    at3->set_fullpath(fullpath);
+    at3->set_hash(Utils::get_file_hash(fullpath));
+    at3->set_music_key("A1");
+    data_persist->store_tag("dnb");
+    data_persist->add_tag_to_track(at1, "house");
+    data_persist->add_tag_to_track(at1, "techno");
+    data_persist->add_tag_to_track(at1, "dnb");
+    data_persist->add_tag_to_track(at2, "house");
+    data_persist->add_tag_to_track(at2, "techno");
+    data_persist->add_tag_to_track(at3, "house");
+    QVERIFY2(data_persist->switch_track_positions_in_tag_list("house", at1, at2) == true, "switch position of track_1 and track_2 for the house tag");
+    tracklist.clear();
+    data_persist->get_tracks_from_tag("house", tracklist);
+    QVERIFY2(tracklist.size() == 3, "nb house tracks = 3");
+    QVERIFY2(tracklist[0] == QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_1)).absoluteFilePath(), "tracklist[0] = track_1.mp3");
+    QVERIFY2(tracklist[1] == QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_2)).absoluteFilePath(), "tracklist[0] = track_2.mp3");
 }
 

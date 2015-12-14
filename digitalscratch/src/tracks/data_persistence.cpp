@@ -43,7 +43,7 @@
 #include "app/application_logging.h"
 #include "tracks/data_persistence.h"
 
-Data_persistence::Data_persistence()
+Data_persistence::Data_persistence() // FIXME: rename to Audio_track_persistence ?
 {
     this->is_initialized = this->init_db();
 
@@ -199,7 +199,8 @@ bool Data_persistence::create_db_structure()
             result = query.exec("CREATE TABLE IF NOT EXISTS \"TRACK_TAG\" "
                                 "(\"id_track_tag\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "
                                 " \"id_track\" INTEGER  NOT NULL, "
-                                " \"id_tag\" INTEGER  NOT NULL  , "
+                                " \"id_tag\" INTEGER  NOT NULL, "
+                                " \"position\" INTEGER, "
                                 " FOREIGN KEY(id_track) REFERENCES TRACK(id_track), "
                                 " FOREIGN KEY(id_tag) REFERENCES TAG(id_tag));");
         }
@@ -746,8 +747,7 @@ bool Data_persistence::get_full_tag_list(QStringList &out_tags)
     bool result = true;
 
     // Get all tags.
-    if ((result == true) &&
-        (this->is_initialized == true))
+    if (this->is_initialized == true)
     {
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
@@ -834,7 +834,12 @@ bool Data_persistence::add_tag_to_track(const QSharedPointer<Audio_track> &at,
         // Release the DB connection.
         this->mutex.unlock();
     }
-    
+
+    // Reorganize position of tracks in tracklist of a tag.
+    if (result == true)    
+    {
+        result = this->reorganize_track_pos_in_tag_list();
+    }
 
     return result;
 }
@@ -888,6 +893,56 @@ bool Data_persistence::store_track_tag(const QString &id_track,
     return result;
 }
 
+bool Data_persistence::rem_tag_from_track(const QSharedPointer<Audio_track> &at,
+                                          const QString                     &tag_name)
+{
+    // Init result.
+    bool result = true;
+
+    // Check input parameter.
+    if ((at.data() == nullptr) ||
+        (at->get_hash().size() == 0) ||
+        (tag_name == ""))
+    {
+        qCWarning(DS_DB) << "can not delete tag from track: wrong params.";
+        result = false;
+    }
+
+    // Get all tags.
+    if ((result == true) &&
+        (this->is_initialized == true))
+    {
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        QSqlQuery query = this->db.exec("DELETE FROM TRACK_TAG "
+                                        "WHERE id_track_tag IN "
+                                        "(SELECT id_track_tag FROM TRACK_TAG "
+                                        "JOIN TAG "
+                                        "ON TRACK_TAG.id_tag=TAG.id_tag "
+                                        "JOIN TRACK "
+                                        "ON TRACK_TAG.id_track=TRACK.id_track "
+                                        "WHERE TRACK.hash=\"" + at->get_hash() + "\" AND TAG.name=\"" + tag_name + "\")");
+        if (query.lastError().isValid())
+        {
+            // Can not delete tag in DB.
+            qCWarning(DS_DB) << "DELETE FROM TRACK_TAG failed: " << query.lastError().text();
+            result = false;
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
+    }
+
+    // Reorganize position of tracks in tracklist of a tag.
+    if (result == true)    
+    {
+        result = this->reorganize_track_pos_in_tag_list();
+    }
+
+    return result;
+}
+
 bool Data_persistence::get_tags_from_track(const QSharedPointer<Audio_track> &at,
                                            QStringList                       &out_tags)
 {
@@ -937,46 +992,222 @@ bool Data_persistence::get_tags_from_track(const QSharedPointer<Audio_track> &at
     return result;
 }
 
-
-bool Data_persistence::rem_tag_from_track(const QSharedPointer<Audio_track> &at,
-                                          const QString                     &tag_name)
+bool Data_persistence::get_tracks_from_tag(const QString &tag_name,
+                                           QStringList   &out_tracklist)
 {
     // Init result.
     bool result = true;
 
     // Check input parameter.
-    if ((at.data() == nullptr) ||
-        (at->get_hash().size() == 0) ||
-        (tag_name == ""))
+    if (tag_name == "")
     {
-        qCWarning(DS_DB) << "can not delete tag from track: wrong params.";
+        qCWarning(DS_DB) << "can not get track list: empty tag name.";
         result = false;
     }
 
-    // Get all tags.
+    // Get all tracks tagged with the specified tag name.
     if ((result == true) &&
         (this->is_initialized == true))
     {
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("DELETE FROM TRACK_TAG "
-                                        "WHERE id_track_tag IN "
-                                        "(SELECT id_track_tag FROM TRACK_TAG "
+        QSqlQuery query = this->db.exec("SELECT path, filename FROM TRACK "
+                                        "JOIN TRACK_TAG "
+                                        "ON TRACK.id_track=TRACK_TAG.id_track "
                                         "JOIN TAG "
                                         "ON TRACK_TAG.id_tag=TAG.id_tag "
-                                        "JOIN TRACK "
-                                        "ON TRACK_TAG.id_track=TRACK.id_track "
-                                        "WHERE TRACK.hash=\"" + at->get_hash() + "\" AND TAG.name=\"" + tag_name + "\")");
+                                        "WHERE TAG.name=\"" + tag_name + "\" "
+                                        "ORDER BY TRACK_TAG.position");
         if (query.lastError().isValid())
         {
-            // Can not delete tag in DB.
-            qCWarning(DS_DB) << "DELETE FROM TRACK_TAG failed: " << query.lastError().text();
+            // Can not select track list in DB.
+            qCWarning(DS_DB) << "SELECT tracks failed: " << query.lastError().text();
+            result = false;
+        }
+        else
+        {
+            // Fill result string list.
+            while (query.next() == true)
+            {
+                out_tracklist.push_back(query.value(0).toString() + "/" + query.value(1).toString());
+            }
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
+    }
+
+    return result;
+}
+
+bool Data_persistence::reorganize_track_pos_in_tag_list() // TODO: do it only for a specified tag (much faster).
+{
+    // Init result.
+    bool result = true;
+
+    if (this->is_initialized == true)
+    {
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        // Get all tag ids.
+        QSqlQuery query_tag_ids = this->db.exec("SELECT id_tag FROM TAG");
+        if (query_tag_ids.lastError().isValid())
+        {
+            // Can not select tag in DB.
+            qCWarning(DS_DB) << "SELECT tags failed: " << query_tag_ids.lastError().text();
+            result = false;
+        }
+        else
+        {
+            // For each tag ids, get the list of track ids (position value in ascendant order).
+            while (query_tag_ids.next() == true)
+            {
+                int pos = 0;
+                QSqlQuery query_tracklist = this->db.exec("SELECT id_track_tag, position FROM TRACK_TAG "
+                                                          "WHERE TRACK_TAG.id_tag=" + query_tag_ids.value(0).toString() + " "
+                                                          "ORDER BY CASE WHEN position IS NULL THEN 1 ELSE 0 END, position");
+                if (query_tracklist.lastError().isValid())
+                {
+                    // Can not select tag in DB.
+                    qCWarning(DS_DB) << "SELECT tracklist failed: " << query_tracklist.lastError().text();
+                    result = false;
+                }
+                else
+                {
+                    // For each tag_track association (which are ordered), overwrite the position starting from 0.
+                    // tag_track associations with no position are append at the end.
+                    QSqlQuery query_update_tracklist(this->db);
+                    while (query_tracklist.next() == true)
+                    {
+                        query_update_tracklist.prepare("UPDATE TRACK_TAG SET position = :position "
+                                                       "WHERE id_track_tag = :id_track_tag");
+                        query_update_tracklist.bindValue(":position", QString::number(pos));
+                        query_update_tracklist.bindValue(":id_track_tag", query_tracklist.value(0).toString());
+                        query_update_tracklist.exec();
+
+                        if (query_update_tracklist.lastError().isValid())
+                        {
+                            qCWarning(DS_DB) << "UPDATE track_tag failed: " << query_update_tracklist.lastError().text();
+                            result = false;
+                        }
+
+                        pos++;
+                    }
+                }
+            }
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
+    }
+
+    return result;
+}
+
+int Data_persistence::get_track_pos_in_tag_list(const QSharedPointer<Audio_track> &at,
+                                                const QString &tag_name)
+{
+    int pos = -1;
+
+    if (this->is_initialized == true)
+    {
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        QSqlQuery query = this->db.exec("SELECT TRACK_TAG.position FROM TRACK_TAG "
+                                        "JOIN TRACK ON TRACK.id_track=TRACK_TAG.id_track "
+                                        "JOIN TAG ON TAG.id_tag=TRACK_TAG.id_tag "
+                                        "WHERE TRACK.hash=\"" + at->get_hash() + "\" AND TAG.name=\"" + tag_name + "\"");
+        if (query.lastError().isValid())
+        {
+            // Can not select position in DB.
+            qCWarning(DS_DB) << "SELECT position failed: " << query.lastError().text();
+        }
+        else
+        {
+            if (query.next() == true)
+            {
+                // Get position of track in the tracklist of the specified tag.
+                pos = query.value(0).toInt();
+            }
+        }
+
+        // Release the DB connection.
+        this->mutex.unlock();
+    }
+
+    return pos;
+}
+
+bool Data_persistence::set_track_position_in_tag_list(const QString &tag_name,
+                                                      const QSharedPointer<Audio_track> &at,
+                                                      const int &position)
+{
+    // Init result.
+    bool result = true;
+
+    if (this->is_initialized == true)
+    {
+        // Ensure no other thread can access the DB connection.
+        this->mutex.lock();
+
+        QSqlQuery query_update_pos(this->db);
+        query_update_pos.prepare("UPDATE TRACK_TAG SET position = :position "
+                                 "WHERE id_track_tag = (SELECT TRACK_TAG.id_track_tag FROM TRACK_TAG "
+                                                        "JOIN TRACK ON TRACK.id_track = TRACK_TAG.id_track "
+                                                        "JOIN TAG ON TAG.id_tag = TRACK_TAG.id_tag "
+                                                        "WHERE TRACK.hash = :hash AND TAG.name = :tag)");
+        query_update_pos.bindValue(":position", QString::number(position));
+        query_update_pos.bindValue(":hash", at->get_hash());
+        query_update_pos.bindValue(":tag", tag_name);
+        query_update_pos.exec();
+        if (query_update_pos.lastError().isValid())
+        {
+            qCWarning(DS_DB) << "UPDATE position failed: " << query_update_pos.lastError().text();
             result = false;
         }
 
         // Release the DB connection.
         this->mutex.unlock();
+    }
+
+    return result;
+}
+
+bool Data_persistence::switch_track_positions_in_tag_list(const QString &tag_name,
+                                                          const QSharedPointer<Audio_track> &at1,
+                                                          const QSharedPointer<Audio_track> &at2)
+{
+    // Init result.
+    bool result = true;
+
+    // First ensure that both tracks are tagged with the tag.
+    QStringList tags_1;
+    this->get_tags_from_track(at1, tags_1);
+    QStringList tags_2;
+    this->get_tags_from_track(at2, tags_2);
+    if ((tags_1.contains(tag_name) == false)
+        || (tags_2.contains(tag_name) == false))
+    {
+        qCWarning(DS_DB) << "Track not tagged with " << tag_name;
+        result = false;
+    }
+    else
+    {
+        // Get positions of tracks.
+        int pos1 = this->get_track_pos_in_tag_list(at1, tag_name);
+        int pos2 = this->get_track_pos_in_tag_list(at2, tag_name);
+        
+        // Update position of track 1 with the position of track 2 and vice versa.
+        if ((this->set_track_position_in_tag_list(tag_name, at1, pos2) == false) ||
+            (this->set_track_position_in_tag_list(tag_name, at2, pos1) == false))
+        {
+            qCWarning(DS_DB) << "Can not change position of tracks";
+            result = false;
+        }
+
     }
 
     return result;
