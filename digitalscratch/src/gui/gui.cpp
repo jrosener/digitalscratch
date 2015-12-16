@@ -115,12 +115,6 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->sound_card              = sound_card;
     this->control_and_play        = control_and_playback;
     this->selected_deck           = 0;
-    this->dscratch_handles        = new dscratch_handle_t[this->settings->get_nb_decks()];
-    for (unsigned short int i = 0; i < this->settings->get_nb_decks(); i++)
-    {
-        this->dscratch_handles[i] = this->tcode_controls[i]->get_dscratch_handle(); // FIXME: refactor: do not use an array but call a getter function each time
-                                                                                    //        the handler is needed (this->get_dscratch_handle())
-    }
 
     // Init pop-up dialogs.
     this->config_dialog          = nullptr;
@@ -176,7 +170,6 @@ Gui::~Gui()
     this->clean_decks_area();
     this->clean_samplers_area();
     this->clean_file_browser_area();
-    delete[] this->dscratch_handles;
     delete this->window;
 
     return;
@@ -216,15 +209,8 @@ Gui::apply_application_settings()
     // Apply motion detection settings for all turntables.
     for (int i = 0; i < this->nb_decks; i++)
     {
-        // FIXME : wrap these calls into Timecode_control_process and remove the digital_scratch_api dependency (this->dscratch_handles).
-        if (dscratch_change_vinyl_type(this->dscratch_handles[i], this->settings->get_vinyl_type(i)) != DSCRATCH_SUCCESS)
-        {
-            qCWarning(DS_APPSETTINGS) << "cannot set vinyl type";
-        }
-        if (dscratch_set_rpm(this->dscratch_handles[i], this->settings->get_rpm(i)) != DSCRATCH_SUCCESS)
-        {
-            qCWarning(DS_APPSETTINGS) << "cannot set turntable RPM";
-        }
+        this->tcode_controls[i]->set_vinyl_type(this->settings->get_vinyl_type(i));
+        this->tcode_controls[i]->set_vinyl_rpm(this->settings->get_rpm(i));
     }
 
     // Change shortcuts.

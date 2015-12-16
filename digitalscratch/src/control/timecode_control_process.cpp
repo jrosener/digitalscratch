@@ -116,8 +116,19 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
 
     return true;
 }
-
-dscratch_handle_t Timecode_control_process::get_dscratch_handle()
+void Timecode_control_process::set_vinyl_type(dscratch_vinyls_t vinyl_type)
 {
-    return this->dscratch_handle;
+    if (dscratch_change_vinyl_type(this->dscratch_handle, vinyl_type) != DSCRATCH_SUCCESS)
+    {
+        qCWarning(DS_PLAYBACK) << "cannot set vinyl type";
+    }
 }
+
+void Timecode_control_process::set_vinyl_rpm(dscratch_vinyl_rpm_t vinyl_rpm)
+{
+    if (dscratch_set_rpm(this->dscratch_handle, vinyl_rpm) != DSCRATCH_SUCCESS)
+    {
+        qCWarning(DS_PLAYBACK) << "cannot set turntable RPM";
+    }
+}
+

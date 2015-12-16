@@ -62,5 +62,6 @@ class Timecode_control_process : public Control_process
              const float              *samples_1,
              const float              *samples_2);
 
-    dscratch_handle_t get_dscratch_handle();
+    void set_vinyl_type(dscratch_vinyls_t vinyl_type);
+    void set_vinyl_rpm(dscratch_vinyl_rpm_t vinyl_rpm);
 };
