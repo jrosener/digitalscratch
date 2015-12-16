@@ -51,6 +51,6 @@ void Audio_file_decoding_process_Test::testCaseRun()
     // Run decoding on normal file.
     QFileInfo file_info_2 = QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_2));
     decoder.clear();
-    QVERIFY2(decoder.run(file_info_2.absoluteFilePath(), hash, key) == true,  "decode normal sized mp3");
+    QVERIFY2(decoder.run(file_info_2.absoluteFilePath(), "", "") == true,  "decode normal sized mp3");
 }
 

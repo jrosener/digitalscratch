@@ -281,30 +281,19 @@ Audio_file_decoding_process::decode()
                         total_nb_samples = this->at->get_max_nb_samples() - this->at->get_end_of_samples();
                         decoding_done = true;
                     }
-                    int data_size = frame->nb_samples * sizeof(short signed int);
-                    short signed int *channel_0;
-                    channel_0 = new short signed int [frame->nb_samples];
-                    short signed int *channel_1;
-                    channel_1 = new short signed int [frame->nb_samples];
-                    if (frame->data[0] != nullptr)
-                    {
-                        memcpy(channel_0, frame->data[0], data_size);
-                    }
-                    if (frame->data[1] != nullptr)
-                    {
-                        memcpy(channel_1, frame->data[1], data_size);
-                    }
+                    short signed int *channel_0 = (short signed int *)frame->data[0];
+                    short signed int *channel_1 = (short signed int *)frame->data[1];
                     for (int i = 0; i < frame->nb_samples; i++)
                     {
-                        if (frame->data[0] != nullptr)
+                        if (channel_0 != nullptr)
                         {
-                            output_samples[i*2]   = channel_0[i];
+                            output_samples[i*2] = channel_0[i];
                         }
                         else
                         {
-                            output_samples[i*2]   = 0;
+                            output_samples[i*2] = 0;
                         }
-                        if (frame->data[1] != nullptr)
+                        if (channel_1 != nullptr)
                         {
                             output_samples[i*2+1] = channel_1[i];
                         }
@@ -313,8 +302,6 @@ Audio_file_decoding_process::decode()
                             output_samples[i*2+1] = 0;
                         }
                     }
-                    delete [] channel_0;
-                    delete [] channel_1;
                     output_samples += total_nb_samples;
                     this->at->set_end_of_samples(this->at->get_end_of_samples() + total_nb_samples);
                 }
