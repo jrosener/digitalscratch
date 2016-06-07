@@ -1,3 +1,14 @@
+libdigitalscratch (1.6.1-1ppa1~wily1) wily; urgency=medium
+
+  * features:
+     - improve signal frequency detection using IIR filter
+  * coding:
+     - memory allocation
+     - API dependency
+     - cppcheck suggestions 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 07 Jun 2016 15:41:04 +0200
+
 libdigitalscratch (1.6.0-1ppa1~vivid1) vivid; urgency=medium
 
   * rewrite the timecoded signal detection using FIR and IIR filters 
