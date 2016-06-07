@@ -1,8 +1,8 @@
 Source: libdigitalscratch
 Priority: extra
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Build-Depends: debhelper (>= 8.0.0), qt5-default
-Standards-Version: 3.9.3
+Build-Depends: debhelper (>= 8.0.0), qt-default
+Standards-Version: 3.9.6
 Section: libs
 Homepage: http://www.digital-scratch.org
 Vcs-Git: git://github.com/jrosener/digitalscratch.git
