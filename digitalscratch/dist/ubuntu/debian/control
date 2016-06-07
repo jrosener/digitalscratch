@@ -2,8 +2,8 @@ Source: digitalscratch
 Section: sound
 Priority: extra
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Build-Depends: debhelper (>= 8.0.0), libavformat-dev, libavcodec-dev, libavutil-dev, libjack-jackd2-dev, libsamplerate0-dev, libdigitalscratch-dev, qt5-default, qtmultimedia5-dev, libkeyfinder-dev, libasound2-dev
-Standards-Version: 3.9.3
+Build-Depends: debhelper (>= 8.0.0), libavformat-dev, libavcodec-dev, libavutil-dev, libjack-jackd2-dev, libsamplerate0-dev, libdigitalscratch-dev, qt-default, qtmultimedia5-dev, libkeyfinder-dev, libasound2-dev
+Standards-Version: 3.9.6
 Homepage: http://www.digital-scratch.org
 Vcs-Git: git://github.com/jrosener/digitalscratch.git
 
