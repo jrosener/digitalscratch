@@ -1,12 +1,12 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*                           Digital Scratch System                           */
+/*               libdigitalscratch: the Digital Scratch engine.               */
 /*                                                                            */
 /*                                                                            */
 /*--------------------------------------------------( digital_scratch_api.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2015                                                   */
+/*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -107,32 +107,38 @@ DLLIMPORT dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle);
  * @note Warning: left_samples and right_samples must have the same number
  *                of elements (nb_frames elements).
  */
-DLLIMPORT dscratch_status_t dscratch_analyze_recorded_datas(dscratch_handle_t  handle,
-                                                            const float       *left_samples,
-                                                            const float       *right_samples,
-                                                            int                samples_table_size);
+DLLIMPORT dscratch_status_t dscratch_process_captured_timecoded_signal(dscratch_handle_t  handle,
+                                                                       const float       *left_samples,
+                                                                       const float       *right_samples,
+                                                                       int                samples_table_size);
 
 /**
- * Returns playing parameters (only relevant if dscratch_analyze_recorded_datas()
- * was called). Playing parameters are:
- *      - speed of the vinyl disc (sign is the direction).
- *      - volume of the sound (dependant of the speed).
+ * Returns the calculated speed of the vinyl on turntable
+ * (only relevant if dscratch_process_captured_timecoded_signal() was called).
  *
  * @param handle is used to identify the turntable.
  * @param speed will be returned, this is the speed of the vinyl disc.
  *        1.0 should be mapped to 0.0% of your real turntable.
  *        If the speed is a negative value, it means that vinyl is playing
  *        backward.
- * @param volume will be returned, this is the volume of the sound you want to
- *        play. Indeed, the volume of the sound is dependant of the speed, so
- *        the more is the speed the more will be the volume.
- *        0.0 = mute. 1.0 = 100% volume.
  *
- * @return DSCRATCH_SUCCESS if playing parameters are found.
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-DLLIMPORT dscratch_status_t dscratch_get_playing_parameters(dscratch_handle_t  handle,
-                                                            float             *speed,
-                                                            float             *volume);
+DLLIMPORT dscratch_status_t dscratch_get_speed(dscratch_handle_t  handle,
+                                               float             *speed);
+
+/**
+ * Returns the volume of the signal captured from vinyl on turntable
+ * (only relevant if dscratch_process_captured_timecoded_signal() was called).
+ *
+ * @param handle is used to identify the turntable.
+ * @param volume will be returned, this is the amplitude of the signal given
+ *               to dscratch_process_captured_timecoded_signal()
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_get_volume(dscratch_handle_t  handle,
+                                                float             *volume);
 
 /**
  * Get DigitalScratch version.
@@ -219,15 +225,6 @@ DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
  * @return the default number of rpm (=> 33).
  */
 DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm();
-
-/**
- * Getter/Setter for the minimal detectable amplitude.
- */
-DLLIMPORT dscratch_status_t dscratch_set_min_amplitude(dscratch_handle_t handle, float amplitude);
-DLLIMPORT dscratch_status_t dscratch_get_min_amplitude(dscratch_handle_t handle, float *out_ampl);
-DLLIMPORT dscratch_status_t dscratch_get_current_amplitude(dscratch_handle_t handle, float *out_ampl);
-DLLIMPORT dscratch_status_t dscratch_get_default_min_amplitude(dscratch_handle_t handle, float *out_ampl);
-DLLIMPORT float dscratch_get_default_min_amplitude_from_vinyl_type(dscratch_vinyls_t vinyl_type);
 
 #ifdef __cplusplus
 }
