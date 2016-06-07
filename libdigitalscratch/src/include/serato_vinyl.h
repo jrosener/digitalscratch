@@ -1,12 +1,12 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*                           Digital Scratch System                           */
+/*               libdigitalscratch: the Digital Scratch engine.               */
 /*                                                                            */
 /*                                                                            */
 /*---------------------------------------------------------( serato_vinyl.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2015                                                   */
+/*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/

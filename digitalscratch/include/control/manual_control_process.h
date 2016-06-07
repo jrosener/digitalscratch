@@ -6,7 +6,7 @@
 /*                                                                            */
 /*-----------------------------------------------( manual_control_process.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2015                                                   */
+/*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
