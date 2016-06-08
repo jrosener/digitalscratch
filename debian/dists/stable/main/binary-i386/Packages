@@ -65,19 +65,19 @@ Description: Motion detection for vinyl turntable
 
 Package: libkeyfinder-dev
 Source: libkeyfinder
-Version: 0.11.0-1
+Version: 2.1.0-1
 Architecture: i386
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
 Installed-Size: 37
-Depends: libkeyfinder0 (= 0.11.0-1)
+Depends: libkeyfinder0 (= 2.1.0-1)
 Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libdevel
-Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_0.11.0-1_i386.deb
-Size: 3374
-SHA256: 430e1999425a326a45803515d0d7300c121953c988bb5e795ffa8f7990c8e80c
-SHA1: 09b444102575887bda102c5f9d86050af4e0ad05
-MD5sum: a91ccf7ce9530e02a802f10a92c8b719
+Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_2.1.0-1_i386.deb
+Size: 3624
+SHA256: 25a0fc6a63ceff2e8da0c2c6e42cd9c90b4817599d1eccc2050fa55bf0c79896
+SHA1: 39fd901ea480b5e07f5a684630df34a7861be261
+MD5sum: 694f2187c3931c2cc7d2db775846d0dc
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
  .
@@ -86,19 +86,19 @@ Description: Key estimation library for DJs
 
 Package: libkeyfinder0
 Source: libkeyfinder
-Version: 0.11.0-1
+Version: 2.1.0-1
 Architecture: i386
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 178
-Depends: libboost-system1.55.0, libboost-thread1.55.0, libc6 (>= 2.1.3), libfftw3-double3, libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.2.1)
+Installed-Size: 116
+Depends: libboost-system1.55.0, libboost-thread1.55.0, libc6 (>= 2.1.3), libfftw3-double3, libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0)
 Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libs
-Filename: pool/main/libk/libkeyfinder/libkeyfinder0_0.11.0-1_i386.deb
-Size: 54070
-SHA256: 7dcc2320328f9bb54f39ff2653385e5a18438bbc6e55ce739fd59dd50eefa09b
-SHA1: a2fc4e735d75d5d086f814a51afa0f4de93cf739
-MD5sum: 6b6b9bf8ae08e0d8e9b248ce4e559e0d
+Filename: pool/main/libk/libkeyfinder/libkeyfinder0_2.1.0-1_i386.deb
+Size: 35744
+SHA256: be3b0bf0db7e89780dded8c2048aca1ec97a414e56fe2b1c3c3452293b07b98e
+SHA1: d1a37eb06c3a4a6c999a0e812745fbdea6fff096
+MD5sum: 93f413a3015e02cabd973e8e076dee55
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
 
