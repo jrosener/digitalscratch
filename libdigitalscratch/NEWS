@@ -7,6 +7,14 @@
 /*                                                                            */
 /*============================================================================*/
 
+libdigitalscratch-1.6.1:
+  * features:
+     - improve signal frequency detection using IIR filter
+  * coding:
+     - memory allocation
+     - API dependency
+     - cppcheck suggestions 
+
 libdigitalscratch-1.6.0:
   * rewrite the timecoded signal detection using FIR and IIR filters 
   * refactor the API using more standard fonctions/handle

@@ -7,6 +7,18 @@
 /*                                                                            */
 /*============================================================================*/
 
+digitalscratch-1.6.1:
+  * features:
+     - dicer: pad 5 (cue point mode) restart the track
+  * upstream updates:
+     - update libkeyfinder to v2.1.0
+  * motion detection engine (libdigitalscratch):
+     - improve signal frequency detection using IIR filter
+  * coding:
+     - memory allocation
+     - API dependency
+     - cppcheck suggestions
+
 digitalscratch-1.6.0:
   * features:
      - add Novation Dicer support (cue points management), Linux only
