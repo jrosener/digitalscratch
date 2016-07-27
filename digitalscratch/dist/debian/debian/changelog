@@ -1,6 +1,19 @@
+digitalscratch (1.6.1-1) stable; urgency=medium
+
+  * features:
+     - dicer: pad 5 (cue point mode) restart the track
+  * upstream updates:
+     - update libkeyfinder to v2.1.0
+  * coding:
+     - memory allocation
+     - API dependency
+     - cppcheck suggestions
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 26 Jul 2016 22:31:51 +0200
+
 digitalscratch (1.6.0-1) stable; urgency=medium
 
- * features:
+  * features:
      - add Novation Dicer support (cue points management), Linux only
      - add tracklist recording support
      - add direct turntable output support ("thru" button that bypass all digitalscratch playback).
