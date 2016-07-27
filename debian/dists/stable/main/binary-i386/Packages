@@ -1,17 +1,17 @@
 Package: digitalscratch
-Version: 1.6.0-1
+Version: 1.6.1-1
 Architecture: i386
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 1228
-Depends: libqt5sql5-sqlite, libasound2 (>= 1.0.16), libavcodec56 (>= 6:11~beta1) | libavcodec-extra-56 (>= 6:11.3), libavformat56 (>= 6:11~beta1), libavutil54 (>= 6:11~beta1), libc6 (>= 2.3.6-6~), libdigitalscratch1, libgcc1 (>= 1:4.1.1), libgl1-mesa-glx | libgl1, libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libqt5concurrent5 (>= 5.0.2), libqt5core5a (>= 5.3.0), libqt5gui5 (>= 5.0.2), libqt5multimedia5 (>= 5.0.2), libqt5network5 (>= 5.0.2), libqt5sql5 (>= 5.0.2), libqt5widgets5 (>= 5.2.0~alpha1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.9)
+Installed-Size: 1212
+Depends: libqt5sql5-sqlite, libasound2 (>= 1.0.16), libavcodec56 (>= 6:11~beta1) | libavcodec-extra-56 (>= 6:11.6), libavformat56 (>= 6:11~beta1), libavutil54 (>= 6:11~beta1), libc6 (>= 2.3.6-6~), libdigitalscratch1, libgcc1 (>= 1:4.1.1), libgl1-mesa-glx | libgl1, libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libqt5concurrent5 (>= 5.0.2), libqt5core5a (>= 5.3.0), libqt5gui5 (>= 5.0.2), libqt5multimedia5 (>= 5.0.2), libqt5network5 (>= 5.0.2), libqt5sql5 (>= 5.0.2), libqt5widgets5 (>= 5.2.0~alpha1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.9)
 Homepage: http://www.digital-scratch.org
 Priority: extra
 Section: sound
-Filename: pool/main/d/digitalscratch/digitalscratch_1.6.0-1_i386.deb
-Size: 627004
-SHA256: 42ffaff49a450c04a70812a90800063e88bbd2d80acec3e0c1cce35ad219440b
-SHA1: a09371e928bb0bd998af4b08deec2e98c30e76ac
-MD5sum: b7feabe5eb965c55376d2240f8dff297
+Filename: pool/main/d/digitalscratch/digitalscratch_1.6.1-1_i386.deb
+Size: 623796
+SHA256: e32ce7bbfdca6a022c4ad81e168fdad3a4300de268e0fed357ec9bf8f375df57
+SHA1: 9050358d5b244d60413fec84d01dc358e0e40b80
+MD5sum: 0c55a91f6d6c6df2c3cd14926c009ab5
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
