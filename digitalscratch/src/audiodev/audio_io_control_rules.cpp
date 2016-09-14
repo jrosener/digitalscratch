@@ -81,7 +81,7 @@ Audio_IO_control_rules::set_capture(const bool &do_capture)
 
 #ifdef ENABLE_TEST_MODE
 bool
-Sound_driver_access_rules::use_timecode_from_file(const QString &path)
+Audio_IO_control_rules::use_timecode_from_file(const QString &path)
 {
     // Decode timecode file.    
     this->timecode = QSharedPointer<Audio_track>(new Audio_track(15, 44100));
@@ -100,7 +100,7 @@ Sound_driver_access_rules::use_timecode_from_file(const QString &path)
 }
 
 bool
-Sound_driver_access_rules::fill_input_buf(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers)
+Audio_IO_control_rules::fill_input_buf(const unsigned short int &nb_buffer_frames, QList<float*> &io_buffers)
 {
     if (this->using_fake_timecode == true)
     {
