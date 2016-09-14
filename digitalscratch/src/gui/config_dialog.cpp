@@ -268,7 +268,7 @@ QWidget *Config_dialog::init_tab_sound_card()
     QGridLayout *device_layout = new QGridLayout();
     device_layout->setColumnStretch(3, 10);
     sound_card_layout->addLayout(device_layout);
-    QLabel *device_label = new QLabel(tr("Sound device access: "), this);
+    QLabel *device_label = new QLabel(tr("Sound device: "), this);
     device_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     device_layout->addWidget(device_label, 0, 0, Qt::AlignLeft);
 
@@ -278,7 +278,7 @@ QWidget *Config_dialog::init_tab_sound_card()
     QLabel *jack_label = new QLabel(tr("JACK"), this);
     jack_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     device_layout->addWidget(jack_label, 0, 2, Qt::AlignLeft);
-    QLabel *auto_jack_connections_label = new QLabel(tr("Connect automatically JACK ports: "), this);
+    QLabel *auto_jack_connections_label = new QLabel(tr("Auto connect ports: "), this);
     auto_jack_connections_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     device_layout->addWidget(auto_jack_connections_label, 1, 2, Qt::AlignLeft);
     this->auto_jack_connections_check->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -312,7 +312,7 @@ void Config_dialog::fill_tab_sound_card()
     this->auto_jack_connections_check->setChecked(this->settings->get_auto_jack_connections());
     if (this->settings->get_sound_driver() == SOUND_DRIVER_INTERNAL)
     {
-        //this->device_internal_check->setChecked(true);
+//        this->device_internal_check->setChecked(true);
     }
     else
     {

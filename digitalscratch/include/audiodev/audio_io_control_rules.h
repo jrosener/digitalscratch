@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*----------------------------------------------( sound_card_access_rules.h )-*/
+/*-----------------------------------------------( audio_io_control_rules.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -45,7 +45,7 @@
 
 using namespace std;
 
-class Sound_driver_access_rules : public QObject
+class Audio_IO_control_rules : public QObject
 {
     Q_OBJECT
 
@@ -56,8 +56,8 @@ class Sound_driver_access_rules : public QObject
     bool                     do_capture;
 
  public:
-    explicit Sound_driver_access_rules(const unsigned short int &nb_channels);
-    virtual ~Sound_driver_access_rules();
+    explicit Audio_IO_control_rules(const unsigned short int &nb_channels);
+    virtual ~Audio_IO_control_rules();
 
  public:
     bool is_running();

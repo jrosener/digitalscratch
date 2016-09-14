@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------( audio_device_access_rules.h )-*/
+/*---------------------------------------------( sound_card_control_rules.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -26,7 +26,7 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/* Behavior class: access internal sound card device (open, close, list, ...) */
+/* Behavior class: access hardware sound card device (open, close, list, ...) */
 /*                                                                            */
 /*============================================================================*/
 
@@ -36,16 +36,16 @@
 #include <QObject>
 #include <QString>
 #include <QAudioDeviceInfo>
-#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
 #include "app/application_const.h"
 
 using namespace std;
 
-class Audio_device_access_rules : public Sound_driver_access_rules
+class Sound_card_control_rules : public Audio_IO_control_rules
 {
  public:
-    explicit Audio_device_access_rules(const unsigned short int &nb_channels);
-    virtual ~Audio_device_access_rules();
+    explicit Sound_card_control_rules(const unsigned short int &nb_channels);
+    virtual ~Sound_card_control_rules();
 
  public:
     static QList<QString> get_device_list();

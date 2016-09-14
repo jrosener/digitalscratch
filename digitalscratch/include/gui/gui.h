@@ -54,7 +54,7 @@
 #include "player/deck_playback_process.h"
 #include "player/playback_parameters.h"
 #include "player/control_and_playback_process.h"
-#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
 #include "tracks/audio_track.h"
 #include "tracks/audio_file_decoding_process.h"
 #include "tracks/audio_collection_model.h"
@@ -374,7 +374,7 @@ class Gui : public QObject
     QList<QSharedPointer<Timecode_control_process>>            tcode_controls;
     QList<QSharedPointer<Manual_control_process>>              manual_controls;
     QList<QSharedPointer<Deck_playback_process>>               playbacks;
-    QSharedPointer<Sound_driver_access_rules>                  sound_card;
+    QSharedPointer<Audio_IO_control_rules>                     sound_card;
     QSharedPointer<Control_and_playback_process>               control_and_play;
     Application_settings                                      *settings;
 
@@ -391,7 +391,7 @@ class Gui : public QObject
         QList<QSharedPointer<Manual_control_process>>             &manual_controls,
         QSharedPointer<Dicer_control_process>                     &dicer_control,
         QList<QSharedPointer<Deck_playback_process>>              &playbacks,
-        QSharedPointer<Sound_driver_access_rules>                 &sound_card,
+        QSharedPointer<Audio_IO_control_rules>                    &sound_card,
         QSharedPointer<Control_and_playback_process>              &control_and_playback);
     virtual ~Gui();
 

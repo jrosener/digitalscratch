@@ -36,7 +36,7 @@
 #include <QSettings>
 #include <digital_scratch_api.h>
 
-#include "audiodev/audio_device_access_rules.h"
+#include "audiodev/sound_card_control_rules.h"
 #include "app/application_const.h"
 
 using namespace std;

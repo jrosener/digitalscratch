@@ -43,9 +43,9 @@ INCLUDEPATH += . include/player include/gui include
 HEADERS += include/app/application_const.h \
            include/app/application_logging.h \
            include/app/application_settings.h \
-           include/audiodev/sound_driver_access_rules.h \
-           include/audiodev/jack_access_rules.h \
-           include/audiodev/audio_device_access_rules.h \
+           include/audiodev/sound_card_control_rules.h \
+           include/audiodev/jack_client_control_rules.h \
+           include/audiodev/audio_io_control_rules.h \
            include/control/control_process.h \
            include/control/timecode_control_process.h \
            include/control/manual_control_process.h \
@@ -68,9 +68,9 @@ HEADERS += include/app/application_const.h \
       
 SOURCES += src/app/application_settings.cpp \
            src/app/application_logging.cpp \
-           src/audiodev/sound_driver_access_rules.cpp \
-           src/audiodev/jack_access_rules.cpp \
-           src/audiodev/audio_device_access_rules.cpp \
+           src/audiodev/sound_card_control_rules.cpp \
+           src/audiodev/jack_client_control_rules.cpp \
+           src/audiodev/audio_io_control_rules.cpp \
            src/control/control_process.cpp \
            src/control/timecode_control_process.cpp \
            src/control/manual_control_process.cpp \

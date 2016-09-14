@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------( audio_device_access_rules.cpp )-*/
+/*-------------------------------------------( sound_card_control_rules.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -33,37 +33,62 @@
 #include <QtDebug>
 
 #include "player/control_and_playback_process.h"
-#include "audiodev/sound_driver_access_rules.h"
-#include "audiodev/audio_device_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
+#include "audiodev/sound_card_control_rules.h"
 #include "app/application_settings.h"
 #include "app/application_logging.h"
 #include "singleton.h"
 
-QList<QString> Audio_device_access_rules::get_device_list()
+QList<QString> Sound_card_control_rules::get_device_list()
 {
     // Get list of available devices.
     QList<QString> device_names;
-    foreach(const QAudioDeviceInfo &device, QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
+    QList<QAudioDeviceInfo> input_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    foreach(const QAudioDeviceInfo &device, input_devices)
     {
-       #if 0
-        cout << "Device name: " << qPrintable(device.deviceName()) << endl;;
+       #if 1
+        cout << "Input Device name: " << qPrintable(device.deviceName()) << endl;;
         cout << "  SupportedChannelCount: "; foreach (auto item, device.supportedChannelCounts()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
         cout << "  SupportedSampleRates: "; foreach (auto item, device.supportedSampleRates()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
         cout << "  SupportedSampleSizes: "; foreach (auto item, device.supportedSampleSizes()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
         cout << "  SupportedCodecs: "; foreach (auto item, device.supportedCodecs()) cout << qPrintable(item) << "/"; cout << endl;
        #endif
-        device_names.append(device.deviceName());
     }
+
+    QList<QAudioDeviceInfo> output_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
+    foreach(const QAudioDeviceInfo &device, output_devices)
+    {
+       #if 1
+        cout << "Output Device name: " << qPrintable(device.deviceName()) << endl;;
+        cout << "  SupportedChannelCount: "; foreach (auto item, device.supportedChannelCounts()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
+        cout << "  SupportedSampleRates: "; foreach (auto item, device.supportedSampleRates()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
+        cout << "  SupportedSampleSizes: "; foreach (auto item, device.supportedSampleSizes()) cout << qPrintable(QString::number(item)) << "/"; cout << endl;
+        cout << "  SupportedCodecs: "; foreach (auto item, device.supportedCodecs()) cout << qPrintable(item) << "/"; cout << endl;
+       #endif
+    }
+
+//    foreach(const QAudioDeviceInfo &in_dev, input_devices)
+//    {
+//        // Look if this input device is also an output device with at least the same numbers of output channels.
+//        if (output_devices.contains(in_dev) == true)
+//        {
+//            // Get the corresponding output device.
+
+
+//            // Sound device supported.
+//            device_names.append(device.deviceName());
+//        }
+//    }
 
     return device_names;
 }
 
-Audio_device_access_rules::Audio_device_access_rules(const unsigned short int &nb_channels) : Sound_driver_access_rules(nb_channels)
+Sound_card_control_rules::Sound_card_control_rules(const unsigned short int &nb_channels) : Audio_IO_control_rules(nb_channels)
 {
     return;
 }
 
-Audio_device_access_rules::~Audio_device_access_rules()
+Sound_card_control_rules::~Sound_card_control_rules()
 {
     // Stop capture+playback.
     this->stop();
@@ -72,7 +97,7 @@ Audio_device_access_rules::~Audio_device_access_rules()
 }
 
 bool
-Audio_device_access_rules::start(void *in_callback_param)
+Sound_card_control_rules::start(void *in_callback_param)
 {
     // TODO
 
@@ -84,7 +109,7 @@ Audio_device_access_rules::start(void *in_callback_param)
 }
 
 bool
-Audio_device_access_rules::restart()
+Sound_card_control_rules::restart()
 {
     if (this->start(this->callback_param) == false)
     {
@@ -100,7 +125,7 @@ Audio_device_access_rules::restart()
 }
 
 bool
-Audio_device_access_rules::stop()
+Sound_card_control_rules::stop()
 {
     // Stop the stream.
     // TODO
@@ -118,7 +143,7 @@ Audio_device_access_rules::stop()
 }
 
 bool
-Audio_device_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers) const
+Sound_card_control_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers) const
 {
     bool result;
 
@@ -139,7 +164,7 @@ Audio_device_access_rules::get_input_buffers(const unsigned short int &nb_buffer
 }
 
 bool
-Audio_device_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers) const
+Sound_card_control_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers) const
 {
     // TODO
     Q_UNUSED(nb_buffer_frames);

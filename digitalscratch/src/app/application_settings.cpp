@@ -49,7 +49,8 @@ Application_settings::Application_settings() : settings(APPLICATION_NAME)
     this->available_nb_decks << 1 << 2 << 3;
     this->available_sample_rates << 44100 << 48000 << 96000;
 
-    this->available_sound_cards = Audio_device_access_rules::get_device_list();
+    // TODO: add hardware sound card support.
+//    this->available_sound_cards = Sound_card_control_rules::get_device_list();
 
     this->audio_collection_full_refresh = true;
 

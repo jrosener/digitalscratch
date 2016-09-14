@@ -47,8 +47,8 @@
 #include "player/deck_playback_process.h"
 #include "player/playback_parameters.h"
 #include "player/control_and_playback_process.h"
-#include "audiodev/sound_driver_access_rules.h"
-#include "audiodev/jack_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
+#include "audiodev/jack_client_control_rules.h"
 #include "control/timecode_control_process.h"
 #include "control/dicer_control_process.h"
 #include "singleton.h"
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
     }
 
     // Access sound card.
-    QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
+    QSharedPointer<Audio_IO_control_rules> sound_card(new Jack_client_control_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
 
     // Sound capture and playback process.

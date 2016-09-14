@@ -33,19 +33,19 @@
 #include <QtDebug>
 
 #include "player/control_and_playback_process.h"
-#include "audiodev/sound_driver_access_rules.h"
-#include "audiodev/jack_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
+#include "audiodev/jack_client_control_rules.h"
 #include "app/application_settings.h"
 #include "app/application_logging.h"
 #include "singleton.h"
 
-Jack_access_rules::Jack_access_rules(const unsigned short int &nb_channels) : Sound_driver_access_rules(nb_channels)
+Jack_client_control_rules::Jack_client_control_rules(const unsigned short int &nb_channels) : Audio_IO_control_rules(nb_channels)
 {
     this->stream = nullptr;
     return;
 }
 
-Jack_access_rules::~Jack_access_rules()
+Jack_client_control_rules::~Jack_client_control_rules()
 {
     // Stop capture+playback.
     this->stop();
@@ -54,7 +54,7 @@ Jack_access_rules::~Jack_access_rules()
 }
 
 int
-Jack_access_rules::capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  nb_buffer_frames,
+Jack_client_control_rules::capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  nb_buffer_frames,
                                                  void                          *data)
 {
     // Call process for consuming captured data and preparing playback ones.
@@ -69,13 +69,13 @@ Jack_access_rules::capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE  
 }
 
 void
-Jack_access_rules::error_callback(const char *msg)
+Jack_client_control_rules::error_callback(const char *msg)
 {
     qCWarning(DS_SOUNDCARD) << "jack error: " << msg;
 }
 
 bool
-Jack_access_rules::start(void *callback_param)
+Jack_client_control_rules::start(void *callback_param)
 {
     if (this->running == false)
     {
@@ -219,7 +219,7 @@ Jack_access_rules::start(void *callback_param)
 }
 
 bool
-Jack_access_rules::restart()
+Jack_client_control_rules::restart()
 {
     if (this->start(this->callback_param) == false)
     {
@@ -235,7 +235,7 @@ Jack_access_rules::restart()
 }
 
 bool
-Jack_access_rules::stop()
+Jack_client_control_rules::stop()
 {
     // Stop the stream.
     if ((this->running == true) && (jack_client_close(this->stream) != 0))
@@ -249,7 +249,7 @@ Jack_access_rules::stop()
 }
 
 bool
-Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers)
+Jack_client_control_rules::get_input_buffers(const unsigned short int &nb_buffer_frames, QList<float*> &out_buffers)
 {
     bool result;
 
@@ -277,7 +277,7 @@ Jack_access_rules::get_input_buffers(const unsigned short int &nb_buffer_frames,
 }
 
 bool
-Jack_access_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
+Jack_client_control_rules::get_output_buffers(const unsigned short int &nb_buffer_frames, QList<float *> &out_buffers)
 {
     // Get buffers from jack ports.
     for (unsigned short int i = 0; i < this->nb_channels; i++)

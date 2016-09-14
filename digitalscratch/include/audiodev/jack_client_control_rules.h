@@ -36,7 +36,7 @@
 #include <QObject>
 #include <QString>
 
-#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
 #include "jack/jack.h"
 #include "app/application_const.h"
 
@@ -56,7 +56,7 @@ typedef jack_nframes_t      AUDIO_CALLBACK_NB_FRAMES_TYPE;
 
 using namespace std;
 
-class Jack_access_rules : public Sound_driver_access_rules
+class Jack_client_control_rules : public Audio_IO_control_rules
 {
  private:
     AUDIO_STREAM_TYPE stream;
@@ -64,8 +64,8 @@ class Jack_access_rules : public Sound_driver_access_rules
     QList<jack_port_t*> output_port;
 
  public:
-    explicit Jack_access_rules(const unsigned short int &nb_channels);
-    virtual ~Jack_access_rules();
+    explicit Jack_client_control_rules(const unsigned short int &nb_channels);
+    virtual ~Jack_client_control_rules();
 
  private:
     static int capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAMES_TYPE nb_buffer_frames, void *data);

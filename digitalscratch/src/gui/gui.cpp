@@ -86,7 +86,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
          QList<QSharedPointer<Manual_control_process>>             &manual_controls,
          QSharedPointer<Dicer_control_process>                     &dicer_control,
          QList<QSharedPointer<Deck_playback_process>>              &playbacks,
-         QSharedPointer<Sound_driver_access_rules>                 &sound_card,
+         QSharedPointer<Audio_IO_control_rules>                    &sound_card,
          QSharedPointer<Control_and_playback_process>              &control_and_playback)
 {
     // Check input parameters.
@@ -817,7 +817,7 @@ Gui::create_main_window()
     this->window->resize(this->settings->get_main_window_size());
 
     // Open error window.
-    QObject::connect(this->sound_card.data(), &Sound_driver_access_rules::error_msg,
+    QObject::connect(this->sound_card.data(), &Audio_IO_control_rules::error_msg,
                      [this](QString in_error_message){this->show_error_window(in_error_message);});
     return true;
 }

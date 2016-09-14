@@ -36,7 +36,7 @@
 #include <QObject>
 #include "control/timecode_control_process.h"
 #include "control/manual_control_process.h"
-#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
 #include "app/application_const.h"
 #include "player/deck_playback_process.h"
 
@@ -57,7 +57,7 @@ class Control_and_playback_process : public QObject
     QList<QSharedPointer<Manual_control_process>>   manual_controls;
     QList<QSharedPointer<Timecode_control_process>> tcode_controls;
     QList<QSharedPointer<Deck_playback_process>>    playbacks;
-    QSharedPointer<Sound_driver_access_rules>       sound_card;
+    QSharedPointer<Audio_IO_control_rules>          sound_card;
     unsigned short int                              nb_decks;
     QList<ProcessMode>                              modes;
 
@@ -65,7 +65,7 @@ class Control_and_playback_process : public QObject
     Control_and_playback_process(const QList<QSharedPointer<Timecode_control_process>> &tcode_controls,
                                  const QList<QSharedPointer<Manual_control_process>>   &manual_controls,
                                  const QList<QSharedPointer<Deck_playback_process>>    &playbacks,
-                                 const QSharedPointer<Sound_driver_access_rules>       &sound_card,
+                                 const QSharedPointer<Audio_IO_control_rules>          &sound_card,
                                  const unsigned short int                              &nb_decks);
     virtual ~Control_and_playback_process();
 

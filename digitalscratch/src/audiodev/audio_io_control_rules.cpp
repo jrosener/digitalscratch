@@ -4,7 +4,7 @@
 /*                           Digital Scratch Player                           */
 /*                                                                            */
 /*                                                                            */
-/*--------------------------------------------( Sound_driver_access_rules.cpp )-*/
+/*---------------------------------------------( audio_io_control_rules.cpp )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2016                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -32,7 +32,7 @@
 
 #include <QtDebug>
 
-#include "audiodev/sound_driver_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
 #include "app/application_logging.h"
 #include "singleton.h"
 
@@ -41,7 +41,7 @@
 #include "tracks/audio_file_decoding_process.h"
 #endif
 
-Sound_driver_access_rules::Sound_driver_access_rules(const unsigned short int &nb_channels)
+Audio_IO_control_rules::Audio_IO_control_rules(const unsigned short int &nb_channels)
 {
     if (nb_channels < 2)
     {
@@ -62,19 +62,19 @@ Sound_driver_access_rules::Sound_driver_access_rules(const unsigned short int &n
     return;
 }
 
-Sound_driver_access_rules::~Sound_driver_access_rules()
+Audio_IO_control_rules::~Audio_IO_control_rules()
 {
     return;
 }
 
 bool
-Sound_driver_access_rules::is_running()
+Audio_IO_control_rules::is_running()
 {
     return this->running;
 }
 
 void
-Sound_driver_access_rules::set_capture(const bool &do_capture)
+Audio_IO_control_rules::set_capture(const bool &do_capture)
 {
     this->do_capture = do_capture;
 }

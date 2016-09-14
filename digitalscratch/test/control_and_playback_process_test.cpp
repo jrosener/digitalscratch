@@ -11,8 +11,8 @@
 #include "player/control_and_playback_process.h"
 #include "control/timecode_control_process.h"
 #include "control/manual_control_process.h"
-#include "audiodev/sound_driver_access_rules.h"
-#include "audiodev/jack_access_rules.h"
+#include "audiodev/audio_io_control_rules.h"
+#include "audiodev/jack_client_control_rules.h"
 #include "tracks/audio_file_decoding_process.h"
 #include "control_and_playback_process_test.h"
 
@@ -63,7 +63,7 @@ void Control_and_playback_process_Test::testCaseRunWithJack_1deck()
     QSharedPointer<Deck_playback_process> at_playback(new Deck_playback_process(at, at_sampler, play_param));
     QList<QSharedPointer<Deck_playback_process>> at_playbacks = {at_playback};
 
-    QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
+    QSharedPointer<Audio_IO_control_rules> sound_card(new Jack_client_control_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
     QVERIFY2(sound_card->use_timecode_from_file(QString(DATA_DIR) + QString(TIMECODE_1)) == true, "set the pre-recorded timecode"); // Use a fake timecode
 
@@ -126,7 +126,7 @@ void Control_and_playback_process_Test::testCaseRunWithJack_2decks()
     QSharedPointer<Deck_playback_process> at_playback_2(new Deck_playback_process(at_2, at_sampler_2, play_param_2));
     QList<QSharedPointer<Deck_playback_process>> at_playbacks = {at_playback_1, at_playback_2};
 
-    QSharedPointer<Sound_driver_access_rules> sound_card(new Jack_access_rules(settings->get_nb_decks() * 2));
+    QSharedPointer<Audio_IO_control_rules> sound_card(new Jack_client_control_rules(settings->get_nb_decks() * 2));
     sound_card->set_capture(true);
     QVERIFY2(sound_card->use_timecode_from_file(QString(DATA_DIR) + QString(TIMECODE_2)) == true, "set the pre-recorded timecode"); // Use a fake timecode
 
