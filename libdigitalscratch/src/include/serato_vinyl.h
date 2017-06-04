@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -38,7 +38,7 @@
 #include "digital_scratch_api.h"
 
 // Serato vinyl sinusoidal frequency (Hz) (@33 rpm)
-#define SERATO_VINYL_SINUSOIDAL_FREQ 972.0f
+#define SERATO_VINYL_SINUSOIDAL_FREQ 996.0f
 
 // Serato vinyl sinusoidal frequency (Hz)  (@45 rpm)
 #define SERATO_VINYL_SINUSOIDAL_FREQ_45RPM 1350.0f
