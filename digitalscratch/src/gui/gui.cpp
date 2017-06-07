@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -1207,7 +1207,7 @@ Gui::init_file_browser_area()
     this->file_search                 = new QLineEdit();
     this->search_from_begin           = false;
     this->file_search->setPlaceholderText(tr("Search..."));
-    this->file_browser_selected_index = 0;    
+    this->file_browser_selected_index = 0;
 
     // Build file browser and search area.
     QVBoxLayout *browser_search_layout = new QVBoxLayout();
@@ -1673,7 +1673,7 @@ Gui::connect_dicer_actions()
                                         // Dicer button 5 => go to begin of the track (special cue point).
                                         if (button_index == BUTTON_5)
                                         {
-                                            this->decks[deck_index]->restart_button->click();
+                                            this->go_to_begin(deck_index);
                                         }
                                         else
                                         {
@@ -1681,12 +1681,12 @@ Gui::connect_dicer_actions()
                                             if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == false)
                                             {
                                                 // Register cue point.
-                                                this->decks[deck_index]->cue_set_buttons[cue_point_number]->click();
+                                                this->set_cue_point(deck_index, cue_point_number);
                                             }
                                             else
                                             {
                                                 // Cue point is already defined, play it.
-                                                this->decks[deck_index]->cue_play_buttons[cue_point_number]->click();
+                                                this->go_to_cue_point(deck_index, cue_point_number);
                                             }
                                         }
                                     }
@@ -1698,7 +1698,7 @@ Gui::connect_dicer_actions()
                                         if (button_index != BUTTON_5)
                                         {
                                             // Dicer's button can be mapped to a delete cue point GUI button.
-                                            this->decks[deck_index]->cue_del_buttons[cue_point_number]->click();
+                                            this->del_cue_point(deck_index, cue_point_number);
                                         }
                                     }
                                     break;
@@ -1708,7 +1708,7 @@ Gui::connect_dicer_actions()
                                 case USER_MODE_2:
                                     break;
                             }
-                        } 
+                        }
                      });
 }
 
@@ -1820,7 +1820,7 @@ Gui::apply_main_window_style()
             }
 
         }
-        this->scan_audio_keys_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));        
+        this->scan_audio_keys_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
         this->progress_cancel_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_MediaStop));
         this->clear_tracklist_button->setIcon(QApplication::style()->standardIcon(QStyle::SP_TrashIcon));
 
@@ -2161,7 +2161,7 @@ Gui::on_file_browser_expand(QModelIndex)
 
 void
 Gui::on_file_browser_header_click(const int &index)
-{    
+{
     // Get the order.
     Qt::SortOrder order = this->file_browser->header()->sortIndicatorOrder();
 
@@ -2408,7 +2408,7 @@ Gui::show_save_tracklist_dialog()
 void
 Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short &deck_index)
 {
-    // Split remaining time (which is in msec) into minutes, seconds and milliseconds. 
+    // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
     int remaining_time_by_1000 = remaining_time / 1000.0;
     div_t tmp_division;
     tmp_division = div(remaining_time_by_1000, 60);
