@@ -270,7 +270,7 @@ void Data_persistence_Test::testCasePersistTag()
     data_persist->get_tracks_from_tag("techno", tracklist);
     QVERIFY2(tracklist.size() == 1, "nb techno tracks = 1");
     QVERIFY2(tracklist[0] == QFileInfo(QString(DATA_DIR) + QString(DATA_TRACK_1)).absoluteFilePath(), "tracklist[0] = track_1.mp3");
-    
+
     tracklist.clear();
     data_persist->get_tracks_from_tag("house", tracklist);
     QVERIFY2(tracklist.size() == 1, "nb house tracks = 1");
@@ -282,6 +282,7 @@ void Data_persistence_Test::testCasePersistTag()
     at3->set_fullpath(fullpath);
     at3->set_hash(Utils::get_file_hash(fullpath));
     at3->set_music_key("A1");
+    QVERIFY2(data_persist->store_audio_track(at3) == true, "audio track 3 store");
     data_persist->store_tag("dnb");
     data_persist->add_tag_to_track(at1, "house");
     data_persist->add_tag_to_track(at1, "techno");
