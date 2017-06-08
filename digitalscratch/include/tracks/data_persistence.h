@@ -6,7 +6,7 @@
 /*                                                                            */
 /*-----------------------------------------------------( data_persistence.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/

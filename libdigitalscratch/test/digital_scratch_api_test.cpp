@@ -1,12 +1,12 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*               libdigitalscratch: the Digital Scratch engine.               */
+/*                     libdigitalscratch tests                                */
 /*                                                                            */
 /*                                                                            */
-/*-------------------------------------------( digital_scratch_api_test.cpp )-*/
+/*----------------------------------------------------------------------------*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -23,10 +23,6 @@
 /*                                                                            */
 /*  You should have received a copy of the GNU General Public License         */
 /*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
-/*                                                                            */
-/*------------------------------------------------------------( Description )-*/
-/*                                                                            */
-/*                      Test the Digital Scratch API                          */
 /*                                                                            */
 /*============================================================================*/
 
@@ -52,7 +48,7 @@ void DigitalScratchApi_Test::cleanupTestCase()
 }
 
 /** Test:
- *    dscratch_create_turntable() 
+ *    dscratch_create_turntable()
  *    dscratch_delete_turntable()
  */
 void DigitalScratchApi_Test::testCase_dscratch_create_turntable()
@@ -159,7 +155,7 @@ void DigitalScratchApi_Test::testCase_dscratch_analyze_timecode_serato_noises()
 }
 
 /**
- * Test: 
+ * Test:
  *   dscratch_display_turntable()
  */
 void DigitalScratchApi_Test::testCase_dscratch_display_turntable()
@@ -179,7 +175,7 @@ void DigitalScratchApi_Test::testCase_dscratch_display_turntable()
 }
 
 /**
- * Test: 
+ * Test:
  *   dscratch_get_turntable_vinyl_type()
  *   dscratch_get_vinyl_name_from_type()
  */

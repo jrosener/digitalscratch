@@ -1,12 +1,12 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*               libdigitalscratch: the Digital Scratch engine.               */
+/*                     libdigitalscratch tests                                */
 /*                                                                            */
 /*                                                                            */
-/*----------------------------------------------------------( main_test.cpp )-*/
+/*----------------------------------------------------------------------------*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -23,10 +23,6 @@
 /*                                                                            */
 /*  You should have received a copy of the GNU General Public License         */
 /*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
-/*                                                                            */
-/*------------------------------------------------------------( Description )-*/
-/*                                                                            */
-/*             Starting point of the libdigitalscratch test suite             */
 /*                                                                            */
 /*============================================================================*/
 

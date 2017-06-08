@@ -6,13 +6,13 @@
 /*                                                                            */
 /*------------------------------------------------( digital_scratch_api.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -51,7 +51,7 @@ using namespace std;
 #define STR(x) XSTR(x)
 
 static const char *dscratch_vinyl_names[NB_DSCRATCH_VINYLS] =
-{ 
+{
     "final scratch standard 2.0",
     "serato cv02",
     "mixvibes dvs"
@@ -78,7 +78,7 @@ bool l_get_typed_handle(dscratch_handle_t           handle,
         qCCritical(DSLIB_API) << "Handler is null.";
         return false;
     }
- 
+
     *out_typed_handle = static_cast<dscratch_handle_t_struct*>(handle);
     return true;
 }
@@ -214,15 +214,15 @@ dscratch_status_t dscratch_display_turntable(dscratch_handle_t handle)
         case FINAL_SCRATCH :
             cout << " vinyl_type: final_scratch" << endl;
             break;
- 
+
         case SERATO :
             cout << " vinyl_type: serato" << endl;
             break;
- 
+
         case MIXVIBES :
             cout << " vinyl_type: mixvibes" << endl;
             break;
- 
+
         default :
             cout << " vinyl_type: error, not found" << endl;
             return DSCRATCH_ERROR;
@@ -249,7 +249,7 @@ dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t  handle,
     // Check type of vinyl.
     Coded_vinyl *vinyl = handle_typed->dscratch->get_coded_vinyl();
     if (vinyl != nullptr)
-    {    
+    {
         if (dynamic_cast<Final_scratch_vinyl*>(vinyl) != nullptr)
         {
             *vinyl_type = FINAL_SCRATCH;

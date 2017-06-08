@@ -6,7 +6,7 @@
 /*                                                                            */
 /*---------------------------------------------( sound_card_control_rules.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/

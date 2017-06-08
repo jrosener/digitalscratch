@@ -6,7 +6,7 @@
 /*                                                                            */
 /*-------------------------------------------( manual_control_process.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -92,7 +92,7 @@ Manual_control_process::inc_temporary_speed(const float              &temp_speed
     if (this->do_temp_inc_speed == false)
     {
         // We are not already in a acceleration phase, so store the current speed.
-        this->previous_speed = this->params->get_speed();   
+        this->previous_speed = this->params->get_speed();
     }
 
     // Accelerate speed.

@@ -6,7 +6,7 @@
 /*                                                                            */
 /*--------------------------------------------------------------( utils.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -51,7 +51,7 @@ QStringList Utils::audio_file_extensions = QStringList() << "ac3" << "flac" << "
 
 // Static utils functions.
 QString Utils::get_file_hash(const QString &path, const unsigned int &kbytes)
-{   
+{
     // Init.
     QString hash("");
 
@@ -129,7 +129,7 @@ QString Utils::get_file_music_key(const QString &path)
     {
         qCWarning(DS_FILE) << "cannot get music key for " << path;
     }
-    
+
     // Return result.
     return result;
 }

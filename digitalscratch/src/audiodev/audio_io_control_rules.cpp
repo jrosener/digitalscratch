@@ -6,13 +6,13 @@
 /*                                                                            */
 /*---------------------------------------------( audio_io_control_rules.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -83,7 +83,7 @@ Audio_IO_control_rules::set_capture(const bool &do_capture)
 bool
 Audio_IO_control_rules::use_timecode_from_file(const QString &path)
 {
-    // Decode timecode file.    
+    // Decode timecode file.
     this->timecode = QSharedPointer<Audio_track>(new Audio_track(15, 44100));
     Audio_file_decoding_process decoder(timecode, false);
     QFileInfo file_info = QFileInfo(path);

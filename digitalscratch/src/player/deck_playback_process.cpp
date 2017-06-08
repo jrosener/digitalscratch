@@ -6,13 +6,13 @@
 /*                                                                            */
 /*----------------------------------------------( deck_playback_process.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -489,7 +489,7 @@ Deck_playback_process::play_data_with_playback_parameters(QVector<float*> &io_pl
     this->src_data->input_frames      = nb_input_data;
     this->src_data->output_frames     = buf_size;
     this->src_data->src_ratio         = fabs(1.0 / speed);
-	err = src_process(this->src_state, this->src_data);
+    err = src_process(this->src_state, this->src_data);
     if (err != 0)
     {
         // FIXME: when speed is very slow, src_process fails, it is not really an issue, but investigate that.

@@ -1,3 +1,31 @@
+/*============================================================================*/
+/*                                                                            */
+/*                                                                            */
+/*                     Digital Scratch Player Test                            */
+/*                                                                            */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*  Copyright (C) 2003-2017                                                   */
+/*                Julien Rosener <julien.rosener@digital-scratch.org>         */
+/*                                                                            */
+/*----------------------------------------------------------------( License )-*/
+/*                                                                            */
+/*  This program is free software: you can redistribute it and/or modify      */
+/*  it under the terms of the GNU General Public License as published by      */
+/*  the Free Software Foundation, either version 3 of the License, or         */
+/*  (at your option) any later version.                                       */
+/*                                                                            */
+/*  This package is distributed in the hope that it will be useful,           */
+/*  but WITHOUT ANY WARRANTY; without even the implied warranty of            */
+/*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
+/*  GNU General Public License for more details.                              */
+/*                                                                            */
+/*  You should have received a copy of the GNU General Public License         */
+/*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
+/*                                                                            */
+/*============================================================================*/
+
 #include <QtTest>
 #include <iostream>
 #include <QtConcurrentMap>
@@ -103,10 +131,10 @@ void Utils_Test::testCaseGetFileMusicKey()
     filepaths << QString(DATA_DIR) + QString(DATA_TRACK_1);
     filepaths << QString(DATA_DIR) + QString(DATA_TRACK_2);
     filepaths << QString(DATA_DIR) + QString(DATA_TRACK_3);
-    
+
     // Get music key for list of audio file.
     QList<QString> keys = QtConcurrent::blockingMapped(filepaths, Utils::get_file_music_key);
-    
+
     // Check keys.
     QVERIFY2(keys.length() == 3, "size of list of keys");
     QVERIFY2(keys[0] == "1A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[0])));

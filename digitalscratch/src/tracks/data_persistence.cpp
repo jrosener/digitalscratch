@@ -6,7 +6,7 @@
 /*                                                                            */
 /*---------------------------------------------------( data_persistence.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2016                                                   */
+/*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -99,7 +99,7 @@ bool Data_persistence::init_db()
         {
             return false;
         }
-    }    
+    }
 
     // Create DB structure if needed.
     if (this->create_db_structure() == false)
@@ -836,7 +836,7 @@ bool Data_persistence::add_tag_to_track(const QSharedPointer<Audio_track> &at,
     }
 
     // Reorganize position of tracks in tracklist of a tag.
-    if (result == true)    
+    if (result == true)
     {
         result = this->reorganize_track_pos_in_tag_list();
     }
@@ -849,7 +849,7 @@ bool Data_persistence::store_track_tag(const QString &id_track,
 {
     // Init result.
     bool result = true;
-    
+
     // Check input parameter.
     if ((id_track == "") ||
         (id_tag   == ""))
@@ -889,7 +889,7 @@ bool Data_persistence::store_track_tag(const QString &id_track,
         // Db not open.
         qCWarning(DS_DB) << "can not store track/tag: db not open";
     }
-    
+
     return result;
 }
 
@@ -935,7 +935,7 @@ bool Data_persistence::rem_tag_from_track(const QSharedPointer<Audio_track> &at,
     }
 
     // Reorganize position of tracks in tracklist of a tag.
-    if (result == true)    
+    if (result == true)
     {
         result = this->reorganize_track_pos_in_tag_list();
     }
@@ -1199,7 +1199,7 @@ bool Data_persistence::switch_track_positions_in_tag_list(const QString &tag_nam
         // Get positions of tracks.
         int pos1 = this->get_track_pos_in_tag_list(at1, tag_name);
         int pos2 = this->get_track_pos_in_tag_list(at2, tag_name);
-        
+
         // Update position of track 1 with the position of track 2 and vice versa.
         if ((this->set_track_position_in_tag_list(tag_name, at1, pos2) == false) ||
             (this->set_track_position_in_tag_list(tag_name, at2, pos1) == false))
