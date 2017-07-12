@@ -1,3 +1,10 @@
+libdigitalscratch (1.6.2-1ppa1~zesty1) zesty; urgency=medium
+
+  * feature:
+     - serato: switch back to 996Hz as default freq  
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Wed, 12 Jul 2017 17:00:11 +0200
+
 libdigitalscratch (1.6.1-1ppa1~wily1) wily; urgency=medium
 
   * features:
