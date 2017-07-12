@@ -7,6 +7,16 @@
 /*                                                                            */
 /*============================================================================*/
 
+digitalscratch-1.6.2:
+  * bug fix:
+     - gui: fix crash which comes when pushing restart button on dicer
+  * code:
+     - refactor the audio device related classes
+  * motion detection engine (libdigitalscratch):
+     - serato: switch back to 996Hz as default freq
+  * third party:
+     - bump libKeyfinder to v2.2.1
+
 digitalscratch-1.6.1:
   * features:
      - dicer: pad 5 (cue point mode) restart the track
