@@ -7,6 +7,10 @@
 /*                                                                            */
 /*============================================================================*/
 
+libdigitalscratch-1.6.2:
+  * feature:
+     - serato: switch back to 996Hz as default freq
+
 libdigitalscratch-1.6.1:
   * features:
      - improve signal frequency detection using IIR filter
