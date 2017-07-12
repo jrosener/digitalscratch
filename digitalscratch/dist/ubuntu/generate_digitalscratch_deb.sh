@@ -85,16 +85,13 @@ echo ""
 echo "**************************** Get source code ***************************"
 git checkout debian/changelog
 check_error
-echo ""
-echo ""
 
 if [[ $2 == --rebuild ]] ; then
     echo "************************* Copy old source package ***********************"
     cp -v $3 $WORKINGPATH
-    cd $WORKINGPATH
-    tar xvzf $3
-    rm -v -rf $SOURCEDIR_ORIG/dist
-    check_error
+    mkdir -p $WORKINGPATH/$SOURCEDIR_ORIG
+    cd $WORKINGPATH/$SOURCEDIR_ORIG
+    tar xvzf $WORKINGPATH/$3
     cd $ORIGDIR
     cd ../../
 else
@@ -106,7 +103,6 @@ else
     cd $WORKINGPATH/$SOURCEDIR_ORIG
     tar -xzf $WORKINGPATH/$TARPACK
     cd $ORIGDIR
-    check_error
 fi
 echo ""
 echo ""
@@ -124,7 +120,7 @@ cd $WORKINGPATH/$SOURCEDIR_ORIG
 debchange --newversion $VERSIONPACKAGE --distribution $DISTRIB
 check_error
 cat $WORKINGPATH/$SOURCEDIR_ORIG/debian/changelog
-cp $WORKINGPATH/$SOURCEDIR_ORIG/debian/changelog $ORIGDIR
+cp -v $WORKINGPATH/$SOURCEDIR_ORIG/debian/changelog $ORIGDIR
 check_error
 echo ""
 echo ""
@@ -142,7 +138,11 @@ echo ""
 echo ""
 
 echo "************ Parse debian/ config file and create source.changes *********"
+if [[ $2 == --rebuild ]] ; then
+    debuild -S -sd
+else
 debuild -S -sa
+fi
 check_error
 cd ../
 echo ""
