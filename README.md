@@ -59,7 +59,7 @@ Build
 
 ### GNU/Linux
 
-#### Install build tools (Ubuntu 15.04 - Vivid)
+#### Install build tools (Ubuntu 17.04)
     sudo apt-add-repository ppa:julien-rosener/digitalscratch
     sudo apt-get update
     sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev qtmultimedia5-dev libqt5multimedia5-plugins libasound2-dev
