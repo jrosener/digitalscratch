@@ -1,3 +1,16 @@
+digitalscratch (1.6.2-1ppa1~zesty1) zesty; urgency=medium
+
+  * bug fix:
+     - gui: fix crash which comes when pushing restart button on dicer
+  * code:
+     - refactor the audio device related classes
+  * motion detection engine (libdigitalscratch):
+     - serato: switch back to 996Hz as default freq
+  * third party:
+     - bump libKeyfinder to v2.2.1 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 18 Jul 2017 16:27:43 +0200
+
 digitalscratch (1.6.1-1ppa1~wily1) wily; urgency=medium
 
   * features:
