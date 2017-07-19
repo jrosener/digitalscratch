@@ -46,6 +46,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSharedPointer>
+#include <QToolButton>
 
 #include "gui/config_dialog.h"
 #include "gui/waveform.h"
@@ -286,7 +287,7 @@ class Gui : public QObject
     QList<FileBrowserControlButtons*>   file_browser_control_buttons;
 
     // File and menu (bottom right) area.
-    QHBoxLayout                        *file_and_menu_layout;
+    QHBoxLayout                        *file_tags_and_menu_layout;
 
     // File browser.
     QSplitter                          *browser_splitter;
@@ -314,6 +315,13 @@ class Gui : public QObject
     bool                                search_from_begin;
     unsigned int                        file_browser_selected_index;
     QString                             last_search_string;
+
+    // Tag management.
+    QGroupBox                          *tags_gbox;
+    QPushButton                        *add_new_tag_button;
+    QPushButton                        *show_hide_untagged_files_button;
+    QList<QPushButton*>                 show_hide_tagged_files_buttons;
+    QVBoxLayout                        *show_hide_tagged_files_layout;
 
     // Menu (bottom right).
     QPushButton                        *config_button;
@@ -407,10 +415,13 @@ class Gui : public QObject
     void init_file_control_area();
     void connect_file_control_area();
     void init_file_browser_area();
+    void init_tags_area();
+    void init_and_connect_show_hide_tag_buttons();
     void clean_file_browser_area();
     void connect_file_browser_area();
     void init_menu_area();
     QHBoxLayout *get_menu_area_title(const QString &title);
+    void connect_tags_area();
     void connect_menu_area();
     void init_bottom_help();
     void init_bottom_status();
@@ -516,4 +527,11 @@ class Gui : public QObject
     void can_close();
     void show_save_tracklist_dialog();
     void show_clear_tracklist_dialog();
+    void fill_add_tag_submenu(QMenu *submenu);
+    void fill_rem_tag_submenu(QMenu *submenu);
+    void add_tag_to_selected_track(Audio_collection_item *browser_item, const QString &tag);
+    void rem_tag_from_selected_track(Audio_collection_item *browser_item, const QString &tag);
+    int show_add_new_tag_dialog();
+    void create_tag(const QString &tag);
+    void show_hide_tagged_files();
 };

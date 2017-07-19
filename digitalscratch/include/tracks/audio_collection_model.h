@@ -49,7 +49,8 @@ using namespace std;
 
 #define COLUMN_FILE_NAME 0
 #define COLUMN_KEY       1
-#define COLUMN_PATH      2
+#define COLUMN_TAGS      2
+#define COLUMN_PATH      3
 
 class Audio_collection_item
 {
@@ -82,7 +83,7 @@ class Audio_collection_item
     QVariant               get_data(int in_column) const;
     void                   set_data(int in_column, QVariant in_data);
     QString                get_full_path();
-    QString                get_file_hash();
+    QString                get_file_hash() const;
 
     void                   read_from_db();
     void                   compute_and_store_to_db();
@@ -93,6 +94,8 @@ class Audio_collection_item
     bool                   is_a_next_major_key();
     void                   set_next_key(bool is_a_next_key);
     void                   set_next_major_key(bool is_a_next_major_key);
+
+    void                   set_tag_list(const QStringList &tags);
 
  private:
     void calculate_audio_data();     // Compute music key, bpm, etc...

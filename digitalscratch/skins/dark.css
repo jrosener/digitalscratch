@@ -287,6 +287,71 @@ QProgressBar#Progress::chunk
    background-color: grey;
 }
 
+QPushButton#Add_new_tag_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-tag.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Add_new_tag_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-tag_white.png);
+}
+QPushButton#Add_new_tag_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-tag.png);
+}
+
+QPushButton#Show_hide_tag_button
+{
+   color:            black;
+   background-color: gray;
+   border-style:     outset;
+   border-width:     1px;
+   border-color:     gray;
+   border-radius:    0px;
+   padding:          2px;
+   font:             8pt;
+   image-position:   left;
+   image:            url(:/pixmaps/dark-tag.png);
+   min-width:        90px;
+   height:           14px;
+   text-aligh:       center;
+}
+QPushButton#Show_hide_tag_button:hover
+{
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-tag_white.png);
+}
+QPushButton#Show_hide_tag_button:pressed
+{
+   color:            black;
+   border-style:     inset;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-tag.png);
+}
+QPushButton#Show_hide_tag_button:checked
+{
+   color:            black;
+   background-color: orange;
+   border-width:     1px;
+   border-color:     gray;
+   border-style:     inset;
+   image:            url(:/pixmaps/dark-tag_white.png);
+}
+
 QLabel#Menu_title
 {
     color:            gray;

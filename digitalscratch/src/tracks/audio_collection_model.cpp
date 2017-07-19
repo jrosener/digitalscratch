@@ -121,7 +121,7 @@ QString Audio_collection_item::get_full_path()
     return this->fullPath;
 }
 
-QString Audio_collection_item::get_file_hash()
+QString Audio_collection_item::get_file_hash() const
 {
     return this->fileHash;
 }
@@ -166,6 +166,7 @@ void Audio_collection_item::read_from_db()
     {
         // File found in DB, put data back to item.
         this->set_data(COLUMN_KEY, at->get_music_key());
+        this->set_data(COLUMN_TAGS, at->get_tags());
     }
 }
 
@@ -189,6 +190,11 @@ void Audio_collection_item::calculate_audio_data()
 {
     // Calculate data and put them back in current audio item.
     this->set_data(COLUMN_KEY, Utils::get_file_music_key(this->fullPath));
+}
+
+void Audio_collection_item::set_tag_list(const QStringList &tags)
+{
+    this->set_data(COLUMN_TAGS, tags);
 }
 
 void Audio_collection_item::store_to_db()
@@ -252,7 +258,7 @@ void Audio_collection_model::create_header(QString in_path, bool in_show_path)
 {
     // Create root item which is the collection header.
     QList<QVariant> rootData;
-    rootData << tr("Track") << tr("Key");
+    rootData << tr("Track") << tr("Key") << tr("Tags");
     if (in_show_path == true)
     {
         rootData << tr("Path");
@@ -463,6 +469,12 @@ void Audio_collection_model::sort(int in_column, Qt::SortOrder in_order)
         }
     }
 
+    // No idea how to sort over tags.
+    if (in_column == COLUMN_TAGS)
+    {
+        do_sort = false;
+    }
+
     // Sort audio item list.
     if (do_sort == true)
     {
@@ -545,7 +557,15 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
 
     if (in_role == Qt::DisplayRole)
     {
+        if (in_index.column() == COLUMN_TAGS)
+        {
+            // Show list of tags like: tag1 | tag2 | ...
+            return item->get_data(in_index.column()).toStringList().join("  |  ");
+        }
+        else
+        {
         return item->get_data(in_index.column());
+    }
     }
     else if ((in_role               == Qt::DecorationRole) &&
              (in_index.column()     == COLUMN_FILE_NAME))
@@ -559,7 +579,7 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
             return this->directory_icon;
         }
     }
-    else if (in_role == Qt::BackgroundColorRole)
+    else if (in_role == Qt::BackgroundRole)
     {
         if (item->is_a_next_major_key() == true)
         {
@@ -573,6 +593,11 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
         {
             return QVariant();
         }
+    }
+    else if ((in_role           == Qt::ForegroundRole)  &&
+             (in_index.column() == COLUMN_TAGS))
+    {
+        return QColor(255, 153, 0); // orange
     }
     else
     {
@@ -710,7 +735,9 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         // Prepare data to show for the item.
         QString displayed_path(file_info.fileName());
         QList<QVariant> line;
-        line << displayed_path << "";
+        line << displayed_path;
+        line << ""; // music key
+        line << ""; // tag list
 
         // Add a child item.
         if (file_info.isDir() == false)
@@ -752,7 +779,10 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
             // Prepare data to show for the item.
             QString displayed_path(file_info.fileName());
             QList<QVariant> line;
-            line << displayed_path << "" << file_info.absolutePath();
+            line << displayed_path;
+            line << ""; // music key
+            line << ""; // tag list
+            line << file_info.absolutePath();
 
             // Add a child item.
             if (file_info.isDir() == false)

@@ -344,6 +344,13 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
 
         // Release the DB connection.
         this->mutex.unlock();
+
+        // Get the list of tags associated to that track.
+        QStringList tags;
+        if (this->get_tags_from_track(io_at, tags) == true)
+        {
+            io_at->set_tags(tags);
+        }
     }
 
     return result;
