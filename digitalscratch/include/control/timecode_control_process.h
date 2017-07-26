@@ -40,7 +40,7 @@
 #include "player/playback_parameters.h"
 #include "app/application_const.h"
 #include "control/control_process.h"
-#include <digital_scratch_api.h>
+#include <digital_scratch.h>
 
 using namespace std;
 

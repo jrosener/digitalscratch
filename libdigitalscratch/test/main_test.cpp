@@ -26,8 +26,8 @@
 /*                                                                            */
 /*============================================================================*/
 
-#include <digital_scratch_api_test.h>
 #include <digital_scratch_test.h>
+#include <timecoded_signal_process_test.h>
 
 int main(int argc, char** argv)
 {
@@ -40,11 +40,11 @@ int main(int argc, char** argv)
 
    int status = 0;
    {
-      DigitalScratchApi_Test tc;
+      DigitalScratch_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
    {
-      DigitalScratch_Test tc;
+      TimecodedSignalProcess_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
    return status;

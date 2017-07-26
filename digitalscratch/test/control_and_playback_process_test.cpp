@@ -30,7 +30,7 @@
 #include <QDesktopServices>
 #include <qeventloop.h>
 
-#include <digital_scratch_api.h>
+#include <digital_scratch.h>
 #include "singleton.h"
 #include "utils.h"
 #include "app/application_settings.h"

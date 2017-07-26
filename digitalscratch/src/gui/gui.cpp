@@ -62,7 +62,7 @@
 #include <QFileDialog>
 #include <QThread>
 #include <math.h>
-#include <digital_scratch_api.h>
+#include <digital_scratch.h>
 #include <keyfinder_api.h>
 #include <samplerate.h>
 #include <jack/jack.h>

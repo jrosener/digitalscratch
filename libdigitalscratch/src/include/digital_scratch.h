@@ -26,81 +26,207 @@
 /*                                                                            */
 /*------------------------------------------------------------( Description )-*/
 /*                                                                            */
-/*        Digital_scratch class : define a Digital_scratch controller         */
+/*              API header file for the Digital Scratch lib                   */
 /*                                                                            */
 /*============================================================================*/
 
 #pragma once
 
-#include <string>
-#include <QVector>
+#ifdef WIN32
+    #ifdef DLLIMPORT
+        #undef DLLIMPORT
+    #endif
+    #define DLLIMPORT __declspec (dllexport)
+#else
+    #define DLLIMPORT
+#endif
 
-#include "dscratch_parameters.h"
-#include "controller.h"
-#include "coded_vinyl.h"
-#include "final_scratch_vinyl.h"
-#include "serato_vinyl.h"
-#include "mixvibes_vinyl.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// Speed states
-#define UNSTABLE_SPEED 0
-#define STABLE_SPEED   1
-#define SLOW_SPEED     2
+// Error codes.
+enum dscratch_status_t
+{
+    DSCRATCH_SUCCESS = 0,
+    DSCRATCH_ERROR
+};
 
-// Default values
-#define DEFAULT_MAX_SPEED_DIFF             0.05f
-#define DEFAULT_MAX_SLOW_SPEED             0.5f
-#define DEFAULT_MAX_NB_BUFFER              5
-#define DEFAULT_MAX_NB_SPEED_FOR_STABILITY 3
+// Supported timecoded vinyl.
+enum dscratch_vinyls_t
+{
+    FINAL_SCRATCH = 0,
+    SERATO,
+    MIXVIBES,
+    NB_DSCRATCH_VINYLS
+};
+
+// Supported turntable speed.
+enum dscratch_vinyl_rpm_t
+{
+    RPM_33 = 33,
+    RPM_45 = 45
+};
+
+// Handle used by API functions to identify the turntable.
+typedef void* dscratch_handle_t;
 
 /**
- * Define a Digital_scratch class.\n
- * Base class : Controller\n
- * It implement a Controller class.
- * @author Julien Rosener
+ * Create a new turntable.
+ *
+ * @param coded_vinyl_type is the type of timecoded vinyl you want to use (e.g. FINAL_SCRATCH_VINYL, see above).
+ * @param sample rate is the rate of the recorded input signal.
+ * @param out_handle is used to identify the turntable (allocated and returned by this function).
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
  */
-class Digital_scratch : public Controller // FIXME: rename in Vinyl_controller (and remove Controller) ?
-{
-    /* Attributes */
-    private:
-        Coded_vinyl  *vinyl;
-        unsigned int  sample_rate;
+DLLIMPORT dscratch_status_t dscratch_create_turntable(dscratch_vinyls_t   coded_vinyl_type,
+                                                      const unsigned int  sample_rate,
+                                                      dscratch_handle_t  *out_handle);
 
-    /* Constructor / Destructor */
-    public:
-        /**
-         * @param timecoded_vinyl is the Coded_vinyl object used with
-         *        Digital_scratch (e.g. Final_scratch_vinyl)
-         * @param sample rate is the rate of the timecoded input signal.
-         */
-        Digital_scratch(dscratch_vinyls_t coded_vinyl_type,
-                        unsigned int    sample_rate);
+/**
+ * Delete the turntable created by dscratch_create_turntable() (free the handle).
+ *
+ * @param handle is used to identify the turntable.
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_delete_turntable(dscratch_handle_t handle);
 
-        virtual ~Digital_scratch();
+/**
+ * Analyze the recorded samples (coming from a timecoded vinyl). After this call, you can
+ * call dscratch_get_playing_parameters() to retrieve the speed, volume,...
+ *
+ * @param handle is used to identify the turntable.
+ * @param left_samples is a table containing samples from the left channel.
+ * @param right_samples is a table containing samples from the right channel.
+ * @param samples_table_size is the size (number of elements) of left_samples or right_samples.
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ *
+ * @note Warning: left_samples and right_samples must have the same number
+ *                of elements (nb_frames elements).
+ */
+DLLIMPORT dscratch_status_t dscratch_process_captured_timecoded_signal(dscratch_handle_t  handle,
+                                                                       const float       *left_samples,
+                                                                       const float       *right_samples,
+                                                                       int                samples_table_size);
+
+/**
+ * Returns the calculated speed of the vinyl on turntable
+ * (only relevant if dscratch_process_captured_timecoded_signal() was called).
+ *
+ * @param handle is used to identify the turntable.
+ * @param speed will be returned, this is the speed of the vinyl disc.
+ *        1.0 should be mapped to 0.0% of your real turntable.
+ *        If the speed is a negative value, it means that vinyl is playing
+ *        backward.
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_get_speed(dscratch_handle_t  handle,
+                                               float             *speed);
+
+/**
+ * Returns the volume of the signal captured from vinyl on turntable
+ * (only relevant if dscratch_process_captured_timecoded_signal() was called).
+ *
+ * @param handle is used to identify the turntable.
+ * @param volume will be returned, this is the amplitude of the signal given
+ *               to dscratch_process_captured_timecoded_signal()
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_get_volume(dscratch_handle_t  handle,
+                                                float             *volume);
+
+/**
+ * Get DigitalScratch version.
+ *
+ * @return a const string containing the version number.
+ *
+ */
+DLLIMPORT const char *dscratch_get_version();
+
+/**
+ * Display on stdout informations about specified turntable.
+ *
+ * @param handle is used to identify the turntable.
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_display_turntable(dscratch_handle_t handle);
+
+/**
+ * Get vinyl type used for specified turntable.
+ *
+ * @param handle is used to identify the turntable.
+ * @param vinyl_type is the vinyl type.
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_get_turntable_vinyl_type(dscratch_handle_t  handle,
+                                                              dscratch_vinyls_t *vinyl_type);
+
+/**
+ * Transform a vinyl type into an explicit string name.
+ *
+ * @param vinyl_type is the vinyl type.
+ *
+ * @return A full string name corresponding to the type.
+ */
+DLLIMPORT const char* dscratch_get_vinyl_name_from_type(dscratch_vinyls_t vinyl_type);
+
+/**
+ * Get the default vinyl type.
+ *
+ * @return the default vinyl type (=> Serato vinyl).
+ */
+DLLIMPORT dscratch_vinyls_t dscratch_get_default_vinyl_type();
 
 
-    /* Methods */
-    public:
-        /**
-         * Analyze recording datas and update playing parameters.\n
-         * Define the pure virtual method in base class (Controller).
-         * @param input_samples_1 are the samples of channel 1.
-         * @param input_samples_2 are the samples of channel 2.
-         * @return TRUE if all is OK, otherwise FALSE.
-         *
-         * @note input_samples_1 and input_samples_2 must have the same number
-         *       of elements.
-         */
-        bool analyze_captured_timecoded_signal(const QVector<float> &input_samples_1,
-                                               const QVector<float> &input_samples_2);
+/**
+ * Change vinyl type without deleting and recreating engine.
+ *
+ * @param handle is used to identify the turntable.
+ * @param vinyl_type is the type of vinyl (@see dscratch_vinyls_t).
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_change_vinyl_type(dscratch_handle_t handle,
+                                                       dscratch_vinyls_t vinyl_type);
 
-        Coded_vinyl* get_coded_vinyl();
-        bool change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type);
+/**
+ * Set the number of RPM used to play the timecoded vinyl on the turntable.
+ *
+ * @param handle is used to identify the turntable.
+ * @param rpm is the number of RPM of the turntable (45 or 33).
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_set_rpm(dscratch_handle_t    handle,
+                                             dscratch_vinyl_rpm_t rpm);
 
-        float get_speed();
-        float get_volume();
+/**
+ * Get the turntable RPM value.
+ *
+ * @param handle is used to identify the turntable.
+ * @param out_rpm is the number of RPM of the turntable (45 or 33)
+ *        (returned by this function)..
+ *
+ * @return DSCRATCH_SUCCESS if all is OK.
+ */
+DLLIMPORT dscratch_status_t dscratch_get_rpm(dscratch_handle_t     handle,
+                                             dscratch_vinyl_rpm_t *out_rpm);
 
-    private:
-        bool init(dscratch_vinyls_t coded_vinyl_type);
-        void clean();
-};
+/**
+ * Get the default number of RPM.
+ *
+ * @return the default number of rpm (=> 33).
+ */
+DLLIMPORT dscratch_vinyl_rpm_t dscratch_get_default_rpm();
+
+#ifdef __cplusplus
+}
+#endif
+

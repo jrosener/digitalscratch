@@ -1,10 +1,10 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*               libdigitalscratch: the Digital Scratch engine.               */
+/*                     libdigitalscratch tests                                */
 /*                                                                            */
 /*                                                                            */
-/*-----------------------------------------------------------( controller.h )-*/
+/*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -24,40 +24,23 @@
 /*  You should have received a copy of the GNU General Public License         */
 /*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
 /*                                                                            */
-/*------------------------------------------------------------( Description )-*/
-/*                                                                            */
-/*             Controller class : define a controller of a player             */
-/*                                                                            */
 /*============================================================================*/
 
-#pragma once
+#include <QObject>
+#include <QtTest>
+#include <iostream>
+using namespace std;
 
-#include <string>
-
-#include "dscratch_parameters.h"
-
-/**
- * Define a Controller class.\n
- * It is a generic class (abstract) for all types of audio player controller.
- * It can set playback properties such as speed, direction and volume.
- * @author Julien Rosener
- */
-
-class Controller // FIXME: still necessary ? => only DigitalScratch class is a Controller.
+class TimecodedSignalProcess_Test : public QObject
 {
-    protected:
-        float speed;
-        float volume;
+    Q_OBJECT
 
-    public:
-        Controller();
-        virtual ~Controller();
+public:
+    TimecodedSignalProcess_Test();
 
-    public:
-        /**
-         * Get last detected speed, direction and volume.
-         * @return TRUE if playing parameters are available, otherwise FALSE.
-         */
-        bool get_playing_parameters(float *speed,
-                                    float *volume);
+private Q_SLOTS:
+    void initTestCase();
+    void cleanupTestCase();
+
+    void testCase_run();
 };

@@ -1,10 +1,10 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*               libdigitalscratch: the Digital Scratch engine.               */
+/*                     libdigitalscratch tests                                */
 /*                                                                            */
 /*                                                                            */
-/*-------------------------------------------------------( serato_vinyl.cpp )-*/
+/*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -24,61 +24,58 @@
 /*  You should have received a copy of the GNU General Public License         */
 /*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
 /*                                                                            */
-/*------------------------------------------------------------( Description )-*/
-/*                                                                            */
-/*  Final_scratch_vinyl class : define a Serato Scratch Live timecoded vinyl  */
-/*                                                                            */
 /*============================================================================*/
 
-#include <iostream>
-#include <cstdio>
+#include <QtTest>
 #include <string>
-#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
+#include <QVector>
 
 using namespace std;
 
-#include "log.h"
-#include "dscratch_parameters.h"
-#include "timecoded_vinyl.h"
-#include "serato_vinyl.h"
+#include "test_utils.h"
+#include <timecoded_signal_process.h>
+#include <timecoded_signal_process_test.h>
 
-Serato_vinyl::Serato_vinyl() : Timecoded_vinyl()
+TimecodedSignalProcess_Test::TimecodedSignalProcess_Test()
 {
 }
 
-Serato_vinyl::~Serato_vinyl()
+void TimecodedSignalProcess_Test::initTestCase()
 {
 }
 
-float Serato_vinyl::get_speed_from_freq(const float freq)
+void TimecodedSignalProcess_Test::cleanupTestCase()
 {
-    float speed = 0.0;
-    if (this->get_rpm() == RPM_33)
-    {
-        speed = freq / SERATO_VINYL_SINUSOIDAL_FREQ;
-    }
-    else
-    {
-        speed = freq / SERATO_VINYL_SINUSOIDAL_FREQ_45RPM;
-    }
-
-//cout << "speed = " << speed << endl;
-    return speed;
 }
 
-float Serato_vinyl::get_volume_from_freq(const float freq)
+/**
+ * Test:
+ *    analyze_captured_timecoded_signal()
+ */
+void TimecodedSignalProcess_Test::testCase_run()
 {
-    // The volume is proportionnal to the speed.
-    float volume = 0.0;
-    if (this->get_rpm() == RPM_33)
-    {
-        volume = qMin(qAbs(freq) / SERATO_VINYL_SINUSOIDAL_FREQ, 1.0f);
-    }
-    else
-    {
-        volume = qMin(qAbs(freq) / SERATO_VINYL_SINUSOIDAL_FREQ_45RPM, 1.0f);
-    }
+   // Create a timecoded signal processor.
+   Timecoded_signal_process *sig_process = new Timecoded_signal_process(FINAL_SCRATCH, 44100);
 
-//cout << "volume = " << volume << endl;
-    return volume;
+   // Process timecoded samples.
+   QVector<float> tab_1;
+   QVector<float> tab_2;
+   QVERIFY2(sig_process->run(tab_1, tab_2) == false, "empty tables");
+
+   tab_1.push_back(10); tab_1.push_back(20);
+   tab_2.push_back(10);
+   QVERIFY2(sig_process->run(tab_1, tab_2) == false, "different table sizes");
+
+   tab_1.clear();
+   tab_2.clear();
+   l_create_default_input_samples(tab_1, tab_2);
+   QVERIFY2(tab_1.size() > 0, "table 1 not empty");
+   QVERIFY2(tab_2.size() > 0, "table 2 not empty");
+   QVERIFY2(sig_process->run(tab_1, tab_2) == true, "correct tables");
+
+   // Cleanup.
+   delete sig_process;
 }

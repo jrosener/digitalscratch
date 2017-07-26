@@ -37,7 +37,7 @@
 #include <QThreadPool>
 #include <QThread>
 
-#include <digital_scratch_api.h>
+#include <digital_scratch.h>
 
 #include "app/application_logging.h"
 #include "app/application_const.h"

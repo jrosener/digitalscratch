@@ -45,7 +45,7 @@
 #include <QSizePolicy>
 #include <QButtonGroup>
 #include <iostream>
-#include <digital_scratch_api.h>
+#include <digital_scratch.h>
 
 #include "gui/config_dialog.h"
 #include "singleton.h"

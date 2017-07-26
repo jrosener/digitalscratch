@@ -12,7 +12,7 @@
 /*----------------------------------------------------------------( License )-*/
 /*                                                                            */
 /*  This program is free software: you can redistribute it and/or modify      */
-/*  it under the terms of the GNU General Public License as published by      */ 
+/*  it under the terms of the GNU General Public License as published by      */
 /*  the Free Software Foundation, either version 3 of the License, or         */
 /*  (at your option) any later version.                                       */
 /*                                                                            */
@@ -34,7 +34,7 @@
 
 #include <QObject>
 #include <QSettings>
-#include <digital_scratch_api.h>
+#include <digital_scratch.h>
 
 #include "audiodev/sound_card_control_rules.h"
 #include "app/application_const.h"

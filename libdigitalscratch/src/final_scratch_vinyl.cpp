@@ -39,10 +39,10 @@ using namespace std;
 
 #include "log.h"
 #include "dscratch_parameters.h"
-#include "coded_vinyl.h"
+#include "timecoded_vinyl.h"
 #include "final_scratch_vinyl.h"
 
-Final_scratch_vinyl::Final_scratch_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
+Final_scratch_vinyl::Final_scratch_vinyl() : Timecoded_vinyl()
 {
 }
 
@@ -50,32 +50,32 @@ Final_scratch_vinyl::~Final_scratch_vinyl()
 {
 }
 
-float Final_scratch_vinyl::get_speed()
+float Final_scratch_vinyl::get_speed_from_freq(const float freq)
 {
     float speed = 0.0;
     if (this->get_rpm() == RPM_33)
     {
-        speed = this->get_signal_freq() / FINAL_SCRATCH_SINUSOIDAL_FREQ;
+        speed = freq / FINAL_SCRATCH_SINUSOIDAL_FREQ;
     }
     else
     {
-        speed = this->get_signal_freq() / FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
+        speed = freq / FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM;
     }
 
     return speed;
 }
 
-float Final_scratch_vinyl::get_volume()
+float Final_scratch_vinyl::get_volume_from_freq(const float freq)
 {
     // The volume is proportionnal to the speed.
     float volume = 0.0;
     if (this->get_rpm() == RPM_33)
     {
-        volume = qMin(qAbs(this->get_signal_freq()) / FINAL_SCRATCH_SINUSOIDAL_FREQ, 1.0f);
+        volume = qMin(qAbs(freq) / FINAL_SCRATCH_SINUSOIDAL_FREQ, 1.0f);
     }
     else
     {
-        volume = qMin(qAbs(this->get_signal_freq()) / FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM, 1.0f);
+        volume = qMin(qAbs(freq) / FINAL_SCRATCH_SINUSOIDAL_FREQ_45RPM, 1.0f);
     }
 
     return volume;

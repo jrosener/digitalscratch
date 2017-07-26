@@ -1,10 +1,10 @@
 /*============================================================================*/
 /*                                                                            */
 /*                                                                            */
-/*                     libdigitalscratch tests                                */
+/*               libdigitalscratch: the Digital Scratch engine.               */
 /*                                                                            */
 /*                                                                            */
-/*----------------------------------------------------------------------------*/
+/*---------------------------------------------( timecoded_signal_process.h )-*/
 /*                                                                            */
 /*  Copyright (C) 2003-2017                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
@@ -24,32 +24,56 @@
 /*  You should have received a copy of the GNU General Public License         */
 /*  along with this program. If not, see <http://www.gnu.org/licenses/>.      */
 /*                                                                            */
+/*------------------------------------------------------------( Description )-*/
+/*                                                                            */
+/*         Compute a timecoded signal to find the dynamic vinyl disc          */
+/*                   characteristics (speed and volume).                      */
+/*                                                                            */
 /*============================================================================*/
 
-#include <QObject>
-#include <QtTest>
-#include <iostream>
-#include <digital_scratch_api.h>
+#pragma once
 
-using namespace std;
+#include <string>
+#include <QVector>
 
-class DigitalScratchApi_Test : public QObject
+#include "dscratch_parameters.h"
+#include "timecoded_vinyl.h"
+#include "final_scratch_vinyl.h"
+#include "serato_vinyl.h"
+#include "mixvibes_vinyl.h"
+#include "iir_filter.h"
+#include "inst_freq_extrator.h"
+
+class Timecoded_signal_process
 {
-    Q_OBJECT
+    private:
+        Timecoded_vinyl *vinyl;
+        float            speed;
+        float            volume;
 
-private:
-    void l_dscratch_analyze_timecode(dscratch_vinyls_t vinyl_type, const char *txt_timecode_file);
+        // Frequency and amplitude analysis.
+        IIR_filter          speed_IIR;
+        Inst_freq_extractor freq_inst;
+        double              filtered_freq_inst;
 
-public:
-    DigitalScratchApi_Test();
+    public:
+        Timecoded_signal_process(dscratch_vinyls_t coded_vinyl_type,
+                                 unsigned int      sample_rate);
 
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
+        virtual ~Timecoded_signal_process();
 
-    void testCase_dscratch_create_turntable();
-    void testCase_dscratch_analyze_timecode_serato_stop_fast();
-    void testCase_dscratch_analyze_timecode_serato_noises();
-    void testCase_dscratch_display_turntable();
-    void testCase_dscratch_get_vinyl_type();
+
+    public:
+        bool run(const QVector<float> &input_samples_1,
+                 const QVector<float> &input_samples_2);
+
+        Timecoded_vinyl* get_coded_vinyl();
+        bool change_coded_vinyl(dscratch_vinyls_t coded_vinyl_type);
+
+        float get_speed();
+        float get_volume();
+
+    private:
+        bool init(dscratch_vinyls_t coded_vinyl_type);
+        void clean();
 };

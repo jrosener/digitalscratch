@@ -21,7 +21,7 @@ else {
     target.path = /usr/lib
 
     include.path = /usr/include
-    include.files = src/include/digital_scratch_api.h
+    include.files = src/include/digital_scratch.h
 
     INSTALLS += target include
 }
@@ -32,41 +32,39 @@ win32:QMAKE_TARGET_PRODUCT = "digitalscratch.dll"
 win32:QMAKE_TARGET_COPYRIGHT = "GPL V3"
 ############################
 
-SOURCES += \ 
+SOURCES += \
     src/serato_vinyl.cpp \
     src/final_scratch_vinyl.cpp \
-    src/digital_scratch_api.cpp \
-    src/digital_scratch.cpp \
-    src/controller.cpp \
-    src/coded_vinyl.cpp \
     src/mixvibes_vinyl.cpp \
     src/log.cpp \
     src/iir_filter.cpp \
-    src/inst_freq_extractor.cpp
+    src/inst_freq_extractor.cpp \
+    src/timecoded_signal_process.cpp \
+    src/timecoded_vinyl.cpp \
+    src/digital_scratch.cpp
 
-HEADERS += \ 
+HEADERS += \
     src/include/serato_vinyl.h \
     src/include/final_scratch_vinyl.h \
     src/include/dscratch_parameters.h \
-    src/include/digital_scratch_api.h \
-    src/include/digital_scratch.h \
-    src/include/controller.h \
-    src/include/coded_vinyl.h \
     src/include/mixvibes_vinyl.h \
     src/include/log.h \
     src/include/iir_filter.h \
-    src/include/inst_freq_extrator.h
+    src/include/inst_freq_extrator.h \
+    src/include/timecoded_signal_process.h \
+    src/include/timecoded_vinyl.h \
+    src/include/digital_scratch.h
 
 CONFIG(test) {
     INCLUDEPATH += test
 
     SOURCES += test/main_test.cpp \
                test/test_utils.cpp \
-               test/digital_scratch_api_test.cpp \
+               test/timecoded_signal_process_test.cpp \
                test/digital_scratch_test.cpp
 
     HEADERS += test/test_utils.h \
-               test/digital_scratch_api_test.h \
+               test/timecoded_signal_process_test.h \
                test/digital_scratch_test.h
 }
 
@@ -116,7 +114,7 @@ else {
         PWD_WIN ~= s,/,\\,g
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.lib) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
         QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${OUT_PWD_WIN}\\digitalscratch*.dll) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\lib\\) $$escape_expand(\\n\\t)
-        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch_api.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $${QMAKE_COPY} $$quote($${PWD_WIN}\\src\\include\\digital_scratch.h) $$quote($${PWD_WIN}\\..\\digitalscratch\\win-external\\libdigitalscratch\\include\\) $$escape_expand(\\n\\t)
     }
 }
 

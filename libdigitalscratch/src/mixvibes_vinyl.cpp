@@ -39,10 +39,10 @@ using namespace std;
 
 #include "log.h"
 #include "dscratch_parameters.h"
-#include "coded_vinyl.h"
+#include "timecoded_vinyl.h"
 #include "mixvibes_vinyl.h"
 
-Mixvibes_vinyl::Mixvibes_vinyl(unsigned int sample_rate) : Coded_vinyl(sample_rate)
+Mixvibes_vinyl::Mixvibes_vinyl() : Timecoded_vinyl()
 {
 }
 
@@ -50,32 +50,32 @@ Mixvibes_vinyl::~Mixvibes_vinyl()
 {
 }
 
-float Mixvibes_vinyl::get_speed()
+float Mixvibes_vinyl::get_speed_from_freq(const float freq)
 {
     float speed = 0.0;
     if (this->get_rpm() == RPM_33)
     {
-        speed = this->get_signal_freq() / MIXVIBES_SINUSOIDAL_FREQ;
+        speed = freq / MIXVIBES_SINUSOIDAL_FREQ;
     }
     else
     {
-        speed = this->get_signal_freq() / MIXVIBES_SINUSOIDAL_FREQ_45RPM;
+        speed = freq / MIXVIBES_SINUSOIDAL_FREQ_45RPM;
     }
 
     return speed * -1.0; // Mixvibes stereo signal temporal shift is reversed (than Serato, FinalScratch,...)
 }
 
-float Mixvibes_vinyl::get_volume()
+float Mixvibes_vinyl::get_volume_from_freq(const float freq)
 {
     // The volume is proportionnal to the speed.
     float volume = 0.0;
     if (this->get_rpm() == RPM_33)
     {
-        volume = qMin(qAbs(this->get_signal_freq()) / MIXVIBES_SINUSOIDAL_FREQ, 1.0f);
+        volume = qMin(qAbs(freq) / MIXVIBES_SINUSOIDAL_FREQ, 1.0f);
     }
     else
     {
-        volume = qMin(qAbs(this->get_signal_freq()) / MIXVIBES_SINUSOIDAL_FREQ_45RPM, 1.0f);
+        volume = qMin(qAbs(freq) / MIXVIBES_SINUSOIDAL_FREQ_45RPM, 1.0f);
     }
 
     return volume;

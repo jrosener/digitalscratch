@@ -36,9 +36,7 @@
 #include <QVector>
 
 #include "dscratch_parameters.h"
-#include "digital_scratch_api.h"
-#include "iir_filter.h"
-#include "inst_freq_extrator.h"
+#include "digital_scratch.h"
 
 #define DEFAULT_RPM RPM_33
 
@@ -47,37 +45,22 @@
  * A coded vinyl is the definition of a vinyl disc with a timecoded signal.
  * @author Julien Rosener
  */
-class Coded_vinyl
+class Timecoded_vinyl
 {
  protected:
     float min_amplitude;
 
  private:
-    unsigned int         sample_rate;
     dscratch_vinyl_rpm_t rpm;
 
-    // Frequency and amplitude analysis.
-    IIR_filter          speed_IIR;
-    Inst_freq_extractor freq_inst;
-    double              filtered_freq_inst;
+ public:
+    Timecoded_vinyl();
+    virtual ~Timecoded_vinyl();
 
  public:
-    Coded_vinyl(unsigned int sample_rate);
-    virtual ~Coded_vinyl();
-
- public:
-    void run_recording_data_analysis(const QVector<float> &input_samples_1,
-                                     const QVector<float> &input_samples_2);
-
-    bool set_sample_rate(unsigned int sample_rate);
-    unsigned int get_sample_rate();
-
     bool set_rpm(dscratch_vinyl_rpm_t rpm);
     dscratch_vinyl_rpm_t get_rpm();
 
-    virtual float get_speed() = 0;
-    virtual float get_volume() = 0;
-
- protected:
-    float get_signal_freq();
+    virtual float get_speed_from_freq(const float freq) = 0;
+    virtual float get_volume_from_freq(const float freq) = 0;
 };

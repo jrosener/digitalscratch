@@ -34,8 +34,8 @@
 
 #include <string>
 #include "dscratch_parameters.h"
-#include "coded_vinyl.h"
-#include "digital_scratch_api.h"
+#include "timecoded_vinyl.h"
+#include "digital_scratch.h"
 
 // Mixvibes vinyl sinusoidal frequency (Hz) (@33 rpm)
 #define MIXVIBES_SINUSOIDAL_FREQ 1300.0f
@@ -47,13 +47,13 @@
  * Define a Mixvibes DVS timecode vinyl class.\n
  * @author Julien Rosener
  */
-class Mixvibes_vinyl : public Coded_vinyl
+class Mixvibes_vinyl : public Timecoded_vinyl
 {
     public:
-        Mixvibes_vinyl(unsigned int sample_rate);
+        Mixvibes_vinyl();
         virtual ~Mixvibes_vinyl();
 
     public:
-        float get_speed();
-        float get_volume();
+        float get_speed_from_freq(const float freq);
+        float get_volume_from_freq(const float freq);
 };

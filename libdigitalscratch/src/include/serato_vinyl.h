@@ -34,8 +34,8 @@
 
 #include <string>
 #include "dscratch_parameters.h"
-#include "coded_vinyl.h"
-#include "digital_scratch_api.h"
+#include "timecoded_vinyl.h"
+#include "digital_scratch.h"
 
 // Serato vinyl sinusoidal frequency (Hz) (@33 rpm)
 #define SERATO_VINYL_SINUSOIDAL_FREQ 996.0f
@@ -47,13 +47,13 @@
  * Define a Serato Scratch Live timecode vinyl class.\n
  * @author Julien Rosener
  */
-class Serato_vinyl : public Coded_vinyl
+class Serato_vinyl : public Timecoded_vinyl
 {
     public:
-        Serato_vinyl(unsigned int sample_rate);
+        Serato_vinyl();
         virtual ~Serato_vinyl();
 
     public:
-        float get_speed();
-        float get_volume();
+        float get_speed_from_freq(const float freq);
+        float get_volume_from_freq(const float freq);
 };

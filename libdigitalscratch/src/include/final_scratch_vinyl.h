@@ -35,8 +35,8 @@
 #include <string>
 
 #include "dscratch_parameters.h"
-#include "coded_vinyl.h"
-#include "digital_scratch_api.h"
+#include "timecoded_vinyl.h"
+#include "digital_scratch.h"
 
 // Stanton Final Scratch vinyl sinusoidal frequency (Hz) (@33 rpm)
 #define FINAL_SCRATCH_SINUSOIDAL_FREQ 1200.0f
@@ -49,13 +49,13 @@
  * Define a Stanton Final Scratch timecode vinyl class.\n
  * @author Julien Rosener
  */
-class Final_scratch_vinyl : public Coded_vinyl
+class Final_scratch_vinyl : public Timecoded_vinyl
 {
     public:
-        Final_scratch_vinyl(unsigned int sample_rate);
+        Final_scratch_vinyl();
         virtual ~Final_scratch_vinyl();
 
     public:
-        float get_speed();
-        float get_volume();
+        float get_speed_from_freq(const float freq);
+        float get_volume_from_freq(const float freq);
 };
