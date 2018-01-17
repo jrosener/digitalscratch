@@ -65,6 +65,7 @@ class Deck_playback_process : public QObject
     unsigned short int                    need_update_remaining_time;
     unsigned short int                    need_update_samplers_remaining_time;
     bool                                  stopped;                        // State (stopped = true) of audio track playback.
+    bool                                  paused;
     unsigned short int                    nb_samplers;
     SRC_STATE                            *src_state;                      // Libsamplerate internal state.
     SRC_DATA                             *src_data;                       // Libsamplerate internal structure.
@@ -82,7 +83,9 @@ class Deck_playback_process : public QObject
 
     bool run(float io_playback_buf_1[], float io_playback_buf_2[], const unsigned short int &buf_size);
 
-    bool stop();
+    void stop();
+    void pause();
+    void play();
     bool reset();
     bool jump_to_position(const float &position);
     float get_position(); // 0.0 < position < 1.0

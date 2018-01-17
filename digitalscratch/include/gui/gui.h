@@ -494,6 +494,8 @@ class Gui : public QObject
                          const unsigned short int &cue_point_index);
     bool del_cue_point(const unsigned short int &deck_index,
                        const unsigned short int &cue_point_index);
+    void play(const unsigned short int &deck_index);
+    void pause(const unsigned short int &deck_index);
     void switch_playback_selection();
     void select_playback(const unsigned short int &deck_index);
     void hover_playback(const unsigned short int &deck_index);

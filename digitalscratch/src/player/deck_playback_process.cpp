@@ -100,6 +100,7 @@ Deck_playback_process::reset()
     this->current_sample = 0;
     this->remaining_time = 0;
     this->stopped        = false;
+    this->paused         = false;
     for (int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
         this->read_cue_point(i);
@@ -114,13 +115,24 @@ Deck_playback_process::reset()
     return true;
 }
 
-bool
+void
 Deck_playback_process::stop()
 {
     this->stopped = true;
-
-    return true;
 }
+
+void
+Deck_playback_process::pause()
+{
+    this->paused = true;
+}
+
+void
+Deck_playback_process::play()
+{
+    this->paused = false;
+}
+
 
 bool
 Deck_playback_process::reset_sampler(const unsigned short int &sampler_index)
@@ -185,7 +197,11 @@ Deck_playback_process::play_main_track(QVector<float*> &io_playback_bufs, const 
 
     this->current_sample += nb_samples*2;
 #else
-    if (this->play_data_with_playback_parameters(io_playback_bufs, buf_size) == false)
+    if (this->paused == true)
+    {
+        this->play_silence(io_playback_bufs, buf_size);
+    }
+    else if (this->play_data_with_playback_parameters(io_playback_bufs, buf_size) == false)
     {
         qCWarning(DS_PLAYBACK) << "can not prepare data using playback parameters";
         this->play_silence(io_playback_bufs, buf_size);

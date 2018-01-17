@@ -1667,12 +1667,13 @@ Gui::connect_dicer_actions()
                             unsigned short int cue_point_number;
                             switch (mode)
                             {
-                                case HOT_CUE: // Register/Play cue point.
+                                case HOT_CUE: // Register/Jump to cue point.
                                     if (this->get_cue_point_index_from_dicer_button(button_index, cue_point_number) == true)
                                     {
-                                        // Dicer button 5 => go to begin of the track (special cue point).
+                                        // Dicer button 5: reserved button which jump at the begin of the track.
                                         if (button_index == BUTTON_5)
                                         {
+                                            // Jump to begin of the track.
                                             this->go_to_begin(deck_index);
                                         }
                                         else
@@ -1685,10 +1686,12 @@ Gui::connect_dicer_actions()
                                             }
                                             else
                                             {
-                                                // Cue point is already defined, play it.
+                                                // Cue point is already defined, jump on it.
                                                 this->go_to_cue_point(deck_index, cue_point_number);
                                             }
                                         }
+                                        // Pause the playback.
+                                        this->pause(deck_index);
                                     }
                                     break;
                                 case CLEAR_CUE: // Delete a registered cue point.
@@ -1702,6 +1705,48 @@ Gui::connect_dicer_actions()
                                         }
                                     }
                                     break;
+                                case LOOP_ROLL: // Modes not handled for the moment.
+                                case AUTO_LOOP:
+                                case USER_MODE_1:
+                                case USER_MODE_2:
+                                    break;
+                            }
+                        }
+                     });
+
+    // Do actions when a button is released from Dicer.
+    QObject::connect(this->dicer_control.data(), &Dicer_control_process::button_released,
+                     [this](const dicer_t        &dicer_index,
+                            const dicer_mode_t   &mode,
+                            const dicer_button_t &button_index)
+                     {
+                        unsigned short int deck_index;
+                        if (this->get_deck_index_from_dicer_index(dicer_index, deck_index) == true)
+                        {
+                            // Dicer can be mapped to a deck.
+                            unsigned short int cue_point_number;
+                            switch (mode)
+                            {
+                                case HOT_CUE: // Play cue point.
+                                    if (this->get_cue_point_index_from_dicer_button(button_index, cue_point_number) == true)
+                                    {
+                                        // Dicer button 5 => go to begin of the track (special cue point).
+                                        if (button_index == BUTTON_5)
+                                        {
+                                            this->play(deck_index);
+                                        }
+                                        else
+                                        {
+                                            // Dicer's button can be mapped to a cue point GUI button.
+                                            if (this->playbacks[deck_index]->is_cue_point_defined(cue_point_number) == true)
+                                            {
+                                                // Cue point is already defined, play it.
+                                                this->play(deck_index);
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case CLEAR_CUE: // Cue point has been already cleared on "pressed" action.
                                 case LOOP_ROLL: // Modes not handled for the moment.
                                 case AUTO_LOOP:
                                 case USER_MODE_1:
@@ -2761,6 +2806,18 @@ Gui::del_cue_point(const unsigned short &deck_index, const unsigned short &cue_p
     }
 
     return true;
+}
+
+void
+Gui::play(const unsigned short &deck_index)
+{
+    this->playbacks[deck_index]->play();
+}
+
+void
+Gui::pause(const unsigned short &deck_index)
+{
+    this->playbacks[deck_index]->pause();
 }
 
 void
