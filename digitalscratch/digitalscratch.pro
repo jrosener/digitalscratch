@@ -1,5 +1,6 @@
 VERSION = 1.6.2
 DEFINES += VERSION=$${VERSION}
+TRANSLATIONS = translations/digitalscratch_fr.ts
 
 ##############################
 # Paths

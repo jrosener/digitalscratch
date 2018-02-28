@@ -21,6 +21,7 @@ libdigitalscratch/digitalscratch_resource.rc
 ###################
 *.pro.user
 *.pro.user.*
+.qmake.stash
 
 # Makefiles       #
 ###################

@@ -500,6 +500,7 @@ Gui::show_scan_audio_keys_dialog()
 
         // Close/cancel button.
         QDialogButtonBox *cancel_button = new QDialogButtonBox(QDialogButtonBox::Cancel);
+        cancel_button->button(QDialogButtonBox::Cancel)->setText(tr("&Cancel"));
         QObject::connect(cancel_button, &QDialogButtonBox::rejected,
                          [this](){this->close_refresh_audio_collection_dialog();});
         QObject::connect(scan_audio_keys_dialog, &QDialog::rejected,
@@ -611,13 +612,13 @@ Gui::show_about_window()
     web_site.setTextInteractionFlags(Qt::TextBrowserInteraction);
     web_site.setOpenExternalLinks(true);
 
-    QLabel credit(tr("Copyright (C) 2003-2016 Julien Rosener"));
+    QLabel credit("Copyright (C) 2003-2016 Julien Rosener");
     credit.setAlignment(Qt::AlignHCenter);
 
-    QLabel license(tr("This program is free software; you can redistribute it and/or modify <br/>\
-                       it under the terms of the GNU General Public License as published by <br/>\
-                       the Free Software Foundation; either version 3 of the License, or <br/>\
-                       (at your option) any later version.<br/><br/>"));
+    QLabel license("This program is free software; you can redistribute it and/or modify <br/>\
+                    it under the terms of the GNU General Public License as published by <br/>\
+                    the Free Software Foundation; either version 3 of the License, or <br/>\
+                    (at your option) any later version.<br/><br/>");
     license.setTextFormat(Qt::RichText);
     license.setAlignment(Qt::AlignHCenter);
 
@@ -686,14 +687,15 @@ Gui::show_about_window()
     QLabel help("<br/><b>" + tr("Help:") + "</b>");
     help.setTextFormat(Qt::RichText);
 
-    QLabel wiki("- Online help: <a style=\"color: grey\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
+    QLabel wiki("- " + tr("Online help:") + " <a style=\"color: grey\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
     wiki.setTextFormat(Qt::RichText);
     wiki.setTextInteractionFlags(Qt::TextBrowserInteraction);
     wiki.setOpenExternalLinks(true);
 
     // Close button.
-    QDialogButtonBox button(QDialogButtonBox::Close);
-    QObject::connect(&button, &QDialogButtonBox::rejected, [&about_dialog](){about_dialog.close();});
+    QDialogButtonBox button_box(QDialogButtonBox::Close);
+    button_box.button(QDialogButtonBox::Close)->setText(tr("&Close"));
+    QObject::connect(&button_box, &QDialogButtonBox::rejected, [&about_dialog](){about_dialog.close();});
 
     // Full window layout.
     QVBoxLayout layout;
@@ -716,7 +718,7 @@ Gui::show_about_window()
     layout.addWidget(&icons);
     layout.addWidget(&help);
     layout.addWidget(&wiki);
-    layout.addWidget(&button);
+    layout.addWidget(&button_box);
 
     // Put layout in dialog.
     about_dialog.setLayout(&layout);
@@ -784,7 +786,7 @@ Gui::create_main_window()
     this->connect_menu_area();
 
     // Create main window.
-    this->window->setWindowTitle(tr("DigitalScratch") + " " + QString(STR(VERSION)));
+    this->window->setWindowTitle(QString("DigitalScratch ") + QString(STR(VERSION)));
     this->window->setMinimumSize(800, 480);
     if (this->nb_decks > 1)
     {
@@ -1806,6 +1808,8 @@ Gui::can_close()
     msg_box.setWindowTitle("DigitalScratch");
     msg_box.setText(tr("Do you really want to quit DigitalScratch ?"));
     msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.button(QMessageBox::Ok)->setText(tr("&OK"));
+    msg_box.button(QMessageBox::Cancel)->setText(tr("&Cancel"));
     msg_box.setIcon(QMessageBox::Question);
     msg_box.setDefaultButton(QMessageBox::Cancel);
     msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
@@ -2182,7 +2186,7 @@ Gui::sampler_button_del_clicked(const unsigned short &deck_index,
     // Remove track loaded in the sampler.
     this->playbacks[deck_index]->del_sampler(sampler_index);
     this->set_sampler_state(deck_index, sampler_index, false);
-    this->set_sampler_text(tr("--"), deck_index, sampler_index);
+    this->set_sampler_text("--", deck_index, sampler_index);
 
     // Select playback area (if not already done).
     this->select_playback(deck_index);
@@ -2410,6 +2414,8 @@ void Gui::show_clear_tracklist_dialog()
     msg_box.setWindowTitle("DigitalScratch");
     msg_box.setText(tr("Do you really want to clear the tracklist ?"));
     msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.button(QMessageBox::Ok)->setText(tr("&OK"));
+    msg_box.button(QMessageBox::Cancel)->setText(tr("&Cancel"));
     msg_box.setIcon(QMessageBox::Question);
     msg_box.setDefaultButton(QMessageBox::Cancel);
     msg_box.setStyleSheet(Utils::get_current_stylesheet_css());
@@ -2436,7 +2442,7 @@ Gui::show_save_tracklist_dialog()
     QString file_path = QFileDialog::getSaveFileName(this->window,
                                                      tr("Save tracklist as..."),
                                                      QDir::homePath(),
-                                                     tr("Playlist files (*.m3u)"));
+                                                     QString(tr("Playlist files")).append(" (*.m3u)"));
 
     // Change the name of the current tracklist and write it.
     if (file_path != nullptr)
@@ -3161,7 +3167,7 @@ Deck::init_display()
     timecode_speed_layout->addLayout(timecode_manual_layout);
     timecode_speed_layout->addStretch(100);
     this->speed = new SpeedQLabel();
-    this->speed->setText(tr("+000.0%"));
+    this->speed->setText("+000.0%");
     this->speed->setObjectName("Speed_value");
     timecode_speed_layout->addWidget(this->speed);
     this->buttons_layout->addLayout(timecode_speed_layout);
@@ -3363,7 +3369,7 @@ Sampler::init_display()
         del->setToolTip(tr("Delete sample"));
         this->buttons_del.push_back(del);
 
-        this->tracknames.push_back(new QLabel(tr("--")));
+        this->tracknames.push_back(new QLabel("--"));
         this->remaining_times.push_back(new QLabel("- 00"));
 
         QHBoxLayout *horz_layout = new QHBoxLayout();
@@ -3404,7 +3410,7 @@ FileBrowserControlButtons::FileBrowserControlButtons(const unsigned short int &d
 
     this->show_next_key_from_deck_button = new QPushButton();
     this->show_next_key_from_deck_button->setObjectName("Show_next_key_button");
-    this->show_next_key_from_deck_button->setToolTip("<p>" + tr("Show deck ") + QString::number(deck_index + 1) + tr(" next potential tracks") + "</p><em>" + settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS) + "</em>");
+    this->show_next_key_from_deck_button->setToolTip("<p>" + tr("Show next potential tracks for deck ") + QString::number(deck_index + 1) + "</p><em>" + settings->get_keyboard_shortcut(KB_SHOW_NEXT_KEYS) + "</em>");
     this->show_next_key_from_deck_button->setFixedSize(24, 24);
     this->show_next_key_from_deck_button->setFocusPolicy(Qt::NoFocus);
     this->show_next_key_from_deck_button->setCheckable(true);

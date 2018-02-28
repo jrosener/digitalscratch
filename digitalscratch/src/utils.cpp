@@ -38,6 +38,7 @@
 #include <QStringList>
 #include <QScopedPointer>
 #include <QSharedPointer>
+#include <QLocale>
 
 #include "tracks/audio_track.h"
 #include "tracks/audio_file_decoding_process.h"
@@ -337,4 +338,18 @@ QString Utils::get_current_stylesheet_css()
     }
 
     return result;
+}
+
+QString Utils::language_to_iso639_code(const QLocale::Language &lang)
+{
+    switch(lang)
+    {
+        case QLocale::English:
+            return "en";
+        case QLocale::French:
+        case QLocale::France:
+            return "fr";
+        default:
+            return"";
+    }
 }

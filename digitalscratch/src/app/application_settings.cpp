@@ -36,10 +36,12 @@
 #include <QPoint>
 
 #include "app/application_settings.h"
+#include "utils.h"
 
 Application_settings::Application_settings() : settings(APPLICATION_NAME)
 {
     this->available_gui_styles << GUI_STYLE_NATIVE << GUI_STYLE_DARK;
+    this->available_languages << "en" << "fr";
     for (int i = 0; i < NB_DSCRATCH_VINYLS; i++)
     {
        this->available_vinyl_types.insert(static_cast<dscratch_vinyls_t>(i),
@@ -81,6 +83,9 @@ Application_settings::init_settings()
     }
     if (this->settings.contains(GUI_STYLE_CFG) == false) {
         this->settings.setValue(GUI_STYLE_CFG, this->get_gui_style_default());
+    }
+    if (this->settings.contains(LANG_CFG) == false) {
+        this->settings.setValue(LANG_CFG, this->get_language_default());
     }
     if (this->settings.contains(SAMPLERS_VISIBLE_CFG) == false) {
         this->settings.setValue(SAMPLERS_VISIBLE_CFG, this->get_samplers_visible_default());
@@ -368,6 +373,30 @@ void
 Application_settings::set_nb_samplers(const unsigned short int &nb_samplers)
 {
     this->settings.setValue(NB_SAMPLERS_CFG, nb_samplers);
+}
+
+void
+Application_settings::set_language(const QString &iso639_lang)
+{
+    this->settings.setValue(LANG_CFG, iso639_lang);
+}
+
+QString
+Application_settings::get_language()
+{
+    return Utils::language_to_iso639_code(QLocale(this->settings.value(LANG_CFG).toString()).language());
+}
+
+QString
+Application_settings::get_language_default()
+{
+    return Utils::language_to_iso639_code(QLocale::system().language());
+}
+
+QList<QString>
+Application_settings::get_available_languages()
+{
+    return this->available_languages;
 }
 
 //

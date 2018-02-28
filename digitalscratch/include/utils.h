@@ -33,6 +33,7 @@
 #pragma once
 
 #include <QString>
+#include <QLocale>
 
 #include "app/application_const.h"
 
@@ -75,4 +76,7 @@ class Utils
 
     // Get current CSS string stylesheet.
     static QString get_current_stylesheet_css();
+    
+    // ISO639 language code conversion.
+    static QString language_to_iso639_code(const QLocale::Language &lang);
 };

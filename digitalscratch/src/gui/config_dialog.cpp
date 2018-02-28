@@ -64,6 +64,12 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     {
         this->gui_style_select->addItem(available_gui_styles.at(i));
     }
+    this->gui_lang_select = new QComboBox(this);
+    QList<QString> available_lang_styles = this->settings->get_available_languages();
+    for (int i = 0; i < available_lang_styles.size(); i++)
+    {
+        this->gui_lang_select->addItem(available_lang_styles.at(i));
+    }
     this->nb_decks_select = new QComboBox(this);
     QList<unsigned short int> available_nb_decks = this->settings->get_available_nb_decks();
     for (int i = 0; i < available_nb_decks.size(); i++)
@@ -188,6 +194,8 @@ Config_dialog::show()
                                                        QDialogButtonBox::Cancel,
                                                        Qt::Horizontal,
                                                        this);
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("&OK"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("&Cancel"));
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, [this](){this->accept();});
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, [this](){this->reject();});
 
@@ -205,7 +213,7 @@ Config_dialog::show()
 QWidget *Config_dialog::init_tab_player()
 {
     // Player tab: select base music folder.
-    QLabel *base_dir_label = new QLabel(tr("Base music directory: "), this);
+    QLabel *base_dir_label = new QLabel(tr("Root music path: "), this);
     this->base_dir_path->setMinimumWidth(300);
     QPushButton *base_dir_button = new QPushButton(tr("Browse..."), this);
     QObject::connect(base_dir_button, &QPushButton::clicked, [this](){this->show_browse_window();});
@@ -213,6 +221,9 @@ QWidget *Config_dialog::init_tab_player()
     // Player tab: select GUI style.
     QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
 
+    // Player tab: select GUI language.
+    QLabel *gui_lang_label = new QLabel(tr("GUI language (restart required): "), this);
+    
     // Player tab: select number of decks.
     QLabel *nb_decks_label = new QLabel(tr("Number of decks (restart required): "), this);
 
@@ -229,11 +240,13 @@ QWidget *Config_dialog::init_tab_player()
     player_tab_layout->addWidget(base_dir_button,        0, 2);
     player_tab_layout->addWidget(gui_style_label,        1, 0);
     player_tab_layout->addWidget(this->gui_style_select, 1, 1);
-    player_tab_layout->addWidget(nb_decks_label,         2, 0);
-    player_tab_layout->addWidget(this->nb_decks_select,  2, 1);
-    player_tab_layout->addWidget(extern_prog_label,      3, 0);
-    player_tab_layout->addWidget(this->extern_prog,      3, 1);
-    player_tab_layout->addWidget(extern_prog_button,     3, 2);
+    player_tab_layout->addWidget(gui_lang_label,         2, 0);
+    player_tab_layout->addWidget(this->gui_lang_select,  2, 1);
+    player_tab_layout->addWidget(nb_decks_label,         3, 0);
+    player_tab_layout->addWidget(this->nb_decks_select,  3, 1);
+    player_tab_layout->addWidget(extern_prog_label,      4, 0);
+    player_tab_layout->addWidget(this->extern_prog,      4, 1);
+    player_tab_layout->addWidget(extern_prog_button,     5, 2);
 
     // Create tab.
     QWidget *player_tab = new QWidget(this);
@@ -246,6 +259,7 @@ void Config_dialog::fill_tab_player()
 {
     this->base_dir_path->setText(this->settings->get_tracks_base_dir_path());
     this->gui_style_select->setCurrentIndex(this->gui_style_select->findText(this->settings->get_gui_style()));
+    this->gui_lang_select->setCurrentIndex(this->gui_lang_select->findText(this->settings->get_language()));
     this->nb_decks_select->setCurrentIndex(this->nb_decks_select->findText(QString::number(this->settings->get_nb_decks())));
     this->extern_prog->setText(this->settings->get_extern_prog());
 }
@@ -684,8 +698,11 @@ Config_dialog::accept()
         this->settings->set_tracks_base_dir_path(this->base_dir_path->text());
     }
 
-    // Set gui style.
+    // Set GUI style.
     this->settings->set_gui_style(this->gui_style_select->currentText());
+    
+    // GUI language.
+    this->settings->set_language(this->gui_lang_select->currentText());
 
     // External prog run at startup.
     this->settings->set_extern_prog(this->extern_prog->text());

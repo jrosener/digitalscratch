@@ -70,6 +70,7 @@ using namespace std;
 #define NB_DECKS_DEFAULT          2
 #define NB_SAMPLERS_CFG           "player/nb_samplers"
 #define NB_SAMPLERS_DEFAULT       4
+#define LANG_CFG                  "player/language"
 
 // Sound caracteristics.
 #define SAMPLE_RATE_CFG                     "sound_card/sample_rate"
@@ -161,6 +162,7 @@ class Application_settings : public QObject
  private:
     QSettings                        settings;
     QList<QString>                   available_gui_styles;
+    QList<QString>                   available_languages;
     QMap<dscratch_vinyls_t, QString> available_vinyl_types;
     QList<unsigned short int>        available_rpms;
     QList<unsigned int>              available_sample_rates;
@@ -243,6 +245,11 @@ class Application_settings : public QObject
     void set_samplers_visible(const bool &is_visible);
     bool get_samplers_visible();
     bool get_samplers_visible_default();
+    
+    void           set_language(const QString &iso639_lang);
+    QString        get_language();
+    QString        get_language_default();
+    QList<QString> get_available_languages();
 
     // Runtime settings (not stored in preference file).
     void set_audio_collection_full_refresh(const bool &full_refresh);

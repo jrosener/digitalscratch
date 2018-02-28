@@ -101,6 +101,8 @@ class Audio_collection_item
 
 class Audio_collection_model : public QAbstractItemModel
 {
+    Q_OBJECT
+    
  public:
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_read;
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_store;

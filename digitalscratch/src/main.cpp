@@ -36,6 +36,8 @@
 #include <QProcess>
 #include <QThreadPool>
 #include <QThread>
+#include <QTranslator>
+#include <QLocale>
 
 #include <digital_scratch.h>
 
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
     // Create application.
     QApplication app(argc, argv);
 
-    // Logging settings.
+    // Log settings.
     qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
     QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
                                                     ds.file.debug=true\n \
@@ -90,6 +92,21 @@ int main(int argc, char *argv[])
             return -1;
         }
     }
+                                     
+    // Translate UI to the language defined in application settings.
+    QLocale::Language lang = QLocale(settings->get_language()).language();
+    QTranslator translator;
+    switch(lang)
+    {
+        case QLocale::France:
+        case QLocale::French:
+            translator.load("translations/digitalscratch_fr");
+            break;
+        default:
+            qCWarning(DS_APPSETTINGS) << "No translation file for language =" << settings->get_language();
+            break;
+    }
+    app.installTranslator(&translator);
 
     // Create tracks, sampler, decoder process,... for each deck.
     QList<QSharedPointer<Audio_track>>                        ats;
@@ -99,7 +116,7 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Manual_control_process>>             manual_controls;
     QList<QList<QSharedPointer<Audio_track>>>                 at_samplers;
     QList<QList<QSharedPointer<Audio_file_decoding_process>>> dec_sampler_procs;
-    QList<QSharedPointer<Deck_playback_process>>       at_playbacks;
+    QList<QSharedPointer<Deck_playback_process>>              at_playbacks;
     for (auto i = 0; i < settings->get_nb_decks(); i++)
     {
         // Track for a deck.
