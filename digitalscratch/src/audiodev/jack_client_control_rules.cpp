@@ -31,6 +31,7 @@
 /*============================================================================*/
 
 #include <QtDebug>
+#include <cmath>
 
 #include "player/control_and_playback_process.h"
 #include "audiodev/audio_io_control_rules.h"
@@ -115,12 +116,12 @@ Jack_client_control_rules::start(void *callback_param)
         {
             for (int i = 0; i < this->nb_channels; i++)
             {
-                const char *input_port_names[4]  = { INPUT_PORT_1, INPUT_PORT_2, INPUT_PORT_3, INPUT_PORT_4 };
                 this->input_port << jack_port_register(this->stream,
-                                                        input_port_names[i],
-                                                        JACK_DEFAULT_AUDIO_TYPE, // =  "32 bit float mono audio"
-                                                        JackPortIsInput,
-                                                        0);
+                                                       QString(QString("turntable_") + QString::number(trunc((i/2) + 0.5)) // ex: turntable_1_out_right
+                                                               + QString("_out_") + QString((i%2) == 0 ? "left" : "right")).toStdString().c_str(),
+                                                       JACK_DEFAULT_AUDIO_TYPE, // =  "32 bit float mono audio"
+                                                       JackPortIsInput,
+                                                       0);
                 if (this->input_port[i] == nullptr)
                 {
                     qCWarning(DS_SOUNDCARD) << "no more JACK input ports available";
@@ -133,9 +134,9 @@ Jack_client_control_rules::start(void *callback_param)
         // Create output ports.
         for (int i = 0; i < this->nb_channels; i++)
         {
-            const char *output_port_names[4] = { OUTPUT_PORT_1, OUTPUT_PORT_2, OUTPUT_PORT_3, OUTPUT_PORT_4 };
             this->output_port << jack_port_register(this->stream,
-                                                    output_port_names[i],
+                                                    QString(QString("mixer_") + QString::number(trunc((i/2) + 0.5)) // ex: mixer_1_in_right
+                                                            + QString("_in_") + QString((i%2) == 0 ? "left" : "right")).toStdString().c_str(),
                                                     JACK_DEFAULT_AUDIO_TYPE,
                                                     JackPortIsOutput,
                                                     0);
@@ -175,7 +176,14 @@ Jack_client_control_rules::start(void *callback_param)
             }
             for (int i = 0; i < this->nb_channels; i++)
             {
-                if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
+                if (ports[i] == nullptr)
+                {
+                    qCWarning(DS_SOUNDCARD) << "no JACK input port available to connect with " << jack_port_name(this->input_port[i]);
+                    emit error_msg(QString("Can not connect Jack input ports, \
+                                            no JACK input port available to connect with ").append(jack_port_name(this->input_port[i])));
+                    return false;
+                }
+                else if (jack_connect(this->stream, ports[i], jack_port_name(this->input_port[i])))
                 {
                     qCWarning(DS_SOUNDCARD) << "cannot connect input ports";
                     emit error_msg(QString("Can not connect Jack input ports, please configure/start Jack server properly."));
@@ -195,7 +203,14 @@ Jack_client_control_rules::start(void *callback_param)
                 }
                 for (int i = 0; i < this->nb_channels; i++)
                 {
-                    if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
+                    if (ports[i] == nullptr)
+                    {
+                        qCWarning(DS_SOUNDCARD) << "no JACK output port available to connect with " << jack_port_name(this->output_port[i]);
+                        emit error_msg(QString("Can not connect Jack output ports, \
+                                                no JACK output port available to connect with ").append(jack_port_name(this->output_port[i])));
+                        return false;
+                    }
+                    else if (jack_connect(this->stream, jack_port_name (output_port[i]), ports[i]))
                     {
                         qCWarning(DS_SOUNDCARD) << "cannot connect output ports";
                         emit error_msg(QString("Can not connect Jack output ports, please configure/start Jack server properly."));

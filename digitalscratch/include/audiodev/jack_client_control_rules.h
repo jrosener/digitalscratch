@@ -44,15 +44,7 @@ typedef jack_client_t *     AUDIO_STREAM_TYPE;
 typedef JackProcessCallback AUDIO_CALLBACK_TYPE;
 typedef jack_nframes_t      AUDIO_CALLBACK_NB_FRAMES_TYPE;
 
-#define CLIENT_NAME   "digitalscratch"
-#define INPUT_PORT_1  "left_turntable-left_channel"
-#define INPUT_PORT_2  "left_turntable-right_channel"
-#define INPUT_PORT_3  "right_turntable-left_channel"
-#define INPUT_PORT_4  "right_turntable-right_channel"
-#define OUTPUT_PORT_1 "mixer_left_side-left_speaker"
-#define OUTPUT_PORT_2 "mixer_left_side-right_speaker"
-#define OUTPUT_PORT_3 "mixer_right_side-left_speaker"
-#define OUTPUT_PORT_4 "mixer_right_side-right_speaker"
+#define CLIENT_NAME "digitalscratch"
 
 using namespace std;
 
