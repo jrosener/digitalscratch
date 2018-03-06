@@ -39,7 +39,7 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="179"/>
         <source>Deck </source>
-        <translation>Platine</translation>
+        <translation>Platine </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="187"/>
@@ -59,7 +59,7 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="216"/>
         <source>Root music path: </source>
-        <translation>Chemin dossier musique :</translation>
+        <translation>Chemin dossier musique : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="218"/>
@@ -70,32 +70,32 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="222"/>
         <source>GUI style: </source>
-        <translation>Style interface :</translation>
+        <translation>Style interface : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="225"/>
         <source>GUI language (restart required): </source>
-        <translation>Langue interface (redémarrage nécessaire) :</translation>
+        <translation>Langue interface (redémarrage nécessaire) : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="228"/>
         <source>Number of decks (restart required): </source>
-        <translation>Nombre de platines (redémarrage nécessaire) :</translation>
+        <translation>Nombre de platines (redémarrage nécessaire) : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="231"/>
         <source>External prog to run at startup: </source>
-        <translation>Exécuter programme externe au démarrage :</translation>
+        <translation>Exécuter programme externe au démarrage : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="273"/>
         <source>Sample rate (restart required): </source>
-        <translation>Taux d&apos;échantillonnage (redémarrage nécessaire) :</translation>
+        <translation>Taux d&apos;échantillonnage (redémarrage nécessaire) : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="285"/>
         <source>Sound device: </source>
-        <translation>Périphérique audio :</translation>
+        <translation>Périphérique audio : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="292"/>
@@ -105,17 +105,17 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="295"/>
         <source>Auto connect ports: </source>
-        <translation>Connection auto des ports :</translation>
+        <translation>Connection auto des ports : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="342"/>
         <source>Vinyl type: </source>
-        <translation>Type de disque vinyle :</translation>
+        <translation>Type de disque vinyle : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="346"/>
         <source>RPM: </source>
-        <translation>RPM :</translation>
+        <translation>RPM : </translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="351"/>
@@ -221,7 +221,7 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="455"/>
         <source>File search</source>
-        <translation>Chercher fichiers</translation>
+        <translation>Chercher fichier</translation>
     </message>
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="577"/>
@@ -236,7 +236,7 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="644"/>
         <source>Select an external program</source>
-        <translation>Sélectionner programme externe</translation>
+        <translation>Sélectionner un programme externe</translation>
     </message>
 </context>
 <context>
@@ -325,7 +325,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="3237"/>
         <source>Delete cue point</source>
-        <translation>Suppimer point de repère</translation>
+        <translation>Supprimer point de repère</translation>
     </message>
 </context>
 <context>
@@ -333,7 +333,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="3405"/>
         <source>Load selected track to deck </source>
-        <translation>Charger piste sélectionnée sur platine</translation>
+        <translation>Charger piste sélectionnée sur platine </translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="3413"/>
@@ -372,7 +372,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="488"/>
         <source>All files.</source>
-        <translation>Tout les fichiers audio.</translation>
+        <translation>Tous les fichiers.</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="489"/>
@@ -388,7 +388,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="495"/>
         <source>New files.</source>
-        <translation>Nouveau fichiers.</translation>
+        <translation>Nouveaux fichiers.</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="496"/>
@@ -405,7 +405,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="584"/>
         <source>About DigitalScratch</source>
-        <translation>A propos de DigitalScratch</translation>
+        <translation>À propos de DigitalScratch</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="606"/>
@@ -430,7 +430,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="690"/>
         <source>Online help:</source>
-        <translation>Wiki :</translation>
+        <translation>Aide en ligne :</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="697"/>
@@ -445,13 +445,13 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="837"/>
         <source>Deck </source>
-        <translation>Platine</translation>
+        <translation>Platine </translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1038"/>
         <location filename="../src/gui/gui.cpp" line="1308"/>
         <source>Sampler </source>
-        <translation>Sampler</translation>
+        <translation>Sampler </translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1211"/>
@@ -461,7 +461,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="1294"/>
         <source>Load on deck </source>
-        <translation>Charger sur platine</translation>
+        <translation>Charger sur platine </translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1295"/>
@@ -472,12 +472,12 @@
         <location filename="../src/gui/gui.cpp" line="1309"/>
         <location filename="../src/gui/gui.cpp" line="1316"/>
         <source>Load selected track to sampler </source>
-        <translation>Charger piste sélectionner sur sampler</translation>
+        <translation>Charger piste sélectionnée sur sampler</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1314"/>
         <source>Load on sampler </source>
-        <translation>Charger sur sampler</translation>
+        <translation>Charger sur sampler </translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1385"/>
@@ -487,7 +487,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="1388"/>
         <source>SCAN KEYS</source>
-        <translation>SCANNER CLES</translation>
+        <translation>SCANNER CLÉS</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1390"/>
@@ -512,12 +512,12 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="1407"/>
         <source>SAVE AS</source>
-        <translation>SAUVER</translation>
+        <translation>SAUVEGARDER SOUS</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1409"/>
         <source>Save tracklist as M3U</source>
-        <translation>Sauver liste de lecture en M3U</translation>
+        <translation>Sauvegarder la liste de lecture en M3U</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1418"/>
@@ -562,22 +562,22 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="1453"/>
         <source>SETTINGS</source>
-        <translation>PARAMETRES</translation>
+        <translation>PARAMÈTRES</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1454"/>
         <source>Change application settings...</source>
-        <translation>Changer les paramètres de l&apos;application</translation>
+        <translation>Changer les paramètres de l&apos;application...</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1460"/>
         <source>ABOUT</source>
-        <translation>A PROPOS</translation>
+        <translation>À PROPOS</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1461"/>
         <source>About DigitalScratch...</source>
-        <translation>A propos de DigitalScratch...</translation>
+        <translation>À propos de DigitalScratch...</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1467"/>
@@ -663,7 +663,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="1639"/>
         <source>Cancel execution</source>
-        <translation>Annuler</translation>
+        <translation>Annuler l&apos;exécution</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="1809"/>
@@ -685,7 +685,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="2445"/>
         <source>Playlist files</source>
-        <translation>Liste de lecture</translation>
+        <translation>Fichiers de liste de lecture</translation>
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="2415"/>
@@ -695,7 +695,7 @@
     <message>
         <location filename="../src/gui/gui.cpp" line="2443"/>
         <source>Save tracklist as...</source>
-        <translation>Sauver liste de lecture...</translation>
+        <translation>Sauvegarder liste de lecture...</translation>
     </message>
 </context>
 <context>
@@ -721,7 +721,7 @@
     <message>
         <location filename="../src/gui/config_dialog.cpp" line="793"/>
         <source>Press a key or Esc to cancel</source>
-        <translation>Presser une touche ou Echap pour annuler</translation>
+        <translation>Presser une touche ou Échap pour annuler</translation>
     </message>
 </context>
 </TS>
