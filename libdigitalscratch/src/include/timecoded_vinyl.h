@@ -47,9 +47,6 @@
  */
 class Timecoded_vinyl
 {
- protected:
-    float min_amplitude;
-
  private:
     dscratch_vinyl_rpm_t rpm;
 
