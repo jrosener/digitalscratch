@@ -38,7 +38,6 @@
 using namespace std;
 
 #include "log.h"
-#include "dscratch_parameters.h"
 #include "timecoded_vinyl.h"
 #include "final_scratch_vinyl.h"
 

@@ -38,7 +38,6 @@
 using namespace std;
 
 #include "log.h"
-#include "dscratch_parameters.h"
 #include "digital_scratch.h"
 #include "timecoded_signal_process.h"
 

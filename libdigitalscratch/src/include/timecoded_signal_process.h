@@ -36,7 +36,6 @@
 #include <string>
 #include <QVector>
 
-#include "dscratch_parameters.h"
 #include "timecoded_vinyl.h"
 #include "final_scratch_vinyl.h"
 #include "serato_vinyl.h"

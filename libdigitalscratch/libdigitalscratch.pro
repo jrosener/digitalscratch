@@ -46,7 +46,6 @@ SOURCES += \
 HEADERS += \
     src/include/serato_vinyl.h \
     src/include/final_scratch_vinyl.h \
-    src/include/dscratch_parameters.h \
     src/include/mixvibes_vinyl.h \
     src/include/log.h \
     src/include/iir_filter.h \

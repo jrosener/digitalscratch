@@ -44,7 +44,6 @@ using namespace std;
 
 #include "log.h"
 #include "digital_scratch.h"
-#include "dscratch_parameters.h"
 #include "timecoded_signal_process.h"
 
 #define XSTR(x) #x

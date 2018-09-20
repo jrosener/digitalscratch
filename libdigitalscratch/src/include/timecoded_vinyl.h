@@ -35,7 +35,6 @@
 #include <string>
 #include <QVector>
 
-#include "dscratch_parameters.h"
 #include "digital_scratch.h"
 
 #define DEFAULT_RPM RPM_33
