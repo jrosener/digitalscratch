@@ -121,8 +121,12 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     this->scan_audio_keys_dialog = nullptr;
 
     // Init tracklist recording.
-    this->tracklist = QSharedPointer<Playlist>(new Playlist(QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-                                                            QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss") + "-tracklist"));
+    QString tracklist_dir(this->settings->get_tracklist_path());
+    QDir dir;
+    dir.mkpath(tracklist_dir);
+    this->tracklist = QSharedPointer<Playlist>(new Playlist(tracklist_dir,
+                                                            QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss"),
+                                                            ".m3u"));
 
     // Create and show the main window.
     if (this->create_main_window() != true)
@@ -205,6 +209,10 @@ Gui::apply_application_settings()
             this->set_file_browser_base_path(this->settings->get_tracks_base_dir_path());
         }
     }
+
+    // Change path of current recorded tracklist and write it again.
+    this->tracklist->set_basepath(this->settings->get_tracklist_path());
+    this->write_tracklist();
 
     // Apply motion detection settings for all turntables.
     for (int i = 0; i < this->nb_decks; i++)
@@ -2229,11 +2237,11 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
         QFileInfo file_info(path);
         if (file_info.isFile() == true)
         {
-            Playlist playlist(file_info.absolutePath(), file_info.baseName());
+            Playlist playlist(file_info.absolutePath(), file_info.baseName(), file_info.suffix());
             Playlist_persistence playlist_persist;
 
-            // It is a m3u playlist, parse it and show track list in file browser.
-            if (file_info.suffix().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
+            // It is a m3u or pls playlist, parse it and show track list in file browser.
+            if (playlist.get_extension().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
             {
                 // Open M3U playlist
                 if (playlist_persist.read_m3u(path, playlist) == true)
@@ -2246,7 +2254,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
                     qCWarning(DS_FILE) << "can not open m3u playlist " << qPrintable(path);
                 }
             }
-            else if (file_info.suffix().compare(QString("pls"), Qt::CaseInsensitive) == 0)
+            else if (playlist.get_extension().compare(QString("pls"), Qt::CaseInsensitive) == 0)
             {
                 // Open PLS playlist
                 if (playlist_persist.read_pls(path, playlist) == true)
@@ -2402,7 +2410,7 @@ void
 Gui::write_tracklist()
 {
     Playlist_persistence pls_persist;
-    pls_persist.write_m3u(this->tracklist);
+    pls_persist.write(this->tracklist);
 
     return;
 }

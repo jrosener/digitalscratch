@@ -57,6 +57,7 @@ using namespace std;
 #define BROWSER_SPLITTER_SIZE_CFG "player/browser_splitter_size"
 
 #define BASE_DIR_PATH_CFG         "player/base_dir_path"
+#define TRACKLIST_PATH_CFG        "player/tracklist_path"
 
 #define GUI_STYLE_CFG             "player/gui_style_select"
 #define GUI_STYLE_NATIVE          "native"
@@ -189,6 +190,10 @@ class Application_settings : public QObject
     void    set_tracks_base_dir_path(const QString &path);
     QString get_tracks_base_dir_path();
     QString get_tracks_base_dir_path_default();
+
+    void    set_tracklist_path(const QString &path);
+    QString get_tracklist_path();
+    QString get_tracklist_path_default();
 
     void    set_extern_prog(QString in_extern_prog_path);
     QString get_extern_prog();

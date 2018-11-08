@@ -37,15 +37,17 @@
 
 #include "tracks/playlist.h"
 
-Playlist::Playlist(const QString &basepath, const QString &name)
+Playlist::Playlist(const QString &basepath,
+                   const QString &name,
+                   const QString &extension)
 {
-    this->basepath = basepath;
-    this->name     = name;
+    this->basepath  = basepath;
+    this->name      = name;
+    this->extension = extension;
     this->tracklist.clear();
 
     return;
 }
-
 
 Playlist::~Playlist()
 {
@@ -72,11 +74,24 @@ void Playlist::set_name(const QString &name)
     this->name = name;
 }
 
+QString Playlist::get_extension() const
+{
+    return this->extension;
+}
+
+void Playlist::set_extension(const QString &extension)
+{
+    this->extension = extension;
+}
+
 QString Playlist::get_fullpath() const
 {
     if ((this->basepath != "") && (this->get_name() != ""))
     {
-        return this->basepath + QDir::separator() + this->get_name();
+        return this->basepath
+                + QDir::separator()
+                + this->get_name()
+                + this->get_extension();
     }
     else
     {

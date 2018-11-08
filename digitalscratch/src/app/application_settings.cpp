@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QSize>
 #include <QPoint>
+#include <QStandardPaths>
 
 #include "app/application_settings.h"
 #include "utils.h"
@@ -77,6 +78,9 @@ Application_settings::init_settings()
     }
     if (this->settings.contains(BASE_DIR_PATH_CFG) == false) {
         this->settings.setValue(BASE_DIR_PATH_CFG, this->get_tracks_base_dir_path_default());
+    }
+    if (this->settings.contains(TRACKLIST_PATH_CFG) == false) {
+        this->settings.setValue(TRACKLIST_PATH_CFG, this->get_tracklist_path_default());
     }
     if (this->settings.contains(EXTERN_PROG_CFG) == false) {
         this->settings.setValue(EXTERN_PROG_CFG, this->get_extern_prog_default());
@@ -266,7 +270,25 @@ Application_settings::get_tracks_base_dir_path()
 QString
 Application_settings::get_tracks_base_dir_path_default()
 {
-    return QDir::homePath();
+    return QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+}
+
+void
+Application_settings::set_tracklist_path(const QString &path)
+{
+    this->settings.setValue(TRACKLIST_PATH_CFG, path);
+}
+
+QString
+Application_settings::get_tracklist_path()
+{
+    return this->settings.value(TRACKLIST_PATH_CFG).toString();
+}
+
+QString
+Application_settings::get_tracklist_path_default()
+{
+    return QDir::cleanPath(QStandardPaths::writableLocation(QStandardPaths::MusicLocation) + QDir::separator() + "tracklist_backup");
 }
 
 void

@@ -117,12 +117,16 @@ bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playl
     return true;
 }
 
-bool Playlist_persistence::write_m3u(QSharedPointer<Playlist> &playlist)
+bool Playlist_persistence::write(QSharedPointer<Playlist> &playlist)
 {
     // Open the playlist file.
-    QFile file(playlist->get_fullpath() + ".m3u");
+    QFile file(playlist->get_fullpath());
 
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text) == false)
+    {
+        qCWarning(DS_FILE) << "can not open tracklist file " << playlist->get_fullpath();
+        return false;
+    }
 
     // Map it with a text stream.
     QTextStream stream(&file);
@@ -136,6 +140,7 @@ bool Playlist_persistence::write_m3u(QSharedPointer<Playlist> &playlist)
     // Done.
     file.close();
 
+    qCDebug(DS_FILE) << "tracklist written into " << playlist->get_fullpath();
     return true;
 }
 

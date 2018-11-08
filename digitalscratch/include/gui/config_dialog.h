@@ -84,6 +84,7 @@ class Config_dialog : public QDialog
 
  private:
     QLineEdit            *base_dir_path;
+    QLineEdit            *tracklist_path;
     QLineEdit            *extern_prog;
     QComboBox            *gui_style_select;
     QComboBox            *gui_lang_select;
@@ -138,7 +139,8 @@ class Config_dialog : public QDialog
     bool     is_duplicate_shortcut(const QString &value);
 
  private slots:
-    bool show_browse_window();
+    bool show_browse_window_for_base_dir_path();
+    bool show_browse_window_for_tracklist_path();
     bool show_browse_extern_prog_window();
     void reset_shortcuts();
     void reset_motion_detection_params(const unsigned short int & deck_index);

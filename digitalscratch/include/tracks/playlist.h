@@ -45,11 +45,12 @@ class Playlist
  private:
     QString     basepath;
     QString     name;
+    QString     extension;
     QStringList tracklist;
     QList<unsigned short int>  tracklist_deck_map;
 
  public:
-    Playlist(const QString &basepath, const QString &name);
+    Playlist(const QString &basepath, const QString &name, const QString &extension);
     virtual ~Playlist();
 
  public:
@@ -57,6 +58,8 @@ class Playlist
     void        set_basepath(const QString &basepath);
     QString     get_name() const;
     void        set_name(const QString &name);
+    QString     get_extension() const;
+    void        set_extension(const QString &extension);
     QString     get_fullpath() const;
     QStringList get_tracklist() const;
     void        add_track_no_duplicate(const QString &filename);
