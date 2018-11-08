@@ -116,7 +116,7 @@ void Playlist_persistence_Test::cleanupTestCase()
 void Playlist_persistence_Test::testCaseReadM3u()
 {
     // Init playlist and persistence process.
-    Playlist playlist("base_path", "playlist");
+    Playlist playlist("base_path", "playlist", ".m3u");
     Playlist_persistence playlist_persist;
 
     // Read playlist.
@@ -135,7 +135,7 @@ void Playlist_persistence_Test::testCaseReadM3u()
 void Playlist_persistence_Test::testCaseReadPls()
 {
     // Init playlist and persistence process.
-    Playlist playlist("base_path", "playlist");
+    Playlist playlist("base_path", "playlist", ".m3u");
     Playlist_persistence playlist_persist;
 
     // Read playlist.
