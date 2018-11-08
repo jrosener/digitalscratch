@@ -1242,9 +1242,9 @@ Gui::init_file_browser_area()
     // Main layout and group box.
     QVBoxLayout *file_browser_layout = new QVBoxLayout();
     file_browser_layout->addWidget(bottom_container_widget, 100);
-    this->file_browser_gbox = new QGroupBox();
+    this->file_browser_gbox = new FileBrowserQGroupBox();
     this->file_browser_gbox->setLayout(file_browser_layout);
-    this->set_file_browser_title(this->settings->get_tracks_base_dir_path());
+    this->file_browser_gbox->setTitle(this->settings->get_tracks_base_dir_path());
 
     this->file_and_menu_layout = new QHBoxLayout();
     this->file_and_menu_layout->addWidget(this->file_browser_gbox, 50);
@@ -1407,7 +1407,7 @@ Gui::init_menu_area()
     action_buttons_layout->addStretch(100);
     action_buttons_layout->addLayout(this->get_menu_area_title(tr("Tracklist")));
 
-    // Reset and save tracklist.
+    // Manage the recorded tracklist.
     this->clear_tracklist_button = new QPushButton(tr("CLEAR"));
     this->clear_tracklist_button->setObjectName("Clear_tracklist_button");
     this->clear_tracklist_button->setToolTip(tr("Clear tracklist"));
@@ -1416,6 +1416,10 @@ Gui::init_menu_area()
     this->save_tracklist_button->setObjectName("Save_tracklist_button");
     this->save_tracklist_button->setToolTip(tr("Save tracklist as M3U"));
     action_buttons_layout->addWidget(this->save_tracklist_button, 1);
+    this->show_tracklist_button = new QPushButton(tr("SHOW"));
+    this->show_tracklist_button->setObjectName("Show_tracklist_button");
+    this->show_tracklist_button->setToolTip(tr("Show tracklist in file browser"));
+    action_buttons_layout->addWidget(this->show_tracklist_button, 2);
 
     //
     // Menu: View.
@@ -1505,6 +1509,7 @@ Gui::connect_menu_area()
     // Tracklist management.
     QObject::connect(this->clear_tracklist_button, &QPushButton::clicked, [this](){this->show_clear_tracklist_dialog();});
     QObject::connect(this->save_tracklist_button, &QPushButton::clicked, [this](){this->show_save_tracklist_dialog();});
+    QObject::connect(this->show_tracklist_button, &QPushButton::clicked, [this](){this->open_tracklist();});
 
     // Open configuration window.
     QObject::connect(this->config_button, &QPushButton::clicked, [this](){this->show_config_window();});
@@ -1959,6 +1964,12 @@ Gui::set_folder_browser_base_path(const QString &path)
     return true;
 }
 
+void
+Gui::highlight_playlist_in_folder_browser(const QString &path)
+{
+    this->folder_browser->setCurrentIndex(this->folder_system_model->index(path));
+}
+
 bool
 Gui::set_file_browser_base_path(const QString &path)
 {
@@ -1978,7 +1989,7 @@ Gui::set_file_browser_base_path(const QString &path)
         this->progress_bar->setMaximum(0);
 
         // Set base path as title to file browser.
-        this->set_file_browser_title(path);
+        this->file_browser_gbox->setTitle(path);
 
         // Clear file browser.
         this->file_system_model->clear();
@@ -2007,7 +2018,7 @@ Gui::run_concurrent_read_collection_from_db()
     return;
 }
 
-bool
+void
 Gui::set_file_browser_playlist_tracks(const Playlist &playlist)
 {
     if (this->watcher_parse_directory->isRunning() == false)
@@ -2026,7 +2037,7 @@ Gui::set_file_browser_playlist_tracks(const Playlist &playlist)
         this->progress_bar->setMaximum(0);
 
         // Set base path as title to file browser.
-        this->set_file_browser_title(playlist.get_name());
+        this->file_browser_gbox->setTitle(playlist.get_name());
 
         // Clear file browser.
         this->file_system_model->clear();
@@ -2045,8 +2056,6 @@ Gui::set_file_browser_playlist_tracks(const Playlist &playlist)
         // Show file browser again.
         this->file_browser->setVisible(true);
     }
-
-    return true;
 }
 
 void
@@ -2060,15 +2069,6 @@ Gui::sync_file_browser_to_audio_collection()
     // Hide progress bar.
     this->progress_label->setText("");
     this->progress_groupbox->hide();
-}
-
-bool
-Gui::set_file_browser_title(const QString &title)
-{
-    // Change file browser title (which contains base dir for tracks).
-    this->file_browser_gbox->setTitle(tr("File browser") + " [" + title + "]");
-
-    return true;
 }
 
 void
@@ -2240,7 +2240,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
             Playlist playlist(file_info.absolutePath(), file_info.baseName(), file_info.suffix());
             Playlist_persistence playlist_persist;
 
-            // It is a m3u or pls playlist, parse it and show track list in file browser.
+            // If it is an m3u or pls playlist, then parse it and show track list in file browser.
             if (playlist.get_extension().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
             {
                 // Open M3U playlist
@@ -2439,7 +2439,14 @@ void Gui::show_clear_tracklist_dialog()
     // Close request confirmed.
     if (msg_box.exec() == QMessageBox::Ok)
     {
+        // Clear tracklist internally.
         this->tracklist->clear();
+
+        // If tracklist was shown into file browser, refresh.
+        if (this->tracklist->get_name() == this->file_browser_gbox->title())
+        {
+            this->open_tracklist();
+        }
     }
 }
 
@@ -2462,6 +2469,16 @@ Gui::show_save_tracklist_dialog()
     }
 
     return;
+}
+
+void
+Gui::open_tracklist()
+{
+    // Highlight tracklist file in the file browser.
+    this->highlight_playlist_in_folder_browser(this->tracklist->get_fullpath());
+
+    // Populate playlist browser with recorded tracklist.
+    this->set_file_browser_playlist_tracks(*this->tracklist);
 }
 
 void
@@ -3664,4 +3681,15 @@ QString TreeViewIconProvider::type(const QFileInfo &info) const
     }
 
     return QString("File");
+}
+
+QString FileBrowserQGroupBox::title() const
+{
+    return this->short_title;
+}
+
+void FileBrowserQGroupBox::setTitle(const QString &title)
+{
+    this->short_title = title;
+    QGroupBox::setTitle(tr("File browser") + " [" + title + "]");
 }

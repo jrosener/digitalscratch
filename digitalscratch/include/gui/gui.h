@@ -261,6 +261,18 @@ class TreeViewIconProvider : public QFileIconProvider
         void    set_default_icons();
 };
 
+class FileBrowserQGroupBox : public QGroupBox
+{
+   Q_OBJECT
+
+   private:
+       QString short_title;
+
+   public:
+       QString title() const;
+       void setTitle(const QString &title);
+};
+
 class Gui : public QObject
 {
     Q_OBJECT
@@ -290,7 +302,7 @@ class Gui : public QObject
 
     // File browser.
     QSplitter                          *browser_splitter;
-    QGroupBox                          *file_browser_gbox;
+    FileBrowserQGroupBox               *file_browser_gbox;
     QFutureWatcher<void>               *watcher_parse_directory;
 
     // Folder browser.
@@ -329,6 +341,7 @@ class Gui : public QObject
     QPushButton                        *show_hide_samplers_button;
     QPushButton                        *clear_tracklist_button;
     QPushButton                        *save_tracklist_button;
+    QPushButton                        *show_tracklist_button;
 
     // Bottom help area.
     QHBoxLayout                        *bottom_layout;
@@ -416,10 +429,10 @@ class Gui : public QObject
     void init_bottom_status();
     void display_audio_file_collection();
     bool apply_main_window_style();
-    bool set_file_browser_playlist_tracks(const Playlist &playlist);
+    void set_file_browser_playlist_tracks(const Playlist &playlist);
     bool set_file_browser_base_path(const QString &path);
     bool set_folder_browser_base_path(const QString &path);
-    bool set_file_browser_title(const QString &title);
+    void highlight_playlist_in_folder_browser(const QString &path);
     bool apply_application_settings();
     void highlight_deck_sampler_area(const unsigned short int &deck_index);
     void highlight_border_deck_sampler_area(const unsigned short int &deck_index, const bool &switch_on);
@@ -518,4 +531,5 @@ class Gui : public QObject
     void can_close();
     void show_save_tracklist_dialog();
     void show_clear_tracklist_dialog();
+    void open_tracklist();
 };

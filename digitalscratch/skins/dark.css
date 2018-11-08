@@ -407,6 +407,33 @@ QPushButton#Save_tracklist_button:pressed
    image:            url(:/pixmaps/dark-save_tracklist.png);
 }
 
+QPushButton#Show_tracklist_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            90px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-show_tracklist.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Show_tracklist_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-show_tracklist_white.png);
+}
+QPushButton#Show_tracklist_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-show_tracklist.png);
+}
+
 QPushButton#Help_button
 {
    font:             7pt;

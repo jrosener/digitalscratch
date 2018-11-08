@@ -253,88 +253,88 @@
 <context>
     <name>Deck</name>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3119"/>
+        <location filename="../src/gui/gui.cpp" line="3136"/>
         <source>T r a c k</source>
         <translation>P i s t e</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3121"/>
+        <location filename="../src/gui/gui.cpp" line="3138"/>
         <source>THRU</source>
         <translation>DIRECT</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3160"/>
+        <location filename="../src/gui/gui.cpp" line="3177"/>
         <source>TIM</source>
         <translation>TIM</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3161"/>
+        <location filename="../src/gui/gui.cpp" line="3178"/>
         <source>Control speed with timecoded vinyl.</source>
         <translation>Contrôle de la vitesse de lecture grâce au vinyle timecodé.</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3167"/>
+        <location filename="../src/gui/gui.cpp" line="3184"/>
         <source>MAN</source>
         <translation>MAN</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3168"/>
+        <location filename="../src/gui/gui.cpp" line="3185"/>
         <source>Control speed manually.</source>
         <translation>Contrôle manuel de la vitesse de lecture.</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3184"/>
+        <location filename="../src/gui/gui.cpp" line="3201"/>
         <source>Speed up</source>
         <translation>Accélérer</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3184"/>
-        <location filename="../src/gui/gui.cpp" line="3190"/>
-        <location filename="../src/gui/gui.cpp" line="3196"/>
-        <location filename="../src/gui/gui.cpp" line="3202"/>
+        <location filename="../src/gui/gui.cpp" line="3201"/>
+        <location filename="../src/gui/gui.cpp" line="3207"/>
+        <location filename="../src/gui/gui.cpp" line="3213"/>
+        <location filename="../src/gui/gui.cpp" line="3219"/>
         <source>left-click</source>
         <translation>clic gauche</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3184"/>
-        <location filename="../src/gui/gui.cpp" line="3190"/>
-        <location filename="../src/gui/gui.cpp" line="3196"/>
-        <location filename="../src/gui/gui.cpp" line="3202"/>
+        <location filename="../src/gui/gui.cpp" line="3201"/>
+        <location filename="../src/gui/gui.cpp" line="3207"/>
+        <location filename="../src/gui/gui.cpp" line="3213"/>
+        <location filename="../src/gui/gui.cpp" line="3219"/>
         <source>right-click</source>
         <translation>clic droit</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3190"/>
+        <location filename="../src/gui/gui.cpp" line="3207"/>
         <source>Slow down</source>
         <translation>Ralentir</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3196"/>
+        <location filename="../src/gui/gui.cpp" line="3213"/>
         <source>Temporarily speed up</source>
         <translation>Accélérer temporairement</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3202"/>
+        <location filename="../src/gui/gui.cpp" line="3219"/>
         <source>Temporarily slow down</source>
         <translation>Ralentir temporairement</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3216"/>
+        <location filename="../src/gui/gui.cpp" line="3233"/>
         <source>Jump to start</source>
         <translation>Sauter au début</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3231"/>
+        <location filename="../src/gui/gui.cpp" line="3248"/>
         <source>Set cue point</source>
         <translation>Définir point de repère</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3238"/>
+        <location filename="../src/gui/gui.cpp" line="3255"/>
         <source>Play from cue point</source>
         <translation>Lire depuis point de repère</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3245"/>
+        <location filename="../src/gui/gui.cpp" line="3262"/>
         <source>Delete cue point</source>
         <translation>Supprimer point de repère</translation>
     </message>
@@ -342,20 +342,28 @@
 <context>
     <name>FileBrowserControlButtons</name>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3413"/>
+        <location filename="../src/gui/gui.cpp" line="3430"/>
         <source>Load selected track to deck </source>
         <translation>Charger piste sélectionnée sur platine </translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3421"/>
+        <location filename="../src/gui/gui.cpp" line="3438"/>
         <source>Show next potential tracks for deck </source>
         <translation>Montrer prochaines piste potentielles pour platine </translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3451"/>
-        <location filename="../src/gui/gui.cpp" line="3455"/>
+        <location filename="../src/gui/gui.cpp" line="3468"/>
+        <location filename="../src/gui/gui.cpp" line="3472"/>
         <source>Load selected track to sampler </source>
         <translation>Charger piste sélectionnée sur sampler</translation>
+    </message>
+</context>
+<context>
+    <name>FileBrowserQGroupBox</name>
+    <message>
+        <location filename="../src/gui/gui.cpp" line="3694"/>
+        <source>File browser</source>
+        <translation>Explorateur de fichiers</translation>
     </message>
 </context>
 <context>
@@ -408,7 +416,7 @@
     </message>
     <message>
         <location filename="../src/gui/gui.cpp" line="511"/>
-        <location filename="../src/gui/gui.cpp" line="1820"/>
+        <location filename="../src/gui/gui.cpp" line="1825"/>
         <location filename="../src/gui/gui.cpp" line="2426"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Annuler</translation>
@@ -531,170 +539,179 @@
         <translation>Sauvegarder la liste de lecture en M3U</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1426"/>
+        <location filename="../src/gui/gui.cpp" line="1419"/>
+        <source>SHOW</source>
+        <translation>MONTRER</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/gui.cpp" line="1421"/>
+        <source>Show tracklist in file browser</source>
+        <translation>Ouvre la liste des pistes jouées dans l&apos;explorateur de fichier</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/gui.cpp" line="1430"/>
         <source>View</source>
         <translation>Affichage</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1429"/>
+        <location filename="../src/gui/gui.cpp" line="1433"/>
         <source>SAMPLERS</source>
         <translation>SAMPLERS</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1431"/>
+        <location filename="../src/gui/gui.cpp" line="1435"/>
         <source>Show/hide samplers</source>
         <translation>Montrer/cacher samplers</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1437"/>
+        <location filename="../src/gui/gui.cpp" line="1441"/>
         <source>HELP</source>
         <translation>AIDE</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1438"/>
+        <location filename="../src/gui/gui.cpp" line="1442"/>
         <source>Show/hide keyboard shortcuts</source>
         <translation>Montrer/cacher raccourcis clavier</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1445"/>
+        <location filename="../src/gui/gui.cpp" line="1449"/>
         <source>FULLSCREEN</source>
         <translation>PLEIN ECRAN</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1446"/>
+        <location filename="../src/gui/gui.cpp" line="1450"/>
         <source>Toggle fullscreen mode</source>
         <translation>Basculer en plein écran</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1458"/>
+        <location filename="../src/gui/gui.cpp" line="1462"/>
         <source>App</source>
         <translation>App</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1461"/>
+        <location filename="../src/gui/gui.cpp" line="1465"/>
         <source>SETTINGS</source>
         <translation>PARAMÈTRES</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1462"/>
+        <location filename="../src/gui/gui.cpp" line="1466"/>
         <source>Change application settings...</source>
         <translation>Changer les paramètres de l&apos;application...</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1468"/>
+        <location filename="../src/gui/gui.cpp" line="1472"/>
         <source>ABOUT</source>
         <translation>À PROPOS</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1469"/>
+        <location filename="../src/gui/gui.cpp" line="1473"/>
         <source>About DigitalScratch...</source>
         <translation>À propos de DigitalScratch...</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1475"/>
+        <location filename="../src/gui/gui.cpp" line="1479"/>
         <source>EXIT</source>
         <translation>QUITTER</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1476"/>
+        <location filename="../src/gui/gui.cpp" line="1480"/>
         <source>Exit DigitalScratch</source>
         <translation>Quitter DigitalScratch</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1523"/>
+        <location filename="../src/gui/gui.cpp" line="1528"/>
         <source>Display</source>
         <translation>Affichage</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1524"/>
+        <location filename="../src/gui/gui.cpp" line="1529"/>
         <source>Fullscreen</source>
         <translation>Plein écran</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1526"/>
+        <location filename="../src/gui/gui.cpp" line="1531"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1528"/>
+        <location filename="../src/gui/gui.cpp" line="1533"/>
         <source>Switch selected playback</source>
         <translation>Sélectionner platine suivante</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1531"/>
+        <location filename="../src/gui/gui.cpp" line="1536"/>
         <source>Selected deck</source>
         <translation>Platine sélectionnée</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1532"/>
+        <location filename="../src/gui/gui.cpp" line="1537"/>
         <source>Load/Restart track</source>
         <translation>Charger/redémarrer piste</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1534"/>
+        <location filename="../src/gui/gui.cpp" line="1539"/>
         <source>Highlight next tracks</source>
         <translation>Surligner pistes suivantes</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1536"/>
+        <location filename="../src/gui/gui.cpp" line="1541"/>
         <source>Set/Play cue point 1/2/3/4</source>
         <translation>Définir/lire point de repère 1/2/3/4</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1539"/>
+        <location filename="../src/gui/gui.cpp" line="1544"/>
         <source>Selected sampler</source>
         <translation>Sampler sélectionné</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1540"/>
+        <location filename="../src/gui/gui.cpp" line="1545"/>
         <source>Load sampler 1/2/3/4</source>
         <translation>Charger sampler 1/2/3/4</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1542"/>
+        <location filename="../src/gui/gui.cpp" line="1547"/>
         <source>Online wiki help</source>
         <translation>Aide en ligne Wiki</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1548"/>
-        <location filename="../src/gui/gui.cpp" line="2069"/>
+        <location filename="../src/gui/gui.cpp" line="1553"/>
         <source>File browser</source>
         <translation>Explorateur de fichiers</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1549"/>
+        <location filename="../src/gui/gui.cpp" line="1554"/>
         <source>Browse</source>
         <translation>Parcourir</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1551"/>
+        <location filename="../src/gui/gui.cpp" line="1556"/>
         <source>Collapse all</source>
         <translation>Fermer tout</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1647"/>
+        <location filename="../src/gui/gui.cpp" line="1652"/>
         <source>Cancel execution</source>
         <translation>Annuler l&apos;exécution</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1817"/>
+        <location filename="../src/gui/gui.cpp" line="1822"/>
         <source>Do you really want to quit DigitalScratch ?</source>
         <translation>Voulez vous vraiment quitter DigitalScratch ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1819"/>
+        <location filename="../src/gui/gui.cpp" line="1824"/>
         <location filename="../src/gui/gui.cpp" line="2425"/>
         <source>&amp;OK</source>
         <translation>&amp;OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="1975"/>
-        <location filename="../src/gui/gui.cpp" line="2023"/>
+        <location filename="../src/gui/gui.cpp" line="1986"/>
+        <location filename="../src/gui/gui.cpp" line="2034"/>
         <source>Opening </source>
         <translation>Ouverture</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="2453"/>
+        <location filename="../src/gui/gui.cpp" line="2460"/>
         <source>Playlist files</source>
         <translation>Fichiers de liste de lecture</translation>
     </message>
@@ -704,7 +721,7 @@
         <translation>Voulez vous vraiment vider la liste de lecture ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="2451"/>
+        <location filename="../src/gui/gui.cpp" line="2458"/>
         <source>Save tracklist as...</source>
         <translation>Sauvegarder liste de lecture...</translation>
     </message>
@@ -712,17 +729,17 @@
 <context>
     <name>Sampler</name>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3359"/>
+        <location filename="../src/gui/gui.cpp" line="3376"/>
         <source>Play sample from start</source>
         <translation>Lire le sample depuis le début</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3368"/>
+        <location filename="../src/gui/gui.cpp" line="3385"/>
         <source>Stop sample</source>
         <translation>Arrêter le sample</translation>
     </message>
     <message>
-        <location filename="../src/gui/gui.cpp" line="3377"/>
+        <location filename="../src/gui/gui.cpp" line="3394"/>
         <source>Delete sample</source>
         <translation>Supprimer le sample</translation>
     </message>
