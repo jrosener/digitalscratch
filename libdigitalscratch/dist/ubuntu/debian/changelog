@@ -1,3 +1,10 @@
+libdigitalscratch (1.7.0-ppa~18.04) bionic; urgency=medium
+
+  * coding:
+     - rename some classes for better understanding 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Fri, 30 Nov 2018 17:46:58 +0100
+
 libdigitalscratch (1.6.2-1ppa1~zesty1) zesty; urgency=medium
 
   * feature:
