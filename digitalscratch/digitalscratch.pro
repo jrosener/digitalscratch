@@ -1,4 +1,4 @@
-VERSION = 1.6.2
+VERSION = 1.7.0
 DEFINES += VERSION=$${VERSION}
 TRANSLATIONS = translations/digitalscratch_fr.ts
 
