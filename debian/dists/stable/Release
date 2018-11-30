@@ -1,13 +1,13 @@
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Tue, 26 Jul 2016 20:48:57 UTC
+Date: Fri, 30 Nov 2018 23:37:43 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- 63e911d04b16f4c4e8512f2bd6800b4b 4556 main/binary-amd64/Packages
- f55ae34aefebfee71385a8bffe89c86e 1565 main/binary-amd64/Packages.gz
+ 2d44ce0896863022a3cb09b5be61102d 4562 main/binary-amd64/Packages
+ 032c87e805affe801baca6fd4b51b24a 1572 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
  80198a643f446fc15cb7a813885641c4 4554 main/binary-i386/Packages
  129f6e53c9912cac3b962d8acdf6ab4b 1570 main/binary-i386/Packages.gz
@@ -16,8 +16,8 @@ MD5Sum:
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- ff7eb3fdf3eaebded01499f128404f53106b5f95 4556 main/binary-amd64/Packages
- c6f6d52706512bd908fd89ceb4bafc32ee2f548b 1565 main/binary-amd64/Packages.gz
+ 21bf46da0191acdcdf4aa699771fd58073ad74cb 4562 main/binary-amd64/Packages
+ 28d3735326d30c34978a42682f6f735f476087b8 1572 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
  6c03e864df792746cf94d0fcfd7180d62b065466 4554 main/binary-i386/Packages
  46908ec9cc01227af13b84c686ab601e88f6a25f 1570 main/binary-i386/Packages.gz
@@ -26,8 +26,8 @@ SHA1:
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- 8c54d994da4186920cdfe318d1bec404150fc3fa6157f8b22e8cf62031ef1c5b 4556 main/binary-amd64/Packages
- 1838783d3215b3e7867206e9db1ba444df6976cfd0cb1cdf2d38fe3534f8c652 1565 main/binary-amd64/Packages.gz
+ b047002bb9a12509a3b6f31ed570c5e753206b46ba7654944bea6359729e6ee4 4562 main/binary-amd64/Packages
+ c56a763ffbbc74c9c40bd26390254898144ab4d4b9fb013c7ddc1ca0cdf8a41d 1572 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
  5864b8c457d18cf1b9673e6347fe802043db39af6a3bc651f106c11c0fd9fb50 4554 main/binary-i386/Packages
  ce56611e96f98a8066d4a6b4a25a4e5190b848ec4691f48830e3a3365f35fea3 1570 main/binary-i386/Packages.gz
