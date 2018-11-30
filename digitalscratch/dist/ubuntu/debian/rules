@@ -9,5 +9,8 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# Force the use of qt5
+export QT_SELECT=qt5
+
 %:
 	dh $@ 

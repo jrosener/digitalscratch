@@ -68,7 +68,8 @@ DEBPATH=$WORKINGPATH/deb
 SOURCEDIR_ORIG=digitalscratch_source
 ORIGDIR=$(pwd)
 DISTRIB=$(lsb_release -cs)
-VERSIONPACKAGE=$VERSION-1ppa1~${DISTRIB}1
+DISTRIB_NB=$(lsb_release -rs)
+VERSIONPACKAGE=$VERSION-ppa~${DISTRIB_NB}
 TARPACK=digitalscratch_$VERSION.orig.tar.gz
 PPAURL=http://ppa.launchpad.net
 export DEBEMAIL=julien.rosener@digital-scratch.org
@@ -128,12 +129,12 @@ echo ""
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR_ORIG
-export OTHERMIRROR="deb $PPAURL/$PPAPATH/ubuntu $DISTRIB main"
+export OTHERMIRROR="deb [trusted=yes] $PPAURL/$PPAPATH/ubuntu $DISTRIB main"
 if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
 then
-    pbuilder-dist $DISTRIB create
+    pbuilder-dist $DISTRIB create --allow-untrusted
 fi
-pbuilder-dist $DISTRIB update
+pbuilder-dist $DISTRIB update --allow-untrusted
 echo ""
 echo ""
 
@@ -141,7 +142,7 @@ echo "************ Parse debian/ config file and create source.changes *********
 if [[ $2 == --rebuild ]] ; then
     debuild -S -sd
 else
-debuild -S -sa
+debuild -S -sa -d
 fi
 check_error
 cd ../
