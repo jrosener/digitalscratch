@@ -1,3 +1,10 @@
+libdigitalscratch (1.7.0-1) stable; urgency=medium
+
+  * coding:
+     - rename some classes for better understanding  
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Sat, 01 Dec 2018 00:53:38 +0100
+
 libdigitalscratch (1.6.1-1) stable; urgency=medium
 
   * features:

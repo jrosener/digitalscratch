@@ -1,3 +1,21 @@
+digitalscratch (1.7.0-1) stable; urgency=medium
+
+  * features:
+     - tracklist: add a "SHOW" button that open the tracklist currently played
+  * configuration:
+     - settings: add path of recorded tracklist as a user setting
+  * gui:
+     - jack: show an error pop-up when there are not enough jack ports available
+     - multilang: add internationalization support
+  * dicer (external midi controller):
+     - cue point: pause playback while button "play from cue point" is pressed
+  * tests:
+     - travis CI: switch test environment from Ubuntu 12.04 to 14.04
+  * libdigitalscratch (motion detection engine):
+     - bump to version 1.7.0 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Sat, 01 Dec 2018 01:17:24 +0100
+
 digitalscratch (1.6.1-1) stable; urgency=medium
 
   * features:

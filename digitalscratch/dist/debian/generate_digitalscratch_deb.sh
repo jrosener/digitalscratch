@@ -39,10 +39,10 @@ fi
 
 # Get repo
 if [[ $2 == test ]] ; then
-    REPOPATH=$(readlink -f ../../../../gh-pages/debian-test/)
+    REPOPATH=$(readlink -f ../../../../digitalscratch.gh-pages.git/debian-test/)
     REPOURL=http://www.digital-scratch.org/debian-test/
 elif [[ $2 == prod ]] ; then
-    REPOPATH=$(readlink -f ../../../../gh-pages/debian/)
+    REPOPATH=$(readlink -f ../../../../digitalscratch.gh-pages.git/debian/)
     REPOURL=http://www.digital-scratch.org/debian/
 else
     usage
