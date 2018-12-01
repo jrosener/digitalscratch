@@ -1,17 +1,17 @@
 Package: digitalscratch
-Version: 1.6.1-1
+Version: 1.7.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 1212
-Depends: libqt5sql5-sqlite, libasound2 (>= 1.0.16), libavcodec56 (>= 6:11~beta1) | libavcodec-extra-56 (>= 6:11.6), libavformat56 (>= 6:11~beta1), libavutil54 (>= 6:11~beta1), libc6 (>= 2.14), libdigitalscratch1, libgcc1 (>= 1:4.1.1), libgl1-mesa-glx | libgl1, libjack-jackd2-0 (>= 1.9.5~dfsg-14) | libjack-0.116, libkeyfinder0, libqt5concurrent5 (>= 5.0.2), libqt5core5a (>= 5.3.0), libqt5gui5 (>= 5.0.2), libqt5multimedia5 (>= 5.0.2), libqt5network5 (>= 5.0.2), libqt5sql5 (>= 5.0.2), libqt5widgets5 (>= 5.2.0~alpha1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 4.9)
+Installed-Size: 1173
+Depends: libqt5sql5-sqlite, libasound2 (>= 1.0.16), libavcodec57 (>= 7:3.2.12) | libavcodec-extra57 (>= 7:3.2.12), libavformat57 (>= 7:3.2.12), libavutil55 (>= 7:3.2.12), libc6 (>= 2.14), libdigitalscratch1, libgcc1 (>= 1:3.0), libgl1-mesa-glx | libgl1, libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libkeyfinder0, libqt5concurrent5 (>= 5.6.0~rc), libqt5core5a (>= 5.7.0), libqt5gui5 (>= 5.0.2), libqt5multimedia5 (>= 5.6.0~beta), libqt5network5 (>= 5.0.2), libqt5sql5 (>= 5.0.2), libqt5widgets5 (>= 5.2.0~alpha1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 5.2)
 Homepage: http://www.digital-scratch.org
 Priority: extra
 Section: sound
-Filename: pool/main/d/digitalscratch/digitalscratch_1.6.1-1_amd64.deb
-Size: 614422
-SHA256: 67a9e1a8641664ba0dbd963d5e566245fcf223e780f5af1f8437059d8449c8e9
-SHA1: 81c94d7b062cfa9183b7ebfc9ebed8c0beaed59e
-MD5sum: 91bdf6307b1dfb0d4998158d6ceafe19
+Filename: pool/main/d/digitalscratch/digitalscratch_1.7.0-1_amd64.deb
+Size: 613166
+SHA256: 41e4f3acd896d3036d368e1ba9c177d4867e97d528c15dcdd24f9187d2dec471
+SHA1: d444f8b3d29cf861c84c250845de6423803a9032
+MD5sum: cc0b61a98747d2964707147d50154cac
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
