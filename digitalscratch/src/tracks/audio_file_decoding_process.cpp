@@ -34,15 +34,6 @@
 #include <algorithm>
 
 #include <samplerate.h>
-extern "C"
-{
-    #include "libavcodec/avcodec.h"
-    #include "libavformat/avformat.h"
-}
-
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55,28,1)
-#define av_frame_alloc avcodec_alloc_frame
-#endif
 
 #include "app/application_logging.h"
 #include "tracks/audio_file_decoding_process.h"
@@ -159,6 +150,35 @@ Audio_file_decoding_process::resample_track()
     return;
 }
 
+int
+Audio_file_decoding_process::decode_packet_to_frame(AVCodecContext* codec_context,
+                                                    AVFrame* frame,
+                                                    int &got_frame,
+                                                    AVPacket *packet)
+{
+    int ret;
+
+    got_frame = 0;
+    ret = avcodec_send_packet(codec_context, packet);
+    if (ret < 0)
+    {
+        // In particular, we don't expect AVERROR(EAGAIN), because we read all
+        // decoded frames with avcodec_receive_frame() until done.
+        if (ret == AVERROR_EOF)
+            return 0;
+        else
+            return ret;
+    }
+
+    ret = avcodec_receive_frame(codec_context, frame);
+    if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
+        return ret;
+    if (ret >= 0)
+        got_frame = 1;
+
+    return 0;
+}
+
 bool
 Audio_file_decoding_process::decode()
 {
@@ -198,7 +218,7 @@ Audio_file_decoding_process::decode()
     AVStream* audio_stream = nullptr;
     for (unsigned int i = 0; i < format_context->nb_streams; ++i)
     {
-        if (format_context->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+        if (format_context->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
         {
             audio_stream = format_context->streams[i];
             break;
@@ -212,9 +232,10 @@ Audio_file_decoding_process::decode()
         return false;
     }
 
-    // Get codec of the audio file.
-    AVCodecContext* codec_context = audio_stream->codec;
-    codec_context->codec = avcodec_find_decoder(codec_context->codec_id);
+    // Get decoder for the codec of the audio file.
+    AVCodec *codec = avcodec_find_decoder(audio_stream->codecpar->codec_id);
+    AVCodecContext* codec_context = avcodec_alloc_context3(codec);
+    avcodec_parameters_to_context(codec_context, audio_stream->codecpar);
     if (codec_context->codec == nullptr)
     {
         av_free(frame);
@@ -245,17 +266,17 @@ Audio_file_decoding_process::decode()
 
     // Read the packets in a loop
     bool decoding_done = false;
+    int got_frame = 0;
     while ((decoding_done == false) && (av_read_frame(format_context, &packet) == 0))
     {
         if (packet.stream_index == audio_stream->index)
         {
-            // Try to decode the packet into a frame.
-            int frame_finished = 0;
-            avcodec_decode_audio4(codec_context, frame, &frame_finished, &packet);
-
-            // Some frames rely on multiple packets, so we have to make sure the frame is finished before
-            // we can use it
-            if (frame_finished == 1)
+            got_frame = 0;
+            if (this->decode_packet_to_frame(codec_context, frame, got_frame, &packet) != 0)
+            {
+                qCWarning(DS_FILE) << "packet decode error " << qPrintable(filename);
+            }
+            else if (got_frame == 1)
             {
                 // Frame now has usable audio data in it.
                 if (codec_context->sample_fmt == AV_SAMPLE_FMT_S16) // Interleaved data.
@@ -314,19 +335,7 @@ Audio_file_decoding_process::decode()
         }
 
         // Cleanup packet.
-        av_free_packet(&packet);
-    }
-
-    // Some codecs will cause frames to be buffered up in the decoding process. If the CODEC_CAP_DELAY flag
-    // is set, there can be buffered up frames that need to be flushed, so we'll do that
-    if (codec_context->codec->capabilities & CODEC_CAP_DELAY)
-    {
-        av_init_packet(&packet);
-        // Decode all the remaining frames in the buffer, until the end is reached
-        int frame_finished = 0;
-        while (avcodec_decode_audio4(codec_context, frame, &frame_finished, &packet) >= 0 && frame_finished)
-        {
-        }
+        av_packet_unref(&packet);
     }
 
     // Cleanup.

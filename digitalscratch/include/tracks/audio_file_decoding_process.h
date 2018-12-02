@@ -42,6 +42,12 @@
 #include "tracks/audio_track.h"
 #include "app/application_const.h"
 
+extern "C"
+{
+    #include "libavcodec/avcodec.h"
+    #include "libavformat/avformat.h"
+}
+
 using namespace std;
 
 class Audio_file_decoding_process : public QObject
@@ -67,6 +73,10 @@ class Audio_file_decoding_process : public QObject
  private:
     void resample_track();                    // Change sample rate of the audio track.
     bool decode();                            // Internal audio decoding.
+    int  decode_packet_to_frame(AVCodecContext *codec_context,
+                                AVFrame *frame,
+                                int &got_frame,
+                                AVPacket *packet);
 
  signals:
     void name_changed(const QString &name);
