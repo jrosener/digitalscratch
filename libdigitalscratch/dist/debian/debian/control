@@ -15,7 +15,7 @@ Architecture: any
 Depends:
  libdigitalscratch1 (= ${binary:Version}),
  ${misc:Depends},
-Description: Motion detection for vinyl turntable
+Description: Motion detection for vinyl turntable - development files
  DigitalScratch library is designed to analyze motion of a disc on a vinyl
  turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
  Serato or Mixvibes disc.
@@ -29,7 +29,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ${misc:Depends},
-Description: Motion detection for vinyl turntable
+Description: Motion detection for vinyl turntable - runtime library
  Digital Scratch library is designed to analyze motion of a disc on a vinyl
  turntable. It requires a specific timecoded vinyl disc such as FinalScratch,
  Serato or Mixvibes disc.
