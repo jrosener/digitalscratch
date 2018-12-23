@@ -1,5 +1,5 @@
 Source: libdigitalscratch
-Priority: extra
+Priority: optional
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
 Build-Depends:
  debhelper (>= 8.0.0),
