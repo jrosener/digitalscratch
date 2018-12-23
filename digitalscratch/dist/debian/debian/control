@@ -2,14 +2,29 @@ Source: digitalscratch
 Section: sound
 Priority: extra
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Build-Depends: debhelper (>= 8.0.0), libavformat-dev, libavcodec-dev, libavutil-dev, libjack-jackd2-dev, libsamplerate0-dev, libflac-dev, libdigitalscratch-dev, qt5-default, libkeyfinder-dev, qtmultimedia5-dev, libasound2-dev
+Build-Depends:
+ debhelper (>= 8.0.0),
+ libasound2-dev,
+ libavcodec-dev,
+ libavformat-dev,
+ libavutil-dev,
+ libdigitalscratch-dev,
+ libflac-dev,
+ libjack-jackd2-dev,
+ libkeyfinder-dev,
+ libsamplerate0-dev,
+ qt5-default,
+ qtmultimedia5-dev,
 Standards-Version: 3.9.3
-Homepage: http://www.digital-scratch.org
+Homepage: https://www.digital-scratch.org
 Vcs-Git: git://github.com/jrosener/digitalscratch.git
 
 Package: digitalscratch
 Architecture: any
-Depends: libqt5sql5-sqlite, ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ libqt5sql5-sqlite,
+ ${shlibs:Depends},
+ ${misc:Depends},
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
