@@ -1,9 +1,18 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: digitalscratch
-Source: http://www.digital-scratch.org
+Upstream-Contact: Julien Rosener <julien.rosener@digital-scratch.org>
+Source: https://www.digital-scratch.org/
 
 Files: *
-Copyright: 2012, Julien Rosener <julien.rosener@digital-scratch.org>
+Copyright: 2012-2018 Julien Rosener <julien.rosener@digital-scratch.org>
+License: GPL-3+
+
+Files: debian/*
+Copyright:
+ 2018 Olivier Humbert <trebmuh@tuxfamily.org>
+ 2012-2018 Julien Rosener <julien.rosener@digital-scratch.org>
+License: GPL-3+
+
 License: GPL-3+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -14,10 +23,9 @@ License: GPL-3+
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- .
+Comment:
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  .
  On Debian systems, the complete text of the GNU General
  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
- 
