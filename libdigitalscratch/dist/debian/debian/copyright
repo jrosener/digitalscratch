@@ -1,7 +1,7 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: libdigitalscratch
 Upstream-Contact: Julien Rosener <julien.rosener@digital-scratch.org>
-Source: http://www.digital-scratch.org
+Source: https://www.digital-scratch.org
 
 Files: *
 Copyright: 2012-2018, Julien Rosener <julien.rosener@digital-scratch.org>
