@@ -2,9 +2,15 @@ dist: trusty
 sudo: required
 language: cpp
 compiler: gcc
+
+addons:
+  apt:
+    packages:
+      - libswresample-dev
+
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq qt5-default libjack-jackd2-dev libsamplerate0-dev libasound2-dev qtmultimedia5-dev libqt5multimedia5-plugins libboost-all-dev libfftw3-dev yasm libswresample-dev
+  - sudo apt-get install -qq qt5-default libjack-jackd2-dev libsamplerate0-dev libasound2-dev qtmultimedia5-dev libqt5multimedia5-plugins libboost-all-dev libfftw3-dev yasm
   - git clone https://github.com/jrosener/libKeyFinder.git
   - cd libKeyFinder && qmake && make && sudo make install
   - cd ..
