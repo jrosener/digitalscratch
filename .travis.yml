@@ -26,5 +26,6 @@ script:
   - sudo ldconfig -p | grep libav
   - sudo ldconfig -p | grep libsw
   - ls /usr/include/x86_64-linux-gnu/libavutil/
+  - cat /usr/include/x86_64-linux-gnu/libavutil/opt.h
   - ls /usr/include/x86_64-linux-gnu/libswresample/
   - ./digitalscratch-test

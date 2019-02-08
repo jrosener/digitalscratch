@@ -36,6 +36,7 @@
 #include <samplerate.h>
 extern "C"
 {
+    #include "libavutil/log.h"
     #include "libswresample/swresample.h"
     #include "libavutil/opt.h"
 }
