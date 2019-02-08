@@ -24,4 +24,7 @@ script:
   - cd digitalscratch && qmake && make
   - make clean && qmake CONFIG+=test-no_device_test && make
   - sudo ldconfig -p | grep libav
+  - sudo ldconfig -p | grep libsw
+  - ls /usr/include/x86_64-linux-gnu/libavutil/
+  - ls /usr/include/x86_64-linux-gnu/libswresample/
   - ./digitalscratch-test
