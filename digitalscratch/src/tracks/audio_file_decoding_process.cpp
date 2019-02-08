@@ -34,13 +34,6 @@
 #include <algorithm>
 
 #include <samplerate.h>
-extern "C"
-{
-    #include "libavutil/log.h"
-    #include "libswresample/swresample.h"
-    #include "libavutil/opt.h"
-}
-
 #include "app/application_logging.h"
 #include "tracks/audio_file_decoding_process.h"
 
