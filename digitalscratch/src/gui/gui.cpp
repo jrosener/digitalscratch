@@ -68,6 +68,7 @@
 #include <jack/jack.h>
 #include "libavcodec/version.h"
 #include "libavformat/version.h"
+#include "libswresample/version.h"
 
 #include "app/application_logging.h"
 #include "gui/gui.h"
@@ -666,6 +667,13 @@ Gui::show_about_window()
     libavutil_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
     libavutil_version.setOpenExternalLinks(true);
 
+    QLabel libswresample_version((QString("- libswresample v")
+                              + QString::number(LIBSWRESAMPLE_VERSION_MAJOR) + QString(".") + QString::number(LIBSWRESAMPLE_VERSION_MINOR) + QString(".") + QString::number(LIBSWRESAMPLE_VERSION_MICRO)).toUtf8()
+                              + ", <a style=\"color: grey\" href=\"https://ffmpeg.org/libswresample.html\">https://ffmpeg.org/libswresample.html</a>");
+    libswresample_version.setTextFormat(Qt::RichText);
+    libswresample_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    libswresample_version.setOpenExternalLinks(true);
+
     QLabel libsamplerate_version((QString("- ") + QString(src_get_version())).toUtf8()
                                   + ", <a style=\"color: grey\" href=\"http://www.mega-nerd.com/SRC/\">http://www.mega-nerd.com/SRC/</a>");
     libsamplerate_version.setTextFormat(Qt::RichText);
@@ -719,6 +727,7 @@ Gui::show_about_window()
     layout.addWidget(&libavcodec_version);
     layout.addWidget(&libavformat_version);
     layout.addWidget(&libavutil_version);
+    layout.addWidget(&libswresample_version);
     layout.addWidget(&libsamplerate_version);
     layout.addWidget(&libjack_version);
     layout.addWidget(&libkeyfinder_version);
