@@ -124,7 +124,7 @@ win32 {
     DEPENDPATH += $$PWD/win-external/ffmpeg/include
 }
 unix {
-    LIBS += -lavformat -lavcodec -lavutil
+    LIBS += -lavformat -lavcodec -lswresample -lavutil
 }
 #############################
 

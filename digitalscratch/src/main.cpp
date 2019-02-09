@@ -100,7 +100,10 @@ int main(int argc, char *argv[])
     {
         case QLocale::France:
         case QLocale::French:
-            translator.load("translations/digitalscratch_fr");
+            if (translator.load(":/translations/digitalscratch_fr.qm") == false)
+            {
+                qCWarning(DS_APPSETTINGS) << "No french translation file found";
+            }
             break;
         default:
             qCWarning(DS_APPSETTINGS) << "No translation file for language =" << settings->get_language();

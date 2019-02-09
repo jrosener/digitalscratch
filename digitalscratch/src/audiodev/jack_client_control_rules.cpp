@@ -106,7 +106,7 @@ Jack_client_control_rules::start(void *callback_param)
         Application_settings *settings = &Singleton<Application_settings>::get_instance();
         if (jack_get_sample_rate(this->stream) != settings->get_sample_rate())
         {
-            qCWarning(DS_SOUNDCARD) << "DigitalScratch is configured to support sample rate of " << qPrintable(settings->get_sample_rate());
+            qCWarning(DS_SOUNDCARD) << "DigitalScratch is configured to support sample rate of " << qPrintable(QString::number(settings->get_sample_rate()));
             emit error_msg(QString("DigitalScratch is configured to support a sample rate of " + QString::number(settings->get_sample_rate()) + "Hz, you can change it in the settings dialog."));
             return false;
         }

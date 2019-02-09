@@ -8,6 +8,7 @@ Build-Depends:
  libavcodec-dev,
  libavformat-dev,
  libavutil-dev,
+ libswresample-dev,
  libdigitalscratch-dev,
  libflac-dev,
  libjack-jackd2-dev,

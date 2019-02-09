@@ -34,6 +34,12 @@
 #include <algorithm>
 
 #include <samplerate.h>
+extern "C"
+{
+    #include "libavutil/log.h"
+    #include "libswresample/swresample.h"
+    #include "libavutil/opt.h"
+}
 
 #include "app/application_logging.h"
 #include "tracks/audio_file_decoding_process.h"
@@ -51,8 +57,7 @@ Audio_file_decoding_process::Audio_file_decoding_process(const QSharedPointer<Au
         this->do_resample = do_resample;
         this->decoded_sample_rate = this->at->get_sample_rate();
 
-        // Some libav decoder init.
-        av_register_all();
+        // Init libAV log level.
         av_log_set_level(AV_LOG_QUIET);
     }
 
@@ -260,6 +265,20 @@ Audio_file_decoding_process::decode()
                      << codec_context->channels << "ch,"
                      << av_get_sample_fmt_name(codec_context->sample_fmt);
 
+    // Set up SWR (software resample) context for a "float planar" to "int interleaved" conversion.
+    SwrContext *swr = nullptr;
+    if (codec_context->sample_fmt == AV_SAMPLE_FMT_FLTP)
+    {
+        swr = swr_alloc();
+        av_opt_set_int(swr, "in_channel_layout",  codec_context->channel_layout, 0);
+        av_opt_set_int(swr, "out_channel_layout", codec_context->channel_layout,  0);
+        av_opt_set_int(swr, "in_sample_rate",     codec_context->sample_rate, 0);
+        av_opt_set_int(swr, "out_sample_rate",    codec_context->sample_rate, 0);
+        av_opt_set_sample_fmt(swr, "in_sample_fmt",  AV_SAMPLE_FMT_FLTP, 0);
+        av_opt_set_sample_fmt(swr, "out_sample_fmt", AV_SAMPLE_FMT_S16,  0);
+        swr_init(swr);
+    }
+
     // Create a packet.
     AVPacket packet;
     av_init_packet(&packet);
@@ -326,6 +345,26 @@ Audio_file_decoding_process::decode()
                     output_samples += total_nb_samples;
                     this->at->set_end_of_samples(this->at->get_end_of_samples() + total_nb_samples);
                 }
+                else if (codec_context->sample_fmt == AV_SAMPLE_FMT_FLTP) // Float (-1.0 to 1.0) planar data (one data table per channels).
+                {
+                    int total_nb_samples = frame->nb_samples * codec_context->channels;
+                    if ((this->at->get_end_of_samples() + total_nb_samples) > this->at->get_max_nb_samples())
+                    {
+                        // We reached the end of the audio track buffer.
+                        total_nb_samples = this->at->get_max_nb_samples() - this->at->get_end_of_samples();
+                        decoding_done = true;
+                    }
+                    int data_size = total_nb_samples * sizeof(short signed int);
+
+                    unsigned char *frame_s16 = new unsigned char[data_size];
+                    swr_convert(swr,
+                                &frame_s16, frame->nb_samples * codec_context->channels, // out buffer
+                                (const uint8_t **)frame->extended_data, frame->nb_samples); // in buffer
+
+                    memcpy(output_samples, frame_s16, data_size);
+                    output_samples += total_nb_samples;
+                    this->at->set_end_of_samples(this->at->get_end_of_samples() + total_nb_samples);
+                }
                 else // Non recognized byte format.
                 {
                     decoding_done = true;
@@ -342,6 +381,10 @@ Audio_file_decoding_process::decode()
     av_free(frame);
     avcodec_close(codec_context);
     avformat_close_input(&format_context);
+    if (swr != nullptr)
+    {
+        swr_free(&swr);
+    }
 
     // Maybe the sample rate used by the sound card to play the file is not the same as
     // the one of the audio file, so convert it if necessary.
