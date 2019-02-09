@@ -5,8 +5,6 @@ compiler: gcc
 
 addons:
   apt:
-    sources:
-    - ppa:chris-lea/redis-server
     packages:
     - qt5-default
     - libjack-jackd2-dev
@@ -18,17 +16,20 @@ addons:
     - libfftw3-dev
     - yasm
     - libswresample-dev
+    - libavformat-dev
+    - libavcodec-dev
+    - libavutil-dev
 
 before_install:
   - git clone https://github.com/jrosener/libKeyFinder.git
   - cd libKeyFinder && qmake && make && sudo make install
   - cd ..
-  - wget https://libav.org/releases/libav-12.3.tar.gz --no-check-certificate
-  - tar xvzf libav-12.3.tar.gz
-  - cd libav-12.3
-  - ./configure --enable-gpl --enable-nonfree --enable-shared
-  - make && sudo make install && sudo ldconfig
-  - cd ..
+  #- wget https://libav.org/releases/libav-12.3.tar.gz --no-check-certificate
+  #- tar xvzf libav-12.3.tar.gz
+  #- cd libav-12.3
+  #- ./configure --enable-gpl --enable-nonfree --enable-shared
+  #- make && sudo make install && sudo ldconfig
+  #- cd ..
 script:
   - cd libdigitalscratch && qmake && make && sudo make install
   - make clean && qmake CONFIG+=test && make
