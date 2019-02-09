@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=DigitalScratch
 GenericName=DJ player
+GenericName[fr]=Lecteur DJ
 Comment=A digital DJ player controlled by vinyl turntable
+Comment[fr]=Un lecteur DJ numérique contrôlé par une platine vinyle
 Exec=digitalscratch
 Terminal=false
 Type=Application
