@@ -5,8 +5,6 @@ compiler: gcc
 
 addons:
   apt:
-    sources:
-    - ppa:mc3man/xerus-media
     packages:
     - qt5-default
     - libjack-jackd2-dev
@@ -17,7 +15,9 @@ addons:
     - libboost-all-dev
     - libfftw3-dev
     - yasm
-    - libswresample-dev
+#    - libswresample-dev
+  snaps:
+  - ffmpeg
 
 before_install:
   - git clone https://github.com/jrosener/libKeyFinder.git
