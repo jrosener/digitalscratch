@@ -648,21 +648,21 @@ Gui::show_about_window()
 
     QLabel libavcodec_version((QString("- libavcodec v")
                                + QString::number(LIBAVCODEC_VERSION_MAJOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MINOR) + QString(".") + QString::number(LIBAVCODEC_VERSION_MICRO)).toUtf8()
-                               + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+                               + ", <a style=\"color: grey\" href=\"https://www.ffmpeg.org/libavcodec.html\">https://www.ffmpeg.org/libavcodec.html</a>");
     libavcodec_version.setTextFormat(Qt::RichText);
     libavcodec_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
     libavcodec_version.setOpenExternalLinks(true);
 
     QLabel libavformat_version((QString("- libavformat v")
                                 + QString::number(LIBAVFORMAT_VERSION_MAJOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MINOR) + QString(".") + QString::number(LIBAVFORMAT_VERSION_MICRO)).toUtf8()
-                                + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+                                + ", <a style=\"color: grey\" href=\"https://www.ffmpeg.org/libavformat.html\">https://www.ffmpeg.org/libavformat.html</a>");
     libavformat_version.setTextFormat(Qt::RichText);
     libavformat_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
     libavformat_version.setOpenExternalLinks(true);
 
     QLabel libavutil_version((QString("- libavutil v")
                               + QString::number(LIBAVUTIL_VERSION_MAJOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MINOR) + QString(".") + QString::number(LIBAVUTIL_VERSION_MICRO)).toUtf8()
-                              + ", <a style=\"color: grey\" href=\"http://www.libav.org\">http://www.libav.org</a>");
+                              + ", <a style=\"color: grey\" href=\"https://www.ffmpeg.org/libavutil.html\">https://www.ffmpeg.org/libavutil.html</a>");
     libavutil_version.setTextFormat(Qt::RichText);
     libavutil_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
     libavutil_version.setOpenExternalLinks(true);

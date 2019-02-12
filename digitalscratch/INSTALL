@@ -11,25 +11,26 @@
 -- Building requirements -------------------------------------------------------
 
 [Compiler]
-- GCC (g++-4.x):           http://gcc.gnu.org
+- GCC (g++-5.x):           http://gcc.gnu.org
 or
 - MS VS 2013 Community:    https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx
 
 [Libraries]
 - Qt SDK (qt5.x):          http://www.qt.io
-- LibAV:                   https://libav.org
+- FFmpeg:                  https://www.ffmpeg.org/
 - Digital Scratch library: http://www.digital-scratch.org
 - Sample rate library:     http://www.mega-nerd.com/SRC/
 - JACK library:            http://jackaudio.org
 - LibKeyFinder:            http://www.ibrahimshaath.co.uk/keyfinder/
 - ALSA library:            http://www.alsa-project.org
 
-[Ubuntu 15.04]
+[Ubuntu 18.10]
 - build-essential
 - qt5-default
 - libavformat-dev
 - libavcodec-dev
 - libavutil-dev
+- libswresample-dev
 - libjack-jackd2-dev
 - libsamplerate0-dev
 - qtmultimedia5-dev
