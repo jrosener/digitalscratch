@@ -35,6 +35,7 @@
 #include <string>
 #include <QObject>
 #include <QString>
+#include <QStringList>
 
 #include <app/application_const.h>
 
@@ -54,6 +55,7 @@ class Audio_track : public QObject
     QString            hash;                      // Hash of the first kbytes of the file.
     QString            music_key;                 // The main musical key of the track.
     QString            music_key_tag;             // The main musical key of the track (get from metadata tag).
+    QStringList        tags;                      // A list of tags associated to the track.
 
  public:
     explicit Audio_track(const unsigned int &sample_rate);   // Does not contains any samples.
@@ -83,4 +85,6 @@ class Audio_track : public QObject
     bool              set_music_key(const QString &key);                      // Set music key of the track.
     QString           get_music_key_tag() const;                              // Get music key of the track (from tag).
     bool              set_music_key_tag(const QString &key_tag);              // Set music key of the track (from tag).
+    QStringList       get_tags() const;                                       // Get a list of tags associated to the track.
+    bool              set_tags(const QStringList &tags);                      // Set a list of tags associated to the track.
 };

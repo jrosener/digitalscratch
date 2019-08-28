@@ -356,12 +356,13 @@ Audio_file_decoding_process::decode()
                     }
                     int data_size = total_nb_samples * sizeof(short signed int);
 
-                    unsigned char *frame_s16 = new unsigned char[data_size];
+                    uint8_t* frame_s16;
+                    av_samples_alloc(&frame_s16, NULL, codec_context->channels, frame->nb_samples * codec_context->channels, AV_SAMPLE_FMT_FLTP, 0);
                     swr_convert(swr,
                                 &frame_s16, frame->nb_samples * codec_context->channels, // out buffer
                                 (const uint8_t **)frame->extended_data, frame->nb_samples); // in buffer
-
                     memcpy(output_samples, frame_s16, data_size);
+                    av_freep(&frame_s16);
                     output_samples += total_nb_samples;
                     this->at->set_end_of_samples(this->at->get_end_of_samples() + total_nb_samples);
                 }
@@ -379,7 +380,7 @@ Audio_file_decoding_process::decode()
 
     // Cleanup.
     av_free(frame);
-    avcodec_close(codec_context);
+    avcodec_free_context(&codec_context);
     avformat_close_input(&format_context);
     if (swr != nullptr)
     {

@@ -33,11 +33,12 @@
 #include "app/application_logging.h"
 
 // Map logging categories to real name.
-Q_LOGGING_CATEGORY(DS_OBJECTLIFE,  "ds.objectlife")
-Q_LOGGING_CATEGORY(DS_APPSETTINGS, "ds.appsettings")
-Q_LOGGING_CATEGORY(DS_FILE,        "ds.file")
-Q_LOGGING_CATEGORY(DS_PLAYBACK,    "ds.playback")
-Q_LOGGING_CATEGORY(DS_MUSICKEY,    "ds.musickey")
-Q_LOGGING_CATEGORY(DS_SOUNDCARD,   "ds.soundcard")
-Q_LOGGING_CATEGORY(DS_DB,          "ds.db")
-Q_LOGGING_CATEGORY(DS_DICER,       "ds.dicer")
+Q_LOGGING_CATEGORY(DS_OBJECTLIFE,  "ds.objlife",  QtWarningMsg)
+Q_LOGGING_CATEGORY(DS_APPSETTINGS, "ds.appstgs",  QtWarningMsg)
+Q_LOGGING_CATEGORY(DS_FILE,        "ds.file",     QtDebugMsg)
+Q_LOGGING_CATEGORY(DS_PLAYBACK,    "ds.playback", QtWarningMsg)
+Q_LOGGING_CATEGORY(DS_MUSICKEY,    "ds.musickey", QtWarningMsg)
+Q_LOGGING_CATEGORY(DS_SOUNDCARD,   "ds.sndcard",  QtWarningMsg)
+Q_LOGGING_CATEGORY(DS_DB,          "ds.db",       QtDebugMsg)
+Q_LOGGING_CATEGORY(DS_DICER,       "ds.dicer",    QtWarningMsg)
+Q_LOGGING_CATEGORY(DS_GUI,         "ds.gui",      QtDebugMsg)

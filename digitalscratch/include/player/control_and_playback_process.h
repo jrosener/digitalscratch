@@ -81,5 +81,5 @@ class Control_and_playback_process : public QObject
     void kill();
 
  signals:
-    void killed();
+    void terminated();
 };

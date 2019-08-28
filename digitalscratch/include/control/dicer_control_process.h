@@ -103,15 +103,14 @@ class Dicer_control_process : public QObject
     snd_rawmidi_t *midi_in;       // Handler for reading MIDI messages.
     snd_rawmidi_t *midi_out;      // Handler for writing MIDI messages.
 #endif
-    QThread        reader_thread; // Worker thread that reads continuously MIDI messages.
     bool           is_open;       // True is MIDI device is opened.
 
  public:
     Dicer_control_process();
     virtual ~Dicer_control_process();
 
-    bool start();                 // Open Dicers and start the MIDI reader thread.
-    bool stop();                  // Stop the MIDI reader thread and close Dicers.
+    bool init();                 // Init and open Dicers.
+    bool stop();                 // Stop reading commands and close Dicers.
 
  private:
     bool extract_midi_buffer(const unsigned char    buf[],
@@ -127,8 +126,7 @@ class Dicer_control_process : public QObject
                            unsigned char               (&io_buf)[3]);
 
  private slots:
-    void exec_midi_commands_reader_process();                        // The main MIDI reader method (executed in
-                                                                     // the worker thread).
+    void start();   // The main MIDI reader method (executed in the worker thread).
 
  public slots:
     bool set_button_state(const dicer_t              &dicer_index,
@@ -146,4 +144,6 @@ class Dicer_control_process : public QObject
     void button_released(const dicer_t        &dicer_index,          // Sent when the user released a pad button
                          const dicer_mode_t   &mode,                 // (or on the mode button + a pad button).
                          const dicer_button_t &button_index);
+
+    void terminated();
 };

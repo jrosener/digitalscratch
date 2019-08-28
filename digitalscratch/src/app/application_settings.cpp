@@ -167,9 +167,6 @@ Application_settings::init_settings()
     if (this->settings.contains(KB_PLAY_CUE_POINT4_ON_DECK) == false) {
         this->settings.setValue(KB_PLAY_CUE_POINT4_ON_DECK, KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT);
     }
-    if (this->settings.contains(KB_COLLAPSE_BROWSER) == false) {
-        this->settings.setValue(KB_COLLAPSE_BROWSER, KB_COLLAPSE_BROWSER_DEFAULT);
-    }
     if (this->settings.contains(KB_LOAD_TRACK_ON_SAMPLER1) == false) {
         this->settings.setValue(KB_LOAD_TRACK_ON_SAMPLER1, KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT);
     }

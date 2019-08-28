@@ -33,7 +33,7 @@
 #include <log.h>
 
 // Map logging categories to real name.
-Q_LOGGING_CATEGORY(DSLIB_ANALYZEVINYL,  "dslib.analyzevinyl")
-Q_LOGGING_CATEGORY(DSLIB_CONTROLLER,    "dslib.controller")
-Q_LOGGING_CATEGORY(DSLIB_API,           "dslib.api")
-Q_LOGGING_CATEGORY(DSLIB_SPEED,         "dslib.speed")
+Q_LOGGING_CATEGORY(DSLIB_ANALYZEVINYL,  "dslib.analyzevinyl", QtWarningMsg)
+Q_LOGGING_CATEGORY(DSLIB_CONTROLLER,    "dslib.controller", QtWarningMsg)
+Q_LOGGING_CATEGORY(DSLIB_API,           "dslib.api, QtWarningMsg")
+Q_LOGGING_CATEGORY(DSLIB_SPEED,         "dslib.speed", QtWarningMsg)

@@ -100,7 +100,7 @@ void
 Control_and_playback_process::kill()
 {
     this->sound_card->stop();
-    emit killed();
+    emit terminated();
 }
 
 

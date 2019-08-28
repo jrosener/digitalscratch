@@ -340,10 +340,18 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
         {
             // Audio track not found.
             result = false;
+            qCDebug(DS_DB) << "audio track not found in DB, hash: " << io_at->get_hash();
         }
 
         // Release the DB connection.
         this->mutex.unlock();
+
+        // Get the list of tags associated to that track.
+        QStringList tags;
+        if (this->get_tags_from_track(io_at, tags) == true)
+        {
+            io_at->set_tags(tags);
+        }
     }
 
     return result;
@@ -697,33 +705,47 @@ bool Data_persistence::delete_tag(const QString &name)
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_tag FROM TAG WHERE name=\"" + name + "\"");
+        QString select_str = "SELECT id_tag FROM TAG WHERE name=\"" + name + "\"";
+        QSqlQuery query = this->db.exec(select_str);
         if (query.lastError().isValid())
         {
             // Can not select tag in DB.
-            qCWarning(DS_DB) << "SELECT tag failed: " << query.lastError().text();
+            qCWarning(DS_DB) << "SELECT tag failed (" << query.lastError().text() << ") "
+                             << select_str;
             result = false;
         }
         else if (query.next() == true) // Check if there is a record.
         {
-            // The tag exists, remove it.
-            QSqlQuery query_tag = this->db.exec("DELETE FROM TAG WHERE id_tag=\"" + query.value(0).toString() + "\"");
-            if (query_tag.lastError().isValid())
+            // Delete all references to this tag for all tracks.
+            QString del_trtag_str = "DELETE FROM TRACK_TAG "
+                                "WHERE id_tag=\"" + query.value(0).toString() + "\"";
+            QSqlQuery query_track_tag = this->db.exec(del_trtag_str);
+            if (query_track_tag.lastError().isValid())
             {
-                // Can not delete tag.
-                qCWarning(DS_DB) << "DELETE tag failed: " << query_tag.lastError().text();
+                // Can not delete track/tag.
+                qCWarning(DS_DB) << "DELETE track/tag failed (" << query_track_tag.lastError().text() << ") "
+                                 << del_trtag_str;
                 result = false;
             }
             else
             {
-                // Delete also all references to this tag for all tracks.
-                QSqlQuery query_track_tag = this->db.exec("DELETE FROM TRACK_TAG "
-                                                          "WHERE id_tag=\"" + query.value(0).toString() + "\"");
-                if (query_track_tag.lastError().isValid())
+                // All references to the tag has been deleted.
+                qCDebug(DS_DB) << "DELETE track/tag success: " << del_trtag_str;
+
+                // Now remove the tag itself.
+                QString del_tag_str = "DELETE FROM TAG WHERE id_tag=\"" + query.value(0).toString() + "\"";
+                QSqlQuery query_tag = this->db.exec(del_tag_str);
+                if (query_tag.lastError().isValid())
                 {
-                    // Can not delete track/tag.
-                    qCWarning(DS_DB) << "DELETE track/tag failed: " << query_track_tag.lastError().text();
+                    // Can not delete tag.
+                    qCWarning(DS_DB) << "DELETE tag failed (" << query_tag.lastError().text() << ") "
+                                     << del_tag_str;
                     result = false;
+                }
+                else
+                {
+                    // The tag has been deleted.
+                    qCDebug(DS_DB) << "DELETE tag success: " << del_tag_str;
                 }
             }
         }

@@ -61,6 +61,7 @@
 #include <QDateTime>
 #include <QFileDialog>
 #include <QThread>
+#include <QDialogButtonBox>
 #include <math.h>
 #include <digital_scratch.h>
 #include <keyfinder_api.h>
@@ -75,6 +76,7 @@
 #include "tracks/audio_collection_model.h"
 #include "tracks/playlist.h"
 #include "tracks/playlist_persistence.h"
+#include "tracks/data_persistence.h"
 #include "utils.h"
 #include "singleton.h"
 
@@ -146,7 +148,7 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     // Run the external controler Novation Dicer.
     this->dicer_control = dicer_control;
     this->connect_dicer_actions();
-    if (this->dicer_control->start() != true)
+    if (this->dicer_control->init() != true)
     {
         qCWarning(DS_DICER) << "can not start Dicer";
     }
@@ -224,7 +226,6 @@ Gui::apply_application_settings()
 
     // Change shortcuts.
     this->shortcut_switch_playback->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SWITCH_PLAYBACK)));
-    this->shortcut_collapse_browser->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER)));
     this->shortcut_load_audio_file->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_DECK)));
     this->shortcut_go_to_begin->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAY_BEGIN_TRACK_ON_DECK)));
     if (this->shortcut_load_samples.size() >= 1)
@@ -386,8 +387,24 @@ Gui::analyze_audio_collection(const bool &is_all_files)
     this->progress_label->setText(tr("Analysing audio collection..."));
     this->progress_groupbox->show();
 
-    // Compute data on file collection and store them to DB.
+    // Compute data on file collection in a concurrent way.
+    // Then store them to DB in a sequential way.
     this->file_system_model->concurrent_analyse_audio_collection();
+}
+
+void
+Gui::analyze_audio_selection(QList<Audio_collection_item *> &items)
+{
+    // Analyzis not running, show a popup asking for a full refresh or only for new files.
+    this->settings->set_audio_collection_full_refresh(true);
+
+    // Show progress bar.
+    this->progress_label->setText(tr("Analysing audio selection..."));
+    this->progress_groupbox->show();
+
+    // Compute data on file collection in a concurrent way.
+    // Then store them to DB in a sequential way.
+    this->file_system_model->concurrent_analyse_audio_selection(items);
 }
 
 void
@@ -395,7 +412,7 @@ Gui::update_refresh_progress_value(const unsigned int &value)
 {
     this->progress_bar->setValue(value);
 
-    if (this->file_system_model->concurrent_watcher_store->isRunning() == true)
+    if (this->file_system_model->concurrent_watcher_analyze->isRunning() == true)
     {
         // Refresh file browser during running file analyzis and storage.
         this->file_browser->update();
@@ -405,12 +422,15 @@ Gui::update_refresh_progress_value(const unsigned int &value)
 void
 Gui::on_finished_analyze_audio_collection()
 {
+    // Audio collection analyzed (mainly computing music key)
+    // Store audio items to DB.
+    this->file_system_model->write_collection_to_db();
+
     // Hide progress bar.
     this->progress_label->setText("");
     this->progress_groupbox->hide();
 
-    // Refresh file browser.
-    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
+    // Uncheck SCAN KEYS button.
     this->scan_audio_keys_button->setEnabled(true);
     this->scan_audio_keys_button->setChecked(false);
 }
@@ -467,7 +487,7 @@ bool
 Gui::show_scan_audio_keys_dialog()
 {
     // Show dialog only if there is no other analyzis process running.
-    if (this->file_system_model->concurrent_watcher_store->isRunning() == false)
+    if (this->file_system_model->concurrent_watcher_analyze->isRunning() == false)
     {
         // Create the dialog object.
         if (this->scan_audio_keys_dialog != nullptr)
@@ -542,6 +562,198 @@ Gui::show_scan_audio_keys_dialog()
     }
 
     return true;
+}
+
+int
+Gui::show_add_new_tag_dialog()
+{
+    // Create dialog.
+    QDialog add_dialog(this->window);
+    add_dialog.setWindowTitle(tr("New tag..."));
+    add_dialog.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
+    {
+        add_dialog.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        add_dialog.setWindowIcon(QIcon(ICON));
+    }
+
+    // "Enter new tag".
+    QHBoxLayout *question_layout = new QHBoxLayout();
+    QLabel *enter_tag_label = new QLabel(tr("Enter new tag"));
+    question_layout->addWidget(enter_tag_label);
+    QLineEdit *new_tag_edit = new QLineEdit();
+    question_layout->addWidget(new_tag_edit);
+
+    // 2 buttons: OK and Cancel.
+    QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Ok |
+                                                       QDialogButtonBox::Cancel,
+                                                       Qt::Horizontal);
+    QObject::connect(button_box, &QDialogButtonBox::accepted,
+                     [this, &add_dialog, new_tag_edit]()
+                            {
+                                this->create_tag(new_tag_edit->text());
+                                add_dialog.accept();
+                            });
+    QObject::connect(button_box, &QDialogButtonBox::rejected, [&add_dialog](){add_dialog.close();});
+
+    // Show dialog.
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(question_layout);
+    layout->addWidget(button_box);
+    add_dialog.setLayout(layout);
+
+    return add_dialog.exec();
+}
+
+void
+Gui::create_tag(const QString &tag)
+{
+    if (tag.isEmpty() == false)
+    {
+        // Add tag to database.
+        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+        data_persist->store_tag(tag);
+
+        // Refresh list of tags.
+        this->refresh_show_hide_tag_buttons();
+    }
+
+    return;
+}
+
+int
+Gui::show_delete_tag_dialog(const QString &tag)
+{
+    // Create dialog.
+    QDialog del_dialog(this->window);
+    del_dialog.setWindowTitle(tr("Delete tag..."));
+    del_dialog.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
+    {
+        del_dialog.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        del_dialog.setWindowIcon(QIcon(ICON));
+    }
+
+    // "Delete the tag xxx ?".
+    QHBoxLayout *question_layout = new QHBoxLayout();
+    QLabel *del_tag_label = new QLabel(tr("Delete the tag") + " '" + tag + "'?");
+    question_layout->addWidget(del_tag_label);
+
+    // 2 buttons: OK and Cancel.
+    QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Ok |
+                                                        QDialogButtonBox::Cancel,
+                                                        Qt::Horizontal);
+    QObject::connect(button_box, &QDialogButtonBox::accepted,
+                     [this, &del_dialog, tag]()
+                     {
+                         this->delete_tag(tag);
+                         del_dialog.accept();
+                     });
+    QObject::connect(button_box, &QDialogButtonBox::rejected,
+                     [&del_dialog]()
+                     {
+                        del_dialog.close();
+                     });
+
+    // Show dialog.
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(question_layout);
+    layout->addWidget(button_box);
+    del_dialog.setLayout(layout);
+
+    return del_dialog.exec();
+}
+
+void
+Gui::delete_tag(const QString &tag)
+{
+    if (tag.isEmpty() == false)
+    {
+        // Delete tag from database.
+        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+        data_persist->delete_tag(tag);
+
+        // Refresh list of tags.
+        this->refresh_show_hide_tag_buttons();
+
+        // Refresh file browser.
+        emit this->folder_browser->doubleClicked(this->folder_browser->currentIndex());
+    }
+
+    return;
+}
+
+int
+Gui::show_rename_tag_dialog(const QString &tag)
+{
+    // Create dialog.
+    QDialog rename_dialog(this->window);
+    rename_dialog.setWindowTitle(tr("Rename tag..."));
+    rename_dialog.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
+    {
+        rename_dialog.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        rename_dialog.setWindowIcon(QIcon(ICON));
+    }
+
+    // "Rename to ".
+    QHBoxLayout *question_layout = new QHBoxLayout();
+    QLabel *rename_tag_label = new QLabel(tr("Rename tag to"));
+    question_layout->addWidget(rename_tag_label);
+    QLineEdit *new_tag_edit = new QLineEdit();
+    question_layout->addWidget(new_tag_edit);
+
+    // 2 buttons: OK and Cancel.
+    QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Ok |
+                                                        QDialogButtonBox::Cancel,
+                                                        Qt::Horizontal);
+    QObject::connect(button_box, &QDialogButtonBox::accepted,
+                     [this, &rename_dialog, tag, new_tag_edit]()
+                     {
+                         this->rename_tag(tag, new_tag_edit->text());
+                         rename_dialog.accept();
+                     });
+    QObject::connect(button_box, &QDialogButtonBox::rejected,
+                     [&rename_dialog]()
+                     {
+                        rename_dialog.close();
+                     });
+
+    // Show dialog.
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(question_layout);
+    layout->addWidget(button_box);
+    rename_dialog.setLayout(layout);
+
+    return rename_dialog.exec();
+}
+
+void
+Gui::rename_tag(const QString &tag, const QString &new_name)
+{
+    if (tag.isEmpty() == false)
+    {
+        // Rename tag into database.
+        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+        data_persist->rename_tag(tag, new_name);
+
+        // Refresh list of tags.
+        this->refresh_show_hide_tag_buttons();
+
+        // Refresh file browser.
+        emit this->folder_browser->doubleClicked(this->folder_browser->currentIndex());
+    }
+
+    return;
 }
 
 void
@@ -790,6 +1002,7 @@ Gui::create_main_window()
     this->init_samplers_area();
     this->init_file_control_area();
     this->init_file_browser_area();
+    this->init_tags_area();
     this->init_menu_area();
     this->init_bottom_help();
     this->init_bottom_status();
@@ -800,6 +1013,7 @@ Gui::create_main_window()
     this->connect_decks_and_samplers_selection();
     this->connect_file_browser_area();
     this->connect_file_control_area();
+    this->connect_tags_area();
     this->connect_menu_area();
 
     // Create main window.
@@ -824,7 +1038,7 @@ Gui::create_main_window()
     main_layout->addLayout(this->decks_layout,                30);
     main_layout->addWidget(this->samplers_container,          5);
     main_layout->addLayout(this->file_control_buttons_layout, 0);
-    main_layout->addLayout(this->file_and_menu_layout,        65);
+    main_layout->addLayout(this->file_tags_and_menu_layout,   65);
     main_layout->addLayout(this->bottom_layout,               0);
     main_layout->addLayout(this->status_layout,               0);
 
@@ -838,6 +1052,7 @@ Gui::create_main_window()
     // Open error window.
     QObject::connect(this->sound_card.data(), &Audio_IO_control_rules::error_msg,
                      [this](QString in_error_message){this->show_error_window(in_error_message);});
+
     return true;
 }
 
@@ -1194,6 +1409,39 @@ Gui::connect_file_control_area()
     return;
 }
 
+bool BrowserQSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex index2 = this->sourceModel()->index(source_row, 2, source_parent); // Tags
+
+    // Get list of tags applied to the track.
+    QRegularExpression exp("\\s(?!\\w)");
+    QStringList tags = this->sourceModel()->data(index2).toString().split(exp);
+    tags.removeAll(QString(""));
+
+    // Get list of tags that will be filtered.
+    QString filter_str = this->filterRegExp().pattern().replace("[", "\\[");
+    filter_str = filter_str.replace("]", "\\]");
+
+    // If there is no tags on this track and "UNTAGGED" is in the filter, then show the track.
+    if ((tags.isEmpty() == true)
+            && (filter_str.contains("UNTAGGED") == true)
+            && (filter_str.contains("[UNTAGGED]") == false))
+    {
+        return true;
+    }
+
+    // Check if a tag is in the filter list.
+    QStringList filtered_tags = tags.filter(QRegularExpression(filter_str));
+    if (filtered_tags.isEmpty() || filter_str.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 void
 Gui::init_file_browser_area()
 {
@@ -1212,9 +1460,11 @@ Gui::init_file_browser_area()
 
     // Create the file browser (track browser).
     this->file_system_model = new Audio_collection_model();
-    this->file_browser      = new QTreeView();
-    this->file_browser->setModel(this->file_system_model);
-    this->file_browser->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->proxy_model = new BrowserQSortFilterProxyModel();
+    this->proxy_model->setSourceModel(this->file_system_model);
+    this->file_browser = new QTreeView();
+    this->file_browser->setModel(this->proxy_model);
+    this->file_browser->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->file_browser->setDragEnabled(true);
     this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
     this->file_browser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -1255,8 +1505,173 @@ Gui::init_file_browser_area()
     this->file_browser_gbox->setLayout(file_browser_layout);
     this->file_browser_gbox->setTitle(this->settings->get_tracks_base_dir_path());
 
-    this->file_and_menu_layout = new QHBoxLayout();
-    this->file_and_menu_layout->addWidget(this->file_browser_gbox, 50);
+    this->file_tags_and_menu_layout = new QHBoxLayout();
+    this->file_tags_and_menu_layout->addWidget(this->file_browser_gbox, 50);
+}
+
+void
+Gui::init_tags_area()
+{
+    // Button: add a new tag.
+    this->add_new_tag_button = new QPushButton(tr("New..."));
+    this->add_new_tag_button->setObjectName("Add_new_tag_button");
+    this->add_new_tag_button->setToolTip(tr("Add a new tag which could be applied to audio track."));
+    this->add_new_tag_button->setCheckable(false);
+
+    // TODO Separator: start the SHOW TAG section.
+
+    // TODO Select case: select all tag (= show all files = enable all tag buttons) (not checked means unselect all tags)
+
+    // Button 1: show/hide the untagged files.
+    this->show_hide_untagged_files_button = new QPushButton(tr("untagged"));
+    this->show_hide_untagged_files_button->setObjectName("Show_hide_tag_button");
+    this->show_hide_untagged_files_button->setToolTip(tr("Show/hide untagged files"));
+    this->show_hide_untagged_files_button->setCheckable(true);
+    this->show_hide_untagged_files_button->setChecked(true);
+
+    // Buttons 2, 3,... (for each existing tags): show/hide file containing the tag
+    // + context menu with 2 actions: Rename and Delete.
+    this->show_hide_tagged_files_layout = new QVBoxLayout();
+    this->init_and_connect_show_hide_tag_buttons();
+
+    // Full layout and group box for the tag area,
+    QVBoxLayout *tags_layout = new QVBoxLayout();
+    tags_layout->addWidget(this->add_new_tag_button);
+    tags_layout->addWidget(this->show_hide_untagged_files_button);
+    tags_layout->addLayout(this->show_hide_tagged_files_layout);
+    tags_layout->addStretch(100);
+    this->tags_gbox = new QGroupBox();
+    this->tags_gbox->setLayout(tags_layout);
+    this->tags_gbox->setTitle(tr("Tags"));
+    this->file_tags_and_menu_layout->addWidget(this->tags_gbox);
+}
+
+void
+Gui::init_and_connect_show_hide_tag_buttons()
+{
+    // Get list of existing tags in database.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    QStringList full_available_tags;
+    data_persist->get_full_tag_list(full_available_tags);
+
+    // Populate the list of button with a new button for each tag.
+    this->show_hide_tagged_files_buttons .clear();
+    foreach (const QString &str, full_available_tags)
+    {
+        QPushButton *tag_btn = new QPushButton();
+        tag_btn->setText(str);
+        tag_btn->setObjectName("Show_hide_tag_button");
+        tag_btn->setToolTip(tr("Show/hide files labelled: ") + "'" + str + "'");
+        tag_btn->setCheckable(true);
+        tag_btn->setChecked(true);
+        tag_btn->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+        // Button click: show/hide files tagged with that tag in the file browser.
+        QObject::connect(tag_btn, &QPushButton::clicked,
+                         [this]()
+                         {
+                            this->filter_tagged_files();
+                         });
+
+        // Button right-click: delete this tag from the database
+        // (and untagged all files labelled with this tag).
+        QAction *del_action = new QAction(tr("Delete tag..."), this);
+        QObject::connect(del_action, &QAction::triggered,
+                         [this, tag_btn]()
+                         {
+                            this->show_delete_tag_dialog(tag_btn->text());
+                         });
+
+        tag_btn->addAction(del_action);
+
+        // Button right-click: rename this tag
+        // (and update file browser to show the new tag name)
+        QAction *rename_action = new QAction(tr("Rename tag..."), this);
+        QObject::connect(rename_action, &QAction::triggered,
+                         [this, tag_btn]()
+                         {
+                            this->show_rename_tag_dialog(tag_btn->text());
+                         });
+
+        tag_btn->addAction(rename_action);
+
+        // Add button to the layout.
+        this->show_hide_tagged_files_layout->addWidget(tag_btn);
+
+        // Store buttons to an internal list.
+        this->show_hide_tagged_files_buttons << tag_btn;
+    }
+
+    return;
+}
+
+void
+Gui::refresh_show_hide_tag_buttons()
+{
+    // Clean the layout containing buttons for tags.
+    QLayoutItem *item;
+    while((item = this->show_hide_tagged_files_layout->itemAt(0)) != nullptr)
+    {
+        QWidget *widget = item->widget();
+        if (widget != nullptr)
+        {
+            this->show_hide_tagged_files_layout->removeWidget(widget);
+            widget->setParent(nullptr);
+            widget->deleteLater();
+        }
+    }
+
+    // Populate again the list of buttons.
+    this->init_and_connect_show_hide_tag_buttons();
+
+    return;
+}
+
+void
+Gui::connect_tags_area()
+{
+    // Add a new tag.
+    QObject::connect(this->add_new_tag_button, &QPushButton::clicked,
+                     [this](){this->show_add_new_tag_dialog();});
+
+    // Untagged button behavior.
+    QObject::connect(this->show_hide_untagged_files_button, &QPushButton::clicked,
+                     [this]()
+                     {
+                        this->filter_tagged_files();
+                     });
+
+    return;
+}
+
+void
+Gui::filter_tagged_files()
+{
+    QString exp = "";
+
+    // Add "UNTAGGED" in the filter if we want to see untagged files.
+    if (this->show_hide_untagged_files_button->isChecked() == true)
+    {
+        exp += "UNTAGGED|";
+    }
+
+    // Get what to filter based on tag buttons status (checked or not).
+    foreach (QPushButton *btn, this->show_hide_tagged_files_buttons)
+    {
+        if (btn->isChecked() == true)
+        {
+            exp += "[" + btn->text() + "]|";
+        }
+    }
+
+    // Remove the last '|' of the filter.
+    if ((exp.isEmpty() == false) && (exp[exp.length()-1] == '|'))
+    {
+        exp.remove(exp.length()-1, 1);
+    }
+
+    this->proxy_model->setFilterRegExp(QRegExp(exp, Qt::CaseInsensitive,
+                                               QRegExp::FixedString));
 }
 
 void
@@ -1266,21 +1681,14 @@ Gui::clean_file_browser_area()
     delete this->treeview_icon_provider;
     delete this->folder_system_model;
     delete this->file_system_model;
+    delete this->proxy_model;
 }
 
 void
 Gui::connect_file_browser_area()
 {
-    // Open folder or playlist from file browser on double click.
+    // Open folder or playlist from folder browser on double click.
     QObject::connect(this->folder_browser, &QTreeView::doubleClicked, [this](const QModelIndex &index){this->on_file_browser_double_click(index);});
-
-    // Resize column with file name when expanding/collapsing a directory.
-    QObject::connect(this->file_browser, &QTreeView::expanded,  [this](const QModelIndex &index){this->on_file_browser_expand(index);});
-    QObject::connect(this->file_browser, &QTreeView::collapsed, [this](const QModelIndex &index){this->on_file_browser_expand(index);});
-
-    // Connect the keyboard shortcut that collapse tree.
-    this->shortcut_collapse_browser = new QShortcut(this->file_browser);
-    QObject::connect(this->shortcut_collapse_browser, &QShortcut::activated, [this](){this->file_browser->collapseAll();});
 
     // Connect the keyboard shortcut to start decoding process on selected file.
     this->shortcut_load_audio_file = new QShortcut(this->file_browser);
@@ -1301,38 +1709,14 @@ Gui::connect_file_browser_area()
         QObject::connect(shortcut_load_sample, &QShortcut::activated, [this, j](){this->run_sampler_decoding_process(j);});
     }
 
-    // Connect thread states for audio collection read and write to DB.
+    // Connect thread states for reading audio collection from DB and analyzing collection.
     QObject::connect(this->file_system_model->concurrent_watcher_read.data(), &QFutureWatcher<void>::finished, [this](){this->sync_file_browser_to_audio_collection();});
-    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), &QFutureWatcher<void>::finished, [this](){this->on_finished_analyze_audio_collection();});
+    QObject::connect(this->file_system_model->concurrent_watcher_analyze.data(), &QFutureWatcher<void>::finished, [this](){this->on_finished_analyze_audio_collection();});
 
-    // Add context menu for file browser (load track).
-    for (unsigned short int i = 0; i < this->nb_decks; i++)
-    {
-        QAction *load_action = new QAction(tr("Load on deck ") + QString::number(i+1), this);
-        load_action->setStatusTip(tr("Load selected track to deck ") + QString::number(i+1));
-        QObject::connect(load_action, &QAction::triggered, [this, i](){this->select_and_run_audio_file_decoding_process(i);});
-        this->file_browser->addAction(load_action);
-    }
-
-    // Add context menu for file browser (load sample).
-    this->file_browser->setContextMenuPolicy(Qt::ActionsContextMenu);
-    for (unsigned short int i = 0; i < this->nb_decks; i++)
-    {
-        QMenu *load_on_sampler_submenu = new QMenu(this->file_browser);
-        QString name("A");
-        for (unsigned short int j = 0; j < this->nb_samplers; j++)
-        {
-            QAction *load_on_sampler_action = new QAction(tr("Sampler ") + name, this);
-            load_on_sampler_action->setStatusTip(tr("Load selected track to sampler ")+ name);
-            QObject::connect(load_on_sampler_action, &QAction::triggered, [this, i, j](){this->select_and_run_sample_decoding_process(i, j);});
-            load_on_sampler_submenu->addAction(load_on_sampler_action);
-            name[0].unicode()++; // Next sampler letter.
-        }
-        QAction *load_on_sampler_main_action = new QAction(tr("Load on sampler ") + QString::number(i+1), this);
-        load_on_sampler_main_action->setMenu(load_on_sampler_submenu);
-        load_on_sampler_main_action->setStatusTip(tr("Load selected track to sampler ") + QString::number(i+1));
-        this->file_browser->addAction(load_on_sampler_main_action);
-    }
+    // Contextuel menu.
+    this->file_browser->setContextMenuPolicy(Qt::CustomContextMenu);
+    QObject::connect(this->file_browser, &QTreeView::customContextMenuRequested,
+                    [this](const QPoint &pos) { this->show_file_browser_ctx_menu(pos); });
 
     // Search bar for file browser.
     this->shortcut_file_search             = new QShortcut(this->window);
@@ -1345,10 +1729,10 @@ Gui::connect_file_browser_area()
     QObject::connect(this->file_search, &QLineEdit::returnPressed, [this](){this->press_enter_in_search_bar();});
     QObject::connect(this->shortcut_file_search_press_esc, &QShortcut::activated, [this](){this->press_esc_in_search_bar();});
 
-    // Progress for file analyzis and storage.
-    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), &QFutureWatcher<void>::progressRangeChanged,
+    // Progress for file analyzis.
+    QObject::connect(this->file_system_model->concurrent_watcher_analyze.data(), &QFutureWatcher<void>::progressRangeChanged,
                      [this](int minimum, int maximum){this->progress_bar->setRange(minimum, maximum);});
-    QObject::connect(this->file_system_model->concurrent_watcher_store.data(), &QFutureWatcher<void>::progressValueChanged,
+    QObject::connect(this->file_system_model->concurrent_watcher_analyze.data(), &QFutureWatcher<void>::progressValueChanged,
                      [this](int progressValue){this->update_refresh_progress_value(progressValue);});
 
     // Progress for reading file data from storage.
@@ -1363,6 +1747,337 @@ Gui::connect_file_browser_area()
 
     return;
 }
+
+void Gui::show_file_browser_ctx_menu(const QPoint &pos)
+{
+    // Get row on which the context menu has been triggered.
+    QModelIndex clicked_index = this->file_browser->indexAt(pos);
+    Audio_collection_item* clicked_item = this->get_audio_collection_item_from_file_browser_index(clicked_index);
+
+    // Convert the list of selected indexes to actual audio items.
+    QModelIndexList sel_indexes = this->file_browser->selectionModel()->selectedIndexes();
+    QList<Audio_collection_item*> sel_items;
+    foreach (QModelIndex index, sel_indexes)
+    {
+        if (index.column() == 0) // Column TRACK
+        {
+            Audio_collection_item* item = this->get_audio_collection_item_from_file_browser_index(index);
+            sel_items << item;
+        }
+    }
+
+    // Create context menu depending on single or multiple lines selected.
+    if (sel_items.isEmpty() == false)
+    {
+        QMenu *menu = new QMenu(this->file_browser);
+        menu->setAttribute(Qt::WA_DeleteOnClose);
+        if (sel_items.length() == 1)
+        {
+            // One track selected, show actions for:
+            // - loading on deck
+            // - loading on sampler
+            // - scan file
+            // - add tag (only the ones that are not already applied)
+            // - remove tag (only the ones that are already applied)
+            this->create_ctx_menu_1_track(menu, sel_items[0]);
+        }
+        else if (sel_items.length() > 1)
+        {
+            // Multiple track selected, show actions for:
+            // - scan files
+            // - add tag (all available tags)
+            // - remove tag (all available tags)
+            this->create_ctx_menu_multiple_tracks(menu, sel_items);
+        }
+        menu->popup(this->file_browser->viewport()->mapToGlobal(pos));
+    }
+
+    return;
+}
+
+void Gui::create_ctx_menu_multiple_tracks(QMenu *io_menu,
+                                          const QList<Audio_collection_item*> &items)
+{
+    // Scan files (get key, store the file to DB).
+    QAction *scan_action = new QAction(tr("Scan files"), this);
+    scan_action->setStatusTip(tr("Compute and store audio characteristics"));
+    QObject::connect(scan_action, &QAction::triggered,
+                     [this, items]()
+                     {
+                        QList<Audio_collection_item*> its(items);
+                        this->analyze_audio_selection(its);
+                     });
+    io_menu->addAction(scan_action);
+
+    // Add tag      => show the list of all existing tags
+    //    > house
+    //    > techno   => add the tag "techno" to the list of tag of selected tracks
+    //    > dnb
+    //    > dubstep
+    QAction *add_tag_main_action = new QAction(tr("Add tag"), this);
+    QMenu *add_tag_submenu = new QMenu(io_menu);
+    add_tag_main_action->setMenu(add_tag_submenu);
+    QObject::connect(add_tag_submenu, &QMenu::aboutToShow,
+                     [this, add_tag_submenu, items](){this->fill_add_tag_submenu_all_tags(add_tag_submenu, items);});
+    QObject::connect(add_tag_submenu, &QMenu::aboutToHide,
+                     [add_tag_submenu](){add_tag_submenu->clear();});
+    add_tag_main_action->setStatusTip(tr("Tag selected tracks"));
+    io_menu->addAction(add_tag_main_action);
+
+    // Remove tag   => show the list of all existing tags
+    //   > house
+    //   > techno
+    //   > dubstep
+    //   > dnb      => remove the tag "dnb" from the list of tag of selected tracks
+    QAction *rem_tag_main_action = new QAction(tr("Remove tag"), this);
+    QMenu *rem_tag_submenu = new QMenu(io_menu);
+    rem_tag_main_action->setMenu(rem_tag_submenu);
+    QObject::connect(rem_tag_submenu, &QMenu::aboutToShow,
+                     [this, rem_tag_submenu, items](){this->fill_rem_tag_submenu_all_tags(rem_tag_submenu, items);});
+    QObject::connect(rem_tag_submenu, &QMenu::aboutToHide,
+                     [rem_tag_submenu](){rem_tag_submenu->clear();});
+    rem_tag_main_action->setStatusTip(tr("Remove tag from selected tracks"));
+    io_menu->addAction(rem_tag_main_action);
+}
+
+void Gui::create_ctx_menu_1_track(QMenu *io_menu, Audio_collection_item *item)
+{
+    // Actions for loading the track on deck.
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        QAction *load_action = new QAction(tr("Load on deck ") + QString::number(i+1), this);
+        load_action->setStatusTip(tr("Load selected track to deck ") + QString::number(i+1));
+        QObject::connect(load_action, &QAction::triggered, [this, i](){this->select_and_run_audio_file_decoding_process(i);});
+        io_menu->addAction(load_action);
+    }
+
+    // Actions for loading the track on samplers.
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
+    {
+        QMenu *load_on_sampler_submenu = new QMenu(io_menu);
+        QString name("A");
+        for (unsigned short int j = 0; j < this->nb_samplers; j++)
+        {
+            QAction *load_on_sampler_action = new QAction(tr("Sampler ") + name, this);
+            load_on_sampler_action->setStatusTip(tr("Load selected track to sampler ")+ name);
+            QObject::connect(load_on_sampler_action, &QAction::triggered, [this, i, j](){this->select_and_run_sample_decoding_process(i, j);});
+            load_on_sampler_submenu->addAction(load_on_sampler_action);
+            name[0].unicode()++; // Next sampler letter.
+        }
+        QAction *load_on_sampler_main_action = new QAction(tr("Load on sampler ") + QString::number(i+1), this);
+        load_on_sampler_main_action->setMenu(load_on_sampler_submenu);
+        load_on_sampler_main_action->setStatusTip(tr("Load selected track to sampler ") + QString::number(i+1));
+        io_menu->addAction(load_on_sampler_main_action);
+    }
+
+    // Scan file (get key, store the file to DB).
+    QAction *scan_action = new QAction(tr("Scan file"), this);
+    scan_action->setStatusTip(tr("Compute and store audio characteristics"));
+    QObject::connect(scan_action, &QAction::triggered,
+                     [this, item]()
+                     {
+                        QList<Audio_collection_item*> items;
+                        items << item;
+                        this->analyze_audio_selection(items);
+                     });
+    io_menu->addAction(scan_action);
+
+    // Add tag      => show the list of all existing tags (except the one that are already applied)
+    //    > house
+    //    > techno   => add the tag "techno" to the list of tag of this track
+    //    > dnb
+    //    > dubstep
+    QAction *add_tag_main_action = new QAction(tr("Add tag"), this);
+    QMenu *add_tag_submenu = new QMenu(io_menu);
+    add_tag_main_action->setMenu(add_tag_submenu);
+    QObject::connect(add_tag_submenu, &QMenu::aboutToShow,
+                     [this, add_tag_submenu](){this->fill_add_tag_submenu(add_tag_submenu);});
+    QObject::connect(add_tag_submenu, &QMenu::aboutToHide,
+                     [add_tag_submenu](){add_tag_submenu->clear();});
+    add_tag_main_action->setStatusTip(tr("Tag this track"));
+    io_menu->addAction(add_tag_main_action);
+
+    // Remove tag   => show the list of tags for this particular track
+    //   > dubstep
+    //   > dnb      => remove the tag "dnb" from the list of tag of this track
+    QAction *rem_tag_main_action = new QAction(tr("Remove tag"), this);
+    QMenu *rem_tag_submenu = new QMenu(io_menu);
+    rem_tag_main_action->setMenu(rem_tag_submenu);
+    QObject::connect(rem_tag_submenu, &QMenu::aboutToShow,
+                     [this, rem_tag_submenu](){this->fill_rem_tag_submenu(rem_tag_submenu);});
+    QObject::connect(rem_tag_submenu, &QMenu::aboutToHide,
+                     [rem_tag_submenu](){rem_tag_submenu->clear();});
+    rem_tag_main_action->setStatusTip(tr("Remove tag from this track"));
+    io_menu->addAction(rem_tag_main_action);
+}
+
+void Gui::fill_add_tag_submenu(QMenu *io_submenu)
+{
+    // Get selected audio track.
+    Audio_collection_item *item = this->get_selected_audio_item();
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
+    at->set_hash(item->get_file_hash());
+    QFileInfo info(item->get_full_path());
+    if (info.isFile() == true)
+    {
+        // First clean the list of tags.
+        io_submenu->clear();
+
+        // Get the list of tags for the selected track.
+        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+        QStringList track_tags;
+        data_persist->get_tags_from_track(at, track_tags);
+
+        // Get the list of all tags available.
+        QStringList full_available_tags;
+        data_persist->get_full_tag_list(full_available_tags);
+
+        // Compute the list of tags that are still not applied to this track.
+        QSet<QString> tags_to_add = full_available_tags.toSet().subtract(track_tags.toSet());
+
+        // Create sub menu elements and associated actions.
+        foreach (const QString &str, tags_to_add)
+        {
+            QAction *add_tag_action = new QAction(str, this);
+            QObject::connect(add_tag_action, &QAction::triggered,
+                             [this, item, str](){this->add_tag_to_selected_track(item, str);});
+            io_submenu->addAction(add_tag_action);
+        }
+    }
+
+    return;
+}
+
+void Gui::fill_add_tag_submenu_all_tags(QMenu *io_submenu,
+                                        const QList<Audio_collection_item*> &items)
+{
+    // Get the list of all tags available.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    QStringList full_available_tags;
+    data_persist->get_full_tag_list(full_available_tags);
+
+    // Create sub menu elements and associated actions.
+    foreach (const QString &str, full_available_tags)
+    {
+        QAction *add_tag_action = new QAction(str, this);
+        QObject::connect(add_tag_action, &QAction::triggered,
+                         [this, items, str]()
+                         {
+                             foreach (Audio_collection_item* item, items)
+                             {
+                                 this->add_tag_to_selected_track(item, str);
+                             }
+                         });
+        io_submenu->addAction(add_tag_action);
+    }
+
+    return;
+}
+
+void Gui::fill_rem_tag_submenu_all_tags(QMenu *io_submenu,
+                                        const QList<Audio_collection_item*> &items)
+{
+    // Get the list of all tags available.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    QStringList full_available_tags;
+    data_persist->get_full_tag_list(full_available_tags);
+
+    // Create sub menu elements and associated actions.
+    foreach (const QString &str, full_available_tags)
+    {
+        QAction *rem_tag_action = new QAction(str, this);
+        QObject::connect(rem_tag_action, &QAction::triggered,
+                         [this, items, str]()
+                         {
+                             foreach (Audio_collection_item* item, items)
+                             {
+                                 this->rem_tag_from_selected_track(item, str);
+                             }
+                         });
+        io_submenu->addAction(rem_tag_action);
+    }
+
+    return;
+}
+
+void Gui::add_tag_to_selected_track(Audio_collection_item *browser_item, const QString &tag)
+{
+    // Tag this track (record in DB).
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
+    at->set_hash(browser_item->get_file_hash());
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    if (data_persist->add_tag_to_track(at, tag) == true)
+    {
+        // Get the new full list of tags.
+        QStringList tags;
+        if (data_persist->get_tags_from_track(at, tags) == true)
+        {
+            // Show new tag list for the selected item.
+            browser_item->set_tag_list(tags);
+        }
+    }
+    else
+    {
+        qCWarning(DS_DB) << "can not apply tag " << qPrintable(tag);
+    }
+
+    return;
+}
+
+void Gui::fill_rem_tag_submenu(QMenu *io_submenu)
+{
+    // Get selected audio track.
+    Audio_collection_item *item = this->get_selected_audio_item();
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
+    at->set_hash(item->get_file_hash());
+    QFileInfo info(item->get_full_path());
+    if (info.isFile() == true)
+    {
+        // First clean the list of tags.
+        io_submenu->clear();
+
+        // Get the list of tags for the selected track.
+        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+        QStringList track_tags;
+        data_persist->get_tags_from_track(at, track_tags);
+
+        // Create sub menu elements and associated actions.
+        foreach (const QString &str, track_tags)
+        {
+            QAction *rem_tag_action = new QAction(str, this);
+            QObject::connect(rem_tag_action, &QAction::triggered,
+                             [this, item, str](){this->rem_tag_from_selected_track(item, str);});
+            io_submenu->addAction(rem_tag_action);
+        }
+    }
+
+    return;
+}
+
+void Gui::rem_tag_from_selected_track(Audio_collection_item *browser_item, const QString &tag)
+{
+    // Remove the association track-tag (record in DB).
+    QSharedPointer<Audio_track> at(new Audio_track(44100));
+    at->set_hash(browser_item->get_file_hash());
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    if (data_persist->rem_tag_from_track(at, tag) == true)
+    {
+        // Get the new full list of tags.
+        QStringList tags;
+        if (data_persist->get_tags_from_track(at, tags) == true)
+        {
+            // Show new tag list for the selected item.
+            browser_item->set_tag_list(tags);
+        }
+    }
+    else
+    {
+        qCWarning(DS_DB) << "can not remove tag " << qPrintable(tag);
+    }
+
+    return;
+}
+
 
 QHBoxLayout *Gui::get_menu_area_title(const QString &title)
 {
@@ -1493,7 +2208,7 @@ Gui::init_menu_area()
 
 
     // Add to main layout.
-    this->file_and_menu_layout->addLayout(action_buttons_layout);
+    this->file_tags_and_menu_layout->addLayout(action_buttons_layout);
 }
 
 void
@@ -1562,8 +2277,6 @@ Gui::init_bottom_help()
     QLabel *help_browser_lb        = new QLabel(tr("File browser"));
     QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
     this->help_browse_value1       = new QLabel();
-    QLabel *help_browse_lb2        = new QLabel(tr("Collapse all"));
-    this->help_browse_value2       = new QLabel();
 
     this->set_help_shortcut_value();
 
@@ -1584,7 +2297,6 @@ Gui::init_bottom_help()
 
     help_browser_lb->setObjectName("Help_title");
     help_browse_lb1->setObjectName("Help");
-    help_browse_lb2->setObjectName("Help");
 
     // Main help layout.
     QGridLayout *help_layout = new QGridLayout();
@@ -1608,8 +2320,6 @@ Gui::init_bottom_help()
     help_layout->addWidget(help_browser_lb,           0, 4);
     help_layout->addWidget(help_browse_lb1,           1, 4);
     help_layout->addWidget(help_browse_value1,        1, 5, Qt::AlignLeft);
-    help_layout->addWidget(help_browse_lb2,           2, 4);
-    help_layout->addWidget(help_browse_value2,        2, 5, Qt::AlignLeft);
 
     help_layout->addWidget(help_sampler_lb,           0, 6);
     help_layout->addWidget(help_sample_lb,            1, 6);
@@ -1818,8 +2528,7 @@ Gui::set_help_shortcut_value()
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
                                      + "/"
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
-    this->help_browse_value1->setText("Up/Down/Left/Right");
-    this->help_browse_value2->setText(this->settings->get_keyboard_shortcut(KB_COLLAPSE_BROWSER));
+    this->help_browse_value1->setText("Up/Down");
 }
 
 void
@@ -2070,9 +2779,10 @@ Gui::set_file_browser_playlist_tracks(const Playlist &playlist)
 void
 Gui::sync_file_browser_to_audio_collection()
 {
-    // Reset file browser root node to audio collection model's root.
-    this->file_browser->update();
-    this->file_browser->setRootIndex(this->file_system_model->get_root_index());
+    // Filter tracks based on selected tags:
+    this->filter_tagged_files();
+
+    // Resize file browser's columns.
     this->resize_file_browser_columns();
 
     // Hide progress bar.
@@ -2119,7 +2829,7 @@ Gui::run_sampler_decoding_process_on_deck(const unsigned short &deck_index,
     this->select_playback(deck_index);
 
     // Get selected file path.
-    Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
+    Audio_collection_item *item = this->get_selected_audio_item();
     QFileInfo info(item->get_full_path());
     if (info.isFile() == true)
     {
@@ -2220,19 +2930,13 @@ Gui::on_progress_cancel_button_click()
 }
 
 void
-Gui::on_file_browser_expand(QModelIndex)
-{
-    this->resize_file_browser_columns();
-}
-
-void
 Gui::on_file_browser_header_click(const int &index)
 {
     // Get the order.
     Qt::SortOrder order = this->file_browser->header()->sortIndicatorOrder();
 
     // Sort the items.
-    this->file_browser->sortByColumn(index, order);
+    this->proxy_model->sort(index, order);
 }
 
 void
@@ -2242,6 +2946,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
     {
         // Get path (file for a playlist, or just a directory).
         QString path = this->folder_system_model->filePath(in_model_index);
+        qCDebug(DS_GUI) << "Show in file browser: " << path;
 
         QFileInfo file_info(path);
         if (file_info.isFile() == true)
@@ -2310,11 +3015,21 @@ Gui::select_and_run_audio_file_decoding_process(const unsigned short int &deck_i
     this->file_browser_control_buttons[deck_index]->load_track_on_deck_button->setChecked(false);
 }
 
+Audio_collection_item* Gui::get_audio_collection_item_from_file_browser_index(const QModelIndex &index)
+{
+    return static_cast<Audio_collection_item*>(this->proxy_model->mapToSource(index).internalPointer());
+}
+
+Audio_collection_item* Gui::get_selected_audio_item()
+{
+    return this->get_audio_collection_item_from_file_browser_index(this->file_browser->currentIndex());
+}
+
 void
 Gui::run_audio_file_decoding_process()
 {
     // Get selected file path.
-    Audio_collection_item *item = static_cast<Audio_collection_item*>((this->file_browser->currentIndex()).internalPointer());
+    Audio_collection_item *item = this->get_selected_audio_item();
     QFileInfo info(item->get_full_path());
     if (info.isFile() == true)
     {
@@ -2976,22 +3691,16 @@ Gui::show_next_keys()
     // Get next and prev keys and iterate over the full audio collection for highlighting.
     if (deck_key.length() > 0)
     {
-        // Collapse all tree.
-        this->file_browser->collapseAll();
-
         // Get next keys and highlight.
         QString next_key;
         QString prev_key;
         QString oppos_key;
         Utils::get_next_music_keys(deck_key, next_key, prev_key, oppos_key);
-        QList<QModelIndex> directories = this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
-
-        // Expand directories containing file of next keys.
-        foreach (QModelIndex index, directories)
-        {
-            this->file_browser->expand(index);
-        }
+        this->file_system_model->set_next_keys(next_key, prev_key, oppos_key);
     }
+
+    // Refresh the file browser.
+    this->file_browser->update();
 
     return;
 }

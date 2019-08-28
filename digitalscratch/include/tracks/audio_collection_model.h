@@ -49,7 +49,8 @@ using namespace std;
 
 #define COLUMN_FILE_NAME 0
 #define COLUMN_KEY       1
-#define COLUMN_PATH      2
+#define COLUMN_TAGS      2
+#define COLUMN_PATH      3
 
 class Audio_collection_item
 {
@@ -82,10 +83,11 @@ class Audio_collection_item
     QVariant               get_data(int in_column) const;
     void                   set_data(int in_column, QVariant in_data);
     QString                get_full_path();
-    QString                get_file_hash();
+    QString                get_file_hash() const;
 
-    void                   read_from_db();
-    void                   compute_and_store_to_db();
+    bool                   read_from_db();
+    void                   store_to_db();
+    void                   compute_audio_characteristics();
 
     bool                   is_directory();
 
@@ -94,9 +96,10 @@ class Audio_collection_item
     void                   set_next_key(bool is_a_next_key);
     void                   set_next_major_key(bool is_a_next_major_key);
 
+    void                   set_tag_list(const QStringList &tags);
+
  private:
-    void calculate_audio_data();     // Compute music key, bpm, etc...
-    void store_to_db();              // Persist to DB.
+    void calculate_music_key();
 };
 
 class Audio_collection_model : public QAbstractItemModel
@@ -105,7 +108,7 @@ class Audio_collection_model : public QAbstractItemModel
     
  public:
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_read;
-    QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_store;
+    QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_analyze;
 
  private:
     Audio_collection_item         *rootItem;
@@ -132,19 +135,20 @@ class Audio_collection_model : public QAbstractItemModel
     QModelIndex   parent_from_item(Audio_collection_item &in_item) const;
     int           rowCount(const QModelIndex &in_parent = QModelIndex()) const;
     int           columnCount(const QModelIndex &in_parent = QModelIndex()) const;
-    void          sort(int in_column, Qt::SortOrder in_order);
     QStringList   mimeTypes() const;
     QMimeData    *mimeData(const QModelIndexList &in_indexes) const;
 
     void concurrent_read_collection_from_db();                  // Call Audio_collection_item::read_from_db() on all collection in separate threads.
     void stop_concurrent_read_collection_from_db();             // Stop concurrent_read_collection_from_db().
-    void concurrent_analyse_audio_collection();                 // Call Audio_collection_item::compute_and_store_to_db() on all collection in separate threads.
+    void concurrent_analyse_audio_collection();                 // Get audio characteristics on all collection in separate threads.
+    void concurrent_analyse_audio_selection(QList<Audio_collection_item *> &items);
     void stop_concurrent_analyse_audio_collection();            // Stop concurrent_analyse_audio_collection().
+    void write_collection_to_db();
     int  get_nb_items();                                        // Get number of files.
     int  get_nb_new_items();                                    // Get number of new files (i.e. files with missing data such as music key).
-    QList<QModelIndex> set_next_keys(QString in_next_key,       // Set flags for previous/next keys (for all items).
-                                     QString in_previous_key,
-                                     QString in_next_major_key);
+    void set_next_keys(QString in_next_key,                     // Set flags for previous/next keys (for all items).
+                       QString in_previous_key,
+                       QString in_next_major_key);
 
     void set_icons(QPixmap in_audio_file_icon,
                    QPixmap in_directory_icon);

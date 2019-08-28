@@ -121,7 +121,7 @@ QString Audio_collection_item::get_full_path()
     return this->fullPath;
 }
 
-QString Audio_collection_item::get_file_hash()
+QString Audio_collection_item::get_file_hash() const
 {
     return this->fileHash;
 }
@@ -151,7 +151,7 @@ void Audio_collection_item::set_next_major_key(bool is_a_next_major_key)
     this->next_major_key = is_a_next_major_key;
 }
 
-void Audio_collection_item::read_from_db()
+bool Audio_collection_item::read_from_db()
 {
     // Init.
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
@@ -166,10 +166,18 @@ void Audio_collection_item::read_from_db()
     {
         // File found in DB, put data back to item.
         this->set_data(COLUMN_KEY, at->get_music_key());
+        this->set_data(COLUMN_TAGS, at->get_tags());
     }
+    else
+    {
+        qCDebug(DS_FILE) << "audio track not found in DB: " << this->get_full_path();
+        return false;
+    }
+
+    return true;
 }
 
-void Audio_collection_item::compute_and_store_to_db()
+void Audio_collection_item::compute_audio_characteristics()
 {
     Application_settings *settings = &Singleton<Application_settings>::get_instance();
 
@@ -177,18 +185,20 @@ void Audio_collection_item::compute_and_store_to_db()
     if ((settings->get_audio_collection_full_refresh() == true) ||
         ((settings->get_audio_collection_full_refresh() == false) && (this->get_data(COLUMN_KEY) == "")))
     {
-        // Calculate things (music key, bpm, etc...)
-        this->calculate_audio_data();
-
-        // Store audio collection to DB.
-        this->store_to_db();
+        // Calculate music key.
+        this->calculate_music_key();
     }
 }
 
-void Audio_collection_item::calculate_audio_data()
+void Audio_collection_item::calculate_music_key()
 {
     // Calculate data and put them back in current audio item.
     this->set_data(COLUMN_KEY, Utils::get_file_music_key(this->fullPath));
+}
+
+void Audio_collection_item::set_tag_list(const QStringList &tags)
+{
+    this->set_data(COLUMN_TAGS, tags);
 }
 
 void Audio_collection_item::store_to_db()
@@ -218,7 +228,7 @@ Audio_collection_model::Audio_collection_model(QObject *in_parent) : QAbstractIt
     // Init thread tools.
     this->concurrent_future = QSharedPointer<QFuture<void>>(new QFuture<void>);
     this->concurrent_watcher_read  = QSharedPointer<QFutureWatcher<void>>(new QFutureWatcher<void>);
-    this->concurrent_watcher_store = QSharedPointer<QFutureWatcher<void>>(new QFutureWatcher<void>);
+    this->concurrent_watcher_analyze = QSharedPointer<QFutureWatcher<void>>(new QFutureWatcher<void>);
 }
 
 Audio_collection_model::~Audio_collection_model()
@@ -229,10 +239,10 @@ Audio_collection_model::~Audio_collection_model()
     }
 
     // Stop running threads.
-    if (this->concurrent_watcher_store->isStarted() == true)
+    if (this->concurrent_watcher_analyze->isStarted() == true)
     {
-        this->concurrent_watcher_store->cancel();
-        this->concurrent_watcher_store->waitForFinished();
+        this->concurrent_watcher_analyze->cancel();
+        this->concurrent_watcher_analyze->waitForFinished();
     }
     if (this->concurrent_watcher_read->isStarted() == true)
     {
@@ -252,7 +262,7 @@ void Audio_collection_model::create_header(QString in_path, bool in_show_path)
 {
     // Create root item which is the collection header.
     QList<QVariant> rootData;
-    rootData << tr("Track") << tr("Key");
+    rootData << tr("Track") << tr("Key") << tr("Tags");
     if (in_show_path == true)
     {
         rootData << tr("Path");
@@ -268,12 +278,11 @@ void Audio_collection_model::create_header(QString in_path, bool in_show_path)
 
 QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
 {
-    // Clean collection.
+    // Start cleaning collection.
     this->beginResetModel();
-    this->endResetModel();
 
     // Create root item which is the collection header.
-    this->create_header(in_root_path, false);
+    this->create_header(in_root_path, true);
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
@@ -283,6 +292,9 @@ QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
 
     // Store root path.
     this->root_path = in_root_path;
+
+    // Model has been updated.
+    this->endResetModel();
 
     return this->get_root_index();
 }
@@ -294,9 +306,8 @@ QString Audio_collection_model::get_root_path()
 
 QModelIndex Audio_collection_model::set_playlist(const Playlist &playlist)
 {
-    // Clean collection.
+    // Start cleaning collection.
     this->beginResetModel();
-    this->endResetModel();
 
     // Create root item which is the collection header.
     this->create_header(playlist.get_basepath(), true);
@@ -307,6 +318,9 @@ QModelIndex Audio_collection_model::set_playlist(const Playlist &playlist)
     // Fill the model.
     this->setup_model_data_from_tracklist(playlist.get_tracklist(), this->rootItem);
 
+    // Model has been updated.
+    this->endResetModel();
+
     return this->get_root_index();
 }
 
@@ -314,7 +328,7 @@ QModelIndex Audio_collection_model::get_root_index()
 {
     if (this->rootItem != nullptr)
     {
-        return createIndex(0, 0, this->rootItem);
+        return this->createIndex(0, 0, this->rootItem);
     }
     else
     {
@@ -331,172 +345,6 @@ int Audio_collection_model::columnCount(const QModelIndex &in_parent) const
     else
     {
         return rootItem->get_column_count();
-    }
-}
-
-struct Audio_collection_item_key_comparer
-{
-    bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
-    {
-        QString key       = in_item_a->get_data(COLUMN_KEY).toString();
-        QString other_key = in_item_b->get_data(COLUMN_KEY).toString();
-
-        if ((key.size() >= 2) && (other_key.size() >= 2))
-        {
-            // First compare one or 2 first number digits. If there are same, Compare the last letter.
-            int     key_digits = 0;
-            QString key_letter = "";
-            if (key.size() == 2)
-            {
-                // Like "2B".
-                key_digits = key.left(1).toInt();
-                key_letter = key.right(1);
-            }
-            if (key.size() == 3)
-            {
-                // Like "11A".
-                key_digits = key.left(2).toInt();
-                key_letter = key.right(1);
-            }
-
-            int     other_key_digits = 0;
-            QString other_key_letter = "";
-            if (other_key.size() == 2)
-            {
-                // Like "2B".
-                other_key_digits = other_key.left(1).toInt();
-                other_key_letter = other_key.right(1);
-            }
-            if (other_key.size() == 3)
-            {
-                // Like "11A".
-                other_key_digits = other_key.left(2).toInt();
-                other_key_letter = other_key.right(1);
-            }
-
-            if (key_digits != other_key_digits)
-            {
-                // Digits are different, compare on it.
-                return key_digits < other_key_digits;
-            }
-            else
-            {
-                // Digits are same, compare letter.
-                return key_letter < other_key_letter;
-            }
-        }
-        else
-        {
-            return key < other_key;
-        }
-    }
-};
-
-struct Audio_collection_item_name_comparer
-{
-    bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
-    {
-        QString name       = in_item_a->get_data(COLUMN_FILE_NAME).toString();
-        QString other_name = in_item_b->get_data(COLUMN_FILE_NAME).toString();
-
-        return name < other_name;
-    }
-};
-
-struct Audio_collection_item_path_comparer
-{
-    bool operator()(const Audio_collection_item *in_item_a, const Audio_collection_item *in_item_b) const
-    {
-        QString path       = in_item_a->get_data(COLUMN_PATH).toString();
-        QString other_path = in_item_b->get_data(COLUMN_PATH).toString();
-
-        // Extract common part of both paths.
-        QString common_path("");
-        int     i = 1;
-        bool    end_of_common = false;
-        while ((i <= path.length()) && (i <= other_path.length()) && (end_of_common == false))
-        {
-            if (path.left(i) == other_path.left(i))
-            {
-                // Common part of 2 paths.
-                common_path = path.left(i);
-            }
-            else
-            {
-                // End of common part.
-                end_of_common = true;
-            }
-            i++;
-        }
-
-        // If common part is the full part for one of the path, then the full path is higher.
-        // It results that file in dir are placed after files in subdirs.
-        if (common_path.length() > 0)
-        {
-            if (common_path == path)
-            {
-                return false;
-            }
-            else if (common_path == other_path)
-            {
-                return true;
-            }
-
-        }
-
-        // In all other cases we are doing a basic paths compare.
-        return path < other_path;
-    }
-};
-
-void Audio_collection_model::sort(int in_column, Qt::SortOrder in_order)
-{
-    // FIXME sort keys directory per directory (and not for the full list), actually sort childItems recursively
-    // Then rebuild the full structure with parents and childs.
-    // So for the moment, do not sort if there are item with childs.
-    bool do_sort = true;
-    foreach (Audio_collection_item *item, this->rootItem->childItems)
-    {
-        if (item->get_child_count() > 0)
-        {
-            do_sort = false;
-        }
-    }
-
-    // Sort audio item list.
-    if (do_sort == true)
-    {
-        if (in_column == COLUMN_KEY)
-        {
-            qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_key_comparer());
-        }
-        else if (in_column == COLUMN_FILE_NAME)
-        {
-            qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_name_comparer());
-        }
-        else if (in_column == COLUMN_PATH)
-        {
-            qSort(this->audio_item_list.begin(), this->audio_item_list.end(), Audio_collection_item_path_comparer());
-        }
-
-        // Clean and populate rows based on audio item list.
-        this->beginRemoveRows(this->get_root_index(), 1, this->rowCount());
-        this->endRemoveRows();
-        this->rootItem->childItems.clear();
-        if (in_order == Qt::AscendingOrder)
-        {
-            foreach (Audio_collection_item *item, this->audio_item_list)
-            {
-                this->rootItem->append_child(item);
-            }
-        }
-        else
-        {
-            for (int i = (this->audio_item_list.count() - 1); i >= 0; i--)
-            {
-                this->rootItem->append_child(this->audio_item_list.at(i));
-            }
-        }
     }
 }
 
@@ -545,10 +393,27 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
 
     if (in_role == Qt::DisplayRole)
     {
-        return item->get_data(in_index.column());
+        if (in_index.column() == COLUMN_TAGS)
+        {
+            // Show list of tags like: [tag1] [tag2] ...
+            QStringList tags = item->get_data(in_index.column()).toStringList();
+            QString tags_str = "";
+            foreach (const QString &str, tags)
+            {
+                if (str.isEmpty() == false)
+                {
+                    tags_str += "[" + str + "] ";
+                }
+            }
+            return tags_str;
+        }
+        else
+        {
+            return item->get_data(in_index.column());
+        }
     }
-    else if ((in_role               == Qt::DecorationRole) &&
-             (in_index.column()     == COLUMN_FILE_NAME))
+    else if ((in_role == Qt::DecorationRole)
+          && (in_index.column() == COLUMN_FILE_NAME))
     {
         if (item->is_directory() == false)
         {
@@ -559,7 +424,7 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
             return this->directory_icon;
         }
     }
-    else if (in_role == Qt::BackgroundColorRole)
+    else if (in_role == Qt::BackgroundRole)
     {
         if (item->is_a_next_major_key() == true)
         {
@@ -572,6 +437,19 @@ QVariant Audio_collection_model::data(const QModelIndex &in_index, int in_role) 
         else
         {
             return QVariant();
+        }
+    }
+    else if ((in_role == Qt::ForegroundRole)
+          && (in_index.column() == COLUMN_TAGS))
+    {
+        if ((item->is_a_next_major_key() == true)
+         || (item->is_a_next_key() == true))
+        {
+            return QColor(0, 0, 0); // black
+        }
+        else
+        {
+            return QColor(255, 153, 0); // orange
         }
     }
     else
@@ -648,6 +526,11 @@ QModelIndex Audio_collection_model::parent(const QModelIndex &in_index) const
     }
 
     Audio_collection_item *childItem  = static_cast<Audio_collection_item*>(in_index.internalPointer());
+    if (childItem == nullptr)
+    {
+        return QModelIndex();
+    }
+
     Audio_collection_item *parentItem = childItem->get_parent();
 
     if ((parentItem == this->rootItem) || (parentItem == nullptr))
@@ -710,7 +593,10 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         // Prepare data to show for the item.
         QString displayed_path(file_info.fileName());
         QList<QVariant> line;
-        line << displayed_path << "";
+        line << displayed_path;
+        line << ""; // music key
+        line << ""; // tag list
+        line << file_info.absolutePath(); // absolute path
 
         // Add a child item.
         if (file_info.isDir() == false)
@@ -728,15 +614,8 @@ void Audio_collection_model::setup_model_data(QString in_path, Audio_collection_
         }
         else
         {
-            // It is a directory, add the item and analyze file under it.
-            Audio_collection_item *dir_item = new Audio_collection_item(line,
-                                                                        "",
-                                                                        file_info.absoluteFilePath(),
-                                                                        true,
-                                                                        in_item);
-            in_item->append_child(dir_item);
-
-            this->setup_model_data(file_info.absoluteFilePath(), dir_item);
+            // It is a directory, analyze file under it.
+            this->setup_model_data(file_info.absoluteFilePath(), in_item);
         }
     }
 }
@@ -752,7 +631,10 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
             // Prepare data to show for the item.
             QString displayed_path(file_info.fileName());
             QList<QVariant> line;
-            line << displayed_path << "" << file_info.absolutePath();
+            line << displayed_path;
+            line << ""; // music key
+            line << ""; // tag list
+            line << file_info.absolutePath(); // absolute path
 
             // Add a child item.
             if (file_info.isDir() == false)
@@ -771,18 +653,6 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
                     this->audio_item_list << file_item;
                 }
             }
-            else
-            {
-                // It is a directory, add the item and analyze file under it.
-                Audio_collection_item *dir_item = new Audio_collection_item(line,
-                                                                            "",
-                                                                            file_info.absoluteFilePath(),
-                                                                            true,
-                                                                            in_item);
-                in_item->append_child(dir_item);
-
-                this->setup_model_data(file_info.absoluteFilePath(), dir_item);
-            }
         }
     }
 }
@@ -790,7 +660,11 @@ void Audio_collection_model::setup_model_data_from_tracklist(QStringList in_trac
 void external_read_from_db(Audio_collection_item *&in_audio_item)
 {
     // Only a wrapper to get data from DB for an audio item object.
-    in_audio_item->read_from_db();
+    if (in_audio_item->read_from_db() == false)
+    {
+        // Not found: store the audio track to DB.
+        in_audio_item->store_to_db();
+    }
 }
 
 void Audio_collection_model::concurrent_read_collection_from_db()
@@ -816,8 +690,8 @@ void Audio_collection_model::stop_concurrent_read_collection_from_db()
 
 void external_analyze_audio_collection(Audio_collection_item *&in_audio_item)
 {
-    // Only a wrapper to analyze and store data of an audio item object.
-    in_audio_item->compute_and_store_to_db();
+    // Only a wrapper to analyze data of an audio item object.
+    in_audio_item->compute_audio_characteristics();
 }
 
 void Audio_collection_model::concurrent_analyse_audio_collection()
@@ -828,21 +702,46 @@ void Audio_collection_model::concurrent_analyse_audio_collection()
     {
         // Do not do anything if we are still reading collection from DB.
         if ((this->concurrent_watcher_read->isRunning()  == false) &&
-            (this->concurrent_watcher_store->isRunning() == false))
+            (this->concurrent_watcher_analyze->isRunning() == false))
         {
             // Analyze item and store to DB (for the whole collection).
             QFuture<void> future = QtConcurrent::map(this->audio_item_list, &external_analyze_audio_collection);
-            this->concurrent_watcher_store->setFuture(future);
+            this->concurrent_watcher_analyze->setFuture(future);
+        }
+    }
+}
+
+void Audio_collection_model::write_collection_to_db()
+{
+    foreach (Audio_collection_item *item, this->audio_item_list)
+    {
+        item->store_to_db();
+    }
+}
+
+void Audio_collection_model::concurrent_analyse_audio_selection(QList<Audio_collection_item *> &items)
+{
+    // Just be sure DB was init.
+    Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+    if (data_persist->is_initialized == true)
+    {
+        // Do not do anything if we are still reading collection from DB.
+        if ((this->concurrent_watcher_read->isRunning()  == false) &&
+            (this->concurrent_watcher_analyze->isRunning() == false))
+        {
+            // Analyze item and store to DB (for the whole collection).
+            QFuture<void> future = QtConcurrent::map(items, &external_analyze_audio_collection);
+            this->concurrent_watcher_analyze->setFuture(future);
         }
     }
 }
 
 void Audio_collection_model::stop_concurrent_analyse_audio_collection()
 {
-    if (this->concurrent_watcher_store->isRunning() == true)
+    if (this->concurrent_watcher_analyze->isRunning() == true)
     {
-        this->concurrent_watcher_store->cancel();
-        this->concurrent_watcher_store->waitForFinished();
+        this->concurrent_watcher_analyze->cancel();
+        this->concurrent_watcher_analyze->waitForFinished();
     }
 }
 
@@ -866,14 +765,11 @@ int Audio_collection_model::get_nb_new_items()
     return nb_items;
 }
 
-QList<QModelIndex>
+void
 Audio_collection_model::set_next_keys(QString in_next_key,
                                       QString in_previous_key,
                                       QString in_next_major_key)
 {
-    // Init list of QModelIndex which contains next/previous/opposite key.
-    QList<QModelIndex> dir_list;
-
     // Iterate over all items and set flags to true if they are of next/previous/major keys.
     foreach (Audio_collection_item *item, this->audio_item_list)
     {
@@ -886,22 +782,15 @@ Audio_collection_model::set_next_keys(QString in_next_key,
         {
             // The item is a next or previous key.
             item->set_next_key(true);
-
-            // Add parent QModelIndex (the dir) to the result list.
-            dir_list.append(this->parent_from_item(*item));
-
         }
         else if (item->get_data(COLUMN_KEY) == in_next_major_key)
         {
             // The item is a next major or minor key.
             item->set_next_major_key(true);
-
-            // Add parent QModelIndex (the dir) to the result list.
-            dir_list.append(this->parent_from_item(*item));
         }
     }
 
-    return dir_list;
+    return;
 }
 
 QModelIndexList

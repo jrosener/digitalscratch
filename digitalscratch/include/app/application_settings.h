@@ -120,8 +120,6 @@ using namespace std;
 #define KB_SET_CUE_POINT4_ON_DECK_DEFAULT   "F11"
 #define KB_PLAY_CUE_POINT4_ON_DECK          "keyboard_shortcuts/kb_play_cue_point4_on_deck"
 #define KB_PLAY_CUE_POINT4_ON_DECK_DEFAULT  "F12"
-#define KB_COLLAPSE_BROWSER                 "keyboard_shortcuts/kb_collapse_browse"
-#define KB_COLLAPSE_BROWSER_DEFAULT         "Ctrl+Up"
 #define KB_LOAD_TRACK_ON_SAMPLER1           "keyboard_shortcuts/kb_load_track_on_sampler1"
 #define KB_LOAD_TRACK_ON_SAMPLER1_DEFAULT   "&"
 #define KB_LOAD_TRACK_ON_SAMPLER2           "keyboard_shortcuts/kb_load_track_on_sampler2"

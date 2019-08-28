@@ -39,6 +39,7 @@
 #include <QGraphicsView>
 #include <QString>
 #include <QFileSystemModel>
+#include <QSortFilterProxyModel>
 #include <QShortcut>
 #include <QProgressBar>
 #include <QFileIconProvider>
@@ -46,6 +47,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSharedPointer>
+#include <QToolButton>
 
 #include "gui/config_dialog.h"
 #include "gui/waveform.h"
@@ -102,7 +104,6 @@ class SpeedQLabel : public QLabel
    signals:
        void right_clicked();
 };
-
 
 class PlaybackQGroupBox : public QGroupBox
 {
@@ -273,6 +274,14 @@ class FileBrowserQGroupBox : public QGroupBox
        void setTitle(const QString &title);
 };
 
+class BrowserQSortFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+    protected:
+        bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+};
+
 class Gui : public QObject
 {
     Q_OBJECT
@@ -298,7 +307,7 @@ class Gui : public QObject
     QList<FileBrowserControlButtons*>   file_browser_control_buttons;
 
     // File and menu (bottom right) area.
-    QHBoxLayout                        *file_and_menu_layout;
+    QHBoxLayout                        *file_tags_and_menu_layout;
 
     // File browser.
     QSplitter                          *browser_splitter;
@@ -312,8 +321,8 @@ class Gui : public QObject
 
     // Track browser.
     Audio_collection_model             *file_system_model;
+    BrowserQSortFilterProxyModel       *proxy_model;
     QTreeView                          *file_browser;
-    QShortcut                          *shortcut_collapse_browser;
     QShortcut                          *shortcut_load_audio_file;
     QList<QShortcut*>                   shortcut_load_samples;
     QShortcut                          *shortcut_show_next_keys;
@@ -326,6 +335,13 @@ class Gui : public QObject
     bool                                search_from_begin;
     unsigned int                        file_browser_selected_index;
     QString                             last_search_string;
+
+    // Tag management.
+    QGroupBox                          *tags_gbox;
+    QPushButton                        *add_new_tag_button;
+    QPushButton                        *show_hide_untagged_files_button;
+    QList<QPushButton*>                 show_hide_tagged_files_buttons;
+    QVBoxLayout                        *show_hide_tagged_files_layout;
 
     // Menu (bottom right).
     QPushButton                        *config_button;
@@ -420,10 +436,19 @@ class Gui : public QObject
     void init_file_control_area();
     void connect_file_control_area();
     void init_file_browser_area();
+    void init_tags_area();
+    void init_and_connect_show_hide_tag_buttons();
+    void refresh_show_hide_tag_buttons();
     void clean_file_browser_area();
     void connect_file_browser_area();
+    void show_file_browser_ctx_menu(const QPoint &pos);
+    void create_ctx_menu_1_track(QMenu *io_menu,
+                                 Audio_collection_item *item);
+    void create_ctx_menu_multiple_tracks(QMenu *io_menu,
+                                         const QList<Audio_collection_item*> &items);
     void init_menu_area();
     QHBoxLayout *get_menu_area_title(const QString &title);
+    void connect_tags_area();
     void connect_menu_area();
     void init_bottom_help();
     void init_bottom_status();
@@ -437,8 +462,11 @@ class Gui : public QObject
     void highlight_deck_sampler_area(const unsigned short int &deck_index);
     void highlight_border_deck_sampler_area(const unsigned short int &deck_index, const bool &switch_on);
     unsigned short int get_selected_deck_index();
+    Audio_collection_item* get_selected_audio_item();
+    Audio_collection_item* get_audio_collection_item_from_file_browser_index(const QModelIndex &index);
     void resize_file_browser_columns();
     void analyze_audio_collection(const bool &is_all_files);
+    void analyze_audio_selection(QList<Audio_collection_item *> &items);
     void set_help_shortcut_value();
     void hide_samplers();
     void show_samplers();
@@ -513,7 +541,6 @@ class Gui : public QObject
     void select_playback(const unsigned short int &deck_index);
     void hover_playback(const unsigned short int &deck_index);
     void unhover_playback(const unsigned short int &deck_index);
-    void on_file_browser_expand(QModelIndex);
     void on_file_browser_double_click(QModelIndex in_model_index);
     void sync_file_browser_to_audio_collection();
     void on_finished_analyze_audio_collection();
@@ -532,4 +559,19 @@ class Gui : public QObject
     void show_save_tracklist_dialog();
     void show_clear_tracklist_dialog();
     void open_tracklist();
+    void fill_add_tag_submenu(QMenu *io_submenu);
+    void fill_rem_tag_submenu(QMenu *io_submenu);
+    void fill_add_tag_submenu_all_tags(QMenu *io_submenu,
+                                       const QList<Audio_collection_item*> &items);
+    void fill_rem_tag_submenu_all_tags(QMenu *io_submenu,
+                                       const QList<Audio_collection_item*> &items);
+    void add_tag_to_selected_track(Audio_collection_item *browser_item, const QString &tag);
+    void rem_tag_from_selected_track(Audio_collection_item *browser_item, const QString &tag);
+    int  show_add_new_tag_dialog();
+    int  show_delete_tag_dialog(const QString &tag);
+    int  show_rename_tag_dialog(const QString &tag);
+    void create_tag(const QString &tag);
+    void delete_tag(const QString &tag);
+    void rename_tag(const QString &tag, const QString &new_name);
+    void filter_tagged_files();
 };

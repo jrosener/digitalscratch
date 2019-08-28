@@ -139,29 +139,29 @@ QString Utils::convert_music_key_to_clock_number(const QString &key)
 {
     QMap<QString, QString> key_map; // Map music key to clock number.
     key_map.insert("AM",  "11B");
-    key_map.insert("Am",  "8A");
-    key_map.insert("BbM", "6B");
-    key_map.insert("Bbm", "3A");
-    key_map.insert("BM",  "1B");
+    key_map.insert("Am",  "08A");
+    key_map.insert("BbM", "06B");
+    key_map.insert("Bbm", "03A");
+    key_map.insert("BM",  "01B");
     key_map.insert("Bm",  "10A");
-    key_map.insert("CM",  "8B");
-    key_map.insert("Cm",  "5A");
-    key_map.insert("DbM", "3B");
+    key_map.insert("CM",  "08B");
+    key_map.insert("Cm",  "05A");
+    key_map.insert("DbM", "03B");
     key_map.insert("Dbm", "12A");
     key_map.insert("DM",  "10B");
-    key_map.insert("Dm",  "7A");
-    key_map.insert("EbM", "5B");
-    key_map.insert("Ebm", "2A");
+    key_map.insert("Dm",  "07A");
+    key_map.insert("EbM", "05B");
+    key_map.insert("Ebm", "02A");
     key_map.insert("EM",  "12B");
-    key_map.insert("Em",  "9A");
-    key_map.insert("FM",  "7B");
-    key_map.insert("Fm",  "4A");
-    key_map.insert("GbM", "2B");
+    key_map.insert("Em",  "09A");
+    key_map.insert("FM",  "07B");
+    key_map.insert("Fm",  "04A");
+    key_map.insert("GbM", "02B");
     key_map.insert("Gbm", "11A");
-    key_map.insert("GM",  "9B");
-    key_map.insert("Gm",  "6A");
-    key_map.insert("AbM", "4B");
-    key_map.insert("Abm", "1A");
+    key_map.insert("GM",  "09B");
+    key_map.insert("Gm",  "06A");
+    key_map.insert("AbM", "04B");
+    key_map.insert("Abm", "01A");
 
     return key_map.value(key, "");
 }
@@ -171,28 +171,28 @@ QList<QString> Utils::major_keys;
 
 void Utils::setup_keys()
 {
-    minor_keys.append("1A");
-    minor_keys.append("2A");
-    minor_keys.append("3A");
-    minor_keys.append("4A");
-    minor_keys.append("5A");
-    minor_keys.append("6A");
-    minor_keys.append("7A");
-    minor_keys.append("8A");
-    minor_keys.append("9A");
+    minor_keys.append("01A");
+    minor_keys.append("02A");
+    minor_keys.append("03A");
+    minor_keys.append("04A");
+    minor_keys.append("05A");
+    minor_keys.append("06A");
+    minor_keys.append("07A");
+    minor_keys.append("08A");
+    minor_keys.append("09A");
     minor_keys.append("10A");
     minor_keys.append("11A");
     minor_keys.append("12A");
 
-    major_keys.append("1B");
-    major_keys.append("2B");
-    major_keys.append("3B");
-    major_keys.append("4B");
-    major_keys.append("5B");
-    major_keys.append("6B");
-    major_keys.append("7B");
-    major_keys.append("8B");
-    major_keys.append("9B");
+    major_keys.append("01B");
+    major_keys.append("02B");
+    major_keys.append("03B");
+    major_keys.append("04B");
+    major_keys.append("05B");
+    major_keys.append("06B");
+    major_keys.append("07B");
+    major_keys.append("08B");
+    major_keys.append("09B");
     major_keys.append("10B");
     major_keys.append("11B");
     major_keys.append("12B");

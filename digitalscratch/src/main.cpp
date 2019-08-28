@@ -61,12 +61,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Log settings.
-    qSetMessagePattern("[%{type}] | %{category} | %{function}@%{line} | %{message}");
-    QLoggingCategory::setFilterRules(QStringLiteral("*.debug=false\n \
-                                                    ds.file.debug=true\n \
-                                                    ds.appsettings.debug=true\n \
-                                                    *.warning=true\n \
-                                                    *.critical=true\n"));
+    qSetMessagePattern("[%{type}/%{category}/thread:%{qthreadptr}]\t%{function}@%{line} | %{message}");
 
     // Set max number of simultaneous new threads.
 #ifdef WIN32
@@ -174,7 +169,14 @@ int main(int argc, char *argv[])
                                                                                                        settings->get_nb_decks()));
 
     // Novation Dicer external controller.
+    // Run write/read commands to/from Dicers in another thread.
     QSharedPointer<Dicer_control_process> dicer_control(new Dicer_control_process());
+    QThread *dicer_control_thread = new QThread();
+    dicer_control->moveToThread(dicer_control_thread);
+    QObject::connect(dicer_control_thread, SIGNAL(started()), dicer_control.data(), SLOT(start()));
+    QObject::connect(dicer_control.data(), SIGNAL(terminated()), dicer_control_thread, SLOT(quit()));
+    QObject::connect(dicer_control_thread, SIGNAL(finished()), dicer_control.data(), SLOT(deleteLater()));
+    QObject::connect(dicer_control_thread, SIGNAL(finished()), dicer_control_thread, SLOT(deleteLater()));
 
     // Create GUI.
     Gui gui(ats,
@@ -200,18 +202,16 @@ int main(int argc, char *argv[])
         at_playbacks[i]->moveToThread(control_and_playback_thread);
     }
     QObject::connect(control_and_playback_thread, SIGNAL(started()), control_and_playback.data(), SLOT(init()));
+    QObject::connect(control_and_playback.data(), SIGNAL(terminated()), control_and_playback_thread, SLOT(quit()));
+    QObject::connect(control_and_playback_thread, SIGNAL(finished()), control_and_playback.data(), SLOT(deleteLater()));
+    QObject::connect(control_and_playback_thread, SIGNAL(finished()), control_and_playback_thread, SLOT(deleteLater()));
 
     // Custom app close (needed if user click on 'X').
     app.connect(&app, SIGNAL(aboutToQuit()), control_and_playback.data(), SLOT(kill()));
 
-    // Forward the quit call.
-    QObject::connect(control_and_playback_thread, SIGNAL(finished()), control_and_playback_thread, SLOT(deleteLater()));
-    QObject::connect(control_and_playback.data(), SIGNAL(killed()), control_and_playback_thread, SLOT(quit()));
-    //app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-    // FIXME: the thread deletion is not working
-
     // Start application.
     control_and_playback_thread->start();
+    dicer_control_thread->start();
     app.exec();
 
     return 0;

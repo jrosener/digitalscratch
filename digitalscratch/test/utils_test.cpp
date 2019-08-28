@@ -137,9 +137,9 @@ void Utils_Test::testCaseGetFileMusicKey()
 
     // Check keys.
     QVERIFY2(keys.length() == 3, "size of list of keys");
-    QVERIFY2(keys[0] == "1A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[0])));
-    QVERIFY2(keys[1] == "6A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[1])));
-    QVERIFY2(keys[2] == "9A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[2])));
+    QVERIFY2(keys[0] == "01A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[0])));
+    QVERIFY2(keys[1] == "06A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[1])));
+    QVERIFY2(keys[2] == "09A", qPrintable(QString(DATA_TRACK_1) + QString(" key: ") + QString(keys[2])));
 }
 
 void Utils_Test::testCaseGetNextMusicKeys()
@@ -148,13 +148,13 @@ void Utils_Test::testCaseGetNextMusicKeys()
     QString prev  = "";
     QString oppos = "";
 
-    Utils::get_next_music_keys("1A", next, prev, oppos);
-    QVERIFY2(next  == "2A",  "1A next key");
-    QVERIFY2(prev  == "12A", "1A prev key");
-    QVERIFY2(oppos == "1B",  "1A oppos key");
+    Utils::get_next_music_keys("01A", next, prev, oppos);
+    QVERIFY2(next  == "02A",  "01A next key");
+    QVERIFY2(prev  == "12A", "01A prev key");
+    QVERIFY2(oppos == "01B",  "01A oppos key");
 
     Utils::get_next_music_keys("12B", next, prev, oppos);
-    QVERIFY2(next  == "1B",  "12B next key");
+    QVERIFY2(next  == "01B",  "12B next key");
     QVERIFY2(prev  == "11B", "12B prev key");
     QVERIFY2(oppos == "12A", "12B oppos key");
 }

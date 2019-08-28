@@ -68,10 +68,12 @@ int main(int argc, char** argv)
       status |= QTest::qExec(&tc, argc, argv);
    }
 #ifdef ENABLE_TEST_DEVICE
+   #if 0 // FIXME: not supported for the moment.
    {
       Audio_device_access_rules_Test tc;
       status |= QTest::qExec(&tc, argc, argv);
    }
+   #endif
    {
       Control_and_playback_process_Test tc;
       status |= QTest::qExec(&tc, argc, argv);

@@ -255,3 +255,16 @@ Audio_track::set_music_key_tag(const QString &key_tag)
     return true;
 }
 
+QStringList
+Audio_track::get_tags() const
+{
+    return this->tags;
+}
+
+bool
+Audio_track::set_tags(const QStringList &tags)
+{
+    this->tags = tags;
+
+    return true;
+}

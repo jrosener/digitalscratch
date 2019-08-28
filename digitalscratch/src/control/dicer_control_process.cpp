@@ -45,10 +45,6 @@ Dicer_control_process::Dicer_control_process()
     // Flag used to protect methods that send MIDI messages.
     this->is_open = false;
 
-    // Do not use the event loop of the object that created that one.
-    moveToThread(&this->reader_thread);
-    connect(&this->reader_thread, SIGNAL(started()), this, SLOT(exec_midi_commands_reader_process()));
-
     return;
 }
 
@@ -273,7 +269,7 @@ void Dicer_control_process::build_midi_buffer(const dicer_t               &dicer
     }
 }
 
-bool Dicer_control_process::start()
+bool Dicer_control_process::init()
 {
     // Open the Dicer (RAW MIDI interface).
 #ifdef WIN32
@@ -303,13 +299,10 @@ bool Dicer_control_process::start()
         return false;
     }
 
-    // Run the loop which reads incoming MIDI command.
-    this->reader_thread.start();
-
     return true;
 }
 
-void Dicer_control_process::exec_midi_commands_reader_process()
+void Dicer_control_process::start()
 {
 #ifdef WIN32
         // TODO: add Dicer support for Windows.
@@ -322,7 +315,7 @@ void Dicer_control_process::exec_midi_commands_reader_process()
     dicer_button_pressed_t button_hitted;
 
     // Start infinite loop which read MIDI commands.
-    for (;;)
+    while(this->is_open == true)
     {
         // Read MIDI command from DICER (blocking).
         int err = 0;
@@ -370,7 +363,8 @@ void Dicer_control_process::exec_midi_commands_reader_process()
         }
     }
 
-    //QThread::currentThread()->quit();
+    emit this->terminated();
+
 #endif
     return;
 }
@@ -392,29 +386,26 @@ bool Dicer_control_process::stop()
         }
 
         // Close all MIDI handlers.
+        this->is_open = false;
 #ifdef WIN32
         // TODO: add Dicer support for Windows.
         return false;
 #else
         int err = 0;
+        snd_rawmidi_drain(this->midi_in);
         if ((err = snd_rawmidi_close(this->midi_in)) < 0)
         {
             qCWarning(DS_DICER) << "can not close MIDI IN on Dicer: " << snd_strerror(err);
             return false;
         }
+        snd_rawmidi_drain(this->midi_out);
         if ((err = snd_rawmidi_close(this->midi_out)) < 0)
         {
             qCWarning(DS_DICER) << "can not close MIDI OUT on Dicer: " << snd_strerror(err);
             return false;
         }
 #endif
-        this->is_open = false;
     }
-
-    // Stop the loop which reads incoming MIDI command.
-    //this->reader_thread.wait();
-    this->reader_thread.exit();
-    //this->reader_thread.terminate();
 
     return true;
 }
