@@ -140,7 +140,7 @@ bool Playlist_persistence::write(QSharedPointer<Playlist> &playlist)
     // Done.
     file.close();
 
-    qCDebug(DS_FILE) << "tracklist written into " << playlist->get_fullpath();
+    qCInfo(DS_FILE) << "tracklist written into " << playlist->get_fullpath();
     return true;
 }
 

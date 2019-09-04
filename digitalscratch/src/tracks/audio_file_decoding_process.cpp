@@ -260,10 +260,10 @@ Audio_file_decoding_process::decode()
     this->decoded_sample_rate = codec_context->sample_rate;
 
     // Show audio format.
-    qCDebug(DS_FILE) << qPrintable(this->file.fileName()) << ":"
-                     << codec_context->sample_rate << "Hz,"
-                     << codec_context->channels << "ch,"
-                     << av_get_sample_fmt_name(codec_context->sample_fmt);
+    qCInfo(DS_FILE) << qPrintable(this->file.fileName()) << ":"
+                    << codec_context->sample_rate << "Hz,"
+                    << codec_context->channels << "ch,"
+                    << av_get_sample_fmt_name(codec_context->sample_fmt);
 
     // Set up SWR (software resample) context for a "float planar" to "int interleaved" conversion.
     SwrContext *swr = nullptr;

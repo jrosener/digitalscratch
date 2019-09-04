@@ -34,11 +34,11 @@
 
 // Map logging categories to real name.
 Q_LOGGING_CATEGORY(DS_OBJECTLIFE,  "ds.objlife",  QtWarningMsg)
-Q_LOGGING_CATEGORY(DS_APPSETTINGS, "ds.appstgs",  QtWarningMsg)
-Q_LOGGING_CATEGORY(DS_FILE,        "ds.file",     QtDebugMsg)
+Q_LOGGING_CATEGORY(DS_APPSETTINGS, "ds.appstgs",  QtInfoMsg)
+Q_LOGGING_CATEGORY(DS_FILE,        "ds.file",     QtInfoMsg)
 Q_LOGGING_CATEGORY(DS_PLAYBACK,    "ds.playback", QtWarningMsg)
 Q_LOGGING_CATEGORY(DS_MUSICKEY,    "ds.musickey", QtWarningMsg)
 Q_LOGGING_CATEGORY(DS_SOUNDCARD,   "ds.sndcard",  QtWarningMsg)
-Q_LOGGING_CATEGORY(DS_DB,          "ds.db",       QtDebugMsg)
+Q_LOGGING_CATEGORY(DS_DB,          "ds.db",       QtWarningMsg)
 Q_LOGGING_CATEGORY(DS_DICER,       "ds.dicer",    QtWarningMsg)
-Q_LOGGING_CATEGORY(DS_GUI,         "ds.gui",      QtDebugMsg)
+Q_LOGGING_CATEGORY(DS_GUI,         "ds.gui",      QtInfoMsg)

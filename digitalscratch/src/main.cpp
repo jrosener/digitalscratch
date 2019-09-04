@@ -86,6 +86,10 @@ int main(int argc, char *argv[])
             qCCritical(DS_APPSETTINGS) << "Running" << settings->get_extern_prog() << "failed.";
             return -1;
         }
+        else
+        {
+            qCInfo(DS_APPSETTINGS) << "Run" << settings->get_extern_prog() << "success";
+        }
     }
                                      
     // Translate UI to the language defined in application settings.

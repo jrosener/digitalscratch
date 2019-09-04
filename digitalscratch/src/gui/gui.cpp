@@ -2946,7 +2946,7 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
     {
         // Get path (file for a playlist, or just a directory).
         QString path = this->folder_system_model->filePath(in_model_index);
-        qCDebug(DS_GUI) << "Show in file browser: " << path;
+        qCInfo(DS_GUI) << "Show in file browser: " << path;
 
         QFileInfo file_info(path);
         if (file_info.isFile() == true)
