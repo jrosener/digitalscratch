@@ -18,6 +18,9 @@ INSTALLS += target
 
 TEMPLATE = app
 QT += gui widgets sql concurrent multimedia
+unix {
+    QT += dbus
+}
 
 DEFINES += ENABLE_TEST_DEVICE
 CONFIG(test-no_device_test) {

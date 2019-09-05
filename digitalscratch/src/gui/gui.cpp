@@ -62,6 +62,9 @@
 #include <QFileDialog>
 #include <QThread>
 #include <QDialogButtonBox>
+#ifdef __linux__
+#include <QtDBus>
+#endif
 #include <math.h>
 #include <digital_scratch.h>
 #include <keyfinder_api.h>
@@ -282,17 +285,86 @@ Gui::show_config_window()
 }
 
 void
+Gui::disable_screensaver()
+{
+#ifdef __linux__
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    if (bus.isConnected() == true)
+    {
+        QString services[2] = { "org.freedesktop.ScreenSaver",
+                                "org.gnome.SessionManager" };
+        QString paths[2] = { "/org/freedesktop/ScreenSaver",
+                             "/org/gnome/SessionManager" };
+
+        for (int i = 0; i < 2; i++)
+        {
+            QDBusInterface screenSaverInterface(services[i], paths[i], services[i], bus);
+            if (screenSaverInterface.isValid() == true)
+            {
+                QDBusReply<uint> reply = screenSaverInterface.call("Inhibit", APPLICATION_NAME, "Fullscreen mode");
+                if (reply.isValid() == true)
+                {
+                    this->screensaver_dbus_cookie = reply.value();
+                    qCInfo(DS_GUI) << "Fullscreen mode: screensaver disabled";
+                }
+                else
+                {
+                    QDBusError error = reply.error();
+                    qCDebug(DS_GUI) << "Error while disabling screensaver: msg=" << error.message() << "   name=" << error.name();
+                }
+            }
+        }
+    }
+#endif
+}
+
+void
+Gui::enable_screensaver()
+{
+#ifdef __linux__
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    if (bus.isConnected() == true)
+    {
+        QString services[2] = { "org.freedesktop.ScreenSaver",
+                                "org.gnome.SessionManager" };
+        QString paths[2] = { "/org/freedesktop/ScreenSaver",
+                             "/org/gnome/SessionManager" };
+
+        for (int i = 0; i < 2; i++)
+        {
+            QDBusInterface screenSaverInterface(services[i], paths[i], services[i], bus);
+            if (screenSaverInterface.isValid() == true)
+            {
+                QDBusReply<void> reply = screenSaverInterface.call("UnInhibit", this->screensaver_dbus_cookie);
+                if (reply.isValid() == true)
+                {
+                    qCInfo(DS_GUI) << "Normal screen mode: screensaver enabled";
+                }
+                else
+                {
+                    QDBusError error = reply.error();
+                    qCDebug(DS_GUI) << "Error while enabling screensaver: msg=" << error.message() << "   name=" << error.name();
+                }
+            }
+        }
+    }
+#endif
+}
+
+void
 Gui::set_fullscreen()
 {
     if (this->window->isFullScreen() == false)
     {
         this->fullscreen_button->setChecked(true);
         this->window->showFullScreen();
+        this->disable_screensaver();
     }
     else
     {
         this->fullscreen_button->setChecked(false);
         this->window->showNormal();
+        this->enable_screensaver();
     }
 }
 

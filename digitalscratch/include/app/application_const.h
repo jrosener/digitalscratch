@@ -32,6 +32,12 @@
 
 #pragma once
 
+#ifndef ENABLE_TEST_MODE
+    #define APPLICATION_NAME      "digitalscratch"
+#else
+    #define APPLICATION_NAME      "digitalscratch-test"
+#endif
+
 #define MAX_MINUTES_TRACK   15                // Maximum number of minutes for an audio track
 #define MAX_MINUTES_SAMPLER 1                 // Maximum number of minutes for a sample in the sampler
 

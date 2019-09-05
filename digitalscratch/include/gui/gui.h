@@ -385,6 +385,7 @@ class Gui : public QObject
     QString                             window_style;
     bool                                is_window_rendered;
     unsigned short int                  nb_decks;
+    unsigned int                        screensaver_dbus_cookie;
 
     // Pop dialogs.
     Config_dialog                      *config_dialog;
@@ -479,6 +480,8 @@ class Gui : public QObject
     bool get_cue_point_index_from_dicer_button(const dicer_button_t &button_index, unsigned short int &out_cue_point_index);
     void lit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_index);
     void unlit_dicer_button_cue_point(const unsigned short &deck_index, const unsigned short &cue_point_index);
+    void disable_screensaver();
+    void enable_screensaver();
 
  public slots:
     void force_close();
