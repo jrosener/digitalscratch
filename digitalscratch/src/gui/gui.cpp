@@ -221,7 +221,7 @@ Gui::apply_application_settings()
     this->write_tracklist();
 
     // Apply motion detection settings for all turntables.
-    for (int i = 0; i < this->nb_decks; i++)
+    for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
         this->tcode_controls[i]->set_vinyl_type(this->settings->get_vinyl_type(i));
         this->tcode_controls[i]->set_vinyl_rpm(this->settings->get_rpm(i));
@@ -431,7 +431,7 @@ Gui::file_search_string(const QString &text)
             // If we found file/dir name that match, return the next one.
             if (items.size() > 0)
             {
-                if ((int)this->file_browser_selected_index + 1 < items.size())
+                if (static_cast<int>(this->file_browser_selected_index + 1 < items.size()))
                 {
                     // Select next item in file browser.
                     this->file_browser_selected_index++;
@@ -480,7 +480,7 @@ Gui::analyze_audio_selection(QList<Audio_collection_item *> &items)
 }
 
 void
-Gui::update_refresh_progress_value(const unsigned int &value)
+Gui::update_refresh_progress_value(const unsigned short int &value)
 {
     this->progress_bar->setValue(value);
 
@@ -1391,14 +1391,14 @@ Gui::connect_samplers_area()
 
         // Remaining time for samplers.
         QObject::connect(this->playbacks[i].data(), &Deck_playback_process::sampler_remaining_time_changed,
-                        [this, i](unsigned int remaining_time, int sampler_index)
+                        [this, i](unsigned int remaining_time, unsigned short int sampler_index)
                         {
                             this->set_sampler_remaining_time(remaining_time, i, sampler_index);
                         });
 
         // State for samplers.
         QObject::connect(this->playbacks[i].data(), &Deck_playback_process::sampler_state_changed,
-                        [this, i](int sampler_index, bool state)
+                        [this, i](unsigned short int sampler_index, bool state)
                         {
                             this->set_sampler_state(i, sampler_index, state);
                         });
@@ -1805,13 +1805,13 @@ Gui::connect_file_browser_area()
     QObject::connect(this->file_system_model->concurrent_watcher_analyze.data(), &QFutureWatcher<void>::progressRangeChanged,
                      [this](int minimum, int maximum){this->progress_bar->setRange(minimum, maximum);});
     QObject::connect(this->file_system_model->concurrent_watcher_analyze.data(), &QFutureWatcher<void>::progressValueChanged,
-                     [this](int progressValue){this->update_refresh_progress_value(progressValue);});
+                     [this](unsigned short int progress_value){this->update_refresh_progress_value(progress_value);});
 
     // Progress for reading file data from storage.
     QObject::connect(this->file_system_model->concurrent_watcher_read.data(), &QFutureWatcher<void>::progressRangeChanged,
                      [this](int minimum, int maximum){this->progress_bar->setRange(minimum, maximum);});
     QObject::connect(this->file_system_model->concurrent_watcher_read.data(), &QFutureWatcher<void>::progressValueChanged,
-                     [this](int progressValue){this->update_refresh_progress_value(progressValue);});
+                     [this](unsigned short int progress_value){this->update_refresh_progress_value(progress_value);});
 
     // Parse directory thread.
     this->watcher_parse_directory = new QFutureWatcher<void>;
@@ -1822,10 +1822,6 @@ Gui::connect_file_browser_area()
 
 void Gui::show_file_browser_ctx_menu(const QPoint &pos)
 {
-    // Get row on which the context menu has been triggered.
-    QModelIndex clicked_index = this->file_browser->indexAt(pos);
-    Audio_collection_item* clicked_item = this->get_audio_collection_item_from_file_browser_index(clicked_index);
-
     // Convert the list of selected indexes to actual audio items.
     QModelIndexList sel_indexes = this->file_browser->selectionModel()->selectedIndexes();
     QList<Audio_collection_item*> sel_items;
@@ -3281,7 +3277,7 @@ void
 Gui::set_remaining_time(const unsigned int &remaining_time, const unsigned short &deck_index)
 {
     // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
-    int remaining_time_by_1000 = remaining_time / 1000.0;
+    int remaining_time_by_1000 = qRound(remaining_time / 1000.0);
     div_t tmp_division;
     tmp_division = div(remaining_time_by_1000, 60);
     QString min  = QString::number(tmp_division.quot);
@@ -3327,7 +3323,7 @@ Gui::set_sampler_remaining_time(const unsigned int   &remaining_time,
     else
     {
         // Split remaining time (which is in msec) into minutes, seconds and milliseconds.
-        int remaining_time_by_1000 = remaining_time / 1000.0;
+        int remaining_time_by_1000 = qRound(remaining_time / 1000.0);
         div_t tmp_division;
         tmp_division = div(remaining_time_by_1000, 60);
         QString sec  = QString::number(tmp_division.rem);
@@ -3372,7 +3368,7 @@ Gui::set_sampler_state(const unsigned short &deck_index,
 void
 Gui::update_speed_label(const float &speed, const unsigned short &deck_index)
 {
-    double percent = (double)(floorf((speed * 100.0) * 10.0) / 10.0);
+    double percent = static_cast<double>(floorf((speed * 100.0f) * 10.0f) / 10.0f);
     QString sp = QString("%1%2").arg(percent < 0 ? '-' : '+').arg(qAbs(percent), 5, 'f', 1, '0') + '%';
 
     this->decks[deck_index]->speed->setText(sp);

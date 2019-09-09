@@ -273,7 +273,7 @@ void Audio_collection_model::create_header(QString in_path, bool in_show_path)
         delete this->rootItem;
     }
 
-    this->rootItem = new Audio_collection_item(rootData, "", in_path, false, 0);
+    this->rootItem = new Audio_collection_item(rootData, "", in_path, false, nullptr);
 }
 
 QModelIndex Audio_collection_model::set_root_path(QString in_root_path)
@@ -462,7 +462,7 @@ Qt::ItemFlags Audio_collection_model::flags(const QModelIndex &in_index) const
 {
     if (in_index.isValid() == false)
     {
-        return 0;
+        return nullptr;
     }
 
     // Get item.

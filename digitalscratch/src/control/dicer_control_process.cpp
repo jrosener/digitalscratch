@@ -318,10 +318,10 @@ void Dicer_control_process::start()
     while(this->is_open == true)
     {
         // Read MIDI command from DICER (blocking).
-        int err = 0;
+        long err = 0;
         if ((err = snd_rawmidi_read(this->midi_in, midi_buf, sizeof(midi_buf))) < 0)
         {
-            qCWarning(DS_DICER) << "can not read MIDI command on Dicer: " << snd_strerror(err);
+            qCWarning(DS_DICER) << "can not read MIDI command on Dicer: " << snd_strerror(static_cast<int>(err));
         }
         else
         {
@@ -433,10 +433,10 @@ bool Dicer_control_process::set_button_state(const dicer_t              &dicer_i
         // TODO: add Dicer support for Windows.
         return false;
 #else
-        int err = 0;
+        long err = 0;
         if ((err = snd_rawmidi_write(this->midi_out, midi_buf, sizeof(midi_buf))) < 0)
         {
-            qCWarning(DS_DICER) << "can not set button state to Dicer: " << snd_strerror(err);
+            qCWarning(DS_DICER) << "can not set button state to Dicer: " << snd_strerror(static_cast<int>(err));
             return false;
         }
 #endif

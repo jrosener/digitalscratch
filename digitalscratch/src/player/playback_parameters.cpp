@@ -72,7 +72,7 @@ Playback_parameters::get_speed() const
 bool
 Playback_parameters::inc_speed(const float &speed)
 {
-    if (speed != 0.0)
+    if (speed != 0.0f)
     {
         this->set_speed(this->speed + speed);
     }
@@ -83,7 +83,7 @@ Playback_parameters::inc_speed(const float &speed)
 bool
 Playback_parameters::set_volume(const float &volume)
 {
-    if (volume != this->volume)
+    if (qFuzzyCompare(volume, this->volume) == false)
     {
         this->volume = volume;
     }

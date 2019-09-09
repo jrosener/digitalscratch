@@ -569,7 +569,7 @@ bool Config_dialog::is_duplicate_shortcut(const QString &value)
 void Config_dialog::validate_and_set_shortcut(const QString &value, ShortcutQLabel *label)
 {
     // Get keyboard shortcut label to work on.
-    if(label != 0)
+    if(label != nullptr)
     {
         // Check if new shortcut is duplicate.
         if (this->is_duplicate_shortcut(value) == true)
@@ -730,7 +730,7 @@ Config_dialog::accept()
     this->settings->set_extern_prog(this->extern_prog->text());
 
     // Set sound card settings.
-    this->settings->set_sample_rate(this->sample_rate_select->currentText().toInt());
+    this->settings->set_sample_rate(this->sample_rate_select->currentText().toUInt());
 //    if (this->device_internal_check->isChecked() == true)
 //    {
 //        this->settings->set_sound_driver(SOUND_DRIVER_INTERNAL);
@@ -773,7 +773,7 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_FILE_SEARCH,               this->kb_file_search->text());
 
     // Set number of decks.
-    this->settings->set_nb_decks(this->nb_decks_select->currentText().toInt());
+    this->settings->set_nb_decks(static_cast<unsigned short int>(this->nb_decks_select->currentText().toUInt()));
 
     // Close window.
     this->done(QDialog::Accepted);

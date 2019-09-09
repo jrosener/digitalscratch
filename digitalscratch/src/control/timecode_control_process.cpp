@@ -109,7 +109,7 @@ bool Timecode_control_process::run(const unsigned short int &nb_samples,
         }
         else
         {
-            volume = qMin(volume * 150.0, 1.0); // FIXME: get this value from app settings
+            volume = qMin(volume * 150.0f, 1.0f); // FIXME: get this value from app settings
             this->params->set_volume(volume);
         }
     }

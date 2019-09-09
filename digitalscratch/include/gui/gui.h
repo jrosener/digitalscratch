@@ -333,7 +333,7 @@ class Gui : public QObject
     // Track search bar.
     QLineEdit                          *file_search;
     bool                                search_from_begin;
-    unsigned int                        file_browser_selected_index;
+    unsigned short int                  file_browser_selected_index;
     QString                             last_search_string;
 
     // Tag management.
@@ -547,7 +547,7 @@ class Gui : public QObject
     void on_file_browser_double_click(QModelIndex in_model_index);
     void sync_file_browser_to_audio_collection();
     void on_finished_analyze_audio_collection();
-    void update_refresh_progress_value(const unsigned int &value);
+    void update_refresh_progress_value(const unsigned short &value);
     void select_and_show_next_keys(const unsigned short int &deck_index);
     void show_next_keys();
     void on_file_browser_header_click(const int &index);

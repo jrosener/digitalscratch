@@ -345,7 +345,7 @@ Application_settings::set_gui_style(const QString &style)
 unsigned short int
 Application_settings::get_nb_decks()
 {
-    unsigned short int value = this->settings.value(NB_DECKS_CFG).toUInt();
+    unsigned short int value = static_cast<unsigned short int>(this->settings.value(NB_DECKS_CFG).toUInt());
 
     // Range is ]0;3]
     if ((value == 0) || (value > 3))
@@ -379,7 +379,7 @@ Application_settings::get_available_nb_decks()
 unsigned short int
 Application_settings::get_nb_samplers()
 {
-    return this->settings.value(NB_SAMPLERS_CFG).toUInt();
+    return static_cast<unsigned short int>(this->settings.value(NB_SAMPLERS_CFG).toUInt());
 }
 
 unsigned short int

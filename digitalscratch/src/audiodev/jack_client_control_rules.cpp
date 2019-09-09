@@ -61,7 +61,7 @@ Jack_client_control_rules::capture_and_playback_callback(AUDIO_CALLBACK_NB_FRAME
     // Call process for consuming captured data and preparing playback ones.
     Control_and_playback_process *control_and_playback = static_cast<Control_and_playback_process*>(data);
 
-    if (control_and_playback->run((unsigned short int)nb_buffer_frames) == false)
+    if (control_and_playback->run(static_cast<unsigned short int>(nb_buffer_frames)) == false)
     {
         qCWarning(DS_SOUNDCARD) << "can not run control and playback process";
     }
@@ -273,7 +273,7 @@ Jack_client_control_rules::get_input_buffers(const unsigned short int &nb_buffer
         // Get buffers from jack ports.
         for (unsigned short int i = 0; i < this->nb_channels; i++)
         {
-            out_buffers << (float *)jack_port_get_buffer(this->input_port[i], nb_buffer_frames);
+            out_buffers << static_cast<float *>(jack_port_get_buffer(this->input_port[i], nb_buffer_frames));
         }
 
 #ifdef ENABLE_TEST_MODE
@@ -297,7 +297,7 @@ Jack_client_control_rules::get_output_buffers(const unsigned short int &nb_buffe
     // Get buffers from jack ports.
     for (unsigned short int i = 0; i < this->nb_channels; i++)
     {
-        out_buffers <<  (float *)jack_port_get_buffer(this->output_port[i], nb_buffer_frames);
+        out_buffers <<  static_cast<float *>(jack_port_get_buffer(this->output_port[i], nb_buffer_frames));
     }
 
     return true;
