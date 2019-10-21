@@ -12,7 +12,7 @@ digitalscratch (1.7.0-1) stable; urgency=medium
   * tests:
      - travis CI: switch test environment from Ubuntu 12.04 to 14.04
   * libdigitalscratch (motion detection engine):
-     - bump to version 1.7.0 
+     - bump to version 1.7.0
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Sat, 01 Dec 2018 01:17:24 +0100
 
@@ -47,7 +47,7 @@ digitalscratch (1.6.0-1) stable; urgency=medium
      - refactor logging system
      - refactor duplicate slots using lambda functions
   * motion detection engine (libdigitalscratch):
-     - rewrite the timecoded signal detection using FIR and IIR filters  
+     - rewrite the timecoded signal detection using FIR and IIR filters
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 21 May 2015 00:59:08 +0200
 
@@ -88,7 +88,7 @@ digitalscratch (1.4.0-1) stable; urgency=low
      - added a progress bar when analysing file audio collection
   * build:
      - created Debian stable package
-     - added support of Qt4.x 
+     - added support of Qt4.x
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Mon, 23 Dec 2013 00:36:33 +0100
 
@@ -109,7 +109,7 @@ digitalscratch (1.3.0-1) stable; urgency=low
   * bugs:
      - fixed error when reading audio file containing unicode chars
   * build:
-     - ported to Qt5 
+     - ported to Qt5
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 30 Jul 2013 08:43:28 +0200
 
@@ -128,7 +128,7 @@ digitalscratch (1.2.0-1) stable; urgency=low
      - fixed icon issue in Ubuntu Unity
      - fixed a playback issue when playing backward after end of a track
   * build:
-     - ported to Windows 
+     - ported to Windows
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Fri, 22 Feb 2013 00:25:40 +0100
 
@@ -148,7 +148,7 @@ digitalscratch (1.1.0-1) stable; urgency=low
      - moving mouse over a playback area highlight it
      - switched application icon from png to svg
   * license:
-     - switched from GPL V2 to GPL V3 
+     - switched from GPL V2 to GPL V3
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 13 Dec 2012 18:42:32 +0100
 
@@ -162,6 +162,5 @@ digitalscratch (1.0.0-1) stable; urgency=low
      - work with 1 or 2 turntables
      - jack integration
      - support Serato Scratch Live CV02 vinyl disc
-
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 12 May 2011 17:16:25 +0200
