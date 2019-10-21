@@ -1,7 +1,7 @@
 libdigitalscratch (1.7.0-1) stable; urgency=medium
 
   * coding:
-     - rename some classes for better understanding  
+     - rename some classes for better understanding
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Sat, 01 Dec 2018 00:53:38 +0100
 
@@ -12,13 +12,13 @@ libdigitalscratch (1.6.1-1) stable; urgency=medium
   * coding:
      - memory allocation
      - API dependency
-     - cppcheck suggestions  
+     - cppcheck suggestions
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Wed, 08 Jun 2016 18:50:14 +0200
 
 libdigitalscratch (1.6.0-1) stable; urgency=medium
 
-  * rewrite the timecoded signal detection using FIR and IIR filters 
+  * rewrite the timecoded signal detection using FIR and IIR filters
   * refactor the API using more standard fonctions/handle
   * refactor the logging system
 
@@ -34,7 +34,7 @@ libdigitalscratch (1.5.0-1) stable; urgency=low
 libdigitalscratch (1.4.0-1) stable; urgency=low
 
   * added an amplification factor for the input timecoded signal
-  * support any sample rate 
+  * support any sample rate
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Mon, 23 Dec 2013 00:26:30 +0100
 
@@ -46,7 +46,7 @@ libdigitalscratch (1.3.0-1) stable; urgency=low
 
 libdigitalscratch (1.2.0-1) stable; urgency=low
 
-  * ported to Windows 
+  * ported to Windows
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 21 Feb 2013 20:35:45 +0100
 
@@ -54,7 +54,7 @@ libdigitalscratch (1.1.0-1) stable; urgency=low
 
   * added MixVibes and Final Scratch vinyl support (speed/direction only)
   * added API functions to get default configurations values
-  * source code license switched from GPL V2 to GPL V3 
+  * source code license switched from GPL V2 to GPL V3
 
  -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 13 Dec 2012 18:07:02 +0100
 
