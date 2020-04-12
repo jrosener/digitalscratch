@@ -681,6 +681,32 @@ Gui::show_add_new_tag_dialog()
 }
 
 void
+Gui::select_all_tags()
+{
+    this->show_hide_untagged_files_button->setChecked(true);
+    foreach (auto btn, this->show_hide_tagged_files_buttons)
+    {
+        btn->setChecked(true);
+    }
+    this->filter_tagged_files();
+
+    return;
+}
+
+void
+Gui::deselect_all_tags()
+{
+    this->show_hide_untagged_files_button->setChecked(false);
+    foreach (auto btn, this->show_hide_tagged_files_buttons)
+    {
+        btn->setChecked(false);
+    }
+    this->filter_tagged_files();
+
+    return;
+}
+
+void
 Gui::create_tag(const QString &tag)
 {
     if (tag.isEmpty() == false)
@@ -1585,14 +1611,22 @@ void
 Gui::init_tags_area()
 {
     // Button: add a new tag.
-    this->add_new_tag_button = new QPushButton(tr("New..."));
+    this->add_new_tag_button = new QPushButton();
     this->add_new_tag_button->setObjectName("Add_new_tag_button");
     this->add_new_tag_button->setToolTip(tr("Add a new tag which could be applied to audio track."));
     this->add_new_tag_button->setCheckable(false);
 
-    // TODO Separator: start the SHOW TAG section.
+    // Button: select all.
+    this->select_tags_button = new QPushButton();
+    this->select_tags_button->setObjectName("Select_tags_button");
+    this->select_tags_button->setToolTip(tr("Select all tags."));
+    this->select_tags_button->setCheckable(false);
 
-    // TODO Select case: select all tag (= show all files = enable all tag buttons) (not checked means unselect all tags)
+    // Button: deselect all.
+    this->deselect_tags_button = new QPushButton();
+    this->deselect_tags_button->setObjectName("Deselect_tags_button");
+    this->deselect_tags_button->setToolTip(tr("Deselect all tags."));
+    this->deselect_tags_button->setCheckable(false);
 
     // Button 1: show/hide the untagged files.
     this->show_hide_untagged_files_button = new QPushButton(tr("untagged"));
@@ -1607,8 +1641,13 @@ Gui::init_tags_area()
     this->init_and_connect_show_hide_tag_buttons();
 
     // Full layout and group box for the tag area,
+    QHBoxLayout *tag_control_layout = new QHBoxLayout();
+    tag_control_layout->addWidget(this->add_new_tag_button);
+    tag_control_layout->addWidget(this->select_tags_button);
+    tag_control_layout->addWidget(this->deselect_tags_button);
+    tag_control_layout->addStretch(50);
     QVBoxLayout *tags_layout = new QVBoxLayout();
-    tags_layout->addWidget(this->add_new_tag_button);
+    tags_layout->addLayout(tag_control_layout);
     tags_layout->addWidget(this->show_hide_untagged_files_button);
     tags_layout->addLayout(this->show_hide_tagged_files_layout);
     tags_layout->addStretch(100);
@@ -1625,6 +1664,7 @@ Gui::init_and_connect_show_hide_tag_buttons()
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     QStringList full_available_tags;
     data_persist->get_full_tag_list(full_available_tags);
+    full_available_tags.sort();
 
     // Populate the list of button with a new button for each tag.
     this->show_hide_tagged_files_buttons .clear();
@@ -1705,6 +1745,14 @@ Gui::connect_tags_area()
     // Add a new tag.
     QObject::connect(this->add_new_tag_button, &QPushButton::clicked,
                      [this](){this->show_add_new_tag_dialog();});
+
+    // Select all tags.
+    QObject::connect(this->select_tags_button, &QPushButton::clicked,
+                     [this](){this->select_all_tags();});
+
+    // Deselect all tags.
+    QObject::connect(this->deselect_tags_button, &QPushButton::clicked,
+                     [this](){this->deselect_all_tags();});
 
     // Untagged button behavior.
     QObject::connect(this->show_hide_untagged_files_button, &QPushButton::clicked,

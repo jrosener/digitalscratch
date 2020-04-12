@@ -292,12 +292,12 @@ QPushButton#Add_new_tag_button
    font:             7pt;
    background-color: gray;
    height:           15px;
-   width:            90px;
+   width:            15px;
    border:           none;
    border-radius:    0px;
    padding:          2px;
-   image:            url(:/pixmaps/dark-tag.png);
-   image-position:   left;
+   image:            url(:/pixmaps/dark-add.png);
+   image-position:   center;
    color:            black;
 }
 QPushButton#Add_new_tag_button:hover
@@ -305,13 +305,67 @@ QPushButton#Add_new_tag_button:hover
    background-color: black;
    border:           1px solid orange;
    color:            white;
-   image:            url(:/pixmaps/dark-tag_white.png);
+   image:            url(:/pixmaps/dark-add_white.png);
 }
 QPushButton#Add_new_tag_button:pressed
 {
    color:            black;
    background-color: lightGray;
-   image:            url(:/pixmaps/dark-tag.png);
+   image:            url(:/pixmaps/dark-add.png);
+}
+
+QPushButton#Select_tags_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            15px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-select_tags.png);
+   image-position:   center;
+   color:            black;
+}
+QPushButton#Select_tags_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-select_tags_white.png);
+}
+QPushButton#Select_tags_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-select_tags.png);
+}
+
+QPushButton#Deselect_tags_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   width:            15px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-deselect_tags.png);
+   image-position:   center;
+   color:            black;
+}
+QPushButton#Deselect_tags_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-deselect_tags_white.png);
+}
+QPushButton#Deselect_tags_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-deselect_tags.png);
 }
 
 QPushButton#Show_hide_tag_button
@@ -326,7 +380,7 @@ QPushButton#Show_hide_tag_button
    font:             8pt;
    image-position:   left;
    image:            url(:/pixmaps/dark-tag.png);
-   min-width:        90px;
+   min-width:        110px;
    height:           14px;
    text-align:       center;
 }

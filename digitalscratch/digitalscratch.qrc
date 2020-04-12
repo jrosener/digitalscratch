@@ -79,6 +79,12 @@
         <file>pixmaps/dark-about_logo_white.png</file>
         <file>pixmaps/dark-tag.png</file>
         <file>pixmaps/dark-tag_white.png</file>
+        <file>pixmaps/dark-add.png</file>
+        <file>pixmaps/dark-add_white.png</file>
+        <file>pixmaps/dark-select_tags.png</file>
+        <file>pixmaps/dark-select_tags_white.png</file>
+        <file>pixmaps/dark-deselect_tags.png</file>
+        <file>pixmaps/dark-deselect_tags_white.png</file>
         <file>pixmaps/digitalscratch-icon_2decks.png</file>
         <file>pixmaps/digitalscratch-icon.png</file>
         <file>pixmaps/digitalscratch-logo.png</file>

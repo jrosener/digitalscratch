@@ -339,6 +339,8 @@ class Gui : public QObject
     // Tag management.
     QGroupBox                          *tags_gbox;
     QPushButton                        *add_new_tag_button;
+    QPushButton                        *select_tags_button;
+    QPushButton                        *deselect_tags_button;
     QPushButton                        *show_hide_untagged_files_button;
     QList<QPushButton*>                 show_hide_tagged_files_buttons;
     QVBoxLayout                        *show_hide_tagged_files_layout;
@@ -571,6 +573,8 @@ class Gui : public QObject
     void add_tag_to_selected_track(Audio_collection_item *browser_item, const QString &tag);
     void rem_tag_from_selected_track(Audio_collection_item *browser_item, const QString &tag);
     int  show_add_new_tag_dialog();
+    void select_all_tags();
+    void deselect_all_tags();
     int  show_delete_tag_dialog(const QString &tag);
     int  show_rename_tag_dialog(const QString &tag);
     void create_tag(const QString &tag);
