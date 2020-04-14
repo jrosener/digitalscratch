@@ -278,8 +278,8 @@ void Data_persistence_Test::testCasePersistTag()
     tags.clear();
     data_persist->get_tags_from_track(at1, tags);
     QVERIFY2(tags.size() == 2, "nb tags = 2");
-    QVERIFY2(tags[0] == "techno", "tags[0] = techno");
-    QVERIFY2(tags[1] == "house",  "tags[1] = house");
+    QVERIFY2(tags[0] == "house", "tags[0] = house");
+    QVERIFY2(tags[1] == "techno",  "tags[1] = techno");
     QVERIFY2(data_persist->rem_tag_from_track(at1, "house") == true, "Delete tag house from track 1");
     tags.clear();
     data_persist->get_tags_from_track(at1, tags);
