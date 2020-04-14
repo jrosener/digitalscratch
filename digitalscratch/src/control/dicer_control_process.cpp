@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------------( dicer_control_process.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2017                                                   */
+/*  Copyright (C) 2003-2020                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/

@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------------( audio_track_key_process.h )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2017                                                   */
+/*  Copyright (C) 2003-2020                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/

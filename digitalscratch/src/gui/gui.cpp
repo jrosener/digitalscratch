@@ -6,7 +6,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------( gui.cpp )-*/
 /*                                                                            */
-/*  Copyright (C) 2003-2017                                                   */
+/*  Copyright (C) 2003-2020                                                   */
 /*                Julien Rosener <julien.rosener@digital-scratch.org>         */
 /*                                                                            */
 /*----------------------------------------------------------------( License )-*/
@@ -1202,7 +1202,7 @@ Gui::show_about_window()
     web_site.setTextInteractionFlags(Qt::TextBrowserInteraction);
     web_site.setOpenExternalLinks(true);
 
-    QLabel credit("Copyright (C) 2003-2016 Julien Rosener");
+    QLabel credit("Copyright (C) 2003-2020 Julien Rosener");
     credit.setAlignment(Qt::AlignHCenter);
 
     QLabel license("This program is free software; you can redistribute it and/or modify <br/>\
