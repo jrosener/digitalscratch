@@ -162,7 +162,9 @@ bool Data_persistence::restore_db(const QString &file_path)
         QString cur_db_file_path = cur_db_file.absoluteFilePath();
 
         // Backup current DB.
+#ifndef ENABLE_TEST_MODE
         this->backup_db();
+#endif
 
         // Close current DB.
         this->mutex.lock();
