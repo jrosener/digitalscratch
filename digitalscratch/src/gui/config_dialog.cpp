@@ -254,7 +254,7 @@ QWidget *Config_dialog::init_tab_player()
     player_tab_layout->addWidget(this->nb_decks_select,  4, 1);
     player_tab_layout->addWidget(extern_prog_label,      5, 0);
     player_tab_layout->addWidget(this->extern_prog,      5, 1);
-    player_tab_layout->addWidget(extern_prog_button,     6, 2);
+    player_tab_layout->addWidget(extern_prog_button,     5, 2);
 
     // Create tab.
     QWidget *player_tab = new QWidget(this);
