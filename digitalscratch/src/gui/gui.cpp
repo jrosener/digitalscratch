@@ -62,6 +62,7 @@
 #include <QFileDialog>
 #include <QThread>
 #include <QDialogButtonBox>
+#include <QScrollArea>
 #ifdef __linux__
 #include <QtDBus>
 #endif
@@ -1939,15 +1940,24 @@ Gui::init_tags_area()
 
     // Button 1: show/hide the untagged files.
     this->show_hide_untagged_files_button = new QPushButton(tr("untagged"));
-    this->show_hide_untagged_files_button->setObjectName("Show_hide_tag_button");
+    this->show_hide_untagged_files_button->setObjectName("Show_hide_untag_button");
     this->show_hide_untagged_files_button->setToolTip(tr("Show/hide untagged files"));
     this->show_hide_untagged_files_button->setCheckable(true);
     this->show_hide_untagged_files_button->setChecked(true);
 
     // Buttons 2, 3,... (for each existing tags): show/hide file containing the tag
     // + context menu with 2 actions: Rename and Delete.
-    this->show_hide_tagged_files_layout = new QVBoxLayout();
+    QScrollArea *scroll = new QScrollArea();
+    QWidget *inner = new QWidget();
+    this->show_hide_tagged_files_layout = new QVBoxLayout(scroll);
+    this->show_hide_tagged_files_layout->setContentsMargins(0, 0, 0, 0);
+    this->show_hide_tagged_files_layout->setSizeConstraint(QLayout::SetMaximumSize);
     this->init_and_connect_show_hide_tag_buttons();
+    inner->setLayout(this->show_hide_tagged_files_layout);
+    scroll->setWidget(inner);
+    scroll->setWidgetResizable(true);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setAlignment(Qt::AlignLeft);
 
     // Full layout and group box for the tag area,
     QHBoxLayout *tag_control_layout = new QHBoxLayout();
@@ -1958,8 +1968,7 @@ Gui::init_tags_area()
     QVBoxLayout *tags_layout = new QVBoxLayout();
     tags_layout->addLayout(tag_control_layout);
     tags_layout->addWidget(this->show_hide_untagged_files_button);
-    tags_layout->addLayout(this->show_hide_tagged_files_layout);
-    tags_layout->addStretch(100);
+    tags_layout->addWidget(scroll);
     this->tags_gbox = new QGroupBox();
     this->tags_gbox->setLayout(tags_layout);
     this->tags_gbox->setTitle(tr("Tags"));

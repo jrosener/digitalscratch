@@ -368,7 +368,7 @@ QPushButton#Deselect_tags_button:pressed
    image:            url(:/pixmaps/dark-deselect_tags.png);
 }
 
-QPushButton#Show_hide_tag_button
+QPushButton#Show_hide_untag_button
 {
    color:            black;
    background-color: gray;
@@ -380,21 +380,54 @@ QPushButton#Show_hide_tag_button
    font:             8pt;
    image-position:   left;
    image:            url(:/pixmaps/dark-tag.png);
-   min-width:        110px;
    height:           14px;
    text-align:       center;
+}
+
+QPushButton#Show_hide_untag_button:hover
+{
+   border:           1px solid orange;
+   image:            url(:/pixmaps/dark-tag_white.png);
+}
+QPushButton#Show_hide_untag_button:pressed
+{
+   color:            black;
+   border-style:     inset;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-tag.png);
+}
+QPushButton#Show_hide_untag_button:checked
+{
+   color:            black;
+   background-color: orange;
+   border-width:     1px;
+   border-color:     gray;
+   border-style:     inset;
+   image:            url(:/pixmaps/dark-tag_white.png);
+}
+
+QPushButton#Show_hide_tag_button
+{
+   color:            black;
+   background-color: gray;
+   border-style:     outset;
+   border-width:     1px;
+   border-color:     gray;
+   border-radius:    0px;
+   padding:          2px;
+   font:             8pt;
+   min-height:       14px;
+   text-align:       left;
 }
 QPushButton#Show_hide_tag_button:hover
 {
    border:           1px solid orange;
-   image:            url(:/pixmaps/dark-tag_white.png);
 }
 QPushButton#Show_hide_tag_button:pressed
 {
    color:            black;
    border-style:     inset;
    background-color: lightGray;
-   image:            url(:/pixmaps/dark-tag.png);
 }
 QPushButton#Show_hide_tag_button:checked
 {
@@ -403,7 +436,6 @@ QPushButton#Show_hide_tag_button:checked
    border-width:     1px;
    border-color:     gray;
    border-style:     inset;
-   image:            url(:/pixmaps/dark-tag_white.png);
 }
 
 QLabel#Menu_title
