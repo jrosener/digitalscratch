@@ -1982,7 +1982,6 @@ Gui::init_and_connect_show_hide_tag_buttons()
     Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
     QStringList full_available_tags;
     data_persist->get_full_tag_list(full_available_tags);
-    full_available_tags.sort();
 
     // Populate the list of button with a new button for each tag.
     this->show_hide_tagged_files_buttons .clear();
@@ -2368,9 +2367,11 @@ void Gui::fill_add_tag_submenu(QMenu *io_submenu)
 
         // Compute the list of tags that are still not applied to this track.
         QSet<QString> tags_to_add = full_available_tags.toSet().subtract(track_tags.toSet());
+        QList<QString> tag_list = tags_to_add.toList();
+        tag_list.sort();
 
         // Create sub menu elements and associated actions.
-        foreach (const QString &str, tags_to_add)
+        foreach (const QString &str, tag_list)
         {
             QAction *add_tag_action = new QAction(str, this);
             QObject::connect(add_tag_action, &QAction::triggered,

@@ -866,6 +866,7 @@ bool Data_persistence::get_full_tag_list(QStringList &out_tags)
             {
                 out_tags.push_back(query.value(0).toString());
             }
+            out_tags.sort();
         }
 
         // Release the DB connection.
@@ -1084,6 +1085,7 @@ bool Data_persistence::get_tags_from_track(const QSharedPointer<Audio_track> &at
             {
                 out_tags.push_back(query.value(0).toString());
             }
+            out_tags.sort();
         }
 
         // Release the DB connection.
