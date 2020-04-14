@@ -56,6 +56,8 @@ class Data_persistence
     QMutex       mutex;
 
  public:
+    bool restore_db(const QString &file_path);
+    bool export_db(const QString &dest_file_path);
     bool rollback_transaction();
 
     bool store_audio_track(const QSharedPointer<Audio_track> &at);        // Insert (or update if exists) an audio track in DB.

@@ -284,6 +284,315 @@ Gui::show_config_window()
     return true;
 }
 
+bool
+Gui::show_backup_window()
+{
+    QString timestamp(QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss"));
+
+    // Create backup/restore window.
+    QDialog dialog;
+
+    // Set properties : title, icon.
+    dialog.setWindowTitle(tr("Backup/Restore"));
+    if (this->nb_decks > 1)
+    {
+        dialog.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        dialog.setWindowIcon(QIcon(ICON));
+    }
+
+#ifndef WIN32
+    // Restore a config file.
+    QLabel *restore_settings_label = new QLabel(tr("Restore config file from: "));
+    QLineEdit *restore_settings_path = new QLineEdit();
+    restore_settings_path->setMinimumWidth(300);
+    QPushButton *restore_settings_browse_button = new QPushButton(tr("Browse..."));
+    QObject::connect(restore_settings_browse_button, &QPushButton::clicked,
+                     [&dialog, restore_settings_path]()
+                     {
+                         // Create browse window.
+                         QString file_path = QFileDialog::getOpenFileName(&dialog,
+                                                                          tr("Select a config file"),
+                                                                          QDir::homePath(),
+                                                                          "*.conf (*.conf)");
+
+                         // Update base directory path.
+                         if (file_path != nullptr)
+                         {
+                             restore_settings_path->setText(file_path);
+                         }
+                     });
+    QPushButton *restore_settings_button = new QPushButton(tr("Restore"));
+    QObject::connect(restore_settings_button, &QPushButton::clicked,
+                     [&dialog, restore_settings_path]()
+                     {
+                         if (restore_settings_path->text().isEmpty() == false)
+                         {
+                             bool success = false;
+
+                             // Read the config file and apply its content to the app setting.
+                             Application_settings *cur_settings = &Singleton<Application_settings>::get_instance();
+                             success = cur_settings->import_from_ini_file(restore_settings_path->text());
+
+                             // Show a dialog status (error/success).
+                             QMessageBox msg_box(&dialog);
+                             msg_box.setWindowTitle("DigitalScratch");
+                             if (success == true)
+                             {
+                                 msg_box.setText("<h2>" + tr("Success") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Configuration file successfully restored.");
+                                 msg_box.setIcon(QMessageBox::Information);
+                             }
+                             else
+                             {
+                                 msg_box.setText("<h2>" + tr("Error") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Can not restore this configuration file.");
+                                 msg_box.setIcon(QMessageBox::Warning);
+                             }
+                             msg_box.setStandardButtons(QMessageBox::Close);
+                             msg_box.setWindowIcon(QIcon(ICON_2));
+                             msg_box.exec();
+                         }
+                     });
+
+    // Backup the current config file.
+    QLabel *backup_settings_label = new QLabel(tr("Backup current config to: "));
+    QLineEdit *backup_settings_path = new QLineEdit();
+    backup_settings_path->setMinimumWidth(300);
+    backup_settings_path->setText(QDir::homePath() + QDir::separator() + timestamp + "-digitalscratch.conf");
+    QPushButton *backup_settings_browse_button = new QPushButton(tr("Browse..."));
+    QObject::connect(backup_settings_browse_button, &QPushButton::clicked,
+                     [&dialog, backup_settings_path]()
+                     {
+                         // Create browse window.
+                         QString file_path = QFileDialog::getSaveFileName(&dialog,
+                                                                          tr("Save as"),
+                                                                          QDir::homePath(),
+                                                                          "*.conf (*.conf)");
+
+                         // Update base directory path.
+                         if (file_path != nullptr)
+                         {
+                             if (file_path.endsWith(".conf") == false)
+                             {
+                                 file_path = file_path.append(".conf");
+                             }
+                             backup_settings_path->setText(file_path);
+                         }
+                     });
+    QPushButton *backup_settings_button = new QPushButton(tr("Backup"));
+    QObject::connect(backup_settings_button, &QPushButton::clicked,
+                     [&dialog, backup_settings_path]()
+                     {
+                         if (backup_settings_path->text().isEmpty() == false)
+                         {
+                             bool success = false;
+
+                             // Duplicate the current config file.
+                             Application_settings *cur_settings = &Singleton<Application_settings>::get_instance();
+                             success = QFile::copy(cur_settings->get_ini_config_file(), backup_settings_path->text());
+
+                             // Show a dialog status (error/success).
+                             QMessageBox msg_box(&dialog);
+                             msg_box.setWindowTitle("DigitalScratch");
+                             if (success == true)
+                             {
+                                 msg_box.setText("<h2>" + tr("Success") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Configuration file successfully backuped.");
+                                 msg_box.setIcon(QMessageBox::Information);
+                             }
+                             else
+                             {
+                                 msg_box.setText("<h2>" + tr("Error") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Can not backup the configuration file.");
+                                 msg_box.setIcon(QMessageBox::Warning);
+                             }
+                             msg_box.setStandardButtons(QMessageBox::Close);
+                             msg_box.setWindowIcon(QIcon(ICON_2));
+                             msg_box.exec();
+                         }
+                     });
+
+    // Config file section.
+    QHBoxLayout *config_title = this->get_menu_area_title(tr("Application configuration"));
+    QGridLayout *config_layout = new QGridLayout();
+    config_layout->addWidget(restore_settings_label, 0, 0);
+    config_layout->addWidget(restore_settings_path, 0, 1);
+    config_layout->addWidget(restore_settings_browse_button, 0, 2);
+    config_layout->addWidget(restore_settings_button, 0, 3);
+    config_layout->addWidget(backup_settings_label, 1, 0);
+    config_layout->addWidget(backup_settings_path, 1, 1);
+    config_layout->addWidget(backup_settings_browse_button, 1, 2);
+    config_layout->addWidget(backup_settings_button, 1, 3);
+#endif
+
+    // Restore a music database.
+    QLabel *restore_db_label = new QLabel(tr("Restore music database from: "));
+    QLineEdit *restore_db_path = new QLineEdit();
+    restore_db_path->setMinimumWidth(300);
+    QPushButton *restore_db_browse_button = new QPushButton(tr("Browse..."));
+    QObject::connect(restore_db_browse_button, &QPushButton::clicked,
+                     [&dialog, restore_db_path]()
+                     {
+                         // Create browse window.
+                         QString file_path = QFileDialog::getOpenFileName(&dialog,
+                                                                          tr("Select a music database file"),
+                                                                          QDir::homePath(),
+                                                                          "*.sqlite (*.sqlite)");
+
+                         // Get selected file path.
+                         if (file_path != nullptr)
+                         {
+                             restore_db_path->setText(file_path);
+                         }
+                     });
+    QPushButton *restore_db_button = new QPushButton(tr("Restore"));
+    QObject::connect(restore_db_button, &QPushButton::clicked,
+                     [this, &dialog, restore_db_path]()
+                     {
+                         if (restore_db_path->text().isEmpty() == false)
+                         {
+                             bool success = false;
+
+                             // Overwrite the current DB with the provided one.
+                             Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+                             success = data_persist->restore_db(restore_db_path->text());
+
+                             // Show a dialog status (error/success).
+                             QMessageBox msg_box(&dialog);
+                             msg_box.setWindowTitle("DigitalScratch");
+                             if (success == true)
+                             {
+                                 msg_box.setText("<h2>" + tr("Success") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Music database successfully restored.");
+                                 msg_box.setIcon(QMessageBox::Information);
+
+                                 // Refresh list of tags.
+                                 this->refresh_show_hide_tag_buttons();
+
+                                 // Refresh file browser.
+                                 emit this->folder_browser->doubleClicked(this->folder_browser->currentIndex());
+                             }
+                             else
+                             {
+                                 msg_box.setText("<h2>" + tr("Error") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Can not restore this music database.");
+                                 msg_box.setIcon(QMessageBox::Warning);
+                             }
+                             msg_box.setStandardButtons(QMessageBox::Close);
+                             msg_box.setWindowIcon(QIcon(ICON_2));
+                             msg_box.exec();
+                         }
+                     });
+
+    // Backup the current music database.
+    QLabel *backup_db_label = new QLabel(tr("Backup current music database to: "));
+    QLineEdit *backup_db_path = new QLineEdit();
+    backup_db_path->setText(QDir::homePath() + QDir::separator() + timestamp + "-digitalscratch.sqlite");
+    backup_db_path->setMinimumWidth(300);
+    QPushButton *backup_db_browse_button = new QPushButton(tr("Browse..."));
+    QObject::connect(backup_db_browse_button, &QPushButton::clicked,
+                     [&dialog, backup_db_path]()
+                     {
+                         // Create browse window.
+                         QString file_path = QFileDialog::getSaveFileName(&dialog,
+                                                                          tr("Save as"),
+                                                                          QDir::homePath(),
+                                                                          "*.sqlite (*.sqlite)");
+
+                         // Get the selected file path.
+                         if (file_path != nullptr)
+                         {
+                             if (file_path.endsWith(".sqlite") == false)
+                             {
+                                 file_path = file_path.append(".sqlite");
+                             }
+                             backup_db_path->setText(file_path);
+                         }
+                     });
+    QPushButton *backup_db_button = new QPushButton(tr("Backup"));
+    QObject::connect(backup_db_button, &QPushButton::clicked,
+                     [&dialog, backup_db_path]()
+                     {
+                         if (backup_db_path->text().isEmpty() == false)
+                         {
+                             bool success = false;
+
+                             // Duplicate the current database file.
+                             Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+                             success = data_persist->export_db(backup_db_path->text());
+
+                             // Show a dialog status (error/success).
+                             QMessageBox msg_box(&dialog);
+                             msg_box.setWindowTitle("DigitalScratch");
+                             if (success == true)
+                             {
+                                 msg_box.setText("<h2>" + tr("Success") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Music database successfully backuped.");
+                                 msg_box.setIcon(QMessageBox::Information);
+                             }
+                             else
+                             {
+                                 msg_box.setText("<h2>" + tr("Error") + "</h2>"
+                                                 + "<br/>"
+                                                 + "Can not backup the music database.");
+                                 msg_box.setIcon(QMessageBox::Warning);
+                             }
+                             msg_box.setStandardButtons(QMessageBox::Close);
+                             msg_box.setWindowIcon(QIcon(ICON_2));
+                             msg_box.exec();
+                         }
+                     });
+
+    // Music DB section.
+    QHBoxLayout *db_title = this->get_menu_area_title(tr("Music database"));
+    QGridLayout *db_layout = new QGridLayout();
+    db_layout->addWidget(restore_db_label, 0, 0);
+    db_layout->addWidget(restore_db_path, 0, 1);
+    db_layout->addWidget(restore_db_browse_button, 0, 2);
+    db_layout->addWidget(restore_db_button, 0, 3);
+    db_layout->addWidget(backup_db_label, 1, 0);
+    db_layout->addWidget(backup_db_path, 1, 1);
+    db_layout->addWidget(backup_db_browse_button, 1, 2);
+    db_layout->addWidget(backup_db_button, 1, 3);
+
+    // Close button.
+    QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Close);
+    button_box->button(QDialogButtonBox::Close)->setText(tr("&Close"));
+    QObject::connect(button_box, &QDialogButtonBox::rejected, [&dialog](){dialog.close();});
+
+    // Full window layout.
+    QVBoxLayout *layout = new QVBoxLayout();
+#ifndef WIN32
+    layout->addLayout(config_title);
+    layout->addLayout(config_layout);
+#endif
+    layout->addLayout(db_title);
+    layout->addLayout(db_layout);
+    layout->addWidget(button_box);
+
+    // Put layout in dialog.
+    dialog.setLayout(layout);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
+
+    // Apply stylesheet.
+    dialog.setStyleSheet(Utils::get_current_stylesheet_css());
+
+    // Show dialog.
+    dialog.exec();
+
+    return true;
+}
+
 void
 Gui::disable_screensaver()
 {
@@ -2203,18 +2512,18 @@ QHBoxLayout *Gui::get_menu_area_title(const QString &title)
     QFrame* line_left = new QFrame();
     line_left->setFrameShape(QFrame::HLine);
     line_left->setObjectName("Separator_line");
-    title_layout->addWidget(line_left);
+    title_layout->addWidget(line_left, 100);
 
     // Title.
     QLabel *title_label = new QLabel(title);
     title_label->setObjectName("Menu_title");
-    title_layout->addWidget(title_label);
+    title_layout->addWidget(title_label, 0);
 
     // Right line.
     QFrame* line_right = new QFrame();
     line_right->setFrameShape(QFrame::HLine);
     line_right->setObjectName("Separator_line");
-    title_layout->addWidget(line_right);
+    title_layout->addWidget(line_right, 100);
 
     return title_layout;
 }
@@ -2308,6 +2617,13 @@ Gui::init_menu_area()
     this->config_button->setFocusPolicy(Qt::NoFocus);
     action_buttons_layout->addWidget(this->config_button, 1);
 
+    // Create Backup/Restore button.
+    this->backup_button = new QPushButton(tr("BACKUP/REST."));
+    this->backup_button->setToolTip(tr("Backup/restore configuration file, music database..."));
+    this->backup_button->setObjectName("Backup_button");
+    this->backup_button->setFocusPolicy(Qt::NoFocus);
+    action_buttons_layout->addWidget(this->backup_button, 1);
+
     // Create DigitalScratch logo.
     this->logo = new QPushButton(tr("ABOUT"));
     this->logo->setToolTip(tr("About DigitalScratch..."));
@@ -2354,8 +2670,11 @@ Gui::connect_menu_area()
     // Open configuration window.
     QObject::connect(this->config_button, &QPushButton::clicked, [this](){this->show_config_window();});
 
+    // Open backup/restore window.
+    QObject::connect(this->backup_button, &QPushButton::clicked, [this](){this->show_backup_window();});
+
     // Open about window.
-    QObject::connect(this->logo, &QPushButton::clicked, [this](){show_about_window();});
+    QObject::connect(this->logo, &QPushButton::clicked, [this](){this->show_about_window();});
 
     // Quit application.
     QObject::connect(this->quit_button, &QPushButton::clicked, [this](){this->can_close();});

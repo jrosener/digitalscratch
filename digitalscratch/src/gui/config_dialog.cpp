@@ -153,7 +153,6 @@ Config_dialog::~Config_dialog()
 int
 Config_dialog::show()
 {
-    // Create 3 tabs: player, sound card and motion detection.
     QTabWidget *tabs = new QTabWidget(this);
 
     // Create the player tab.
@@ -229,7 +228,7 @@ QWidget *Config_dialog::init_tab_player()
 
     // Player tab: select GUI language.
     QLabel *gui_lang_label = new QLabel(tr("GUI language (restart required): "), this);
-    
+
     // Player tab: select number of decks.
     QLabel *nb_decks_label = new QLabel(tr("Number of decks (restart required): "), this);
 
@@ -722,7 +721,7 @@ Config_dialog::accept()
 
     // Set GUI style.
     this->settings->set_gui_style(this->gui_style_select->currentText());
-    
+
     // GUI language.
     this->settings->set_language(this->gui_lang_select->currentText());
 

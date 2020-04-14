@@ -648,6 +648,33 @@ QPushButton#Configuration_button:pressed
    image:            url(:/pixmaps/dark-settings.png);
 }
 
+QPushButton#Backup_button
+{
+   font:             7pt;
+   background-color: gray;
+   height:           15px;
+   min-width:        95px;
+   border:           none;
+   border-radius:    0px;
+   padding:          2px;
+   image:            url(:/pixmaps/dark-backup_restore.png);
+   image-position:   left;
+   color:            black;
+}
+QPushButton#Backup_button:hover
+{
+   background-color: black;
+   border:           1px solid orange;
+   color:            white;
+   image:            url(:/pixmaps/dark-backup_restore_white.png);
+}
+QPushButton#Backup_button:pressed
+{
+   color:            black;
+   background-color: lightGray;
+   image:            url(:/pixmaps/dark-backup_restore.png);
+}
+
 QPushButton#Logo
 {
    font:             7pt;

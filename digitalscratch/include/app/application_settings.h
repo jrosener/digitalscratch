@@ -242,7 +242,7 @@ class Application_settings : public QObject
     void set_samplers_visible(const bool &is_visible);
     bool get_samplers_visible();
     bool get_samplers_visible_default();
-    
+
     void           set_language(const QString &iso639_lang);
     QString        get_language();
     QString        get_language_default();
@@ -251,6 +251,9 @@ class Application_settings : public QObject
     // Runtime settings (not stored in preference file).
     void set_audio_collection_full_refresh(const bool &full_refresh);
     bool get_audio_collection_full_refresh();
+
+    bool import_from_ini_file(const QString &file_path);
+    QString get_ini_config_file();
 
  private:
     void init_settings();

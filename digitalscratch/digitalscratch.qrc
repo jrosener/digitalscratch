@@ -91,6 +91,8 @@
         <file>skins/dark.css</file>
         <file>pixmaps/dark-show_tracklist.png</file>
         <file>pixmaps/dark-show_tracklist_white.png</file>
+        <file>pixmaps/dark-backup_restore.png</file>
+        <file>pixmaps/dark-backup_restore_white.png</file>
         <file>translations/digitalscratch_fr.qm</file>
     </qresource>
 </RCC>

@@ -193,6 +193,75 @@ Application_settings::init_settings()
     }
 }
 
+bool
+Application_settings::import_from_ini_file(const QString &file_path)
+{
+    bool res = true;
+
+    if (QFileInfo::exists(file_path) == true)
+    {
+        QSettings import_settings(file_path, QSettings::IniFormat);
+
+        QStringList keys({BASE_DIR_PATH_CFG,          // Application and main window.
+                          TRACKLIST_PATH_CFG,
+                          GUI_STYLE_CFG,
+                          SAMPLERS_VISIBLE_CFG,
+                          EXTERN_PROG_CFG,
+                          NB_DECKS_CFG,
+                          NB_SAMPLERS_CFG,
+                          LANG_CFG,
+                          SAMPLE_RATE_CFG,            // Sound caracteristics.
+                          AUTO_JACK_CONNECTIONS_CFG,
+                          SOUND_DRIVER_CFG,
+                          VINYL_TYPE_CFG,             // Decks: motion detection.
+                          RPM_CFG,
+                          MAX_SPEED_DIFF_CFG,         // Playback parameters.
+                          SLOW_SPEED_ALGO_USAGE_CFG,
+                          MAX_NB_SPEED_STABIL_CFG,
+                          NB_CYCLE_CHANGING_DIR_CFG,
+                          KB_SWITCH_PLAYBACK,         // Keyboard shortcuts.
+                          KB_LOAD_TRACK_ON_DECK,
+                          KB_PLAY_BEGIN_TRACK_ON_DECK,
+                          KB_SET_CUE_POINT1_ON_DECK,
+                          KB_PLAY_CUE_POINT1_ON_DECK,
+                          KB_SET_CUE_POINT2_ON_DECK,
+                          KB_PLAY_CUE_POINT2_ON_DECK,
+                          KB_SET_CUE_POINT3_ON_DECK,
+                          KB_PLAY_CUE_POINT3_ON_DECK,
+                          KB_SET_CUE_POINT4_ON_DECK,
+                          KB_PLAY_CUE_POINT4_ON_DECK,
+                          KB_LOAD_TRACK_ON_SAMPLER1,
+                          KB_LOAD_TRACK_ON_SAMPLER2,
+                          KB_LOAD_TRACK_ON_SAMPLER3,
+                          KB_LOAD_TRACK_ON_SAMPLER4,
+                          KB_SHOW_NEXT_KEYS,
+                          KB_FULLSCREEN,
+                          KB_HELP,
+                          KB_FILE_SEARCH
+                          });
+
+        foreach (auto k, keys)
+        {
+            if (import_settings.contains(k) == true)
+            {
+                this->settings.setValue(k, import_settings.value(k));
+            }
+        }
+    }
+    else
+    { // Import file does not exists.
+        res = false;
+    }
+
+    return res;
+}
+
+QString
+Application_settings::get_ini_config_file()
+{
+    return this->settings.fileName();
+}
+
 void
 Application_settings::set_main_window_size(const QSize &size)
 {

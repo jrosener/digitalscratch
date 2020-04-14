@@ -45,6 +45,7 @@
 
 Data_persistence::Data_persistence() // FIXME: rename to Audio_track_persistence ?
 {
+    this->db = QSqlDatabase::addDatabase("QSQLITE");
     this->is_initialized = this->init_db();
 
     return;
@@ -66,7 +67,6 @@ bool Data_persistence::init_db()
 {
     // Create DB.
     this->mutex.lock();
-    this->db = QSqlDatabase::addDatabase("QSQLITE");
     QFileInfo path_info(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
     this->db.setDatabaseName(path_info.absoluteFilePath());
 
@@ -147,6 +147,83 @@ void Data_persistence::backup_db()
     return;
 }
 #endif
+
+bool Data_persistence::restore_db(const QString &file_path)
+{
+    bool res = true;
+
+    // Check that the file to restore exists.
+    QFileInfo fi(file_path);
+    QString abs_file_path = fi.absoluteFilePath();
+    if (fi.exists() == true)
+    {
+        // Get file path of current DB.
+        QFileInfo cur_db_file(this->db.databaseName());
+        QString cur_db_file_path = cur_db_file.absoluteFilePath();
+
+        // Backup current DB.
+        this->backup_db();
+
+        // Close current DB.
+        this->mutex.lock();
+        if (this->db.isValid() == true)
+        {
+            this->db.close();
+        }
+        this->mutex.unlock();
+
+        // Overwrite with restoration DB.
+        if (QFile::exists(cur_db_file_path))
+        {
+            QFile::remove(cur_db_file_path);
+        }
+        if ((res = QFile::copy(abs_file_path, cur_db_file_path)) == false)
+        {
+            qCWarning(DS_DB) << "can not restore DB" << abs_file_path << "into" << cur_db_file_path;
+        }
+
+        // Init DB again.
+        this->is_initialized = this->init_db();
+    }
+    else
+    { // Restore file does not exists.
+        qCWarning(DS_DB) << "can not restore DB, file does not exists:" << file_path;
+        res = false;
+    }
+
+    return res;
+}
+
+bool
+Data_persistence::export_db(const QString &dest_file_path)
+{
+    bool res = true;
+
+    QFileInfo db_file(this->db.databaseName());
+    QString abs_db_file = db_file.absoluteFilePath();
+
+    if (db_file.exists() == true)
+    {
+        // Remove existing backup file.
+        if (QFile::exists(dest_file_path))
+        {
+            QFile::remove(dest_file_path);
+        }
+
+        // Backup the DB file.
+        if ((res = QFile::copy(abs_db_file, dest_file_path)) == false)
+        {
+            qCWarning(DS_DB) << "can not export DB" << abs_db_file << "into" << dest_file_path;
+        }
+    }
+    else
+    { // Current DB file does not exists.
+        qCWarning(DS_DB) << "can not restore DB, file does not exists:" << abs_db_file;
+        res = false;
+    }
+
+    return res;
+}
 
 bool Data_persistence::create_db_structure()
 {

@@ -347,6 +347,7 @@ class Gui : public QObject
 
     // Menu (bottom right).
     QPushButton                        *config_button;
+    QPushButton                        *backup_button;
     QPushButton                        *fullscreen_button;
     QPushButton                        *logo;
     QPushButton                        *help_button;
@@ -490,6 +491,7 @@ class Gui : public QObject
 
  private slots:
     bool show_config_window();
+    bool show_backup_window();
     void set_fullscreen();
     void show_help();
     void set_focus_search_bar();
