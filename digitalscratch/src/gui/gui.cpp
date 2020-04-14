@@ -151,10 +151,13 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
 
     // Run the external controler Novation Dicer.
     this->dicer_control = dicer_control;
-    this->connect_dicer_actions();
-    if (this->dicer_control->init() != true)
+    if ((this->dicer_is_running = this->dicer_control->init()) != true)
     {
         qCWarning(DS_DICER) << "can not start Dicer";
+    }
+    if (this->dicer_is_running)
+    {
+        this->connect_dicer_actions();
     }
 
     // Display audio file collection (takes time, that's why we are first showing the main window).
@@ -166,7 +169,10 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
 Gui::~Gui()
 {
     // Stop external controller Novation Dicer.
-    this->dicer_control->stop();
+    if (this->dicer_is_running)
+    {
+        this->dicer_control->stop();
+    }
 
     // Store size/position of the main window (first go back from fullscreen or maximized mode).
     if (this->window->isFullScreen() == true)
@@ -698,65 +704,20 @@ Gui::set_focus_search_bar()
 {
     this->file_search->setFocus();
     this->file_search->selectAll();
-    this->search_from_begin = true;
-}
-
-void
-Gui::press_enter_in_search_bar()
-{
-    this->search_from_begin = false;
-    this->file_search_string(this->last_search_string);
 }
 
 void
 Gui::press_esc_in_search_bar()
 {
     this->file_browser->setFocus();
+    this->file_search->setText("");
 }
-
 
 void
 Gui::file_search_string(const QString &text)
 {
-    if (text != "")
-    {
-        // Store search text.
-        this->last_search_string = text;
-
-        // Search text in file browser (get a list of results).
-        QModelIndexList items = this->file_system_model->search(text);
-
-        if (this->search_from_begin == true)
-        {
-            // If we found file/dir name that match, return the first one.
-            if (items.size() > 0)
-            {
-                // Select item in file browser.
-                this->file_browser->setCurrentIndex(items[0]);
-                this->file_browser_selected_index = 0;
-            }
-        }
-        else
-        {
-            // If we found file/dir name that match, return the next one.
-            if (items.size() > 0)
-            {
-                if (static_cast<int>(this->file_browser_selected_index + 1 < items.size()))
-                {
-                    // Select next item in file browser.
-                    this->file_browser_selected_index++;
-                }
-                else
-                {
-                    // Wrap search, so select first item again.
-                    this->file_browser_selected_index = 0;
-                }
-                this->file_browser->setCurrentIndex(items[this->file_browser_selected_index]);
-            }
-
-            this->search_from_begin = true;
-        }
-    }
+    this->proxy_model_track_name->setFilterRegExp(QRegExp(text, Qt::CaseInsensitive,
+                                                          QRegExp::FixedString));
 }
 
 void
@@ -1817,7 +1778,7 @@ Gui::connect_file_control_area()
     return;
 }
 
-bool BrowserQSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+bool BrowserQSortFilterProxyModelTag::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     QModelIndex index2 = this->sourceModel()->index(source_row, 2, source_parent); // Tags
 
@@ -1850,6 +1811,33 @@ bool BrowserQSortFilterProxyModel::filterAcceptsRow(int source_row, const QModel
     }
 }
 
+bool BrowserQSortFilterProxyModelName::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QString filter = this->filterRegExp().pattern();
+
+    if (filter.isEmpty() == true)
+    { // No name filter: show the track.
+        return true;
+    }
+    else
+    { // There is a name filter: check if the track is filtered or not.
+        QModelIndex index = this->sourceModel()->index(source_row, 0, source_parent); // 0 = track name column
+        QString track_name = this->sourceModel()->data(index).toString();
+        QStringList filter_list = filter.split(" ");
+        bool res = false;
+
+        foreach (auto f, filter_list)
+        {
+            if ((res = track_name.contains(f)) == false)
+            {
+                break;
+            }
+        }
+
+        return res;
+    }
+}
+
 void
 Gui::init_file_browser_area()
 {
@@ -1868,10 +1856,12 @@ Gui::init_file_browser_area()
 
     // Create the file browser (track browser).
     this->file_system_model = new Audio_collection_model();
-    this->proxy_model = new BrowserQSortFilterProxyModel();
+    this->proxy_model = new BrowserQSortFilterProxyModelTag();
     this->proxy_model->setSourceModel(this->file_system_model);
+    this->proxy_model_track_name = new BrowserQSortFilterProxyModelName();
+    this->proxy_model_track_name->setSourceModel(this->proxy_model);
     this->file_browser = new QTreeView();
-    this->file_browser->setModel(this->proxy_model);
+    this->file_browser->setModel(this->proxy_model_track_name);
     this->file_browser->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->file_browser->setDragEnabled(true);
     this->file_browser->setDragDropMode(QAbstractItemView::DragOnly);
@@ -1881,9 +1871,9 @@ Gui::init_file_browser_area()
     this->file_browser->header()->setSectionsClickable(true);
 
     // Create the track search bar.
-    this->file_search                 = new QLineEdit();
-    this->search_from_begin           = false;
+    this->file_search = new QLineEdit();
     this->file_search->setPlaceholderText(tr("Search..."));
+    this->file_search->setClearButtonEnabled(true);
     this->file_browser_selected_index = 0;
 
     // Build file browser and search area.
@@ -2119,6 +2109,7 @@ Gui::clean_file_browser_area()
     delete this->folder_system_model;
     delete this->file_system_model;
     delete this->proxy_model;
+    delete this->proxy_model_track_name;
 }
 
 void
@@ -2162,8 +2153,6 @@ Gui::connect_file_browser_area()
 
     QObject::connect(this->shortcut_file_search, &QShortcut::activated, [this](){this->set_focus_search_bar();});
     QObject::connect(this->file_search, &QLineEdit::textChanged, [this](const QString &text){this->file_search_string(text);});
-    QObject::connect(this->shortcut_file_search_press_enter, &QShortcut::activated, [this](){this->press_enter_in_search_bar();});
-    QObject::connect(this->file_search, &QLineEdit::returnPressed, [this](){this->press_enter_in_search_bar();});
     QObject::connect(this->shortcut_file_search_press_esc, &QShortcut::activated, [this](){this->press_esc_in_search_bar();});
 
     // Progress for file analyzis.
@@ -3462,7 +3451,10 @@ Gui::select_and_run_audio_file_decoding_process(const unsigned short int &deck_i
 
 Audio_collection_item* Gui::get_audio_collection_item_from_file_browser_index(const QModelIndex &index)
 {
-    return static_cast<Audio_collection_item*>(this->proxy_model->mapToSource(index).internalPointer());
+    QModelIndex index2 = this->proxy_model_track_name->mapToSource(index);
+    Audio_collection_item* item = static_cast<Audio_collection_item*>(this->proxy_model->mapToSource(index2).internalPointer());
+
+    return item;
 }
 
 Audio_collection_item* Gui::get_selected_audio_item()
@@ -3516,9 +3508,12 @@ Gui::run_audio_file_decoding_process()
         deck_waveform->move_slider(0.0);
 
         // Reset cue points on Dicer.
-        dicer_t dicer_index;
-        this->get_dicer_index_from_deck_index(deck_index, dicer_index);
-        this->dicer_control->clear_dicer(dicer_index);
+        if (this->dicer_is_running)
+        {
+            dicer_t dicer_index;
+            this->get_dicer_index_from_deck_index(deck_index, dicer_index);
+            this->dicer_control->clear_dicer(dicer_index);
+        }
 
         // Load cue points.
         for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
@@ -3528,14 +3523,20 @@ Gui::run_audio_file_decoding_process()
             deck_cue_point[i]->setText(this->playbacks[deck_index]->get_cue_point_str(i));
 
             // On Dicer.
-            if (this->playbacks[deck_index]->is_cue_point_defined(i) == true)
+            if (this->dicer_is_running)
             {
-                this->lit_dicer_button_cue_point(deck_index, i);
+                if (this->playbacks[deck_index]->is_cue_point_defined(i) == true)
+                {
+                    this->lit_dicer_button_cue_point(deck_index, i);
+                }
             }
         }
 
         // On Dicer, always lit the 5th button to handle the "go to begin" feature.
-        this->lit_dicer_button_cue_point(deck_index, 4);
+        if (this->dicer_is_running)
+        {
+            this->lit_dicer_button_cue_point(deck_index, 4);
+        }
 
         // Update waveform.
         deck_waveform->update();
@@ -3952,7 +3953,10 @@ Gui::set_cue_point(const unsigned short &deck_index, const unsigned short &cue_p
             this->decks[deck_index]->cue_point_labels[cue_point_index]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_index));
 
             // Highlight cue buttons on Dicer.
-            this->lit_dicer_button_cue_point(deck_index, cue_point_index);
+            if (this->dicer_is_running)
+            {
+                this->lit_dicer_button_cue_point(deck_index, cue_point_index);
+            }
         }
         else
         {
@@ -3997,7 +4001,10 @@ Gui::del_cue_point(const unsigned short &deck_index, const unsigned short &cue_p
             this->decks[deck_index]->cue_point_labels[cue_point_index]->setText(this->playbacks[deck_index]->get_cue_point_str(cue_point_index));
 
             // Remove highlighting on Dicer's button
-            this->unlit_dicer_button_cue_point(deck_index, cue_point_index);
+            if (this->dicer_is_running)
+            {
+                this->unlit_dicer_button_cue_point(deck_index, cue_point_index);
+            }
         }
         else
         {

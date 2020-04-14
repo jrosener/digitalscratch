@@ -274,7 +274,15 @@ class FileBrowserQGroupBox : public QGroupBox
        void setTitle(const QString &title);
 };
 
-class BrowserQSortFilterProxyModel : public QSortFilterProxyModel
+class BrowserQSortFilterProxyModelTag : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+    protected:
+        bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+};
+
+class BrowserQSortFilterProxyModelName : public QSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -321,7 +329,8 @@ class Gui : public QObject
 
     // Track browser.
     Audio_collection_model             *file_system_model;
-    BrowserQSortFilterProxyModel       *proxy_model;
+    BrowserQSortFilterProxyModelTag    *proxy_model;
+    BrowserQSortFilterProxyModelName   *proxy_model_track_name;
     QTreeView                          *file_browser;
     QShortcut                          *shortcut_load_audio_file;
     QList<QShortcut*>                   shortcut_load_samples;
@@ -332,7 +341,6 @@ class Gui : public QObject
 
     // Track search bar.
     QLineEdit                          *file_search;
-    bool                                search_from_begin;
     unsigned short int                  file_browser_selected_index;
     QString                             last_search_string;
 
@@ -413,6 +421,7 @@ class Gui : public QObject
 
     // External controller.
     QSharedPointer<Dicer_control_process>                      dicer_control;
+    bool                                                       dicer_is_running;
 
  public:
     Gui(QList<QSharedPointer<Audio_track>>                        &ats,
@@ -495,7 +504,6 @@ class Gui : public QObject
     void set_fullscreen();
     void show_help();
     void set_focus_search_bar();
-    void press_enter_in_search_bar();
     void press_esc_in_search_bar();
     void file_search_string(const QString &text);
     bool show_about_window();
