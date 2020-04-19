@@ -82,6 +82,9 @@ Application_settings::init_settings()
     if (this->settings.contains(TRACKLIST_PATH_CFG) == false) {
         this->settings.setValue(TRACKLIST_PATH_CFG, this->get_tracklist_path_default());
     }
+    if (this->settings.contains(PLAYLIST_PATH_CFG) == false) {
+        this->settings.setValue(PLAYLIST_PATH_CFG, this->get_playlist_path_default());
+    }
     if (this->settings.contains(EXTERN_PROG_CFG) == false) {
         this->settings.setValue(EXTERN_PROG_CFG, this->get_extern_prog_default());
     }
@@ -204,6 +207,7 @@ Application_settings::import_from_ini_file(const QString &file_path)
 
         QStringList keys({BASE_DIR_PATH_CFG,          // Application and main window.
                           TRACKLIST_PATH_CFG,
+                          PLAYLIST_PATH_CFG,
                           GUI_STYLE_CFG,
                           SAMPLERS_VISIBLE_CFG,
                           EXTERN_PROG_CFG,
@@ -354,7 +358,25 @@ Application_settings::get_tracklist_path()
 QString
 Application_settings::get_tracklist_path_default()
 {
-    return QDir::cleanPath(QStandardPaths::writableLocation(QStandardPaths::MusicLocation) + QDir::separator() + "tracklist_backup");
+    return QDir::cleanPath(this->get_tracks_base_dir_path_default() + QDir::separator() + "dscratch_tracklists");
+}
+
+void
+Application_settings::set_playlist_path(const QString &path)
+{
+    this->settings.setValue(PLAYLIST_PATH_CFG, path);
+}
+
+QString
+Application_settings::get_playlist_path()
+{
+    return this->settings.value(PLAYLIST_PATH_CFG).toString();
+}
+
+QString
+Application_settings::get_playlist_path_default()
+{
+    return QDir::cleanPath(this->get_tracks_base_dir_path_default() + QDir::separator() + "dscratch_sets");
 }
 
 void

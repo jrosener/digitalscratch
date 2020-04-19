@@ -50,6 +50,7 @@ class Playlist
     QList<unsigned short int>  tracklist_deck_map;
 
  public:
+    Playlist(const QString &path);
     Playlist(const QString &basepath, const QString &name, const QString &extension);
     virtual ~Playlist();
 
@@ -63,6 +64,9 @@ class Playlist
     QString     get_fullpath() const;
     QStringList get_tracklist() const;
     void        add_track_no_duplicate(const QString &filename);
+    void        add_track(const QString &filename);
+    void        set_tracks(const QStringList &filepaths);
     void        add_track_from_deck(const QString &filename, const unsigned short int &deck_index);
+    void        rem_track(const QString &filename);
     void        clear();
 };

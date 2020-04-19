@@ -132,8 +132,13 @@ Gui::Gui(QList<QSharedPointer<Audio_track>>                        &ats,
     QDir dir;
     dir.mkpath(tracklist_dir);
     this->tracklist = QSharedPointer<Playlist>(new Playlist(tracklist_dir,
-                                                            QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss"),
-                                                            ".m3u"));
+                                                            QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss") + QString("-tracklist"),
+                                                            "m3u"));
+
+    // Init playlist directory.
+    QString playlist_dir(this->settings->get_playlist_path());
+    QDir dir_pl;
+    dir_pl.mkpath(playlist_dir);
 
     // Create and show the main window.
     if (this->create_main_window() != true)
@@ -905,6 +910,99 @@ Gui::show_scan_audio_keys_dialog()
     }
 
     return true;
+}
+
+int
+Gui::show_add_to_new_playlist_dialog(const QList<Audio_collection_item*> &items)
+{
+    // Create dialog.
+    QDialog add_dialog(this->window);
+    add_dialog.setWindowTitle(tr("New playlist..."));
+    add_dialog.setStyleSheet(Utils::get_current_stylesheet_css());
+    if (this->nb_decks > 1)
+    {
+        add_dialog.setWindowIcon(QIcon(ICON_2));
+    }
+    else
+    {
+        add_dialog.setWindowIcon(QIcon(ICON));
+    }
+
+    // "Enter new playlist".
+    QHBoxLayout *question_layout = new QHBoxLayout();
+    QLabel *enter_name_label = new QLabel(tr("Playlist name"));
+    question_layout->addWidget(enter_name_label);
+    QLineEdit *new_name_edit = new QLineEdit();
+    question_layout->addWidget(new_name_edit);
+    new_name_edit->setText(QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss") + QString("-playlist.m3u"));
+    new_name_edit->setFixedWidth(300);
+
+    // 2 buttons: OK and Cancel.
+    QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Ok |
+                                                        QDialogButtonBox::Cancel,
+                                                        Qt::Horizontal);
+    QObject::connect(button_box, &QDialogButtonBox::accepted,
+                     [this, &add_dialog, new_name_edit, items]()
+                            {
+                                // Check new name extension.
+                                QString new_pl_name = new_name_edit->text();
+                                if ((new_pl_name.isEmpty() == false) && (new_pl_name.endsWith(".m3u") == false))
+                                { // Add missing playlist extension.
+                                    new_pl_name += ".m3u";
+                                }
+                                // Create full path of the new playlist.
+                                // TODO: get from app settings
+                                QString path(this->settings->get_playlist_path() + QDir::separator() + new_pl_name);
+                                // Warning if file already exists.
+                                QFileInfo check_file(path);
+                                bool overwrite = true;
+                                if (check_file.exists() == true)
+                                {
+                                    QMessageBox msg_box(&add_dialog);
+                                    msg_box.setText("<h2>" + tr("Warning") + "</h2>"
+                                                    + "<br/>"
+                                                    + "File name already exists: replace ?");
+                                    msg_box.setIcon(QMessageBox::Warning);
+                                    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+                                    msg_box.button(QMessageBox::Ok)->setText(tr("Yes"));
+                                    msg_box.button(QMessageBox::Cancel)->setText(tr("No"));
+                                    msg_box.setDefaultButton(QMessageBox::Cancel);
+                                    msg_box.setWindowIcon(QIcon(ICON_2));
+                                    if (msg_box.exec() == QMessageBox::Ok)
+                                    {
+                                        overwrite = true;
+                                    }
+                                    else
+                                    {
+                                        overwrite = false;
+                                    }
+                                }
+                                // Create the new playlist.
+                                if (overwrite == true)
+                                {
+                                    QFile file(path);
+                                    if (file.open(QIODevice::WriteOnly) == false)
+                                    { // Error: can not create the file.
+                                        qCDebug(DS_GUI) << "can not create playlist" << path;
+                                    }
+                                    else
+                                    { // PLaylist file is created: add tracks into it.
+                                        file.close();
+                                        this->add_selected_tracks_to_playlist(items, path);
+                                    }
+                                    // Go out of the dialog.
+                                    add_dialog.accept();
+                                }
+                            });
+    QObject::connect(button_box, &QDialogButtonBox::rejected, [&add_dialog](){add_dialog.close();});
+
+    // Show dialog.
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(question_layout);
+    layout->addWidget(button_box);
+    add_dialog.setLayout(layout);
+
+    return add_dialog.exec();
 }
 
 int
@@ -2201,7 +2299,7 @@ void Gui::show_file_browser_ctx_menu(const QPoint &pos)
             // - scan file
             // - add tag (only the ones that are not already applied)
             // - remove tag (only the ones that are already applied)
-            this->create_ctx_menu_1_track(menu, sel_items[0]);
+            this->create_ctx_menu_1_track(menu, sel_items, sel_indexes[0]);
         }
         else if (sel_items.length() > 1)
         {
@@ -2260,10 +2358,33 @@ void Gui::create_ctx_menu_multiple_tracks(QMenu *io_menu,
                      [rem_tag_submenu](){rem_tag_submenu->clear();});
     rem_tag_main_action->setStatusTip(tr("Remove tag from selected tracks"));
     io_menu->addAction(rem_tag_main_action);
+
+    // Add to playlist    => show the list of all playlists located in a specific location
+    //    > New...        => create a new empty playlist at this specific location and add the selected track
+    //    > myset_1.m3u   => add the selected file to this playlist
+    //    > myset_2.m3u
+    //    > myset_3.m3u
+    QAction *add_to_playlist_main_action = new QAction(tr("Add to playlist"), this);
+    QMenu *add_to_playlist_submenu = new QMenu(io_menu);
+    add_to_playlist_main_action->setMenu(add_to_playlist_submenu);
+    QObject::connect(add_to_playlist_submenu, &QMenu::aboutToShow,
+                     [this, add_to_playlist_submenu, items]()
+                     {
+                         this->fill_add_to_playlist_submenu(add_to_playlist_submenu, items);
+                     });
+    QObject::connect(add_to_playlist_submenu, &QMenu::aboutToHide,
+                     [add_to_playlist_submenu](){add_to_playlist_submenu->clear();});
+    add_to_playlist_main_action->setStatusTip(tr("Add these tracks to playlist"));
+    io_menu->addAction(add_to_playlist_main_action);
 }
 
-void Gui::create_ctx_menu_1_track(QMenu *io_menu, Audio_collection_item *item)
+void Gui::create_ctx_menu_1_track(QMenu *io_menu,
+                                  const QList<Audio_collection_item*> &items,
+                                  const QModelIndex &index)
 {
+    // Get the only one item.
+    Audio_collection_item *item = items[0];
+
     // Actions for loading the track on deck.
     for (unsigned short int i = 0; i < this->nb_decks; i++)
     {
@@ -2331,6 +2452,88 @@ void Gui::create_ctx_menu_1_track(QMenu *io_menu, Audio_collection_item *item)
                      [rem_tag_submenu](){rem_tag_submenu->clear();});
     rem_tag_main_action->setStatusTip(tr("Remove tag from this track"));
     io_menu->addAction(rem_tag_main_action);
+
+    // Add to playlist    => show the list of all playlists located in a specific location
+    //    > New...        => create a new empty playlist at this specific location and add the selected track
+    //    > myset_1.m3u   => add the selected file to this playlist
+    //    > myset_2.m3u
+    //    > myset_3.m3u
+    QAction *add_to_playlist_main_action = new QAction(tr("Add to playlist"), this);
+    QMenu *add_to_playlist_submenu = new QMenu(io_menu);
+    add_to_playlist_main_action->setMenu(add_to_playlist_submenu);
+    QObject::connect(add_to_playlist_submenu, &QMenu::aboutToShow,
+                     [this, add_to_playlist_submenu, items]()
+                     {
+                         this->fill_add_to_playlist_submenu(add_to_playlist_submenu, items);
+                     });
+    QObject::connect(add_to_playlist_submenu, &QMenu::aboutToHide,
+                     [add_to_playlist_submenu](){add_to_playlist_submenu->clear();});
+    add_to_playlist_main_action->setStatusTip(tr("Add this track to playlist"));
+    io_menu->addAction(add_to_playlist_main_action);
+
+    // Playlist management: move up, move down, remove from playlist.
+    if (this->playlist_loaded != nullptr)
+    {
+        // Move up (if not first one of the playlist).
+        if (index.row() > 0)
+        {
+            QAction *move_up_into_playlist_main_action = new QAction(tr("Move track up"), this);
+            move_up_into_playlist_main_action->setStatusTip(tr("Move this track up (into the playlist)"));
+            QObject::connect(move_up_into_playlist_main_action, &QAction::triggered,
+                             [this, index]()
+                             {
+                                 // Move the filebrowser item.
+                                 QModelIndex idx = this->get_model_index_from_file_browser_index(index);
+                                 this->file_system_model->move(idx, index.row() - 1);
+
+                                 // Write the playlist based on what's in the filebrowser.
+                                 QStringList item_paths = this->file_system_model->get_items_paths();
+                                 this->playlist_loaded->set_tracks(item_paths);
+                                 Playlist_persistence pp;
+                                 pp.write(this->playlist_loaded);
+                             });
+            io_menu->addAction(move_up_into_playlist_main_action);
+        }
+
+        // Move down (if not the last one of the playlist).
+        if (index.row() < (this->file_system_model->get_nb_items() - 1))
+        {
+            QAction *move_down_into_playlist_main_action = new QAction(tr("Move track down"), this);
+            move_down_into_playlist_main_action->setStatusTip(tr("Move this track down (into the playlist)"));
+            QObject::connect(move_down_into_playlist_main_action, &QAction::triggered,
+                             [this, index]()
+                             {
+                                 // Move the filebrowser item.
+                                 QModelIndex idx = this->get_model_index_from_file_browser_index(index);
+                                 this->file_system_model->move(idx, index.row() + 1);
+
+                                 // Write the playlist based on what's in the filebrowser.
+                                 QStringList item_paths = this->file_system_model->get_items_paths();
+                                 this->playlist_loaded->set_tracks(item_paths);
+                                 Playlist_persistence pp;
+                                 pp.write(this->playlist_loaded);
+                             });
+            io_menu->addAction(move_down_into_playlist_main_action);
+        }
+
+        // Remove from playlist action.
+        QAction *rem_from_playlist_main_action = new QAction(tr("Remove from playlist"), this);
+        rem_from_playlist_main_action->setStatusTip(tr("Remove this track from the current playlist"));
+        QObject::connect(rem_from_playlist_main_action, &QAction::triggered,
+                         [this, index]()
+                         {
+                             // Remove the filebrowser item.
+                             QModelIndex idx = this->get_model_index_from_file_browser_index(index);
+                             this->file_system_model->remove(idx);
+
+                             // Write the playlist based on what's in the filebrowser.
+                             QStringList item_paths = this->file_system_model->get_items_paths();
+                             this->playlist_loaded->set_tracks(item_paths);
+                             Playlist_persistence pp;
+                             pp.write(this->playlist_loaded);
+                         });
+        io_menu->addAction(rem_from_playlist_main_action);
+    }
 }
 
 void Gui::fill_add_tag_submenu(QMenu *io_submenu)
@@ -2502,6 +2705,82 @@ void Gui::rem_tag_from_selected_track(Audio_collection_item *browser_item, const
     return;
 }
 
+void Gui::fill_add_to_playlist_submenu(QMenu *io_submenu,
+                                       const QList<Audio_collection_item*> &items)
+{
+
+    // First clean the list of playlist.
+    io_submenu->clear();
+
+    // Show "New...": open a dialog to create a new playlist.
+    QAction *add_to_new_playlist_action = new QAction(tr("New..."), this);
+    QObject::connect(add_to_new_playlist_action, &QAction::triggered,
+                     [this, items](){this->show_add_to_new_playlist_dialog(items);});
+    io_submenu->addAction(add_to_new_playlist_action);
+
+    // Get the list of playlist available in a specific directory.
+    QStringList playlists;
+    QString root_playlist_path(this->settings->get_playlist_path()); // TODO: get from app settings
+    QDirIterator it(root_playlist_path,
+                    QStringList() << "*.m3u",
+                    QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext())
+    {
+        QString path = it.next();
+        if (this->playlist_loaded != nullptr)
+        { // File browser is currently showing a playlist. Do not make
+          // this playlist available to the "Add to playlist" menu.
+            QFileInfo fi_path(path);
+            QFileInfo fi_pl(this->playlist_loaded->get_fullpath());
+            if (fi_path.absoluteFilePath() != fi_pl.absoluteFilePath())
+            {
+                playlists << path;
+            }
+        }
+        else
+        {
+            playlists << path;
+        }
+    }
+
+    // Create sub menu elements and associated actions.
+    playlists.sort();
+    foreach (const QString &str, playlists)
+    {
+        QString name = str;
+        name.remove(root_playlist_path);
+        if (name.startsWith(QDir::separator()) == true)
+        { // Remove the first "/"
+            name.remove(0, 1);
+        }
+        QAction *add_to_playlist_action = new QAction(name, this);
+        QObject::connect(add_to_playlist_action, &QAction::triggered,
+                         [this, items, str](){this->add_selected_tracks_to_playlist(items, str);});
+        io_submenu->addAction(add_to_playlist_action);
+    }
+
+    return;
+}
+
+void Gui::add_selected_tracks_to_playlist(const QList<Audio_collection_item*> &items,
+                                          const QString &playlist_path)
+{
+    // Open the playlist.
+    QSharedPointer<Playlist> pl(new Playlist(playlist_path));
+    Playlist_persistence pp;
+    pp.read(pl);
+
+    // Add the track at the end of the playlist.
+    foreach (Audio_collection_item *it, items)
+    {
+        pl->add_track(it->get_full_path());
+    }
+
+    // Save playlist.
+    pp.write(pl);
+
+    return;
+}
 
 QHBoxLayout *Gui::get_menu_area_title(const QString &title)
 {
@@ -3130,6 +3409,10 @@ Gui::set_file_browser_base_path(const QString &path)
         // Hide file browser during directory analysis.
         this->file_browser->setVisible(false);
 
+        // Enable sorting. Start with no sorting.
+        this->proxy_model->sort(-1, Qt::AscendingOrder);
+        this->file_browser->header()->setSortIndicatorShown(true);
+
         // Stop any running file analysis.
         this->file_system_model->stop_concurrent_read_collection_from_db();
         this->file_system_model->stop_concurrent_analyse_audio_collection();
@@ -3145,6 +3428,7 @@ Gui::set_file_browser_base_path(const QString &path)
 
         // Clear file browser.
         this->file_system_model->clear();
+        this->playlist_loaded = nullptr;
 
         // Change root path of file browser (do it in a non blocking external thread).
         QFuture<QModelIndex> future = QtConcurrent::run(this->file_system_model, &Audio_collection_model::set_root_path, path);
@@ -3160,7 +3444,7 @@ Gui::set_file_browser_base_path(const QString &path)
 void
 Gui::run_concurrent_read_collection_from_db()
 {
-    // Show file browser again (file were analyse on disk).
+    // Show file browser again (files were analyse on disk).
     this->file_browser->setVisible(true);
 
     // Get file info from DB.
@@ -3171,28 +3455,35 @@ Gui::run_concurrent_read_collection_from_db()
 }
 
 void
-Gui::set_file_browser_playlist_tracks(const Playlist &playlist)
+Gui::set_file_browser_playlist_tracks(QSharedPointer<Playlist> &playlist)
 {
     if (this->watcher_parse_directory->isRunning() == false)
     {
         // Hide file browser during playlist analysis.
         this->file_browser->setVisible(false);
 
+        // Reset and disable sorting
+        this->proxy_model->sort(-1, Qt::AscendingOrder);
+        this->file_browser->header()->setSortIndicatorShown(false);
+
         // Stop any running file analysis.
         this->file_system_model->stop_concurrent_read_collection_from_db();
         this->file_system_model->stop_concurrent_analyse_audio_collection();
 
         // Show progress bar.
-        this->progress_label->setText(tr("Opening ") + playlist.get_name() + "...");
+        this->progress_label->setText(tr("Opening ") + playlist->get_name() + "...");
         this->progress_groupbox->show();
         this->progress_bar->setMinimum(0);
         this->progress_bar->setMaximum(0);
 
-        // Set base path as title to file browser.
-        this->file_browser_gbox->setTitle(playlist.get_name());
+        // Set playlist name as title to file browser.
+        this->file_browser_gbox->setTitle(playlist->get_name());
 
         // Clear file browser.
         this->file_system_model->clear();
+
+        // Store the playlist.
+        this->playlist_loaded = playlist;
 
         // Set list of tracks to the file browser.
         this->file_browser->setRootIndex(QModelIndex());
@@ -3366,11 +3657,14 @@ Gui::on_progress_cancel_button_click()
 void
 Gui::on_file_browser_header_click(const int &index)
 {
-    // Get the order.
-    Qt::SortOrder order = this->file_browser->header()->sortIndicatorOrder();
+    if (this->playlist_loaded == nullptr)
+    {
+        // Get the order.
+        Qt::SortOrder order = this->file_browser->header()->sortIndicatorOrder();
 
-    // Sort the items.
-    this->proxy_model->sort(index, order);
+        // Sort the items.
+        this->proxy_model->sort(index, order);
+    }
 }
 
 void
@@ -3385,14 +3679,16 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
         QFileInfo file_info(path);
         if (file_info.isFile() == true)
         {
-            Playlist playlist(file_info.absolutePath(), file_info.baseName(), file_info.suffix());
+            QSharedPointer<Playlist> playlist(new Playlist(file_info.absolutePath(),
+                                                           file_info.baseName(),
+                                                           file_info.suffix()));
             Playlist_persistence playlist_persist;
 
             // If it is an m3u or pls playlist, then parse it and show track list in file browser.
-            if (playlist.get_extension().compare(QString("m3u"), Qt::CaseInsensitive) == 0)
+            if (playlist->get_extension().compare(QString(".m3u"), Qt::CaseInsensitive) == 0)
             {
                 // Open M3U playlist
-                if (playlist_persist.read_m3u(path, playlist) == true)
+                if (playlist_persist.read_m3u(playlist) == true)
                 {
                     // Populate file browser.
                     this->set_file_browser_playlist_tracks(playlist);
@@ -3402,10 +3698,10 @@ Gui::on_file_browser_double_click(QModelIndex in_model_index)
                     qCWarning(DS_FILE) << "can not open m3u playlist " << qPrintable(path);
                 }
             }
-            else if (playlist.get_extension().compare(QString("pls"), Qt::CaseInsensitive) == 0)
+            else if (playlist->get_extension().compare(QString(".pls"), Qt::CaseInsensitive) == 0)
             {
                 // Open PLS playlist
-                if (playlist_persist.read_pls(path, playlist) == true)
+                if (playlist_persist.read_pls(playlist) == true)
                 {
                     // Populate file browser.
                     this->set_file_browser_playlist_tracks(playlist);
@@ -3455,6 +3751,14 @@ Audio_collection_item* Gui::get_audio_collection_item_from_file_browser_index(co
     Audio_collection_item* item = static_cast<Audio_collection_item*>(this->proxy_model->mapToSource(index2).internalPointer());
 
     return item;
+}
+
+QModelIndex Gui::get_model_index_from_file_browser_index(const QModelIndex &index)
+{
+    QModelIndex index2 = this->proxy_model_track_name->mapToSource(index);
+    QModelIndex index3 = this->proxy_model->mapToSource(index2);
+
+    return index3;
 }
 
 Audio_collection_item* Gui::get_selected_audio_item()
@@ -3648,7 +3952,7 @@ Gui::open_tracklist()
     this->highlight_playlist_in_folder_browser(this->tracklist->get_fullpath());
 
     // Populate playlist browser with recorded tracklist.
-    this->set_file_browser_playlist_tracks(*this->tracklist);
+    this->set_file_browser_playlist_tracks(this->tracklist);
 }
 
 void

@@ -105,7 +105,7 @@ class Audio_collection_item
 class Audio_collection_model : public QAbstractItemModel
 {
     Q_OBJECT
-    
+
  public:
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_read;
     QSharedPointer<QFutureWatcher<void>>  concurrent_watcher_analyze;
@@ -124,7 +124,7 @@ class Audio_collection_model : public QAbstractItemModel
 
     QModelIndex   set_root_path(QString in_root_path);
     QString       get_root_path();
-    QModelIndex   set_playlist(const Playlist &playlist);
+    QModelIndex   set_playlist(QSharedPointer<Playlist> &playlist);
     QModelIndex   get_root_index();
 
     QVariant      data(const QModelIndex &in_index, int in_role) const;
@@ -154,6 +154,9 @@ class Audio_collection_model : public QAbstractItemModel
                    QPixmap in_directory_icon);
     QModelIndexList search(QString in_text);
     void clear();
+    void remove(const QModelIndex &index);
+    void move(const QModelIndex &index, const int new_pos);
+    QStringList get_items_paths();
 
  private:
     void setup_model_data(QString in_path, Audio_collection_item *in_item);

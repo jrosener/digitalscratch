@@ -54,8 +54,27 @@ Playlist_persistence::~Playlist_persistence()
     return;
 }
 
-bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playlist)
+bool Playlist_persistence::read(QSharedPointer<Playlist> &io_playlist)
 {
+    QFileInfo file_info(io_playlist->get_fullpath());
+    if (file_info.suffix() == "m3u")
+    {
+        return this->read_m3u(io_playlist);
+    }
+    else if (file_info.suffix() == "pls")
+    {
+        return this->read_pls(io_playlist);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Playlist_persistence::read_m3u(QSharedPointer<Playlist> &io_playlist)
+{
+    const QString file_name = io_playlist->get_fullpath();
+
     // Check parameters.
     if (QFile::exists(file_name) == false)
     {
@@ -89,7 +108,7 @@ bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playl
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
-                    io_playlist.add_track_no_duplicate(line_info.absoluteFilePath());
+                    io_playlist->add_track(line_info.absoluteFilePath());
                 }
                 else
                 {
@@ -102,7 +121,7 @@ bool Playlist_persistence::read_m3u(const QString &file_name, Playlist &io_playl
                         if (uri_info.exists() == true)
                         {
                             // Add track path to playlist object.
-                            io_playlist.add_track_no_duplicate(uri_info.absoluteFilePath());
+                            io_playlist->add_track(uri_info.absoluteFilePath());
                         }
                     }
                 }
@@ -144,8 +163,10 @@ bool Playlist_persistence::write(QSharedPointer<Playlist> &playlist)
     return true;
 }
 
-bool Playlist_persistence::read_pls(const QString &file_name, Playlist &io_playlist)
+bool Playlist_persistence::read_pls(QSharedPointer<Playlist> &io_playlist)
 {
+    const QString file_name = io_playlist->get_fullpath();
+
     // Check parameters.
     if (QFile::exists(file_name) == false)
     {
@@ -181,7 +202,7 @@ bool Playlist_persistence::read_pls(const QString &file_name, Playlist &io_playl
                 if (line_info.exists() == true)
                 {
                     // Add track path to playlist object.
-                    io_playlist.add_track_no_duplicate(line_info.absoluteFilePath());
+                    io_playlist->add_track(line_info.absoluteFilePath());
                 }
                 else
                 {
@@ -194,7 +215,7 @@ bool Playlist_persistence::read_pls(const QString &file_name, Playlist &io_playl
                         if (uri_info.exists() == true)
                         {
                             // Add track path to playlist object.
-                            io_playlist.add_track_no_duplicate(uri_info.absoluteFilePath());
+                            io_playlist->add_track(uri_info.absoluteFilePath());
                         }
                     }
                 }

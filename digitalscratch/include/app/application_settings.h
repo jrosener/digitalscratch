@@ -52,6 +52,7 @@ using namespace std;
 
 #define BASE_DIR_PATH_CFG         "player/base_dir_path"
 #define TRACKLIST_PATH_CFG        "player/tracklist_path"
+#define PLAYLIST_PATH_CFG         "player/playlist_path"
 
 #define GUI_STYLE_CFG             "player/gui_style_select"
 #define GUI_STYLE_NATIVE          "native"
@@ -186,6 +187,10 @@ class Application_settings : public QObject
     void    set_tracklist_path(const QString &path);
     QString get_tracklist_path();
     QString get_tracklist_path_default();
+
+    void    set_playlist_path(const QString &path);
+    QString get_playlist_path();
+    QString get_playlist_path_default();
 
     void    set_extern_prog(QString in_extern_prog_path);
     QString get_extern_prog();

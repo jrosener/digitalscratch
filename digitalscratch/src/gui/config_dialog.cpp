@@ -58,6 +58,7 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     // Init player parameters widgets.
     this->base_dir_path    = new QLineEdit(this);
     this->tracklist_path   = new QLineEdit(this);
+    this->playlist_path   = new QLineEdit(this);
     this->extern_prog      = new QLineEdit(this);
     this->gui_style_select = new QComboBox(this);
     QList<QString> available_gui_styles = this->settings->get_available_gui_styles();
@@ -223,6 +224,12 @@ QWidget *Config_dialog::init_tab_player()
     QPushButton *tracklist_path_button = new QPushButton(tr("Browse..."), this);
     QObject::connect(tracklist_path_button, &QPushButton::clicked, [this](){this->show_browse_window_for_tracklist_path();});
 
+    // Player tab: select a playlist folder.
+    QLabel *playlist_path_label = new QLabel(tr("Playlist path: "), this);
+    this->playlist_path->setMinimumWidth(300);
+    QPushButton *playlist_path_button = new QPushButton(tr("Browse..."), this);
+    QObject::connect(playlist_path_button, &QPushButton::clicked, [this](){this->show_browse_window_for_playlist_path();});
+
     // Player tab: select GUI style.
     QLabel *gui_style_label = new QLabel(tr("GUI style: "), this);
 
@@ -246,15 +253,18 @@ QWidget *Config_dialog::init_tab_player()
     player_tab_layout->addWidget(tracklist_path_label,   1, 0);
     player_tab_layout->addWidget(this->tracklist_path,   1, 1);
     player_tab_layout->addWidget(tracklist_path_button,  1, 2);
-    player_tab_layout->addWidget(gui_style_label,        2, 0);
-    player_tab_layout->addWidget(this->gui_style_select, 2, 1);
-    player_tab_layout->addWidget(gui_lang_label,         3, 0);
-    player_tab_layout->addWidget(this->gui_lang_select,  3, 1);
-    player_tab_layout->addWidget(nb_decks_label,         4, 0);
-    player_tab_layout->addWidget(this->nb_decks_select,  4, 1);
-    player_tab_layout->addWidget(extern_prog_label,      5, 0);
-    player_tab_layout->addWidget(this->extern_prog,      5, 1);
-    player_tab_layout->addWidget(extern_prog_button,     5, 2);
+    player_tab_layout->addWidget(playlist_path_label,    2, 0);
+    player_tab_layout->addWidget(this->playlist_path,    2, 1);
+    player_tab_layout->addWidget(playlist_path_button,   2, 2);
+    player_tab_layout->addWidget(gui_style_label,        3, 0);
+    player_tab_layout->addWidget(this->gui_style_select, 3, 1);
+    player_tab_layout->addWidget(gui_lang_label,         4, 0);
+    player_tab_layout->addWidget(this->gui_lang_select,  4, 1);
+    player_tab_layout->addWidget(nb_decks_label,         5, 0);
+    player_tab_layout->addWidget(this->nb_decks_select,  5, 1);
+    player_tab_layout->addWidget(extern_prog_label,      6, 0);
+    player_tab_layout->addWidget(this->extern_prog,      6, 1);
+    player_tab_layout->addWidget(extern_prog_button,     6, 2);
 
     // Create tab.
     QWidget *player_tab = new QWidget(this);
@@ -267,6 +277,7 @@ void Config_dialog::fill_tab_player()
 {
     this->base_dir_path->setText(this->settings->get_tracks_base_dir_path());
     this->tracklist_path->setText(this->settings->get_tracklist_path());
+    this->playlist_path->setText(this->settings->get_playlist_path());
     this->gui_style_select->setCurrentIndex(this->gui_style_select->findText(this->settings->get_gui_style()));
     this->gui_lang_select->setCurrentIndex(this->gui_lang_select->findText(this->settings->get_language()));
     this->nb_decks_select->setCurrentIndex(this->nb_decks_select->findText(QString::number(this->settings->get_nb_decks())));
@@ -656,6 +667,24 @@ Config_dialog::show_browse_window_for_tracklist_path()
 }
 
 bool
+Config_dialog::show_browse_window_for_playlist_path()
+{
+    // Create browse window.
+    QString dir = QFileDialog::getExistingDirectory(this,
+                                                    tr("Select playlist directory"),
+                                                    this->settings->get_playlist_path(),
+                                                    QFileDialog::ShowDirsOnly);
+
+    // Update tracklist path.
+    if (dir != nullptr)
+    {
+        this->playlist_path->setText(dir);
+    }
+
+    return true;
+}
+
+bool
 Config_dialog::show_browse_extern_prog_window()
 {
     // Create browse window.
@@ -718,6 +747,9 @@ Config_dialog::accept()
 
     // Set path for storing recorded tracklists.
     this->settings->set_tracklist_path(this->tracklist_path->text());
+
+    // Set path for storing playlist (mix sets).
+    this->settings->set_playlist_path(this->playlist_path->text());
 
     // Set GUI style.
     this->settings->set_gui_style(this->gui_style_select->currentText());

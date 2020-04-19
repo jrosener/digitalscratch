@@ -41,9 +41,21 @@ Playlist::Playlist(const QString &basepath,
                    const QString &name,
                    const QString &extension)
 {
-    this->basepath  = basepath;
-    this->name      = name;
-    this->extension = extension;
+    this->basepath = basepath;
+    this->name = name;
+    this->set_extension(extension);
+    this->tracklist.clear();
+
+    return;
+}
+
+Playlist::Playlist(const QString &path)
+{
+    QFileInfo file_info(path);
+
+    this->basepath = file_info.absolutePath();
+    this->name = file_info.baseName();
+    this->set_extension(file_info.suffix());
     this->tracklist.clear();
 
     return;
@@ -81,7 +93,14 @@ QString Playlist::get_extension() const
 
 void Playlist::set_extension(const QString &extension)
 {
-    this->extension = extension;
+    if (extension.startsWith(".") == false)
+    {
+        this->extension = "." + extension;
+    }
+    else
+    {
+        this->extension = extension;
+    }
 }
 
 QString Playlist::get_fullpath() const
@@ -110,6 +129,17 @@ void Playlist::add_track_no_duplicate(const QString &filename)
     this->tracklist.removeDuplicates();
 }
 
+void Playlist::add_track(const QString &filename)
+{
+    this->tracklist.append(filename);
+}
+
+void Playlist::set_tracks(const QStringList &filepaths)
+{
+    this->tracklist.clear();
+    this->tracklist.append(filepaths);
+}
+
 void Playlist::add_track_from_deck(const QString &filename, const unsigned short int &deck_index)
 {
     if (this->tracklist_deck_map.size() == 0)
@@ -131,6 +161,11 @@ void Playlist::add_track_from_deck(const QString &filename, const unsigned short
             this->tracklist.append(filename);
         }
     }
+}
+
+void Playlist::rem_track(const QString &filename)
+{
+    this->tracklist.removeOne(filename);
 }
 
 void Playlist::clear()

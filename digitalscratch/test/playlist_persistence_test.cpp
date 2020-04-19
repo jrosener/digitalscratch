@@ -116,37 +116,39 @@ void Playlist_persistence_Test::cleanupTestCase()
 void Playlist_persistence_Test::testCaseReadM3u()
 {
     // Init playlist and persistence process.
-    Playlist playlist("base_path", "playlist", ".m3u");
+    QString playlist_fullfilename = QDir(DATA_DIR).filePath(PLAYLIST_M3U_FILE);
+    QSharedPointer<Playlist> playlist(new Playlist(playlist_fullfilename));
     Playlist_persistence playlist_persist;
 
     // Read playlist.
-    QString playlist_fullfilename = QDir(DATA_DIR).filePath(PLAYLIST_M3U_FILE);
-    QVERIFY2(playlist_persist.read_m3u(playlist_fullfilename, playlist) == true, "Read M3U");
+    QVERIFY2(playlist_persist.read_m3u(playlist) == true, "Read M3U");
 
     // Check tracklist.
-    QStringList tracklist = playlist.get_tracklist();
-    QVERIFY2(tracklist.count() == 4, "number of tracks");
+    QStringList tracklist = playlist->get_tracklist();
+    QVERIFY2(tracklist.count() == 5, "number of tracks");
     QVERIFY2(tracklist[0]      == QDir(DATA_DIR).absoluteFilePath("track_1.mp3"),        "name of track 1");
     QVERIFY2(tracklist[1]      == QDir(DATA_DIR).absoluteFilePath("track_2.mp3"),        "name of track 2");
-    QVERIFY2(tracklist[2]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_3.mp3"), "name of track 3");
-    QVERIFY2(tracklist[3]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_4.mp3"), "name of track 4");
+    QVERIFY2(tracklist[2]      == QDir(DATA_DIR).absoluteFilePath("track_2.mp3"),        "name of track 3");
+    QVERIFY2(tracklist[3]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_3.mp3"), "name of track 4");
+    QVERIFY2(tracklist[4]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_4.mp3"), "name of track 5");
 }
 
 void Playlist_persistence_Test::testCaseReadPls()
 {
     // Init playlist and persistence process.
-    Playlist playlist("base_path", "playlist", ".m3u");
+    QString playlist_fullfilename = QDir(DATA_DIR).filePath(PLAYLIST_PLS_FILE);
+    QSharedPointer<Playlist> playlist(new Playlist(playlist_fullfilename));
     Playlist_persistence playlist_persist;
 
     // Read playlist.
-    QString playlist_fullfilename = QDir(DATA_DIR).filePath(PLAYLIST_PLS_FILE);
-    QVERIFY2(playlist_persist.read_pls(playlist_fullfilename, playlist) == true, "Read PLS");
+    QVERIFY2(playlist_persist.read_pls(playlist) == true, "Read PLS");
 
     // Check tracklist.
-    QStringList tracklist = playlist.get_tracklist();
-    QVERIFY2(tracklist.count() == 4, "number of tracks");
+    QStringList tracklist = playlist->get_tracklist();
+    QVERIFY2(tracklist.count() == 5, "number of tracks");
     QVERIFY2(tracklist[0]      == QDir(DATA_DIR).absoluteFilePath("track_1.mp3"),        "name of track 1");
     QVERIFY2(tracklist[1]      == QDir(DATA_DIR).absoluteFilePath("track_2.mp3"),        "name of track 2");
-    QVERIFY2(tracklist[2]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_3.mp3"), "name of track 3");
-    QVERIFY2(tracklist[3]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_4.mp3"), "name of track 4");
+    QVERIFY2(tracklist[2]      == QDir(DATA_DIR).absoluteFilePath("track_2.mp3"),        "name of track 3");
+    QVERIFY2(tracklist[3]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_3.mp3"), "name of track 4");
+    QVERIFY2(tracklist[4]      == QDir(DATA_DIR).absoluteFilePath("track_éèà@ù&_4.mp3"), "name of track 5");
 }

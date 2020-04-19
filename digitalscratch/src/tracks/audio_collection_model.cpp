@@ -304,19 +304,19 @@ QString Audio_collection_model::get_root_path()
     return this->root_path;
 }
 
-QModelIndex Audio_collection_model::set_playlist(const Playlist &playlist)
+QModelIndex Audio_collection_model::set_playlist(QSharedPointer<Playlist> &playlist)
 {
     // Start cleaning collection.
     this->beginResetModel();
 
     // Create root item which is the collection header.
-    this->create_header(playlist.get_basepath(), true);
+    this->create_header(playlist->get_basepath(), true);
 
     // Reset internal list of audio files (item pointers).
     this->audio_item_list.clear();
 
     // Fill the model.
-    this->setup_model_data_from_tracklist(playlist.get_tracklist(), this->rootItem);
+    this->setup_model_data_from_tracklist(playlist->get_tracklist(), this->rootItem);
 
     // Model has been updated.
     this->endResetModel();
@@ -817,4 +817,48 @@ Audio_collection_model::clear()
         qDeleteAll(this->audio_item_list);
         this->audio_item_list.clear();
     }
+}
+
+void
+Audio_collection_model::remove(const QModelIndex &index)
+{
+    this->beginRemoveRows(this->parent(index), index.row(), index.row());
+    this->rootItem->childItems.removeAt(index.row());
+    Audio_collection_item *it = static_cast<Audio_collection_item*>(index.internalPointer());
+    this->audio_item_list.removeOne(it);
+    delete it;
+    this->endRemoveRows();
+}
+
+void
+Audio_collection_model::move(const QModelIndex &index, const int new_pos)
+{
+    int new_idx = new_pos;
+    if (new_pos == (index.row() + 1))
+    {
+        new_idx++;
+    }
+    if (this->beginMoveRows(this->parent(index), index.row(), index.row(), this->parent(index), new_idx) == true)
+    {
+        this->rootItem->childItems.move(index.row(), new_pos);
+        this->audio_item_list.move(index.row(), new_pos);
+        this->endMoveRows();
+    }
+    else
+    {
+        qCWarning(DS_DB) << "can not move index" << index.row() << "to" << new_pos;
+    }
+}
+
+QStringList
+Audio_collection_model::get_items_paths()
+{
+    QStringList list;
+
+    foreach (Audio_collection_item *item, this->audio_item_list)
+    {
+        list << item->get_full_path();
+    }
+
+    return list;
 }

@@ -332,6 +332,7 @@ class Gui : public QObject
     BrowserQSortFilterProxyModelTag    *proxy_model;
     BrowserQSortFilterProxyModelName   *proxy_model_track_name;
     QTreeView                          *file_browser;
+    QSharedPointer<Playlist>            playlist_loaded;
     QShortcut                          *shortcut_load_audio_file;
     QList<QShortcut*>                   shortcut_load_samples;
     QShortcut                          *shortcut_show_next_keys;
@@ -456,7 +457,8 @@ class Gui : public QObject
     void connect_file_browser_area();
     void show_file_browser_ctx_menu(const QPoint &pos);
     void create_ctx_menu_1_track(QMenu *io_menu,
-                                 Audio_collection_item *item);
+                                 const QList<Audio_collection_item *> &items,
+                                 const QModelIndex &index);
     void create_ctx_menu_multiple_tracks(QMenu *io_menu,
                                          const QList<Audio_collection_item*> &items);
     void init_menu_area();
@@ -467,7 +469,7 @@ class Gui : public QObject
     void init_bottom_status();
     void display_audio_file_collection();
     bool apply_main_window_style();
-    void set_file_browser_playlist_tracks(const Playlist &playlist);
+    void set_file_browser_playlist_tracks(QSharedPointer<Playlist> &playlist);
     bool set_file_browser_base_path(const QString &path);
     bool set_folder_browser_base_path(const QString &path);
     void highlight_playlist_in_folder_browser(const QString &path);
@@ -477,6 +479,7 @@ class Gui : public QObject
     unsigned short int get_selected_deck_index();
     Audio_collection_item* get_selected_audio_item();
     Audio_collection_item* get_audio_collection_item_from_file_browser_index(const QModelIndex &index);
+    QModelIndex get_model_index_from_file_browser_index(const QModelIndex &index);
     void resize_file_browser_columns();
     void analyze_audio_collection(const bool &is_all_files);
     void analyze_audio_selection(QList<Audio_collection_item *> &items);
@@ -582,7 +585,12 @@ class Gui : public QObject
                                        const QList<Audio_collection_item*> &items);
     void add_tag_to_selected_track(Audio_collection_item *browser_item, const QString &tag);
     void rem_tag_from_selected_track(Audio_collection_item *browser_item, const QString &tag);
+    void fill_add_to_playlist_submenu(QMenu *io_submenu,
+                                      const QList<Audio_collection_item *> &items);
+    void add_selected_tracks_to_playlist(const QList<Audio_collection_item *> &items,
+                                         const QString &playlist_path);
     int  show_add_new_tag_dialog();
+    int  show_add_to_new_playlist_dialog(const QList<Audio_collection_item *> &items);
     void select_all_tags();
     void deselect_all_tags();
     int  show_delete_tag_dialog(const QString &tag);

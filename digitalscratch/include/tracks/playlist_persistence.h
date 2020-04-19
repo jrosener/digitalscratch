@@ -44,7 +44,8 @@ class Playlist_persistence
     virtual ~Playlist_persistence();
 
   public:
-    bool read_m3u(const QString &file_name, Playlist &io_playlist);
+    bool read(QSharedPointer<Playlist> &io_playlist);
+    bool read_m3u(QSharedPointer<Playlist> &io_playlist);
     bool write(QSharedPointer<Playlist> &playlist);
-    bool read_pls(const QString &file_name, Playlist &io_playlist);
+    bool read_pls(QSharedPointer<Playlist> &io_playlist);
 };
