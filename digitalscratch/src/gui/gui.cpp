@@ -3488,7 +3488,7 @@ Gui::set_file_browser_base_path(const QString &path)
 
         // Clear file browser.
         this->file_system_model->clear();
-        this->playlist_loaded = nullptr;
+        this->playlist_loaded.clear();
 
         // Change root path of file browser (do it in a non blocking external thread).
         QFuture<QModelIndex> future = QtConcurrent::run(this->file_system_model, &Audio_collection_model::set_root_path, path);
