@@ -131,6 +131,10 @@ using namespace std;
 #define KB_HELP_DEFAULT                     "H"
 #define KB_FILE_SEARCH                      "keyboard_shortcuts/kb_file_search"
 #define KB_FILE_SEARCH_DEFAULT              "Ctrl+F"
+#define KB_PLAYLIST_TRACK_UP                "keyboard_shortcuts/kb_playalist_track_up"
+#define KB_PLAYLIST_TRACK_UP_DEFAULT        "Alt+Up"
+#define KB_PLAYLIST_TRACK_DOWN              "keyboard_shortcuts/kb_playalist_track_down"
+#define KB_PLAYLIST_TRACK_DOWN_DEFAULT      "Alt+Down"
 
 const QString KB_SET_CUE_POINTS_ON_DECK[]          = { KB_SET_CUE_POINT1_ON_DECK,
                                                        KB_SET_CUE_POINT2_ON_DECK,

@@ -339,6 +339,8 @@ class Gui : public QObject
     QShortcut                          *shortcut_file_search;
     QShortcut                          *shortcut_file_search_press_enter;
     QShortcut                          *shortcut_file_search_press_esc;
+    QShortcut                          *shortcut_pl_track_up;
+    QShortcut                          *shortcut_pl_track_down;
 
     // Track search bar.
     QLineEdit                          *file_search;
@@ -382,8 +384,8 @@ class Gui : public QObject
     QLabel                             *help_cue_value;
     QLabel                             *help_reset_signal_value;
     QLabel                             *help_sample_value;
-    QLabel                             *help_browse_value1;
-    QLabel                             *help_browse_value2;
+    QLabel                             *help_browse_value;
+    QLabel                             *help_pl_track_up_value;
 
     // Status area (progress bar).
     QHBoxLayout                        *status_layout;
@@ -589,6 +591,8 @@ class Gui : public QObject
                                       const QList<Audio_collection_item *> &items);
     void add_selected_tracks_to_playlist(const QList<Audio_collection_item *> &items,
                                          const QString &playlist_path);
+    void playlist_move_track_up(const QModelIndex &index);
+    void playlist_move_track_down(const QModelIndex &index);
     int  show_add_new_tag_dialog();
     int  show_add_to_new_playlist_dialog(const QList<Audio_collection_item *> &items);
     void select_all_tags();

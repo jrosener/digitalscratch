@@ -194,6 +194,12 @@ Application_settings::init_settings()
     if (this->settings.contains(KB_FILE_SEARCH) == false) {
         this->settings.setValue(KB_FILE_SEARCH, KB_FILE_SEARCH_DEFAULT);
     }
+    if (this->settings.contains(KB_PLAYLIST_TRACK_UP) == false) {
+        this->settings.setValue(KB_PLAYLIST_TRACK_UP, KB_PLAYLIST_TRACK_UP_DEFAULT);
+    }
+    if (this->settings.contains(KB_PLAYLIST_TRACK_DOWN) == false) {
+        this->settings.setValue(KB_PLAYLIST_TRACK_DOWN, KB_PLAYLIST_TRACK_DOWN_DEFAULT);
+    }
 }
 
 bool
@@ -241,7 +247,9 @@ Application_settings::import_from_ini_file(const QString &file_path)
                           KB_SHOW_NEXT_KEYS,
                           KB_FULLSCREEN,
                           KB_HELP,
-                          KB_FILE_SEARCH
+                          KB_FILE_SEARCH,
+                          KB_PLAYLIST_TRACK_UP,
+                          KB_PLAYLIST_TRACK_DOWN
                           });
 
         foreach (auto k, keys)

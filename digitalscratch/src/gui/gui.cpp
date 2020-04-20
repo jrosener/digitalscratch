@@ -257,6 +257,8 @@ Gui::apply_application_settings()
     this->shortcut_file_search->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_FILE_SEARCH)));
     this->shortcut_file_search_press_enter->setKey(QKeySequence(Qt::Key_Enter));
     this->shortcut_file_search_press_esc->setKey(QKeySequence(Qt::Key_Escape));
+    this->shortcut_pl_track_up->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAYLIST_TRACK_UP)));
+    this->shortcut_pl_track_down->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_PLAYLIST_TRACK_DOWN)));
     for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
     {
         this->shortcut_set_cue_points[i]->setKey(QKeySequence(this->settings->get_keyboard_shortcut(KB_SET_CUE_POINTS_ON_DECK[i])));
@@ -2253,6 +2255,40 @@ Gui::connect_file_browser_area()
     QObject::connect(this->file_search, &QLineEdit::textChanged, [this](const QString &text){this->file_search_string(text);});
     QObject::connect(this->shortcut_file_search_press_esc, &QShortcut::activated, [this](){this->press_esc_in_search_bar();});
 
+    // Playlist management shortcuts.
+    this->shortcut_pl_track_up = new QShortcut(this->file_browser);
+    QObject::connect(this->shortcut_pl_track_up, &QShortcut::activated,
+                     [this]()
+                     {
+                         if (this->playlist_loaded != nullptr)
+                         {
+                             // Get selected indexes.
+                             QModelIndexList sel_indexes = this->file_browser->selectionModel()->selectedRows(0); // 0 = Column TRACK
+
+                             // Move is only available for one track.
+                             if (sel_indexes.length() == 1)
+                             {
+                                 this->playlist_move_track_up(sel_indexes[0]);
+                             }
+                         }
+                     });
+    this->shortcut_pl_track_down = new QShortcut(this->file_browser);
+    QObject::connect(this->shortcut_pl_track_down, &QShortcut::activated,
+                     [this]()
+                     {
+                         if (this->playlist_loaded != nullptr)
+                         {
+                             // Get selected indexes.
+                             QModelIndexList sel_indexes = this->file_browser->selectionModel()->selectedRows(0); // 0 = Column TRACK
+
+                             // Move is only available for one track.
+                             if (sel_indexes.length() == 1)
+                             {
+                                 this->playlist_move_track_down(sel_indexes[0]);
+                             }
+                         }
+                     });
+
     // Progress for file analyzis.
     QObject::connect(this->file_system_model->concurrent_watcher_analyze.data(), &QFutureWatcher<void>::progressRangeChanged,
                      [this](int minimum, int maximum){this->progress_bar->setRange(minimum, maximum);});
@@ -2482,15 +2518,7 @@ void Gui::create_ctx_menu_1_track(QMenu *io_menu,
             QObject::connect(move_up_into_playlist_main_action, &QAction::triggered,
                              [this, index]()
                              {
-                                 // Move the filebrowser item.
-                                 QModelIndex idx = this->get_model_index_from_file_browser_index(index);
-                                 this->file_system_model->move(idx, index.row() - 1);
-
-                                 // Write the playlist based on what's in the filebrowser.
-                                 QStringList item_paths = this->file_system_model->get_items_paths();
-                                 this->playlist_loaded->set_tracks(item_paths);
-                                 Playlist_persistence pp;
-                                 pp.write(this->playlist_loaded);
+                                 this->playlist_move_track_up(index);
                              });
             io_menu->addAction(move_up_into_playlist_main_action);
         }
@@ -2503,15 +2531,7 @@ void Gui::create_ctx_menu_1_track(QMenu *io_menu,
             QObject::connect(move_down_into_playlist_main_action, &QAction::triggered,
                              [this, index]()
                              {
-                                 // Move the filebrowser item.
-                                 QModelIndex idx = this->get_model_index_from_file_browser_index(index);
-                                 this->file_system_model->move(idx, index.row() + 1);
-
-                                 // Write the playlist based on what's in the filebrowser.
-                                 QStringList item_paths = this->file_system_model->get_items_paths();
-                                 this->playlist_loaded->set_tracks(item_paths);
-                                 Playlist_persistence pp;
-                                 pp.write(this->playlist_loaded);
+                                 this->playlist_move_track_down(index);
                              });
             io_menu->addAction(move_down_into_playlist_main_action);
         }
@@ -2534,6 +2554,32 @@ void Gui::create_ctx_menu_1_track(QMenu *io_menu,
                          });
         io_menu->addAction(rem_from_playlist_main_action);
     }
+}
+
+void Gui::playlist_move_track_up(const QModelIndex &index)
+{
+    // Move the filebrowser item.
+    QModelIndex idx = this->get_model_index_from_file_browser_index(index);
+    this->file_system_model->move(idx, index.row() - 1);
+
+    // Write the playlist based on what's in the filebrowser.
+    QStringList item_paths = this->file_system_model->get_items_paths();
+    this->playlist_loaded->set_tracks(item_paths);
+    Playlist_persistence pp;
+    pp.write(this->playlist_loaded);
+}
+
+void Gui::playlist_move_track_down(const QModelIndex &index)
+{
+    // Move the filebrowser item.
+    QModelIndex idx = this->get_model_index_from_file_browser_index(index);
+    this->file_system_model->move(idx, index.row() + 1);
+
+    // Write the playlist based on what's in the filebrowser.
+    QStringList item_paths = this->file_system_model->get_items_paths();
+    this->playlist_loaded->set_tracks(item_paths);
+    Playlist_persistence pp;
+    pp.write(this->playlist_loaded);
 }
 
 void Gui::fill_add_tag_submenu(QMenu *io_submenu)
@@ -2981,15 +3027,19 @@ Gui::init_bottom_help()
     QLabel *help_sampler_lb        = new QLabel(tr("Selected sampler"));
     QLabel *help_sample_lb         = new QLabel(tr("Load sampler 1/2/3/4"));
     this->help_sample_value        = new QLabel();
-    QLabel *help_online_lb         = new QLabel(tr("Online wiki help"));
+    QLabel *help_online_lb         = new QLabel(tr("Online help"));
     QLabel *help_url_lb            = new QLabel("<a style=\"color: white\" href=\"https://github.com/jrosener/digitalscratch/wiki\">https://github.com/jrosener/digitalscratch/wiki</a>");
     help_url_lb->setTextFormat(Qt::RichText);
     help_url_lb->setTextInteractionFlags(Qt::TextBrowserInteraction);
     help_url_lb->setOpenExternalLinks(true);
 
     QLabel *help_browser_lb        = new QLabel(tr("File browser"));
-    QLabel *help_browse_lb1        = new QLabel(tr("Browse"));
-    this->help_browse_value1       = new QLabel();
+    QLabel *help_browse_lb         = new QLabel(tr("Browse"));
+    this->help_browse_value        = new QLabel();
+
+    QLabel *help_playlist_lb       = new QLabel(tr("Playlist"));
+    QLabel *help_pl_track_up_lb    = new QLabel(tr("Move track up/down"));
+    this->help_pl_track_up_value   = new QLabel();
 
     this->set_help_shortcut_value();
 
@@ -3009,7 +3059,10 @@ Gui::init_bottom_help()
     help_url_lb->setObjectName("Help_url");
 
     help_browser_lb->setObjectName("Help_title");
-    help_browse_lb1->setObjectName("Help");
+    help_browse_lb->setObjectName("Help");
+
+    help_playlist_lb->setObjectName("Help_title");
+    help_pl_track_up_lb->setObjectName("Help");
 
     // Main help layout.
     QGridLayout *help_layout = new QGridLayout();
@@ -3031,14 +3084,18 @@ Gui::init_bottom_help()
     help_layout->addWidget(help_switch_deck_value,    3, 3, Qt::AlignLeft);
 
     help_layout->addWidget(help_browser_lb,           0, 4);
-    help_layout->addWidget(help_browse_lb1,           1, 4);
-    help_layout->addWidget(help_browse_value1,        1, 5, Qt::AlignLeft);
+    help_layout->addWidget(help_browse_lb,            1, 4);
+    help_layout->addWidget(help_browse_value,         1, 5, Qt::AlignLeft);
+
+    help_layout->addWidget(help_playlist_lb,          2, 4);
+    help_layout->addWidget(help_pl_track_up_lb,       3, 4);
+    help_layout->addWidget(help_pl_track_up_value,    3, 5, Qt::AlignLeft);
 
     help_layout->addWidget(help_sampler_lb,           0, 6);
     help_layout->addWidget(help_sample_lb,            1, 6);
     help_layout->addWidget(help_sample_value,         1, 7, Qt::AlignLeft);
-    help_layout->addWidget(help_online_lb,            4, 6);
-    help_layout->addWidget(help_url_lb,               4, 7, 1, 3, Qt::AlignLeft);
+    help_layout->addWidget(help_online_lb,            3, 6);
+    help_layout->addWidget(help_url_lb,               3, 7, 1, 3, Qt::AlignLeft);
 
     help_layout->setColumnStretch(0, 1);
     help_layout->setColumnStretch(1, 5);
@@ -3241,7 +3298,10 @@ Gui::set_help_shortcut_value()
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER3)
                                      + "/"
                                      + this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
-    this->help_browse_value1->setText("Up/Down");
+    this->help_browse_value->setText("Up/Down");
+    this->help_pl_track_up_value->setText(this->settings->get_keyboard_shortcut(KB_PLAYLIST_TRACK_UP)
+                                          + "/"
+                                          + this->settings->get_keyboard_shortcut(KB_PLAYLIST_TRACK_DOWN));
 }
 
 void

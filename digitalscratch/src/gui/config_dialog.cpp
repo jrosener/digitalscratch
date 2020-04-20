@@ -142,6 +142,8 @@ Config_dialog::Config_dialog(QWidget *parent) : QDialog(parent)
     this->kb_load_track_on_sampler2     = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler3     = new ShortcutQLabel(this);
     this->kb_load_track_on_sampler4     = new ShortcutQLabel(this);
+    this->kb_pl_track_move_up           = new ShortcutQLabel(this);
+    this->kb_pl_track_move_down         = new ShortcutQLabel(this);
 
     return;
 }
@@ -472,9 +474,17 @@ QWidget *Config_dialog::init_tab_shortcuts()
     shortcuts_layout->addWidget(kb_file_search_label, 10, 3);
     shortcuts_layout->addWidget(this->kb_file_search, 10, 4, Qt::AlignVCenter);
 
+    QLabel *kb_pl_track_move_up_label = new QLabel(tr("Playlist move track up"), this);
+    shortcuts_layout->addWidget(kb_pl_track_move_up_label, 12, 3);
+    shortcuts_layout->addWidget(this->kb_pl_track_move_up, 12, 4, Qt::AlignVCenter);
+
+    QLabel *kb_pl_track_move_down_label = new QLabel(tr("Playlist move track down"), this);
+    shortcuts_layout->addWidget(kb_pl_track_move_down_label, 13, 3);
+    shortcuts_layout->addWidget(this->kb_pl_track_move_down, 13, 4, Qt::AlignVCenter);
+
     QPushButton *shortcut_reset_to_default = new QPushButton(this);
     shortcut_reset_to_default->setText(tr("Reset to default"));
-    shortcuts_layout->addWidget(shortcut_reset_to_default, 12, 4, Qt::AlignRight);
+    shortcuts_layout->addWidget(shortcut_reset_to_default, 13, 0, Qt::AlignRight);
     QObject::connect(shortcut_reset_to_default, &QPushButton::clicked, [this](){this->reset_shortcuts();});
 
     // Force space between shortcuts columns.
@@ -540,6 +550,12 @@ QWidget *Config_dialog::init_tab_shortcuts()
     QObject::connect(this->kb_file_search, &ShortcutQLabel::new_value,
                      [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_file_search);});
 
+    QObject::connect(this->kb_pl_track_move_up, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_pl_track_move_up);});
+
+    QObject::connect(this->kb_pl_track_move_down, &ShortcutQLabel::new_value,
+                     [this](QString in_value){this->validate_and_set_shortcut(in_value, this->kb_pl_track_move_down);});
+
     // Create tab.
     QWidget *shortcuts_tab = new QWidget(this);
     shortcuts_tab->setLayout(shortcuts_layout);
@@ -568,7 +584,9 @@ bool Config_dialog::is_duplicate_shortcut(const QString &value)
         (this->kb_load_track_on_sampler3->text().compare(value,     Qt::CaseInsensitive) == 0) ||
         (this->kb_load_track_on_sampler4->text().compare(value,     Qt::CaseInsensitive) == 0) ||
         (this->kb_help->text().compare(value,                       Qt::CaseInsensitive) == 0) ||
-        (this->kb_file_search->text().compare(value,                Qt::CaseInsensitive) == 0))
+        (this->kb_file_search->text().compare(value,                Qt::CaseInsensitive) == 0) ||
+        (this->kb_pl_track_move_up->text().compare(value,           Qt::CaseInsensitive) == 0) ||
+        (this->kb_pl_track_move_down->text().compare(value,         Qt::CaseInsensitive) == 0))
     {
         return true;
     }
@@ -628,6 +646,8 @@ void Config_dialog::fill_tab_shortcuts()
     this->kb_load_track_on_sampler4->setText(this->settings->get_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4));
     this->kb_help->setText(this->settings->get_keyboard_shortcut(KB_HELP));
     this->kb_file_search->setText(this->settings->get_keyboard_shortcut(KB_FILE_SEARCH));
+    this->kb_pl_track_move_up->setText(this->settings->get_keyboard_shortcut(KB_PLAYLIST_TRACK_UP));
+    this->kb_pl_track_move_down->setText(this->settings->get_keyboard_shortcut(KB_PLAYLIST_TRACK_DOWN));
 }
 
 bool
@@ -730,6 +750,8 @@ void Config_dialog::reset_shortcuts()
     this->kb_load_track_on_sampler4->setText(KB_LOAD_TRACK_ON_SAMPLER4_DEFAULT);
     this->kb_help->setText(KB_HELP_DEFAULT);
     this->kb_file_search->setText(KB_FILE_SEARCH_DEFAULT);
+    this->kb_pl_track_move_up->setText(KB_PLAYLIST_TRACK_UP_DEFAULT);
+    this->kb_pl_track_move_down->setText(KB_PLAYLIST_TRACK_DOWN_DEFAULT);
 }
 
 void
@@ -802,6 +824,8 @@ Config_dialog::accept()
     this->settings->set_keyboard_shortcut(KB_LOAD_TRACK_ON_SAMPLER4,    this->kb_load_track_on_sampler4->text());
     this->settings->set_keyboard_shortcut(KB_HELP,                      this->kb_help->text());
     this->settings->set_keyboard_shortcut(KB_FILE_SEARCH,               this->kb_file_search->text());
+    this->settings->set_keyboard_shortcut(KB_PLAYLIST_TRACK_UP,         this->kb_pl_track_move_up->text());
+    this->settings->set_keyboard_shortcut(KB_PLAYLIST_TRACK_DOWN,       this->kb_pl_track_move_down->text());
 
     // Set number of decks.
     this->settings->set_nb_decks(static_cast<unsigned short int>(this->nb_decks_select->currentText().toUInt()));
