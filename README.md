@@ -14,7 +14,7 @@ __In other words__: with Digital-Scratch you can mix your digital music track co
 
 * Up to 3 timecoded vinyl disc, ([Serato Scratch Live](http://serato.com/scratchlive), [Final Scratch](http://en.wikipedia.org/wiki/Final_Scratch),...)
 * Up to 3 vinyl turntables and a mixer
-* A GNU/Linux or MS Windows computer
+* A GNU/Linux or MS Windows computer (not supported anymore)
 * A sound card driven by [JACK](http://jackaudio.org/) a stereo input/output for each turntable
 * An optionnal external Novation Dicer controller
 
@@ -44,7 +44,7 @@ Install
     sudo apt-get update
     sudo apt-get install digitalscratch
 
-### Debian 8 (as root)
+### Debian 9 - Stretch - Stable (as root)
     apt-get install software-properties-common
     wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -
     add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
@@ -59,17 +59,27 @@ Build
 
 ### GNU/Linux
 
-#### Install build tools (Ubuntu 18.10)
+#### Install build tools (Ubuntu 20.04)
     sudo apt-add-repository ppa:julien-rosener/digitalscratch
     sudo apt-get update
-    sudo apt-get install build-essential qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev libswresample-dev qtmultimedia5-dev libqt5multimedia5-plugins libasound2-dev
+    sudo apt-get install build-essential \
+      qt5-default qtmultimedia5-dev libqt5multimedia5-plugins \
+      libjack-jackd2-dev libasound2-dev \
+      libsamplerate0-dev \
+      libkeyfinder-dev \
+      libavformat-dev libavcodec-dev libavutil-dev libswresample-dev
     
 #### Install build tools (Debian 9 - Stretch - Stable), as root
     apt-get install software-properties-common
     wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -
     add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
     apt-get update
-    apt-get install build-essential git qt5-default libjack-jackd2-dev libsamplerate0-dev libkeyfinder-dev libavformat-dev libavcodec-dev libavutil-dev libswresample-dev qtmultimedia5-dev libasound2-dev
+    apt-get install build-essential git \
+      qt5-default qtmultimedia5-dev \
+      libjack-jackd2-dev libasound2-dev \
+      libsamplerate0-dev \
+      libkeyfinder-dev \
+      libavformat-dev libavcodec-dev libavutil-dev libswresample-dev
 
 #### Compile and install _libdigitalscratch_
     cd libdigitalscratch
