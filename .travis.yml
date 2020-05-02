@@ -25,7 +25,10 @@ addons:
 
 before_install:
   - git clone https://github.com/jrosener/libKeyFinder.git
-  - cd libKeyFinder && mkdir build && cmake -S . -B build && sudo cmake --build build --target install && cd ..
+  - cd libKeyFinder
+  - mkdir build
+  - cmake -S . -B build && sudo cmake --build build --target install
+  - cd ..
 
 script:
   - cd libdigitalscratch && qmake && make && sudo make install
