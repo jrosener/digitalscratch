@@ -24,7 +24,7 @@ or
 - LibKeyFinder:            http://www.ibrahimshaath.co.uk/keyfinder/
 - ALSA library:            http://www.alsa-project.org
 
-[Ubuntu 18.10]
+[Ubuntu 20.04]
 - build-essential
 - qt5-default
 - libavformat-dev
