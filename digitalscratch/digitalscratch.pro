@@ -1,4 +1,4 @@
-VERSION = 1.7.0
+VERSION = 1.8.0
 DEFINES += VERSION=$${VERSION}
 TRANSLATIONS = translations/digitalscratch_fr.ts
 
@@ -69,7 +69,7 @@ HEADERS += include/app/application_const.h \
            include/tracks/audio_track.h \
            include/utils.h \
            include/singleton.h
-      
+
 SOURCES += src/app/application_settings.cpp \
            src/app/application_logging.cpp \
            src/audiodev/sound_card_control_rules.cpp \

@@ -7,6 +7,10 @@
 /*                                                                            */
 /*============================================================================*/
 
+libdigitalscratch-1.8.0:
+  * log:
+     - add a minimum log level
+
 libdigitalscratch-1.7.0:
   * coding:
      - rename some classes for better understanding
@@ -21,10 +25,10 @@ libdigitalscratch-1.6.1:
   * coding:
      - memory allocation
      - API dependency
-     - cppcheck suggestions 
+     - cppcheck suggestions
 
 libdigitalscratch-1.6.0:
-  * rewrite the timecoded signal detection using FIR and IIR filters 
+  * rewrite the timecoded signal detection using FIR and IIR filters
   * refactor the API using more standard fonctions/handle
   * refactor the logging system
 
