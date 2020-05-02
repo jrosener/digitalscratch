@@ -1,5 +1,4 @@
 dist: xenial
-sudo: required
 language: cpp
 compiler: gcc
 
@@ -26,7 +25,8 @@ addons:
 before_install:
   - git clone https://github.com/jrosener/libKeyFinder.git
   - cd libKeyFinder
-  - cmake -S . && sudo cmake --build . --target install
+  - cmake -S .
+  - sudo cmake --build . --target install
   - cd ..
 
 script:
