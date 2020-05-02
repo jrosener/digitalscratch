@@ -68,7 +68,7 @@
 #endif
 #include <math.h>
 #include <digital_scratch.h>
-#include <keyfinder_api.h>
+#include <keyfinder/keyfinder_api.h>
 #include <samplerate.h>
 #include <jack/jack.h>
 #include "libavcodec/version.h"

@@ -34,7 +34,7 @@
 
 #include <iostream>
 #include <QSharedPointer>
-#include <keyfinder_api.h>
+#include <keyfinder/keyfinder_api.h>
 
 #include "tracks/audio_track.h"
 #include "app/application_const.h"
