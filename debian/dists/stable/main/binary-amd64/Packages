@@ -1,17 +1,17 @@
 Package: digitalscratch
-Version: 1.7.0-1
+Version: 1.8.0-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 1173
-Depends: libqt5sql5-sqlite, libasound2 (>= 1.0.16), libavcodec57 (>= 7:3.2.12) | libavcodec-extra57 (>= 7:3.2.12), libavformat57 (>= 7:3.2.12), libavutil55 (>= 7:3.2.12), libc6 (>= 2.14), libdigitalscratch1, libgcc1 (>= 1:3.0), libgl1-mesa-glx | libgl1, libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libkeyfinder0, libqt5concurrent5 (>= 5.6.0~rc), libqt5core5a (>= 5.7.0), libqt5gui5 (>= 5.0.2), libqt5multimedia5 (>= 5.6.0~beta), libqt5network5 (>= 5.0.2), libqt5sql5 (>= 5.0.2), libqt5widgets5 (>= 5.2.0~alpha1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 5.2)
-Homepage: http://www.digital-scratch.org
-Priority: extra
+Installed-Size: 1377
+Depends: libqt5sql5-sqlite, libasound2 (>= 1.0.16), libavcodec58 (>= 7:4.0), libavformat58 (>= 7:4.1), libavutil56 (>= 7:4.0), libc6 (>= 2.14), libdigitalscratch1, libgcc1 (>= 1:3.0), libgl1, libjack-jackd2-0 (>= 1.9.10+20150825) | libjack-0.125, libkeyfinder2, libqt5concurrent5 (>= 5.6.0~rc), libqt5core5a (>= 5.11.0~rc1), libqt5dbus5 (>= 5.0.2), libqt5gui5 (>= 5.8.0), libqt5multimedia5 (>= 5.6.0~beta), libqt5network5 (>= 5.0.2), libqt5sql5 (>= 5.0.2), libqt5widgets5 (>= 5.2.0~alpha1), libsamplerate0 (>= 0.1.7), libstdc++6 (>= 5.2), libswresample3 (>= 7:4.0)
+Homepage: https://www.digital-scratch.org
+Priority: optional
 Section: sound
-Filename: pool/main/d/digitalscratch/digitalscratch_1.7.0-1_amd64.deb
-Size: 613166
-SHA256: 41e4f3acd896d3036d368e1ba9c177d4867e97d528c15dcdd24f9187d2dec471
-SHA1: d444f8b3d29cf861c84c250845de6423803a9032
-MD5sum: cc0b61a98747d2964707147d50154cac
+Filename: pool/main/d/digitalscratch/digitalscratch_1.8.0-1_amd64.deb
+Size: 705124
+SHA256: 01ab30d7408372dcce61dc189a5608fd82bb473babb95f8288a70a95ba6848c1
+SHA1: 0b8c1d445cb0a8db279f867550ded252d06cfa6c
+MD5sum: f56df11321c6e3a6d6c1057598660a0e
 Description: Audio file player driven by vinyl turntable
  DigitalScratch player is an audio file player driven by a vinyl turntable
  playing a timecoded vinyl disc.
