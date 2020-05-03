@@ -1,16 +1,16 @@
 -----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Hash: SHA512
 
 Origin: Julien Rosener
 Label: DigitalScratch Debian APT repository
 Codename: stable
-Date: Sat, 01 Dec 2018 00:28:47 UTC
+Date: Sun, 03 May 2020 21:56:06 UTC
 Architectures: amd64 i386
 Components: main
 Description: DigitalScratch Debian APT repository
 MD5Sum:
- 8b336857349fe035976b04afc3df2062 4556 main/binary-amd64/Packages
- b1bf68ed9d23a7e271e3d1c0c37ed535 1573 main/binary-amd64/Packages.gz
+ adf731d23bdcf3f215f60cad09e80e3f 5266 main/binary-amd64/Packages
+ d65a2662e14fb37b2ce45b17d879b8d1 1702 main/binary-amd64/Packages.gz
  91404111bb4d07e1c971205042711de2 153 main/binary-amd64/Release
  80198a643f446fc15cb7a813885641c4 4554 main/binary-i386/Packages
  129f6e53c9912cac3b962d8acdf6ab4b 1570 main/binary-i386/Packages.gz
@@ -19,8 +19,8 @@ MD5Sum:
  7029066c27ac6f5ef18d660d5741979a 20 main/source/Sources.gz
  2ff39146106909a270e85c9c0d138f28 154 main/source/Release
 SHA1:
- 860a3770d0cad60b3e6142cd95f6a299a1fb5d2c 4556 main/binary-amd64/Packages
- 28ab8ef48402e059b2254b5a0e3ea9b1bd5d5931 1573 main/binary-amd64/Packages.gz
+ 28f7d6f088eca4c2cbb0f9aa6567ec1f87fea011 5266 main/binary-amd64/Packages
+ 1b6cf101744691b19e433e5dc61897f9161ae11c 1702 main/binary-amd64/Packages.gz
  db1f0e128352cf9e0709362e508d65c0bfe939a2 153 main/binary-amd64/Release
  6c03e864df792746cf94d0fcfd7180d62b065466 4554 main/binary-i386/Packages
  46908ec9cc01227af13b84c686ab601e88f6a25f 1570 main/binary-i386/Packages.gz
@@ -29,8 +29,8 @@ SHA1:
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 main/source/Sources.gz
  7de8b3dc3fb064b7b95be4ce657d9af30d4839b0 154 main/source/Release
 SHA256:
- 0dd8d38418a0424370be423de9170160fa19ebbdc02ed5350af217fa80f7ada6 4556 main/binary-amd64/Packages
- c477351a0b1873fe1be5c3326168acfd9a43ee153790b8c6899ecb9bc5c0cd11 1573 main/binary-amd64/Packages.gz
+ 121d12e3919f187cc5e39daab5c643b547e3a02b3ff2e5f0847dd7ef58ee04cc 5266 main/binary-amd64/Packages
+ 24c5c70cc687af94d63dd8e3e1964eeca104ab661d1fd30d1faa2f5c41c63a5b 1702 main/binary-amd64/Packages.gz
  e64a1a4fd01811061fae2daca57902fd718a42897b2c0b4ff29a459e2a67d003 153 main/binary-amd64/Release
  5864b8c457d18cf1b9673e6347fe802043db39af6a3bc651f106c11c0fd9fb50 4554 main/binary-i386/Packages
  ce56611e96f98a8066d4a6b4a25a4e5190b848ec4691f48830e3a3365f35fea3 1570 main/binary-i386/Packages.gz
@@ -40,12 +40,12 @@ SHA256:
  061233eff9824877355156ac18c76d341310ced9007d0fdeed814e8dcc713fc0 154 main/source/Release
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEE2aUs4jO2iwOyZHWDnVr6rhgx+lEFAlwB1cAACgkQnVr6rhgx
-+lHikAgAmS10EVVZCp+jBQFVE6FysJPMInaplMnz9FTSpQQU3LWkEPef/dKkTcom
-Z5TbJ7KUplWLTjh3BKNG1i8EGE5C0kvhPOpIuTouBkaD9UxBCWLv3iiHUqa4yZPl
-1YuMzVYk4mQJe3/PQFv9Dccu30cotvQMIbdeQws0L+MtsaQwQxuHa1g4Y5lTDUZJ
-+DpAtB/Q8AozxlUoIyQzDA3zyFuNlqDurZUu/pAKjVtp4rh/1LqvUxx9AnnV0P57
-t28w9fzy3ZKIeMM87iERxJeiytl9pBGNL5hXksAiQJS1TfZYobIHLNjnFvZjprEL
-ukk4An5vrjbivGtpDDQopeSsmUrWcg==
-=lfXt
+iQEzBAEBCgAdFiEE2aUs4jO2iwOyZHWDnVr6rhgx+lEFAl6vPfYACgkQnVr6rhgx
++lG6Ngf9HzZkPhSeuQuOWTuMBzpHYilZBiSj4BrQzTsTVjJjJir3CERZH73EKKgr
+t6J/txLNxNuyFB709MC69OqyUSyLCaodqvUEQ0zbP4xIF3ISd80cEhVzCfiHvPVd
+NmsPuKWFtk6mGqGlXjcIQJnaqbi6dx/dnbKixKsdCOMtSkpCQ+hWsw/uoKkG+pFB
+iOJCefYns7q3CBQNuTkt2zfWBrKh64mZtbSd7xIQNNEncpabdtAbkzgLtTx6DxXu
+U7zla7+aFpxCYjqcvGGFC4m2zGHePY6q4WyiR00hVr9mU5QMBY71Kxu1WoulvGC6
+QADdkPcVPJxfvKjfozo/0GL2idrvCQ==
+=BaFK
 -----END PGP SIGNATURE-----

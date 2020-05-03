@@ -68,16 +68,16 @@ Source: libkeyfinder
 Version: 2.2.1-1
 Architecture: amd64
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Installed-Size: 14
-Depends: libkeyfinder0 (= 2.2.1-1)
-Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
+Installed-Size: 54
+Depends: libkeyfinder2 (= 2.2.1-1)
+Homepage: https://www.ibrahimshaath.co.uk/keyfinder/
 Priority: extra
 Section: libdevel
 Filename: pool/main/libk/libkeyfinder/libkeyfinder-dev_2.2.1-1_amd64.deb
-Size: 4246
-SHA256: 07c691ea64145accadfff8b380b8550f0c765b90a31436a5a8b7db093a7359ed
-SHA1: 838b021c398f346dbda17aab6540426ba27dd249
-MD5sum: 813d15de8d6b5973ffceafaf4e23aa51
+Size: 7768
+SHA256: 26b050f63b26fb28729c0fd3817d34e3709e5df1b2f7be2b2334cc0cc214ef8b
+SHA1: 3ef046f9cca04d659a82ad5401aacbec2e4091e7
+MD5sum: 6bc9503e9e76205f14560fc7ee0b8ef1
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
  .
@@ -99,6 +99,24 @@ Size: 33872
 SHA256: 69e087a6308c1debc2cd81d77032bef46fb9ccf82b7981b0d0a6111cc5093ab1
 SHA1: 9719afc34f9ceb8228619a6795d6e28d4f387ec0
 MD5sum: 148e4cfb2af0485505bf99259e0a9a3e
+Description: Key estimation library for DJs
+ libKeyFinder can be used to estimate the musical key of digital recordings.
+
+Package: libkeyfinder2
+Source: libkeyfinder
+Version: 2.2.1-1
+Architecture: amd64
+Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
+Installed-Size: 304
+Depends: libc6 (>= 2.2.5), libfftw3-double3 (>= 3.3.5), libgcc1 (>= 1:3.0), libstdc++6 (>= 5.2)
+Homepage: https://www.ibrahimshaath.co.uk/keyfinder/
+Priority: extra
+Section: libs
+Filename: pool/main/libk/libkeyfinder/libkeyfinder2_2.2.1-1_amd64.deb
+Size: 62472
+SHA256: 8e8d7faf7d3f2cba3117f3cce09acb710e7a3311516c10b9a3505e0833b1892f
+SHA1: 287c5d2a70c7386af5560a8b9ebcf5e585eff474
+MD5sum: 7774c88dc179781fbcf2a66f4d0e7a7f
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
 
