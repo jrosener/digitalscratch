@@ -1,3 +1,10 @@
+libdigitalscratch (1.8.0-1) stable; urgency=medium
+
+  * log:
+     - add a minimum log level
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Mon, 04 May 2020 00:07:27 +0200
+
 libdigitalscratch (1.7.0-1) stable; urgency=medium
 
   * coding:
