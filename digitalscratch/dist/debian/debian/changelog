@@ -1,3 +1,45 @@
+digitalscratch (1.8.0-1) stable; urgency=medium
+
+  * audio:
+     - decoding: replace ffmpeg deprecated API
+     - mp3: fix failing mp3 decoding since new ffmpeg
+     - decoding: fix memory leaks
+     - scan music key: fix crash while scanning a lot of tracks
+  * audio track tag management:
+     - database: get/store list of tags for a track
+     - gui: add buttons and menus for tag management
+        Buttons:
+         - to add a new tag (open a dialog)
+         - to show/hide untagged tracks
+         - to show/hide tracks tagged with the button's tag name
+         - to select/deselect all tags buttons
+        Righ-click (on a track name) sub menus:
+         - to apply a tag to a track
+         - to remove a tag from a track
+     - file browser: remove collapse/expand (now showing a flat file structure)
+     - file_browser: show tags for each tracks
+  * gui:
+     - file browser: always show 2 digits for music keys (required for sorting)
+     - file browser: support for actions (scan key, add/rem tag,...) of multiple
+       tracks selection.
+     - fullscreen: disable screensaver in fullscreen mode
+     - audio track search: more efficient search mechanism
+     - playlist: support add/remove/moveup/movedown actions in a loaded playlist
+  * tests:
+     - travis CI: switch test environment from Ubuntu 14.04 to 16.04
+  * gui:
+     - fix translation issues
+  * coding:
+     - dicer: move Dicer's reader/writer command thread outside of control process
+  * configuration:
+     - settings: support backup/restore app settings and music DB
+  * log:
+     - add a minimum log level
+  * packaging:
+     - debian: misc improvements
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Mon, 04 May 2020 00:17:15 +0200
+
 digitalscratch (1.7.0-1) stable; urgency=medium
 
   * features:
