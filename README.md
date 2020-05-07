@@ -31,7 +31,7 @@ _libdigitalscratch_ (motion detection) is based on:
 
 _digitalscratch_ (audio player) is based on:
 * [Qt](http://www.qt.io/)
-* [LibAV](http://libav.org)
+* [FFmpeg](https://www.ffmpeg.org/)
 * [Sample rate library](http://www.mega-nerd.com/SRC/)
 * [JACK](http://jackaudio.org/)
 * [LibKeyFinder](http://www.ibrahimshaath.co.uk/keyfinder/)
@@ -44,7 +44,7 @@ Install
     sudo apt-get update
     sudo apt-get install digitalscratch
 
-### Debian 9 - Stretch - Stable (as root)
+### Debian 10 (as root)
     apt-get install software-properties-common
     wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -
     add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
@@ -69,7 +69,7 @@ Build
       libkeyfinder-dev \
       libavformat-dev libavcodec-dev libavutil-dev libswresample-dev
     
-#### Install build tools (Debian 9 - Stretch - Stable), as root
+#### Install build tools (Debian 10), as root
     apt-get install software-properties-common
     wget -qO - http://www.digital-scratch.org/debian/julien.rosener@digital-scratch.org.gpg.key | apt-key add -
     add-apt-repository "deb http://www.digital-scratch.org/debian/ stable main"
@@ -93,7 +93,7 @@ Build
     make
     sudo make install
     
-### MS Windows
+### MS Windows (not supported anymore)
 
 #### Install build environment
 * Install [Visual Studio 2013 Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
