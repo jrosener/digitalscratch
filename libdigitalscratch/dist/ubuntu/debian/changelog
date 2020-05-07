@@ -1,3 +1,10 @@
+libdigitalscratch (1.8.0-ppa~20.04) focal; urgency=medium
+
+  * log:
+     - add a minimum log level 
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Thu, 07 May 2020 11:02:36 +0200
+
 libdigitalscratch (1.7.0-ppa~18.04) bionic; urgency=medium
 
   * coding:
