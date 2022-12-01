@@ -68,7 +68,6 @@
 #endif
 #include <math.h>
 #include <digital_scratch.h>
-#include <keyfinder/keyfinder_api.h>
 #include <samplerate.h>
 #include <jack/jack.h>
 #include "libavcodec/version.h"
@@ -1367,7 +1366,7 @@ Gui::show_about_window()
     libjack_version.setTextInteractionFlags(Qt::TextBrowserInteraction);
     libjack_version.setOpenExternalLinks(true);
 
-    QLabel libkeyfinder_version((QString("- libkeyfinder v") + QString(kfinder_get_version())).toUtf8()
+    QLabel libkeyfinder_version((QString("- libkeyfinder"))
                                  + ", <a style=\"color: grey\" href=\"http://www.ibrahimshaath.co.uk/keyfinder/\">http://www.ibrahimshaath.co.uk/keyfinder/</a>");
     libkeyfinder_version.setTextFormat(Qt::RichText);
     libkeyfinder_version.setTextInteractionFlags(Qt::TextBrowserInteraction);

@@ -34,7 +34,8 @@
 
 #include <iostream>
 #include <QSharedPointer>
-#include <keyfinder/keyfinder_api.h>
+#include <keyfinder/keyfinder.h>
+#include <keyfinder/audiodata.h>
 
 #include "tracks/audio_track.h"
 #include "app/application_const.h"
@@ -51,4 +52,10 @@ class Audio_track_key_process
     virtual ~Audio_track_key_process();
 
     bool run();         // Compute music key of the track and set it to the Audio_track object.
+
+ private:
+    QString kfinder_get_key(short signed int   *samples,
+                            unsigned int        nb_samples,
+                            short unsigned int  frame_rate,
+                            short unsigned int  nb_channels);
 };

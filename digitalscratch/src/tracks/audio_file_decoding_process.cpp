@@ -238,7 +238,7 @@ Audio_file_decoding_process::decode()
     }
 
     // Get decoder for the codec of the audio file.
-    AVCodec *codec = avcodec_find_decoder(audio_stream->codecpar->codec_id);
+    const AVCodec *codec = avcodec_find_decoder(audio_stream->codecpar->codec_id);
     AVCodecContext* codec_context = avcodec_alloc_context3(codec);
     avcodec_parameters_to_context(codec_context, audio_stream->codecpar);
     if (codec_context->codec == nullptr)

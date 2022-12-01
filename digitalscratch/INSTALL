@@ -36,8 +36,8 @@ or
 - qtmultimedia5-dev
 - libqt5multimedia5-plugins
 - libasound2-dev
-- libdigitalscratch-dev    (ppa:julien-rosener/digitalscratch)
-- libkeyfinder-dev         (ppa:julien-rosener/digitalscratch)
+- libkeyfinder-dev
+- libdigitalscratch-dev (from ppa:julien-rosener/digitalscratch)
 
 [MS Windows]
 - Install MS VS 2013 Community
