@@ -34,6 +34,7 @@
 
 #include <QString>
 #include <QLocale>
+#include <QThread>
 
 #include "app/application_const.h"
 
@@ -79,4 +80,10 @@ class Utils
     
     // ISO639 language code conversion.
     static QString language_to_iso639_code(const QLocale::Language &lang);
+
+    static QString get_current_thread_id()
+    {
+        void *cur_thread_id = QThread::currentThreadId();
+        return QString::asprintf("%p", cur_thread_id).toLocal8Bit().data();
+    };
 };

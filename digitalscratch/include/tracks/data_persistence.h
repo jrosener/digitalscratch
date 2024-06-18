@@ -52,8 +52,9 @@ class Data_persistence
     bool is_initialized;
 
  private:
-    QSqlDatabase db;
-    QMutex       mutex;
+    QString main_db_name;
+    QString db_path;
+    QMutex  mutex;
 
  public:
     bool restore_db(const QString &file_path);
@@ -92,6 +93,7 @@ class Data_persistence
 
  private:
     bool init_db();
+    void get_db_connection(QSqlDatabase &db);
     bool create_db_structure();
     bool store_track_tag(const QString &id_track,
                          const QString &id_tag);

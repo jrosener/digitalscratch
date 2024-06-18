@@ -45,7 +45,6 @@
 
 Data_persistence::Data_persistence() // FIXME: rename to Audio_track_persistence ?
 {
-    this->db = QSqlDatabase::addDatabase("QSQLITE");
     this->is_initialized = this->init_db();
 
     return;
@@ -53,11 +52,10 @@ Data_persistence::Data_persistence() // FIXME: rename to Audio_track_persistence
 
 Data_persistence::~Data_persistence()
 {
+
+    // Close current DB.
     this->mutex.lock();
-    if (this->db.isValid() == true)
-    {
-        this->db.close();
-    }
+    QSqlDatabase::removeDatabase(this->main_db_name);
     this->mutex.unlock();
 
     return;
@@ -65,10 +63,14 @@ Data_persistence::~Data_persistence()
 
 bool Data_persistence::init_db()
 {
+    QFileInfo path_info(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
+    this->db_path = path_info.absoluteFilePath();
+    this->main_db_name = "db@" + Utils::get_current_thread_id();
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", this->main_db_name);
+    db.setDatabaseName(this->db_path);
+
     // Create DB.
     this->mutex.lock();
-    QFileInfo path_info(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/digitalscratch.sqlite");
-    this->db.setDatabaseName(path_info.absoluteFilePath());
 
     // Make sure path exists, if not create it.
     QDir dir;
@@ -80,15 +82,15 @@ bool Data_persistence::init_db()
 #endif
 
     // Open DB.
-    if (this->db.open() == false)
+    if (db.open() == false)
     {
-        qCWarning(DS_DB) << "cannot open DB:" << this->db.lastError().text();
+        qCWarning(DS_DB) << "cannot open DB:" << db.lastError().text();
         return false;
     }
     else
     {
         // Enable foreign key support.
-        QSqlQuery query;
+        QSqlQuery query(db);
         if (query.exec("PRAGMA foreign_keys = ON") == false)
         {
             return false;
@@ -113,10 +115,24 @@ bool Data_persistence::init_db()
     return true;
 }
 
+void Data_persistence::get_db_connection(QSqlDatabase &db)
+{
+    QString db_name = "db@" + Utils::get_current_thread_id();
+    db = QSqlDatabase::database(db_name);
+    if (!db.isOpen())
+    {
+        db = QSqlDatabase::cloneDatabase(this->main_db_name, db_name);
+        db.open();
+    }
+}
+
 #ifndef ENABLE_TEST_MODE
 void Data_persistence::backup_db()
 {
-    QFileInfo db_file(this->db.databaseName());
+    QSqlDatabase db;
+    this->get_db_connection(db);
+
+    QFileInfo db_file(db.databaseName());
     QString db_dir(db_file.absolutePath());
     QString db_name(db_file.fileName());
     QString timestamp(QDateTime::currentDateTime().toString("yyyyMMdd-HH:mm:ss"));
@@ -157,10 +173,6 @@ bool Data_persistence::restore_db(const QString &file_path)
     QString abs_file_path = fi.absoluteFilePath();
     if (fi.exists() == true)
     {
-        // Get file path of current DB.
-        QFileInfo cur_db_file(this->db.databaseName());
-        QString cur_db_file_path = cur_db_file.absoluteFilePath();
-
         // Backup current DB.
 #ifndef ENABLE_TEST_MODE
         this->backup_db();
@@ -168,20 +180,17 @@ bool Data_persistence::restore_db(const QString &file_path)
 
         // Close current DB.
         this->mutex.lock();
-        if (this->db.isValid() == true)
-        {
-            this->db.close();
-        }
+        QSqlDatabase::removeDatabase(this->main_db_name);
         this->mutex.unlock();
 
         // Overwrite with restoration DB.
-        if (QFile::exists(cur_db_file_path))
+        if (QFile::exists(this->db_path))
         {
-            QFile::remove(cur_db_file_path);
+            QFile::remove(this->db_path);
         }
-        if ((res = QFile::copy(abs_file_path, cur_db_file_path)) == false)
+        if ((res = QFile::copy(abs_file_path, this->db_path)) == false)
         {
-            qCWarning(DS_DB) << "can not restore DB" << abs_file_path << "into" << cur_db_file_path;
+            qCWarning(DS_DB) << "can not restore DB" << abs_file_path << "into" << this->db_path;
         }
 
         // Init DB again.
@@ -200,8 +209,10 @@ bool
 Data_persistence::export_db(const QString &dest_file_path)
 {
     bool res = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
-    QFileInfo db_file(this->db.databaseName());
+    QFileInfo db_file(db.databaseName());
     QString abs_db_file = db_file.absoluteFilePath();
 
     if (db_file.exists() == true)
@@ -231,11 +242,13 @@ bool Data_persistence::create_db_structure()
 {
     // Init.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Create DB structure
-    if (this->db.isOpen() == true)
+    if (db.isOpen() == true)
     {
-        QSqlQuery query;
+        QSqlQuery query(db);
 
         // Create TRACK table
         result = query.exec("CREATE TABLE IF NOT EXISTS \"TRACK\" "
@@ -296,13 +309,17 @@ bool Data_persistence::create_db_structure()
 
 bool Data_persistence::rollback_transaction()
 {
-    return this->db.rollback();
+    QSqlDatabase db;
+    this->get_db_connection(db);
+    return db.rollback();
 }
 
 bool Data_persistence::store_audio_track(const QSharedPointer<Audio_track> &at)
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -319,7 +336,7 @@ bool Data_persistence::store_audio_track(const QSharedPointer<Audio_track> &at)
         this->mutex.lock();
 
         // Try to get audio track from Db.
-        QSqlQuery query = this->db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
+        QSqlQuery query = db.exec("SELECT id_track, path, filename, key, key_tag FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -387,6 +404,9 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
     // Init result.
     bool result = true;
 
+    QSqlDatabase db;
+    this->get_db_connection(db);
+
     // Check input parameter.
     if ((io_at.data() == nullptr) ||
         (io_at->get_hash().size() == 0))
@@ -402,7 +422,7 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + io_at->get_hash() + "\"");
+        QSqlQuery query = db.exec("SELECT key, key_tag, path, filename FROM TRACK WHERE hash=\"" + io_at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -433,6 +453,7 @@ bool Data_persistence::get_audio_track(QSharedPointer<Audio_track> &io_at)
         }
     }
 
+   // db.removeDatabase(db_name);
     return result;
 }
 
@@ -442,6 +463,8 @@ bool Data_persistence::store_cue_point(const QSharedPointer<Audio_track> &at,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -467,7 +490,7 @@ bool Data_persistence::store_cue_point(const QSharedPointer<Audio_track> &at,
             this->mutex.lock();
 
             // Get audio track id from Db.
-            QSqlQuery query_at = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
+            QSqlQuery query_at = db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
             if (query_at.lastError().isValid())
             {
                 qCWarning(DS_DB) << "SELECT track failed: " << query_at.lastError().text();
@@ -476,7 +499,7 @@ bool Data_persistence::store_cue_point(const QSharedPointer<Audio_track> &at,
             else if (query_at.next() == true) // Check if there is a record.
             {
                 // Audio track found, search for the cue point.
-                QSqlQuery query_cuepoint = this->db.exec(
+                QSqlQuery query_cuepoint = db.exec(
                           "SELECT id_cuepoint, position FROM TRACK_CUE_POINT WHERE id_track=\"" + query_at.value(0).toString() + "\" AND number=\"" + QString::number(number) + "\"");
                 if (query_cuepoint.lastError().isValid())
                 {
@@ -539,6 +562,8 @@ bool Data_persistence::get_cue_point(const QSharedPointer<Audio_track> &at,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -556,7 +581,7 @@ bool Data_persistence::get_cue_point(const QSharedPointer<Audio_track> &at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
+        QSqlQuery query = db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -565,7 +590,7 @@ bool Data_persistence::get_cue_point(const QSharedPointer<Audio_track> &at,
         else if (query.next() == true) // Check if there is a record.
         {
             // The audio track exists, look for the specified cue point.
-            QSqlQuery query_cue_point = this->db.exec(
+            QSqlQuery query_cue_point = db.exec(
                         "SELECT position FROM TRACK_CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(number) + "\"");
             if (query_cue_point.lastError().isValid())
             {
@@ -601,6 +626,8 @@ bool Data_persistence::delete_cue_point(const QSharedPointer<Audio_track> &at,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -618,7 +645,7 @@ bool Data_persistence::delete_cue_point(const QSharedPointer<Audio_track> &at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
+        QSqlQuery query = db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             // Can not select audio track in DB.
@@ -628,7 +655,7 @@ bool Data_persistence::delete_cue_point(const QSharedPointer<Audio_track> &at,
         else if (query.next() == true) // Check if there is a record.
         {
             // The audio track exists, look for the specified cue point.
-            QSqlQuery query_cue_point = this->db.exec(
+            QSqlQuery query_cue_point = db.exec(
                         "DELETE FROM TRACK_CUE_POINT WHERE id_track=\"" + query.value(0).toString() + "\" AND number=\"" + QString::number(number) + "\"");
             if (query_cue_point.lastError().isValid())
             {
@@ -654,6 +681,8 @@ bool Data_persistence::store_tag(const QString &name)
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if (name == "")
@@ -670,7 +699,7 @@ bool Data_persistence::store_tag(const QString &name)
         this->mutex.lock();
 
         // Try to get tag from Db.
-        QSqlQuery query = this->db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + name + "\"");
+        QSqlQuery query = db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + name + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT tag failed: " << query.lastError().text();
@@ -707,6 +736,8 @@ bool Data_persistence::rename_tag(const QString &old_name, const QString &new_na
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameters.
     if ((old_name == "") ||
@@ -724,7 +755,7 @@ bool Data_persistence::rename_tag(const QString &old_name, const QString &new_na
         this->mutex.lock();
 
         // Try to get tag from Db.
-        QSqlQuery query = this->db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + old_name + "\"");
+        QSqlQuery query = db.exec("SELECT id_tag, name FROM TAG WHERE name=\"" + old_name + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT tag failed: " << query.lastError().text();
@@ -769,6 +800,8 @@ bool Data_persistence::delete_tag(const QString &name)
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if (name == "")
@@ -785,7 +818,7 @@ bool Data_persistence::delete_tag(const QString &name)
         this->mutex.lock();
 
         QString select_str = "SELECT id_tag FROM TAG WHERE name=\"" + name + "\"";
-        QSqlQuery query = this->db.exec(select_str);
+        QSqlQuery query = db.exec(select_str);
         if (query.lastError().isValid())
         {
             // Can not select tag in DB.
@@ -798,7 +831,7 @@ bool Data_persistence::delete_tag(const QString &name)
             // Delete all references to this tag for all tracks.
             QString del_trtag_str = "DELETE FROM TRACK_TAG "
                                 "WHERE id_tag=\"" + query.value(0).toString() + "\"";
-            QSqlQuery query_track_tag = this->db.exec(del_trtag_str);
+            QSqlQuery query_track_tag = db.exec(del_trtag_str);
             if (query_track_tag.lastError().isValid())
             {
                 // Can not delete track/tag.
@@ -813,7 +846,7 @@ bool Data_persistence::delete_tag(const QString &name)
 
                 // Now remove the tag itself.
                 QString del_tag_str = "DELETE FROM TAG WHERE id_tag=\"" + query.value(0).toString() + "\"";
-                QSqlQuery query_tag = this->db.exec(del_tag_str);
+                QSqlQuery query_tag = db.exec(del_tag_str);
                 if (query_tag.lastError().isValid())
                 {
                     // Can not delete tag.
@@ -846,6 +879,8 @@ bool Data_persistence::get_full_tag_list(QStringList &out_tags)
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Get all tags.
     if (this->is_initialized == true)
@@ -853,7 +888,7 @@ bool Data_persistence::get_full_tag_list(QStringList &out_tags)
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT name FROM TAG");
+        QSqlQuery query = db.exec("SELECT name FROM TAG");
         if (query.lastError().isValid())
         {
             // Can not select tag in DB.
@@ -881,6 +916,8 @@ bool Data_persistence::add_tag_to_track(const QSharedPointer<Audio_track> &at,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -898,7 +935,7 @@ bool Data_persistence::add_tag_to_track(const QSharedPointer<Audio_track> &at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
+        QSqlQuery query = db.exec("SELECT id_track FROM TRACK WHERE hash=\"" + at->get_hash() + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track failed: " << query.lastError().text();
@@ -907,7 +944,7 @@ bool Data_persistence::add_tag_to_track(const QSharedPointer<Audio_track> &at,
         else if (query.next() == true) // Check if there is a record.
         {
             // The audio track exists, let's search the tag.
-            QSqlQuery query_tag = this->db.exec("SELECT id_tag FROM TAG WHERE name=\"" + tag_name + "\"");
+            QSqlQuery query_tag = db.exec("SELECT id_tag FROM TAG WHERE name=\"" + tag_name + "\"");
             if (query_tag.lastError().isValid())
             {
                 qCWarning(DS_DB) << "SELECT tag failed: " << query_tag.lastError().text();
@@ -951,6 +988,8 @@ bool Data_persistence::store_track_tag(const QString &id_track,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((id_track == "") ||
@@ -965,7 +1004,7 @@ bool Data_persistence::store_track_tag(const QString &id_track,
         (this->is_initialized == true))
     {
         // Try to get tag/track association  from Db.
-        QSqlQuery query = this->db.exec("SELECT id_track, id_tag FROM TRACK_TAG WHERE id_track=\"" + id_track + "\" AND id_tag=\"" + id_tag + "\"");
+        QSqlQuery query = db.exec("SELECT id_track, id_tag FROM TRACK_TAG WHERE id_track=\"" + id_track + "\" AND id_tag=\"" + id_tag + "\"");
         if (query.lastError().isValid())
         {
             qCWarning(DS_DB) << "SELECT track/tag failed: " << query.lastError().text();
@@ -1000,6 +1039,8 @@ bool Data_persistence::rem_tag_from_track(const QSharedPointer<Audio_track> &at,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -1017,7 +1058,7 @@ bool Data_persistence::rem_tag_from_track(const QSharedPointer<Audio_track> &at,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("DELETE FROM TRACK_TAG "
+        QSqlQuery query = db.exec("DELETE FROM TRACK_TAG "
                                         "WHERE id_track_tag IN "
                                         "(SELECT id_track_tag FROM TRACK_TAG "
                                         "JOIN TAG "
@@ -1050,6 +1091,8 @@ bool Data_persistence::get_tags_from_track(const QSharedPointer<Audio_track> &at
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if ((at.data() == nullptr) ||
@@ -1066,7 +1109,7 @@ bool Data_persistence::get_tags_from_track(const QSharedPointer<Audio_track> &at
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT name FROM TAG "
+        QSqlQuery query = db.exec("SELECT name FROM TAG "
                                         "JOIN TRACK_TAG "
                                         "ON TAG.id_tag=TRACK_TAG.id_tag "
                                         "JOIN TRACK "
@@ -1100,6 +1143,8 @@ bool Data_persistence::get_tracks_from_tag(const QString &tag_name,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     // Check input parameter.
     if (tag_name == "")
@@ -1115,7 +1160,7 @@ bool Data_persistence::get_tracks_from_tag(const QString &tag_name,
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT path, filename FROM TRACK "
+        QSqlQuery query = db.exec("SELECT path, filename FROM TRACK "
                                         "JOIN TRACK_TAG "
                                         "ON TRACK.id_track=TRACK_TAG.id_track "
                                         "JOIN TAG "
@@ -1148,6 +1193,8 @@ bool Data_persistence::reorganize_track_pos_in_tag_list() // TODO: do it only fo
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     if (this->is_initialized == true)
     {
@@ -1155,7 +1202,7 @@ bool Data_persistence::reorganize_track_pos_in_tag_list() // TODO: do it only fo
         this->mutex.lock();
 
         // Get all tag ids.
-        QSqlQuery query_tag_ids = this->db.exec("SELECT id_tag FROM TAG");
+        QSqlQuery query_tag_ids = db.exec("SELECT id_tag FROM TAG");
         if (query_tag_ids.lastError().isValid())
         {
             // Can not select tag in DB.
@@ -1168,7 +1215,7 @@ bool Data_persistence::reorganize_track_pos_in_tag_list() // TODO: do it only fo
             while (query_tag_ids.next() == true)
             {
                 int pos = 0;
-                QSqlQuery query_tracklist = this->db.exec("SELECT id_track_tag, position FROM TRACK_TAG "
+                QSqlQuery query_tracklist = db.exec("SELECT id_track_tag, position FROM TRACK_TAG "
                                                           "WHERE TRACK_TAG.id_tag=" + query_tag_ids.value(0).toString() + " "
                                                           "ORDER BY CASE WHEN position IS NULL THEN 1 ELSE 0 END, position");
                 if (query_tracklist.lastError().isValid())
@@ -1181,7 +1228,7 @@ bool Data_persistence::reorganize_track_pos_in_tag_list() // TODO: do it only fo
                 {
                     // For each tag_track association (which are ordered), overwrite the position starting from 0.
                     // tag_track associations with no position are append at the end.
-                    QSqlQuery query_update_tracklist(this->db);
+                    QSqlQuery query_update_tracklist(db);
                     while (query_tracklist.next() == true)
                     {
                         query_update_tracklist.prepare("UPDATE TRACK_TAG SET position = :position "
@@ -1213,13 +1260,15 @@ int Data_persistence::get_track_pos_in_tag_list(const QSharedPointer<Audio_track
                                                 const QString &tag_name)
 {
     int pos = -1;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     if (this->is_initialized == true)
     {
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query = this->db.exec("SELECT TRACK_TAG.position FROM TRACK_TAG "
+        QSqlQuery query = db.exec("SELECT TRACK_TAG.position FROM TRACK_TAG "
                                         "JOIN TRACK ON TRACK.id_track=TRACK_TAG.id_track "
                                         "JOIN TAG ON TAG.id_tag=TRACK_TAG.id_tag "
                                         "WHERE TRACK.hash=\"" + at->get_hash() + "\" AND TAG.name=\"" + tag_name + "\"");
@@ -1250,13 +1299,15 @@ bool Data_persistence::set_track_position_in_tag_list(const QString &tag_name,
 {
     // Init result.
     bool result = true;
+    QSqlDatabase db;
+    this->get_db_connection(db);
 
     if (this->is_initialized == true)
     {
         // Ensure no other thread can access the DB connection.
         this->mutex.lock();
 
-        QSqlQuery query_update_pos(this->db);
+        QSqlQuery query_update_pos(db);
         query_update_pos.prepare("UPDATE TRACK_TAG SET position = :position "
                                  "WHERE id_track_tag = (SELECT TRACK_TAG.id_track_tag FROM TRACK_TAG "
                                                         "JOIN TRACK ON TRACK.id_track = TRACK_TAG.id_track "

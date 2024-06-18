@@ -2585,35 +2585,38 @@ void Gui::fill_add_tag_submenu(QMenu *io_submenu)
 {
     // Get selected audio track.
     Audio_collection_item *item = this->get_selected_audio_item();
-    QSharedPointer<Audio_track> at(new Audio_track(44100));
-    at->set_hash(item->get_file_hash());
-    QFileInfo info(item->get_full_path());
-    if (info.isFile() == true)
+    if (item)
     {
-        // First clean the list of tags.
-        io_submenu->clear();
-
-        // Get the list of tags for the selected track.
-        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-        QStringList track_tags;
-        data_persist->get_tags_from_track(at, track_tags);
-
-        // Get the list of all tags available.
-        QStringList full_available_tags;
-        data_persist->get_full_tag_list(full_available_tags);
-
-        // Compute the list of tags that are still not applied to this track.
-        QSet<QString> tags_to_add = full_available_tags.toSet().subtract(track_tags.toSet());
-        QList<QString> tag_list = tags_to_add.toList();
-        tag_list.sort();
-
-        // Create sub menu elements and associated actions.
-        foreach (const QString &str, tag_list)
+        QSharedPointer<Audio_track> at(new Audio_track(44100));
+        at->set_hash(item->get_file_hash());
+        QFileInfo info(item->get_full_path());
+        if (info.isFile() == true)
         {
-            QAction *add_tag_action = new QAction(str, this);
-            QObject::connect(add_tag_action, &QAction::triggered,
-                             [this, item, str](){this->add_tag_to_selected_track(item, str);});
-            io_submenu->addAction(add_tag_action);
+            // First clean the list of tags.
+            io_submenu->clear();
+
+            // Get the list of tags for the selected track.
+            Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+            QStringList track_tags;
+            data_persist->get_tags_from_track(at, track_tags);
+
+            // Get the list of all tags available.
+            QStringList full_available_tags;
+            data_persist->get_full_tag_list(full_available_tags);
+
+            // Compute the list of tags that are still not applied to this track.
+            QSet<QString> tags_to_add = full_available_tags.toSet().subtract(track_tags.toSet());
+            QList<QString> tag_list = tags_to_add.toList();
+            tag_list.sort();
+
+            // Create sub menu elements and associated actions.
+            foreach (const QString &str, tag_list)
+            {
+                QAction *add_tag_action = new QAction(str, this);
+                QObject::connect(add_tag_action, &QAction::triggered,
+                                 [this, item, str](){this->add_tag_to_selected_track(item, str);});
+                io_submenu->addAction(add_tag_action);
+            }
         }
     }
 
@@ -2700,26 +2703,29 @@ void Gui::fill_rem_tag_submenu(QMenu *io_submenu)
 {
     // Get selected audio track.
     Audio_collection_item *item = this->get_selected_audio_item();
-    QSharedPointer<Audio_track> at(new Audio_track(44100));
-    at->set_hash(item->get_file_hash());
-    QFileInfo info(item->get_full_path());
-    if (info.isFile() == true)
+    if (item)
     {
-        // First clean the list of tags.
-        io_submenu->clear();
-
-        // Get the list of tags for the selected track.
-        Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
-        QStringList track_tags;
-        data_persist->get_tags_from_track(at, track_tags);
-
-        // Create sub menu elements and associated actions.
-        foreach (const QString &str, track_tags)
+        QSharedPointer<Audio_track> at(new Audio_track(44100));
+        at->set_hash(item->get_file_hash());
+        QFileInfo info(item->get_full_path());
+        if (info.isFile() == true)
         {
-            QAction *rem_tag_action = new QAction(str, this);
-            QObject::connect(rem_tag_action, &QAction::triggered,
-                             [this, item, str](){this->rem_tag_from_selected_track(item, str);});
-            io_submenu->addAction(rem_tag_action);
+            // First clean the list of tags.
+            io_submenu->clear();
+
+            // Get the list of tags for the selected track.
+            Data_persistence *data_persist = &Singleton<Data_persistence>::get_instance();
+            QStringList track_tags;
+            data_persist->get_tags_from_track(at, track_tags);
+
+            // Create sub menu elements and associated actions.
+            foreach (const QString &str, track_tags)
+            {
+                QAction *rem_tag_action = new QAction(str, this);
+                QObject::connect(rem_tag_action, &QAction::triggered,
+                                 [this, item, str](){this->rem_tag_from_selected_track(item, str);});
+                io_submenu->addAction(rem_tag_action);
+            }
         }
     }
 
@@ -3614,21 +3620,24 @@ Gui::run_sampler_decoding_process_on_deck(const unsigned short &deck_index,
 
     // Get selected file path.
     Audio_collection_item *item = this->get_selected_audio_item();
-    QFileInfo info(item->get_full_path());
-    if (info.isFile() == true)
+    if (item)
     {
-        // Execute decoding.
-        QList<QSharedPointer<Audio_file_decoding_process>> samplers;
-        samplers = this->dec_samplers[deck_index];
-        if (samplers[sampler_index]->run(info.absoluteFilePath(), "", "") == false)
+        QFileInfo info(item->get_full_path());
+        if (info.isFile() == true)
         {
-            qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
-        }
-        else
-        {
-            this->playbacks[deck_index]->reset_sampler(sampler_index);
-            this->set_sampler_state(deck_index, sampler_index, false);
-            this->playbacks[deck_index]->set_sampler_state(sampler_index, false);
+            // Execute decoding.
+            QList<QSharedPointer<Audio_file_decoding_process>> samplers;
+            samplers = this->dec_samplers[deck_index];
+            if (samplers[sampler_index]->run(info.absoluteFilePath(), "", "") == false)
+            {
+                qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
+            }
+            else
+            {
+                this->playbacks[deck_index]->reset_sampler(sampler_index);
+                this->set_sampler_state(deck_index, sampler_index, false);
+                this->playbacks[deck_index]->set_sampler_state(sampler_index, false);
+            }
         }
     }
 
@@ -3830,84 +3839,87 @@ Gui::run_audio_file_decoding_process()
 {
     // Get selected file path.
     Audio_collection_item *item = this->get_selected_audio_item();
-    QFileInfo info(item->get_full_path());
-    if (info.isFile() == true)
+    if (item)
     {
-        // Get selected deck/sampler.
-        unsigned short int deck_index = this->get_selected_deck_index();
-        QLabel    *deck_track_name = this->decks[deck_index]->track_name;
-        QLabel   **deck_cue_point  = this->decks[deck_index]->cue_point_labels;
-        Waveform  *deck_waveform   = this->decks[deck_index]->waveform;
-        QSharedPointer<Audio_file_decoding_process> decode_process = this->decs[deck_index];
-
-        // Execute decoding if not trying to open the existing track.
-        if (info.fileName().compare(deck_track_name->text()) != 0 )
+        QFileInfo info(item->get_full_path());
+        if (info.isFile() == true)
         {
-            // Stop playback.
-            this->playbacks[deck_index]->stop();
+            // Get selected deck/sampler.
+            unsigned short int deck_index = this->get_selected_deck_index();
+            QLabel    *deck_track_name = this->decks[deck_index]->track_name;
+            QLabel   **deck_cue_point  = this->decks[deck_index]->cue_point_labels;
+            Waveform  *deck_waveform   = this->decks[deck_index]->waveform;
+            QSharedPointer<Audio_file_decoding_process> decode_process = this->decs[deck_index];
 
-            // Clear audio track and waveform.
-            decode_process->clear();
-            deck_waveform->reset();
-            deck_waveform->update();
-
-            // Decode track.
-            if (decode_process->run(info.absoluteFilePath(), item->get_file_hash(), item->get_data(COLUMN_KEY).toString()) == false)
+            // Execute decoding if not trying to open the existing track.
+            if (info.fileName().compare(deck_track_name->text()) != 0 )
             {
-                qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
-            }
-            else
-            {
-                // Track is decoded, record the name in the tracklist.
-                this->add_track_path_to_tracklist(deck_index);
-            }
-        }
+                // Stop playback.
+                this->playbacks[deck_index]->stop();
 
-        // Force waveform computation.
-        deck_waveform->reset();
+                // Clear audio track and waveform.
+                decode_process->clear();
+                deck_waveform->reset();
+                deck_waveform->update();
 
-        // Reset playback process.
-        this->playbacks[deck_index]->reset();
-        deck_waveform->move_slider(0.0);
-
-        // Reset cue points on Dicer.
-        if (this->dicer_is_running)
-        {
-            dicer_t dicer_index;
-            this->get_dicer_index_from_deck_index(deck_index, dicer_index);
-            this->dicer_control->clear_dicer(dicer_index);
-        }
-
-        // Load cue points.
-        for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
-        {
-            // On GUI buttons and wavform.
-            deck_waveform->move_cue_slider(i, this->playbacks[deck_index]->get_cue_point(i));
-            deck_cue_point[i]->setText(this->playbacks[deck_index]->get_cue_point_str(i));
-
-            // On Dicer.
-            if (this->dicer_is_running)
-            {
-                if (this->playbacks[deck_index]->is_cue_point_defined(i) == true)
+                // Decode track.
+                if (decode_process->run(info.absoluteFilePath(), item->get_file_hash(), item->get_data(COLUMN_KEY).toString()) == false)
                 {
-                    this->lit_dicer_button_cue_point(deck_index, i);
+                    qCWarning(DS_FILE) << "can not decode " << info.absoluteFilePath();
+                }
+                else
+                {
+                    // Track is decoded, record the name in the tracklist.
+                    this->add_track_path_to_tracklist(deck_index);
                 }
             }
-        }
 
-        // On Dicer, always lit the 5th button to handle the "go to begin" feature.
-        if (this->dicer_is_running)
-        {
-            this->lit_dicer_button_cue_point(deck_index, 4);
-        }
+            // Force waveform computation.
+            deck_waveform->reset();
 
-        // Update waveform.
-        deck_waveform->update();
+            // Reset playback process.
+            this->playbacks[deck_index]->reset();
+            deck_waveform->move_slider(0.0);
 
-        // Start playback if not already started.
-        if (this->control_and_play->is_running() == false)
-        {
-            this->control_and_play->start();
+            // Reset cue points on Dicer.
+            if (this->dicer_is_running)
+            {
+                dicer_t dicer_index;
+                this->get_dicer_index_from_deck_index(deck_index, dicer_index);
+                this->dicer_control->clear_dicer(dicer_index);
+            }
+
+            // Load cue points.
+            for (unsigned short int i = 0; i < MAX_NB_CUE_POINTS; i++)
+            {
+                // On GUI buttons and wavform.
+                deck_waveform->move_cue_slider(i, this->playbacks[deck_index]->get_cue_point(i));
+                deck_cue_point[i]->setText(this->playbacks[deck_index]->get_cue_point_str(i));
+
+                // On Dicer.
+                if (this->dicer_is_running)
+                {
+                    if (this->playbacks[deck_index]->is_cue_point_defined(i) == true)
+                    {
+                        this->lit_dicer_button_cue_point(deck_index, i);
+                    }
+                }
+            }
+
+            // On Dicer, always lit the 5th button to handle the "go to begin" feature.
+            if (this->dicer_is_running)
+            {
+                this->lit_dicer_button_cue_point(deck_index, 4);
+            }
+
+            // Update waveform.
+            deck_waveform->update();
+
+            // Start playback if not already started.
+            if (this->control_and_play->is_running() == false)
+            {
+                this->control_and_play->start();
+            }
         }
     }
 
