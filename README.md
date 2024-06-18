@@ -59,14 +59,12 @@ Build
 
 ### GNU/Linux
 
-#### Install build tools (Ubuntu 20.04)
-    sudo apt-add-repository ppa:julien-rosener/digitalscratch
-    sudo apt-get update
-    sudo apt-get install build-essential \
-      qt5-default qtmultimedia5-dev libqt5multimedia5-plugins \
+#### Install build tools (Ubuntu 24.04)
+    sudo apt install build-essential \
+      qtmultimedia5-dev libqt5multimedia5-plugins qtbase5-dev qtbase5-dev-tools \
       libjack-jackd2-dev libasound2-dev \
       libsamplerate0-dev \
-      libkeyfinder-dev \
+      libfftw3-dev cmake \
       libavformat-dev libavcodec-dev libavutil-dev libswresample-dev
     
 #### Install build tools (Debian 10), as root
@@ -80,6 +78,13 @@ Build
       libsamplerate0-dev \
       libkeyfinder-dev \
       libavformat-dev libavcodec-dev libavutil-dev libswresample-dev
+
+#### Compile and install _libkeyfinder_
+    git clone https://github.com/mixxxdj/libkeyfinder.git
+    cd libkeyfinder
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTING=OFF -S . -B build
+    cmake --build build
+    sudo cmake --install build
 
 #### Compile and install _libdigitalscratch_
     cd libdigitalscratch

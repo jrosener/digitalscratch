@@ -176,7 +176,7 @@ win32 {
     DEPENDPATH += $$PWD/win-external/libkeyfinder/include
 }
 unix {
-    LIBS += -lkeyfinder
+    LIBS += /usr/local/lib/libkeyfinder.a -lfftw3
 }
 
 #############################
