@@ -179,7 +179,6 @@ int main(int argc, char *argv[])
     dicer_control->moveToThread(dicer_control_thread);
     QObject::connect(dicer_control_thread, SIGNAL(started()), dicer_control.data(), SLOT(start()));
     QObject::connect(dicer_control.data(), SIGNAL(terminated()), dicer_control_thread, SLOT(quit()));
-    QObject::connect(dicer_control_thread, SIGNAL(finished()), dicer_control.data(), SLOT(deleteLater()));
     QObject::connect(dicer_control_thread, SIGNAL(finished()), dicer_control_thread, SLOT(deleteLater()));
 
     // Create GUI.

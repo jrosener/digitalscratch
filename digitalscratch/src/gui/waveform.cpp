@@ -240,6 +240,7 @@ Waveform::move_slider(const float &position)
 
     // Move slider to new position.
     this->slider_position_x = position * this->area_width;
+    // FIXME: on a eu un crash sur cet appel, est ce que c'est tjs ici ?
     this->slider->setGeometry(this->slider_position_x, 0, 2, this->area_height);
 
     return true;
